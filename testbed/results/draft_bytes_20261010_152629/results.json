@@ -1,0 +1,77 @@
+{
+ "requests": [
+  {
+   "id": "e01",
+   "n_predict": 64,
+   "laptop_sent_bytes": 50008680,
+   "laptop_received_bytes": 32779456,
+   "seconds": 113.37,
+   "timings": {
+    "cache_n": 0,
+    "prompt_n": 21,
+    "prompt_ms": 19245.02,
+    "prompt_per_token_ms": 916.4295238095239,
+    "prompt_per_second": 1.0911913835371436,
+    "predicted_n": 64,
+    "predicted_ms": 93997.775,
+    "predicted_per_token_ms": 1492.0281746031744,
+    "predicted_per_second": 0.6702286304117305,
+    "draft_n": 38,
+    "draft_n_accepted": 24
+   }
+  },
+  {
+   "id": "c01",
+   "n_predict": 64,
+   "laptop_sent_bytes": 49745936,
+   "laptop_received_bytes": 27777908,
+   "seconds": 102.96,
+   "timings": {
+    "cache_n": 0,
+    "prompt_n": 26,
+    "prompt_ms": 23014.062,
+    "prompt_per_token_ms": 885.1562307692309,
+    "prompt_per_second": 1.1297440669100483,
+    "predicted_n": 64,
+    "predicted_ms": 79729.682,
+    "predicted_per_token_ms": 1265.550507936508,
+    "predicted_per_second": 0.7901699645559856,
+    "draft_n": 32,
+    "draft_n_accepted": 30
+   }
+  },
+  {
+   "id": "e01",
+   "n_predict": 16,
+   "laptop_sent_bytes": 22362720,
+   "laptop_received_bytes": 18131764,
+   "seconds": 43.42,
+   "timings": {
+    "cache_n": 0,
+    "prompt_n": 21,
+    "prompt_ms": 19298.988,
+    "prompt_per_token_ms": 918.9994285714287,
+    "prompt_per_second": 1.0881399584268356,
+    "predicted_n": 16,
+    "predicted_ms": 23819.905,
+    "predicted_per_token_ms": 1587.9936666666665,
+    "predicted_per_second": 0.6297254334137773,
+    "draft_n": 9,
+    "draft_n_accepted": 5
+   }
+  }
+ ],
+ "serve_lines": [
+  "draft   -md ~/models/qwen3-0.6b-q8_0.gguf --spec-type draft-simple --spec-draft-n-max 1 --spec-draft-n-min 0 --spec-draft-p-min 0 -devd RPC1 -ngld 99 (host charge +160 MiB, its RPC server 192.168.1.108:50053)",
+  "llama-server -m ~/models/qwen3-14b-q4_k_m.gguf --rpc 192.168.1.114:50052,192.168.1.108:50053 -ngl 14 -ot \"^output\\.weight=CPU\" -dev 'RPC0' -md ~/models/qwen3-0.6b-q8_0.gguf --spec-type draft-simple --spec-draft-n-max 1 --spec-draft-n-min 0 --spec-draft-p-min 0 -devd RPC1 -ngld 99 -c 1024 -np 1 -t 4 -lv 4 -lm none --host 192.168.1.110 --port 8080   pin b23701f77d47dad9de834d59ebfcbe25c9e8b46f",
+  "laptop  draft RPC server on 192.168.1.108:50053 (pid 77416)",
+  "split   jetson: llama.cpp 2489.60 MiB, planned 2489.6 MiB (head on pi4)",
+  "mem     pi4: MemAvailable 880 MiB at READY, 7399 at the gate: the serve holds 6519 MiB, charged 6494 MiB",
+  "mem     jetson: MemAvailable 817 MiB at READY, 3538 at the gate: the serve holds 2721 MiB, charged 2655 MiB"
+ ],
+ "idle_20s": {
+  "sent": 607752,
+  "received": 0,
+  "sockets": 1
+ }
+}

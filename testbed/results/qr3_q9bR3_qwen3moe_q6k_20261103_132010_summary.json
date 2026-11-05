@@ -1,0 +1,181 @@
+{
+ "log": "testbed/results/qr3_q9bR3_qwen3moe_q6k_20261103_132010.log",
+ "meta": {
+  "start": {
+   "what": "QR3 TPOT, one user",
+   "engine": "llama",
+   "nodes": "pi5 pi4 jetson laptop",
+   "prima_lw": null,
+   "model": "qwen3moe_q6k",
+   "ctx": 4096,
+   "mem": "testbed/dataset/memory_snapshot_20261103_125622.json",
+   "clocks": "locked",
+   "reqs": 3,
+   "n": 512,
+   "gen": 64,
+   "warm": [
+    512,
+    32
+   ],
+   "probe": false,
+   "tag": "q9bR3",
+   "prompts": "/usr/share/common-licenses/GPL-3 (sha256 3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986): request i from token i*500, cut to n tokens, then '\\n\\nSummarise the text above in three short sentences.'; the warm-up from the end",
+   "script_sha256": "2b44f219faa6c767e64f78d54cb7608add38cbfeb26db145335a355f490b25af",
+   "serve_pool_sha256": "95513662330b5602cde3c15a1c1fc3972b732093f5709e38e3ba4820ab9753b6",
+   "laptop_load": [
+    0.36572265625,
+    1.02587890625,
+    0.8681640625
+   ]
+  },
+  "model_sha256": {
+   "host": "laptop",
+   "file": "~/models/qwen3-30b-a3b-q6_k.gguf",
+   "sha256": "b1a3ed3bc584d58d25253c408cbbf894f974dffa2df74e016469289e686ef701",
+   "expected": "b1a3ed3bc584d58d25253c408cbbf894f974dffa2df74e016469289e686ef701",
+   "ok": true
+  },
+  "served": {
+   "host": "laptop",
+   "workers": "pi5 jetson",
+   "args": "-m ~/models/qwen3-30b-a3b-q6_k.gguf --rpc 192.168.10.11:50052,192.168.1.114:50052 -ngl 13 -ts 6.5,6.5 -ot \"^output\\.weight=CPU\"",
+   "ctx": "4096",
+   "serve_log": "testbed/results/serve_qwen3moe_q6k_20261103_132240.log"
+  }
+ },
+ "requests": [
+  {
+   "i": 0,
+   "tokens": 64,
+   "merged_events": 0,
+   "ttft_client_ms": 31743.5,
+   "ttft_server_prompt_ms": 31742.6,
+   "client": {
+    "n": 63,
+    "mean": 180.8,
+    "p50": 180.17,
+    "p95": 186.34,
+    "p99": 192.88,
+    "max": 195.09,
+    "min": 174.04
+   },
+   "server": {
+    "n": 63,
+    "mean": 180.8,
+    "p50": 180.17,
+    "p95": 186.32,
+    "p99": 192.88,
+    "max": 195.12,
+    "min": 174.03
+   }
+  },
+  {
+   "i": 1,
+   "tokens": 64,
+   "merged_events": 0,
+   "ttft_client_ms": 31965.2,
+   "ttft_server_prompt_ms": 31964.2,
+   "client": {
+    "n": 63,
+    "mean": 179.96,
+    "p50": 179.88,
+    "p95": 184.27,
+    "p99": 186.19,
+    "max": 186.85,
+    "min": 173.53
+   },
+   "server": {
+    "n": 63,
+    "mean": 179.96,
+    "p50": 179.89,
+    "p95": 184.28,
+    "p99": 186.16,
+    "max": 186.83,
+    "min": 173.54
+   }
+  },
+  {
+   "i": 2,
+   "tokens": 64,
+   "merged_events": 0,
+   "ttft_client_ms": 31930.6,
+   "ttft_server_prompt_ms": 31929.7,
+   "client": {
+    "n": 63,
+    "mean": 180.15,
+    "p50": 179.55,
+    "p95": 185.73,
+    "p99": 189.15,
+    "max": 189.49,
+    "min": 174.05
+   },
+   "server": {
+    "n": 63,
+    "mean": 180.15,
+    "p50": 179.56,
+    "p95": 185.81,
+    "p99": 189.18,
+    "max": 189.54,
+    "min": 174.02
+   }
+  }
+ ],
+ "pooled": {
+  "client": {
+   "n": 189,
+   "mean": 180.31,
+   "p50": 179.86,
+   "p95": 185.82,
+   "p99": 190.86,
+   "max": 195.09,
+   "min": 173.53,
+   "p95_ci95": [
+    184.31,
+    186.37
+   ]
+  },
+  "server": {
+   "n": 189,
+   "mean": 180.31,
+   "p50": 179.88,
+   "p95": 185.85,
+   "p99": 190.91,
+   "max": 195.12,
+   "min": 173.54,
+   "p95_ci95": [
+    184.32,
+    186.35
+   ]
+  }
+ },
+ "per_request_mean_tpot": {
+  "client": {
+   "n": 3,
+   "mean": 180.31,
+   "p50": 180.15,
+   "p95": 180.74,
+   "p99": 180.79,
+   "max": 180.8,
+   "min": 179.96
+  },
+  "server": {
+   "n": 3,
+   "mean": 180.31,
+   "p50": 180.15,
+   "p95": 180.74,
+   "p99": 180.79,
+   "max": 180.8,
+   "min": 179.96
+  }
+ },
+ "ttft_client_ms": {
+  "n": 3,
+  "mean": 31879.77,
+  "p50": 31930.6,
+  "p95": 31961.74,
+  "p99": 31964.51,
+  "max": 31965.2,
+  "min": 31743.5
+ },
+ "merged_events": 0
+}

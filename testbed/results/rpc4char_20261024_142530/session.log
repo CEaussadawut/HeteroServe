@@ -1,0 +1,92 @@
+########## 2026-10-24T14:25:30+07:00 rpc4char -> testbed/results/rpc4char_20261024_142530 (registration 1480d897d3f11144)
+########## 2026-10-24T14:25:31+07:00 serve tinyllama_q4_0, ctx 2048, clocks locked, boards laptop pi4, planned against testbed/dataset/memory_snapshot_20261024_142448.json: laptop 11 + pi4 11, head on laptop; predicted decode 95.5 ms/token (10.47 tok/s)
+hosts   laptop: fixed: laptop 11 + pi4 11, head host
+llama-server -m ~/models/tinyllama-1.1b-q4_0.gguf --rpc 192.168.10.12:50052 -ngl 12 -ot "^output\.weight=CPU"  -c 2048 -np 1 -t 4 -lv 4 -lm none --cache-ram 0 --host 192.168.1.108 --port 8080   pin b23701f77d47dad9de834d59ebfcbe25c9e8b46f
+gate    laptop: MemAvailable 27605 MiB, the plan needs 8910 MiB with its reserve (margin at rest 18712 MiB)
+gate    pi4: MemAvailable 7392 MiB, the plan needs 441 MiB with its reserve (margin at rest 6952 MiB)
+worker  pi4 listening on 192.168.10.12:50052 (pid 30713)
+server  starting on laptop (pid 209576); loading streams the model from the SD card to the workers
+READY   2026-10-24T14:25:37+07:00: http://192.168.1.108:8080/ (web chat) -- health {"status":"ok"}
+0.00.177.704 I load_tensors:          CPU model buffer size =    86.60 MiB
+0.00.177.705 I load_tensors:   CPU_REPACK model buffer size =   259.88 MiB
+0.00.177.706 I load_tensors: RPC0[192.168.10.12:50052] model buffer size =   260.05 MiB
+0.03.019.292 I llama_context: n_ctx                 = 2048
+0.03.019.296 I llama_context: flash_attn            = auto
+0.03.019.603 I llama_kv_cache:        CPU KV buffer size =    22.00 MiB
+0.03.025.979 I llama_kv_cache: RPC0[192.168.10.12:50052] KV buffer size =    22.00 MiB
+0.03.026.224 I llama_kv_cache: size =   44.00 MiB (  2048 cells,  22 layers,  1/1 seqs), K (f16):   22.00 MiB, V (f16):   22.00 MiB
+0.03.053.255 I sched_reserve: RPC0[192.168.10.12:50052] compute buffer size =    43.01 MiB
+0.03.053.262 I sched_reserve:        CPU compute buffer size =    51.01 MiB
+0.03.292.023 I slot   load_model: id  0 | task -1 | new slot, n_ctx = 2048
+split   pi4: llama.cpp 260.05 MiB, planned 260.0 MiB (head on laptop)
+mem     laptop: MemAvailable 27197 MiB at READY, 27605 at the gate: the serve holds 408 MiB, charged 718 MiB
+mem     pi4: MemAvailable 7082 MiB at READY, 7392 at the gate: the serve holds 310 MiB, charged 441 MiB
+H rep 1 n 16: {'bytes_acked': 953220, 'bytes_received': 131200, 'data_segs_out': 786, 'data_segs_in': 112}; decode 94.38 ms/token
+H rep 1 n 144: {'bytes_acked': 3443076, 'bytes_received': 1180800, 'data_segs_out': 3624, 'data_segs_in': 1008}; decode 95.35 ms/token
+H rep 2 n 16: {'bytes_acked': 953220, 'bytes_received': 131200, 'data_segs_out': 785, 'data_segs_in': 112}; decode 94.40 ms/token
+H rep 2 n 144: {'bytes_acked': 3443076, 'bytes_received': 1180800, 'data_segs_out': 3655, 'data_segs_in': 1008}; decode 95.65 ms/token
+H rep 3 n 16: {'bytes_acked': 953220, 'bytes_received': 131200, 'data_segs_out': 807, 'data_segs_in': 112}; decode 93.76 ms/token
+H rep 3 n 144: {'bytes_acked': 3443076, 'bytes_received': 1180800, 'data_segs_out': 3648, 'data_segs_in': 1008}; decode 95.53 ms/token
+stop    llama-server on laptop stopped
+stop    worker on pi4 stopped
+########## 2026-10-24T14:26:34+07:00 serve tinyllama_q4_0, ctx 2048, clocks locked, boards laptop pi4, planned against testbed/dataset/memory_snapshot_20261024_142448.json: laptop 11 + pi4 11, head on pi4; predicted decode 109.0 ms/token (9.17 tok/s)
+hosts   laptop: fixed: laptop 11 + pi4 11, head last
+llama-server -m ~/models/tinyllama-1.1b-q4_0.gguf --rpc 192.168.10.12:50052 -ngl 12  -c 2048 -np 1 -t 4 -lv 4 -lm none --cache-ram 0 --host 192.168.1.108 --port 8080   pin b23701f77d47dad9de834d59ebfcbe25c9e8b46f
+gate    laptop: MemAvailable 27634 MiB, the plan needs 8859 MiB with its reserve (margin at rest 18763 MiB)
+gate    pi4: MemAvailable 7382 MiB, the plan needs 492 MiB with its reserve (margin at rest 6901 MiB)
+worker  pi4 listening on 192.168.10.12:50052 (pid 30878)
+server  starting on laptop (pid 209883); loading streams the model from the SD card to the workers
+READY   2026-10-24T14:26:40+07:00: http://192.168.1.108:8080/ (web chat) -- health {"status":"ok"}
+0.00.156.169 I load_tensors:          CPU model buffer size =    35.33 MiB
+0.00.156.170 I load_tensors:   CPU_REPACK model buffer size =   259.88 MiB
+0.00.156.170 I load_tensors: RPC0[192.168.10.12:50052] model buffer size =   311.32 MiB
+0.03.625.540 I llama_context: n_ctx                 = 2048
+0.03.625.544 I llama_context: flash_attn            = auto
+0.03.625.750 I llama_kv_cache:        CPU KV buffer size =    22.00 MiB
+0.03.636.952 I llama_kv_cache: RPC0[192.168.10.12:50052] KV buffer size =    22.00 MiB
+0.03.637.073 I llama_kv_cache: size =   44.00 MiB (  2048 cells,  22 layers,  1/1 seqs), K (f16):   22.00 MiB, V (f16):   22.00 MiB
+0.03.664.702 I sched_reserve: RPC0[192.168.10.12:50052] compute buffer size =    43.01 MiB
+0.03.664.707 I sched_reserve:        CPU compute buffer size =    51.01 MiB
+0.03.925.678 I slot   load_model: id  0 | task -1 | new slot, n_ctx = 2048
+split   pi4: llama.cpp 311.32 MiB, planned 311.3 MiB (head on pi4)
+mem     laptop: MemAvailable 27302 MiB at READY, 27634 at the gate: the serve holds 332 MiB, charged 667 MiB
+mem     pi4: MemAvailable 7028 MiB at READY, 7382 at the gate: the serve holds 354 MiB, charged 492 MiB
+L rep 1 n 16: {'bytes_acked': 954420, 'bytes_received': 2048128, 'data_segs_out': 771, 'data_segs_in': 1440}; decode 110.28 ms/token
+L rep 1 n 144: {'bytes_acked': 3444276, 'bytes_received': 18433152, 'data_segs_out': 3413, 'data_segs_in': 12960}; decode 111.90 ms/token
+L rep 2 n 16: {'bytes_acked': 954420, 'bytes_received': 2048128, 'data_segs_out': 747, 'data_segs_in': 1440}; decode 107.80 ms/token
+L rep 2 n 144: {'bytes_acked': 3444276, 'bytes_received': 18433152, 'data_segs_out': 2963, 'data_segs_in': 12960}; decode 109.51 ms/token
+L rep 3 n 16: {'bytes_acked': 954420, 'bytes_received': 2048128, 'data_segs_out': 714, 'data_segs_in': 1440}; decode 107.22 ms/token
+L rep 3 n 144: {'bytes_acked': 3444276, 'bytes_received': 18433152, 'data_segs_out': 2982, 'data_segs_in': 12960}; decode 109.63 ms/token
+stop    llama-server on laptop stopped
+stop    worker on pi4 stopped
+########## 2026-10-24T14:27:44+07:00 serve tinyllama_q4_0, ctx 2048, clocks locked, boards laptop pi4, planned against testbed/dataset/memory_snapshot_20261024_142448.json: laptop 11 + pi4 11, head on pi4; predicted decode 109.0 ms/token (9.17 tok/s)
+hosts   laptop: fixed: laptop 11 + pi4 11, head last
+llama-server -m ~/models/tinyllama-1.1b-q4_0.gguf --rpc 192.168.10.12:50052 -ngl 12  --backend-sampling -c 2048 -np 1 -t 4 -lv 4 -lm none --cache-ram 0 --host 192.168.1.108 --port 8080   pin b23701f77d47dad9de834d59ebfcbe25c9e8b46f
+gate    laptop: MemAvailable 27610 MiB, the plan needs 8859 MiB with its reserve (margin at rest 18763 MiB)
+gate    pi4: MemAvailable 7362 MiB, the plan needs 492 MiB with its reserve (margin at rest 6901 MiB)
+worker  pi4 listening on 192.168.10.12:50052 (pid 31043)
+server  starting on laptop (pid 210902); loading streams the model from the SD card to the workers
+READY   2026-10-24T14:27:51+07:00: http://192.168.1.108:8080/ (web chat) -- health {"status":"ok"}
+0.00.175.102 I load_tensors:          CPU model buffer size =    35.33 MiB
+0.00.175.103 I load_tensors:   CPU_REPACK model buffer size =   259.88 MiB
+0.00.175.104 I load_tensors: RPC0[192.168.10.12:50052] model buffer size =   311.32 MiB
+0.03.602.120 I llama_context: n_ctx                 = 2048
+0.03.602.122 I llama_context: flash_attn            = auto
+0.03.602.237 I llama_kv_cache:        CPU KV buffer size =    22.00 MiB
+0.03.616.753 I llama_kv_cache: RPC0[192.168.10.12:50052] KV buffer size =    22.00 MiB
+0.03.616.914 I llama_kv_cache: size =   44.00 MiB (  2048 cells,  22 layers,  1/1 seqs), K (f16):   22.00 MiB, V (f16):   22.00 MiB
+0.03.652.737 I sched_reserve: RPC0[192.168.10.12:50052] compute buffer size =    43.01 MiB
+0.03.652.740 I sched_reserve:        CPU compute buffer size =    51.01 MiB
+0.03.932.348 I slot   load_model: id  0 | task -1 | new slot, n_ctx = 2048
+split   pi4: llama.cpp 311.32 MiB, planned 311.3 MiB (head on pi4)
+mem     laptop: MemAvailable 27134 MiB at READY, 27610 at the gate: the serve holds 476 MiB, charged 667 MiB
+mem     pi4: MemAvailable 6994 MiB at READY, 7362 at the gate: the serve holds 368 MiB, charged 492 MiB
+LB rep 1 n 16: {'bytes_acked': 1021579, 'bytes_received': 808, 'data_segs_out': 1014, 'data_segs_in': 132}; decode 107.26 ms/token
+LB rep 1 n 144: {'bytes_acked': 3756811, 'bytes_received': 6952, 'data_segs_out': 5478, 'data_segs_in': 1156}; decode 108.43 ms/token
+LB rep 2 n 16: {'bytes_acked': 1021579, 'bytes_received': 808, 'data_segs_out': 1031, 'data_segs_in': 132}; decode 106.64 ms/token
+LB rep 2 n 144: {'bytes_acked': 3756811, 'bytes_received': 6952, 'data_segs_out': 5412, 'data_segs_in': 1156}; decode 108.66 ms/token
+LB rep 3 n 16: {'bytes_acked': 1021579, 'bytes_received': 808, 'data_segs_out': 1055, 'data_segs_in': 132}; decode 106.59 ms/token
+LB rep 3 n 144: {'bytes_acked': 3756811, 'bytes_received': 6952, 'data_segs_out': 5403, 'data_segs_in': 1156}; decode 108.55 ms/token
+stop    llama-server on laptop stopped
+stop    worker on pi4 stopped
+RUN DONE 2026-10-24T14:28:53+07:00

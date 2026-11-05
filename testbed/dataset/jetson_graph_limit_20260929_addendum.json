@@ -1,0 +1,30 @@
+{
+ "registered": "2026-09-29T19:18:34+07:00",
+ "addendum_to": {
+  "file": "testbed/dataset/jetson_graph_limit_20260929.json",
+  "sha256": "9478f2fe9e3204a68f09737f7750ccbc773a9d74fc7f7c3807e58a4663e22d20"
+ },
+ "scored_so_far": {
+  "m1_9b_k17": "ran (min MemAvailable 1,223 MiB, GPU model buffer 2,214.6 MiB)",
+  "m2_27b_k16_hog": "ran (min MemAvailable 501 MiB, GPU model buffer 2,759.2 MiB; the filler ran outside the script, which is unchanged, sha 04a139d4...)",
+  "verdict_by_the_registered_rule": "neither GRAPH nor MEMORY alone",
+  "caveat": "m2's minimum landed 4 MiB above the crash's 497, so it cannot exclude a MemAvailable edge at 497-501 MiB"
+ },
+ "hypotheses": {
+  "MEMAVAIL_EDGE": "the driver fails (SIGSEGV in vkAllocateDescriptorSets) when MemAvailable falls below a level between 400 and 501 MiB",
+  "GPU_CAP": "the driver fails once the worker's GPU (nvmap) allocations pass a cap between 2,845 MiB (the MoE's 10 Jetson blocks, which ran, 2026-09-28) and 2,922 MiB (the 27B's 17 blocks, SIGSEGV x4); the MoE's 11 blocks (~3,130 MiB) failed with ErrorOutOfDeviceMemory"
+ },
+ "cells": {
+  "g1_27b_k16_hog260": {
+   "what": "m2 with a 260 MiB filler instead of 160: the passing 16-block graph, GPU buffer 2,759.2 MiB, MemAvailable pushed to ~400 MiB (below every crash)",
+   "args": "NGL=56 TS=15.5/40.5 WORKERS='jetson t580' P=16 N=4, filler 260 MiB on the Jetson",
+   "MEMAVAIL_EDGE_predicts": "fails",
+   "GPU_CAP_predicts": "runs"
+  }
+ },
+ "rule": "GPU_CAP is supported if g1 runs with its minimum MemAvailable below 460 MiB; MEMAVAIL_EDGE if g1 fails. If g1's minimum stays at 460 MiB or above, the cell does not decide and is reported as found. The fix follows: GPU_CAP -> cap the Jetson Vulkan worker's GPU buffers at the largest share that ran (2,845 MiB) for every architecture; MEMAVAIL_EDGE -> raise its reserve to 510 MiB.",
+ "instrument_sha256": {
+  "testbed/scripts/jetson_rpc_memdiag.sh": "04a139d454950b1371e374d147d0245203fc5aee7487bf29a463745d782e6b93",
+  "testbed/scripts/memprobe_tegra.sh": "f94b5a95f9e0f300961bf9cd3d9ab69df468b9c93216313cbbba44dc278b82f3"
+ }
+}

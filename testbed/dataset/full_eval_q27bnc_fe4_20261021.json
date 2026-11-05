@@ -1,0 +1,279 @@
+{
+ "registered": "2026-10-21T17:07:32+07:00",
+ "name": "q27bnc_fe4_20261021",
+ "model": "qwen38_27b",
+ "nodes": [
+  "pi5",
+  "pi4",
+  "jetson",
+  "laptop"
+ ],
+ "ctx": 4096,
+ "rounds": 5,
+ "reqs": 2,
+ "n": 128,
+ "gen": 64,
+ "rtt_trips": 1,
+ "warm_n": 64,
+ "warm_gen": 8,
+ "load_mode": "none",
+ "note": "Registration b of Qwen3.8-27B in the four-node full evaluation (2026-10-21), the placements of full_eval_q27b_fe4_20261020.json unchanged; the only change is llama-server's prompt cache OFF (serve_pool.sh --cache-ram 0, the user's decision 2026-10-21). Why: run 1 (20261021_035044) lost boards and default to a split check that counted the unloaded MTP block (fixed); run 2 (20261021_141403) got no tokens on every second request of boards (the Pi 5 host at 671 MiB free saving 162 MiB of prompt state) and was OOM-killed in round 5. Runs 1 and 2 stay as measured. Outlets at run: pi4=0, jetson=1, pi5=2, laptop=3 (the laptop's outlet includes its USB-C hub).",
+ "order": [
+  [
+   "engine",
+   "boards",
+   "default"
+  ],
+  [
+   "boards",
+   "default",
+   "engine"
+  ],
+  [
+   "default",
+   "engine",
+   "boards"
+  ],
+  [
+   "engine",
+   "boards",
+   "default"
+  ],
+  [
+   "boards",
+   "default",
+   "engine"
+  ]
+ ],
+ "configs": {
+  "engine": {
+   "assign": [
+    [
+     "laptop",
+     65
+    ]
+   ],
+   "head": "last",
+   "host": "laptop",
+   "place_env": null,
+   "predicted": {
+    "decode_ms": 766.4,
+    "prefill_ms": 475.3,
+    "decode_gross_j_plan_boards": 24.6183,
+    "decode_gross_j_all_boards": 31.1695
+   },
+   "predicted_rtt_alt": {
+    "rtt_trips": 2,
+    "decode_ms": 766.4,
+    "prefill_ms": 475.3
+   },
+   "memory": {
+    "laptop": {
+     "blocks": 65,
+     "need_mib": 14163,
+     "reserve_mib": 8192,
+     "available_mib": 27785,
+     "margin_mib": 5430
+    }
+   },
+   "considered": [
+    [
+     "laptop",
+     "laptop 65: decode 766.4 ms, prefill 475.3 ms"
+    ],
+    [
+     "pi5",
+     "pi5 1 + laptop 64: decode 803.7 ms, prefill 506.3 ms"
+    ]
+   ]
+  },
+  "boards": {
+   "assign": [
+    [
+     "pi5",
+     28
+    ],
+    [
+     "jetson",
+     15
+    ],
+    [
+     "pi4",
+     22
+    ]
+   ],
+   "head": "host",
+   "host": "pi5",
+   "place_env": "pi5:28,jetson:15,pi4:22",
+   "predicted": {
+    "decode_ms": 2266.5,
+    "prefill_ms": 1174.5,
+    "decode_gross_j_plan_boards": 32.3919,
+    "decode_gross_j_all_boards": 64.2473
+   },
+   "predicted_rtt_alt": {
+    "rtt_trips": 2,
+    "decode_ms": 2268.4,
+    "prefill_ms": 1174.5
+   },
+   "memory": {
+    "pi5": {
+     "blocks": 28,
+     "need_mib": 7238,
+     "reserve_mib": 0,
+     "available_mib": 7619,
+     "margin_mib": 381
+    },
+    "jetson": {
+     "blocks": 15,
+     "need_mib": 2788,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 307,
+     "weights_mib": 2445.4,
+     "weights_cap_mib": 2845,
+     "weights_margin_mib": 400
+    },
+    "pi4": {
+     "blocks": 22,
+     "need_mib": 4327,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 3086
+    }
+   },
+   "considered": [
+    [
+     "pi5",
+     "fixed: pi5 28 + jetson 15 + pi4 22, head host"
+    ]
+   ]
+  },
+  "default": {
+   "assign": [
+    [
+     "laptop",
+     41
+    ],
+    [
+     "pi5",
+     11
+    ],
+    [
+     "pi4",
+     10
+    ],
+    [
+     "jetson",
+     3
+    ]
+   ],
+   "head": "last",
+   "host": "laptop",
+   "place_env": "laptop:41,pi5:11,pi4:10,jetson:3",
+   "predicted": {
+    "decode_ms": 1468.8,
+    "prefill_ms": 823.1,
+    "decode_gross_j_plan_boards": 47.2052,
+    "decode_gross_j_all_boards": 47.2052
+   },
+   "predicted_rtt_alt": {
+    "rtt_trips": 2,
+    "decode_ms": 1471.7,
+    "prefill_ms": 823.2
+   },
+   "memory": {
+    "laptop": {
+     "blocks": 41,
+     "need_mib": 8803,
+     "reserve_mib": 8192,
+     "available_mib": 27785,
+     "margin_mib": 10790
+    },
+    "pi5": {
+     "blocks": 11,
+     "need_mib": 2185,
+     "reserve_mib": 0,
+     "available_mib": 7619,
+     "margin_mib": 5434
+    },
+    "pi4": {
+     "blocks": 10,
+     "need_mib": 2006,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 5407
+    },
+    "jetson": {
+     "blocks": 3,
+     "need_mib": 2396,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 699,
+     "weights_mib": 1470.6,
+     "weights_cap_mib": 2845,
+     "weights_margin_mib": 1374
+    }
+   },
+   "considered": [
+    [
+     "laptop",
+     "fixed: laptop 41 + pi5 11 + pi4 10 + jetson 3, head last"
+    ]
+   ]
+  }
+ },
+ "power_table": {
+  "pi5": {
+   "idle": 3.0183277591973243,
+   "pp": 11.28765331186967,
+   "tg": 9.696049271076996,
+   "source": "testbed/dataset/energy_results_20261020_pi5fw_q4km.json",
+   "sha256": "44eed747b5cd19c0"
+  },
+  "pi4": {
+   "idle": 2.390896921017403,
+   "pp": 7.462781757353395,
+   "tg": 6.3219096642345205,
+   "source": "testbed/dataset/energy_results_20261005_pi4_q4km.json",
+   "sha256": "9c946768787cc0e7"
+  },
+  "jetson": {
+   "idle": 3.1383277591973244,
+   "pp": 8.893831082803821,
+   "tg": 11.173527822798489,
+   "source": "testbed/dataset/energy_results_20261005_jetson_vk_q4km.json",
+   "sha256": "102bfb16db360832"
+  },
+  "laptop": {
+   "idle": 14.054983277591974,
+   "pp": 29.33976692499638,
+   "tg": 32.12029854570033,
+   "source": "testbed/dataset/energy_results_20261006_laptop_q4km.json",
+   "sha256": "26856942a7d72a74"
+  }
+ },
+ "inputs_sha256": {
+  "full_eval.py": "95fb38932cb3de9b51dfb2638dd435dfffc28733ed666aae9f8c4607e6dbdce6",
+  "serve_pool.sh": "647f03b3eefa90cf562d23d1dedb04be729abe83283646c1dfe51cea8b221354",
+  "predict_pool.py": "f6e636e42b2b1978e71c1c5d592caf9812c580c94afe8635bfbe56d8fd385ff5",
+  "energy_model.py": "10bf9f5771f693845872a45c12b154395005af8064fccdcffcac5d4563223d63",
+  "qr3_tpot.py": "fa454fbce8fd89cc9c549434efd096c91dea603a2923fadc034a2febb5512c97",
+  "shelly_strip.py": "b7aaa7ceb2f1e94aa3f1f46100c06ca9d6c0c3fa8764a6372239747ffc0fe5a8",
+  "laptop_poll.sh": "4ee7e6220edc1da39d24e2ed602827674ecfe2c429b0d12e4e4d1ba47766b9ae"
+ },
+ "hypotheses": [
+  {
+   "id": "FE-TPOT",
+   "claim": "the placement with the lowest predicted decode has the lowest server TPOT P50 and P95, its 95 % CI clear of every other placement's"
+  },
+  {
+   "id": "FE-ENERGY",
+   "claim": "the placement with the lowest predicted gross J/token (every pool board powered) measures the lowest"
+  },
+  {
+   "id": "FE-ACC",
+   "claim": "every placement's measured mean server TPOT within 10 % of its predicted decode ms"
+  }
+ ]
+}

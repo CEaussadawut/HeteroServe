@@ -1,0 +1,159 @@
+{
+ "made": "2026-11-01T05:56:29+07:00",
+ "why": "the scheduler review's item 3 (testbed/JOURNAL.md, 2026-11-01): the planner charged a hybrid's every block a full-attention KV cache",
+ "rule": "a block i < n_layer is full-attention when (i + 1) % full_attention_interval == 0 and then holds kv_bytes_per_layer_per_token x context; every other block below n_layer holds rs_bytes_per_layer whatever the context; the MTP block (nextn) holds neither",
+ "shapes": {
+  "qwen3.8-27b-q3_k_m": {
+   "architecture": "qwen35",
+   "full_attention_interval": 4,
+   "rs_bytes_per_layer": 3268608,
+   "n_embd_r": 30720,
+   "n_embd_s": 786432,
+   "gguf": {
+    "ssm.conv_kernel": 4,
+    "ssm.inner_size": 6144,
+    "ssm.group_count": 16,
+    "ssm.state_size": 128,
+    "ssm.time_step_rank": 48,
+    "block_count": 65,
+    "nextn_predict_layers": 1,
+    "attention.head_count_kv": 4,
+    "attention.key_length": 256,
+    "attention.value_length": 256
+   },
+   "from": "~/models/qwen3.8-27b-q3_k_m.gguf (on pi4) (the laptop copy Qwen3.8-27B-Q3_K_M.gguf (bartowski/Qwen3.8-27B-GGUF @ 0c92138c51f112d2f0dc84d5f6d1ebe4b9912b9a), sha256-)"
+  },
+  "qwen3.5-9b-q4_k_m": {
+   "architecture": "qwen35",
+   "full_attention_interval": 4,
+   "rs_bytes_per_layer": 2195456,
+   "n_embd_r": 24576,
+   "n_embd_s": 524288,
+   "gguf": {
+    "ssm.conv_kernel": 4,
+    "ssm.inner_size": 4096,
+    "ssm.group_count": 16,
+    "ssm.state_size": 128,
+    "ssm.time_step_rank": 32,
+    "block_count": 33,
+    "nextn_predict_layers": 1,
+    "attention.head_count_kv": 4,
+    "attention.key_length": 256,
+    "attention.value_length": 256
+   },
+   "from": "~/models/qwen3.5-9b-q4_k_m.gguf (the laptop copy Qwen_Qwen3.5-9B-Q4_K_M.gguf (bartowski/Qwen_Qwen3.5-9B-GGUF @ 182be2fd6c7bc44887d88a91cb03ff009cc9f549),)"
+  },
+  "qwen3.6-35b-a3b-q6_k": {
+   "architecture": "qwen35moe",
+   "full_attention_interval": 4,
+   "rs_bytes_per_layer": 2195456,
+   "n_embd_r": 24576,
+   "n_embd_s": 524288,
+   "gguf": {
+    "ssm.conv_kernel": 4,
+    "ssm.inner_size": 4096,
+    "ssm.group_count": 16,
+    "ssm.state_size": 128,
+    "ssm.time_step_rank": 32,
+    "block_count": 41,
+    "nextn_predict_layers": 1,
+    "attention.head_count_kv": 2,
+    "attention.key_length": 256,
+    "attention.value_length": 256
+   },
+   "from": "~/models/qwen3.6-35b-a3b-q6_k.gguf (on the laptop) (the laptop copy Qwen_Qwen3.6-35B-A3B-Q6_K.gguf, sha256 a97ef79439194d8e..., verified against the Hugging Face LFS oid at)"
+  }
+ },
+ "check_35b": {
+  "serve_log": "testbed/results/serve_qwen36moe_q6k_20261028_043905.log",
+  "server_log": "testbed/results/hybrid_shapes_20261101/llama-server_serve_20261028_043905.log",
+  "server_log_sha256": "ced701059620b0a9745ad085488808ab6a3e54e56a59523d70acdd2ccb84ee9c",
+  "plan": [
+   [
+    "laptop",
+    25
+   ],
+   [
+    "jetson",
+    3
+   ],
+   [
+    "pi4",
+    4
+   ],
+   [
+    "pi5",
+    9
+   ]
+  ],
+  "kv_total": {
+   "mib": 80.0,
+   "cells": 4096,
+   "layers": 10
+  },
+  "rs_total": {
+   "mib": 62.81,
+   "cells": 1,
+   "layers": 40
+  },
+  "devices": [
+   {
+    "device": "laptop",
+    "blocks": 25,
+    "kv_mib": {
+     "logged": 48.0,
+     "rule": 48.0
+    },
+    "rs_mib": {
+     "logged": 39.78,
+     "rule": 39.781
+    }
+   },
+   {
+    "device": "jetson",
+    "blocks": 3,
+    "kv_mib": {
+     "logged": 8.0,
+     "rule": 8.0
+    },
+    "rs_mib": {
+     "logged": 4.19,
+     "rule": 4.188
+    }
+   },
+   {
+    "device": "pi4",
+    "blocks": 4,
+    "kv_mib": {
+     "logged": 8.0,
+     "rule": 8.0
+    },
+    "rs_mib": {
+     "logged": 6.28,
+     "rule": 6.281
+    }
+   },
+   {
+    "device": "pi5",
+    "blocks": 9,
+    "kv_mib": {
+     "logged": 16.0,
+     "rule": 16.0
+    },
+    "rs_mib": {
+     "logged": 12.56,
+     "rule": 12.562
+    }
+   }
+  ],
+  "worst_abs_mib": 0.003,
+  "holds": true,
+  "note": "llama.cpp prints two decimals: 0.005 MiB is its rounding"
+ },
+ "inputs_sha256": {
+  "model_shapes.json": "c3400b14d42e61f363f2df6e68974a12847d5cb6bd7c785f9b4ace8e3b6f5478",
+  "testbed/results/serve_qwen36moe_q6k_20261028_043905.log": "b38bd5519d8891b328d52a3ac9dd1e0f2d9ef37f059417f8a97e182e1b3bbc90",
+  "testbed/results/hybrid_shapes_20261101/llama-server_serve_20261028_043905.log": "ced701059620b0a9745ad085488808ab6a3e54e56a59523d70acdd2ccb84ee9c",
+  "hybrid_shapes_20261101.py": "03b5b80d7795cd8b103423d67c16cd5bfa260841b63fd12f1a0ab057d050b72d"
+ }
+}

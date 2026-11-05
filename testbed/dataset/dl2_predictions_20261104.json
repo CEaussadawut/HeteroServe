@@ -1,0 +1,328 @@
+{
+ "registered_at": "2026-11-04T04:53:26+07:00",
+ "script": "testbed/scripts/register_dl2_20261104.py",
+ "runner": "testbed/scripts/lc4_20261024.py",
+ "out_prefix": "dl2",
+ "what": "four depth laws for the laptop (V5, the per-shape table FA, HD, KV3) on three models never benched for depth",
+ "follows": "dl1 (testbed/dataset/dl1_predictions_20261103.json: V5 20-28 % high on the 30B MoE's slope)",
+ "cold_c": {
+  "pi5": 50,
+  "pi4": 55
+ },
+ "table": "testbed/dataset/attention_cpu_20261104.json",
+ "v5": "testbed/dataset/attention_cost_20261103.json",
+ "n_kv_rule": "256 x ceil((d + 32) / 256)",
+ "checks_before_registering": {
+  "tinyllama (lc4charb lap)": {
+   "depths": [
+    0,
+    2048,
+    4096,
+    8192
+   ],
+   "measured_slope": 25.29,
+   "table_slope": 24.54,
+   "v5_slope": 25.3,
+   "table_err_pct": 3.1,
+   "v5_err_pct": -0.1
+  },
+  "qwen3-30b-a3b (dl1 A)": {
+   "depths": [
+    0,
+    1024,
+    2048
+   ],
+   "measured_slope": 42.16,
+   "table_slope": 51.6,
+   "v5_slope": 58.13,
+   "table_err_pct": -18.3,
+   "v5_err_pct": -27.5
+  },
+  "qwen3-14b (dl1 C)": {
+   "depths": [
+    0,
+    512,
+    1024
+   ],
+   "measured_slope": 51.05,
+   "table_slope": 59.09,
+   "v5_slope": 51.89,
+   "table_err_pct": -13.6,
+   "v5_err_pct": -1.6
+  }
+ },
+ "fits": {
+  "HD": {
+   "c0": 78.051,
+   "from": [
+    "tinyllama (lc4charb lap)",
+    "qwen3-30b-a3b (dl1 A)"
+   ]
+  },
+  "KV3": {
+   "c0": 35.1147,
+   "c1": 0.02004,
+   "c2": 3.44721,
+   "from": [
+    "tinyllama (lc4charb lap)",
+    "qwen3-30b-a3b (dl1 A)",
+    "qwen3-14b (dl1 C)"
+   ],
+   "units": "per layer per token of depth, in V5's ns-per-query-head-dimension units"
+  }
+ },
+ "benches": {
+  "D06": {
+   "host": "laptop",
+   "model": "qwen3-0.6b",
+   "model_path": "~/.cache/heteroserve-models/Qwen3-0.6B-Q8_0.gguf",
+   "model_sha256": "9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031",
+   "args": "-ngl 0 -t 4 -p 0 -n 32 -d 0,1024,2048,4096 -r 3",
+   "assign": [
+    [
+     "laptop",
+     28
+    ]
+   ],
+   "head_at": null,
+   "servers": [],
+   "shape": {
+    "head_dim": 128,
+    "n_head": 16,
+    "n_head_kv": 8,
+    "attention_layers": 28,
+    "blocks": 28
+   },
+   "predicted": {
+    "slope_ms_per_1k": 29.111,
+    "law": "FA",
+    "depth_cost_ms_by_depth": {
+     "0": 0.0,
+     "1024": 22.829,
+     "2048": 54.784,
+     "4096": 117.45
+    }
+   },
+   "predicted_v5": {
+    "depth_cost_ms_by_depth": {
+     "0": 0.0,
+     "1024": 14.879,
+     "2048": 34.726,
+     "4096": 89.324
+    },
+    "slope_ms_per_1k": 22.154
+   },
+   "laws_slope_ms_per_1k": {
+    "V5": 22.154,
+    "FA": 29.111,
+    "HD": 16.068,
+    "KV3": 44.707
+   }
+  },
+  "D4": {
+   "host": "laptop",
+   "model": "qwen3-4b",
+   "model_path": "~/.cache/heteroserve-models/Qwen3-4B-Q4_K_M.gguf",
+   "model_sha256": "7485fe6f11af29433bc51cab58009521f205840f5b4ae3a32fa7f92e8534fdf5",
+   "args": "-ngl 0 -t 4 -p 0 -n 32 -d 0,1024,2048,4096 -r 3",
+   "assign": [
+    [
+     "laptop",
+     36
+    ]
+   ],
+   "head_at": null,
+   "servers": [],
+   "shape": {
+    "head_dim": 128,
+    "n_head": 32,
+    "n_head_kv": 8,
+    "attention_layers": 36,
+    "blocks": 36
+   },
+   "predicted": {
+    "slope_ms_per_1k": 75.159,
+    "law": "FA",
+    "depth_cost_ms_by_depth": {
+     "0": 0.0,
+     "1024": 49.056,
+     "2048": 123.324,
+     "4096": 301.951
+    }
+   },
+   "predicted_v5": {
+    "depth_cost_ms_by_depth": {
+     "0": 0.0,
+     "1024": 38.26,
+     "2048": 89.295,
+     "4096": 229.69
+    },
+    "slope_ms_per_1k": 56.968
+   },
+   "laws_slope_ms_per_1k": {
+    "V5": 56.968,
+    "FA": 75.159,
+    "HD": 41.317,
+    "KV3": 65.865
+   }
+  },
+  "D9": {
+   "host": "laptop",
+   "model": "qwen35_9b",
+   "model_path": "~/models/qwen3.5-9b-q4_k_m.gguf",
+   "model_sha256": "d784ce9eda1a5a7b51e8f705a9e6310844bf4f173654d115823c775fdea56d43",
+   "args": "-ngl 0 -t 4 -p 0 -n 32 -d 0,1024,2048,4096 -r 3",
+   "assign": [
+    [
+     "laptop",
+     32
+    ]
+   ],
+   "head_at": null,
+   "servers": [],
+   "shape": {
+    "head_dim": 256,
+    "n_head": 16,
+    "n_head_kv": 4,
+    "attention_layers": 8,
+    "blocks": 32
+   },
+   "predicted": {
+    "slope_ms_per_1k": 12.089,
+    "law": "FA",
+    "depth_cost_ms_by_depth": {
+     "0": 0.0,
+     "1024": 9.774,
+     "2048": 25.472,
+     "4096": 48.57
+    }
+   },
+   "predicted_v5": {
+    "depth_cost_ms_by_depth": {
+     "0": 0.0,
+     "1024": 8.502,
+     "2048": 19.843,
+     "4096": 51.042
+    },
+    "slope_ms_per_1k": 12.659
+   },
+   "laws_slope_ms_per_1k": {
+    "V5": 12.659,
+    "FA": 12.089,
+    "HD": 7.443,
+    "KV3": 12.9
+   }
+  }
+ },
+ "order": [
+  [
+   "D06"
+  ],
+  [
+   "D4"
+  ],
+  [
+   "D9"
+  ]
+ ],
+ "hypotheses": {
+  "DL2-V5-D06": {
+   "type": "slope_near",
+   "label": "D06",
+   "value": 22.154,
+   "tol": 0.1,
+   "claim": "D06's slope within 10 % of law V5's 22.15 ms per 1,000 tokens"
+  },
+  "DL2-FA-D06": {
+   "type": "slope_near",
+   "label": "D06",
+   "value": 29.111,
+   "tol": 0.1,
+   "claim": "D06's slope within 10 % of law FA's 29.11 ms per 1,000 tokens"
+  },
+  "DL2-HD-D06": {
+   "type": "slope_near",
+   "label": "D06",
+   "value": 16.068,
+   "tol": 0.1,
+   "claim": "D06's slope within 10 % of law HD's 16.07 ms per 1,000 tokens"
+  },
+  "DL2-KV3-D06": {
+   "type": "slope_near",
+   "label": "D06",
+   "value": 44.707,
+   "tol": 0.1,
+   "claim": "D06's slope within 10 % of law KV3's 44.71 ms per 1,000 tokens"
+  },
+  "DL2-V5-D4": {
+   "type": "slope_near",
+   "label": "D4",
+   "value": 56.968,
+   "tol": 0.1,
+   "claim": "D4's slope within 10 % of law V5's 56.97 ms per 1,000 tokens"
+  },
+  "DL2-FA-D4": {
+   "type": "slope_near",
+   "label": "D4",
+   "value": 75.159,
+   "tol": 0.1,
+   "claim": "D4's slope within 10 % of law FA's 75.16 ms per 1,000 tokens"
+  },
+  "DL2-HD-D4": {
+   "type": "slope_near",
+   "label": "D4",
+   "value": 41.317,
+   "tol": 0.1,
+   "claim": "D4's slope within 10 % of law HD's 41.32 ms per 1,000 tokens"
+  },
+  "DL2-KV3-D4": {
+   "type": "slope_near",
+   "label": "D4",
+   "value": 65.865,
+   "tol": 0.1,
+   "claim": "D4's slope within 10 % of law KV3's 65.86 ms per 1,000 tokens"
+  },
+  "DL2-V5-D9": {
+   "type": "slope_near",
+   "label": "D9",
+   "value": 12.659,
+   "tol": 0.1,
+   "claim": "D9's slope within 10 % of law V5's 12.66 ms per 1,000 tokens"
+  },
+  "DL2-FA-D9": {
+   "type": "slope_near",
+   "label": "D9",
+   "value": 12.089,
+   "tol": 0.1,
+   "claim": "D9's slope within 10 % of law FA's 12.09 ms per 1,000 tokens"
+  },
+  "DL2-HD-D9": {
+   "type": "slope_near",
+   "label": "D9",
+   "value": 7.443,
+   "tol": 0.1,
+   "claim": "D9's slope within 10 % of law HD's 7.44 ms per 1,000 tokens"
+  },
+  "DL2-KV3-D9": {
+   "type": "slope_near",
+   "label": "D9",
+   "value": 12.9,
+   "tol": 0.1,
+   "claim": "D9's slope within 10 % of law KV3's 12.90 ms per 1,000 tokens"
+  }
+ },
+ "conditions": "Zen may stay open (QUIET_ALLOW_APPS=zen, the owner, 4 Nov); aunsync.timer runs (every 16 min, ~20 s)",
+ "inputs_sha256": {
+  "testbed/scripts/lc4_20261024.py": "a2ceb730223844ad68bf3e47b15c870a79d46cb228a74518e0d931e29cee746f",
+  "testbed/scripts/register_dl2_20261104.py": "83ca201e302c530cb7b5459ee1dded2234c818a9a93ba22e1fd92e894bf3f858",
+  "testbed/scripts/dl2_fa_cpu_20261104.py": "fce45de0c68587294e9817862b1fc8fd62c86cc96648877f831e620d052d2a56",
+  "testbed/scripts/fa_bench_cpu_20261104.cpp": "3aa37579c37371e04c1034a0a1d160098ccc4390d1c0391cd4f144119f4f62eb",
+  "testbed/dataset/attention_cpu_20261104.json": "9961f1f1eb19ff3a0d94013d6cf5cea9e27725744bb09c49916060f4de950773",
+  "testbed/dataset/attention_cost_20261103.json": "ce888319ef926899d32fdbaa10aad851cd3cadbc89f3236cca46b796dd5ac371",
+  "testbed/dataset/hybrid_shapes_20261101.json": "edde431a99d8a801d6c486b285b7d6340de12fdd1f90b50d162333f7dafd3352",
+  "testbed/dataset/model_shapes.json": "c3400b14d42e61f363f2df6e68974a12847d5cb6bd7c785f9b4ace8e3b6f5478",
+  "ThinkPad/config/cluster.json": "1f0a3529dd384647ab71a0a08e2c142226ccf2b80aa5160ffc91e5e2e9485943",
+  "testbed/scripts/throttle_poll.sh": "10a45258cafd9222932fe043b40eee767984412a97d5a6d69002fa60d6e48aa1",
+  "testbed/scripts/jetson_power_guard.sh": "6dafb56fef33f2bc0e070b2552dcb871053d3c0681358bd27436552f905d90de"
+ }
+}

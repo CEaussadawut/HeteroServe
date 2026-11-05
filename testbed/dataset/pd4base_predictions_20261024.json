@@ -1,0 +1,64 @@
+{
+ "name": "pd4base",
+ "registered_at": "2026-10-24T18:35:05+07:00",
+ "script": "testbed/scripts/register_pd4_20261024.py",
+ "runner": "testbed/scripts/pd4_cross_20261024.py",
+ "what": "two users at once on today's boards (the replacement Pi 5 and the Pi 4), Qwen3.5-9B Q4_K_M, 128 tokens in and 32 out each, together: the Pi 5 alone (no-repack, repacked) against the prefill/decode hand-off, on gigabit",
+ "model": "qwen3.5-9b-q4_k_m (bartowski @ 182be2fd, testbed/models.md)",
+ "n": 128,
+ "gen": 32,
+ "reps": 3,
+ "arms_order": [
+  "shared_nr",
+  "handoff",
+  "shared"
+ ],
+ "conditions": "2026-10-24 evening: the replacement Pi 5 and the Pi 4 serve; the laptop only orchestrates and timestamps (it computes nothing); the overlay links unshaped except the arm's own transfer port; the strip logs all four outlets (observation only).",
+ "reference_20260929": {
+  "handoff": 55.06,
+  "shared_nr": 65.13,
+  "shared": 61.45,
+  "transfer_s": 0.51,
+  "source": "testbed/dataset/twouser_results_20260929.json (the original Pi 5)"
+ },
+ "hypotheses": {
+  "PD4-WIN": {
+   "type": "lower",
+   "a": "handoff",
+   "b": "shared_nr",
+   "claim": "the hand-off finishes the two users sooner on average than the Pi 5 alone without repacking"
+  },
+  "PD4-WIN-R": {
+   "type": "lower",
+   "a": "handoff",
+   "b": "shared",
+   "claim": "and sooner than the Pi 5 alone repacked"
+  },
+  "PD4-STATE": {
+   "type": "state",
+   "bytes": 56889668,
+   "claim": "the state is 56889668 bytes and the Pi 4 processes exactly 1 prompt token after the restore"
+  },
+  "PD4-XFER": {
+   "type": "xfer",
+   "tol": 0.25,
+   "predicted_s": {
+    "handoff": 0.51
+   },
+   "claim": "the transfer at gigabit within 25 % of 29 Sep's 0.51 s"
+  },
+  "PD4-STEADY": {
+   "type": "steady",
+   "tol": 0.03,
+   "claim": "each arm's three arm-runs within 3 %"
+  }
+ },
+ "inputs_sha256": {
+  "testbed/scripts/pd4_cross_20261024.py": "199d908524a1761a6d6670fb3bd333f78f98b1c1f41e2454807d9384c5b932e1",
+  "testbed/scripts/pd_twouser.py": "c5917952b45b37e9fa0efa610e93c78bf13f9f9913c34dbc68b3e9ba339ee22e",
+  "testbed/scripts/pd_handoff.py": "8eb365ac261ac0238fd19922f38ded8040c36c8212928e267dde2eb5ef3450a2",
+  "testbed/scripts/netshape.sh": "1b7ac69b554c6aa25cf03e8c9c09f8f9abe247326a1e95f1c4fae4839ab48332",
+  "testbed/scripts/shelly_strip.py": "b7aaa7ceb2f1e94aa3f1f46100c06ca9d6c0c3fa8764a6372239747ffc0fe5a8",
+  "testbed/scripts/register_pd4_20261024.py": "e115607e31d09f5b1d6fae913385ffa3f4f81f5055d78a15c86dc1e17c796810"
+ }
+}

@@ -1,0 +1,254 @@
+{
+ "registered": "2026-10-05T21:57:08+07:00",
+ "campaign": "pooled energy on the remaining boards (pi4+jetson, hosted on the pi4), after the Pi 5 was returned",
+ "inputs_sha256": {
+  "characterisation.csv": "ef94c22318ccb0ce9ab913a08174d110095d9d4e0cad65aeeb052304dbc13d6a",
+  "model_shapes.json": "c92bbc0278b030d5218d7740b3fac99f146b5bdeffe684404d94a012f7232c38",
+  "link.json": "e5084df7d3e62a47c7f93339ef4412c8e5f31db2d500ad5f189aafde95548ac5",
+  "memory_at_rest.json": "1ec5a19725d7c565b9b97449beb0130b179da895e2e93fdb5e36e9ea4f141589",
+  "cluster.json": "8824a3b4ea31dd5ac4e5e561584f837e1f469e52c06fcf95ed89c40d59125df5",
+  "predict_pool.py": "38f18893b923ec4a3edac856830750ffba19980b0db183c4d4d838fc18141a83",
+  "register_pool_energy.py": "74bb716d19ad2bd5bdf30901a79a263135c3515ffbeb8a7fc3107e2bc21715f8",
+  "energy_pool_run.py": "c894af1f8c3897f2e6179a3a7bc247c0b8f71ea6a422097e194236ed3d9b54da",
+  "score_energy_pool_run.py": "dcdaea0ff3d6cdc53cdbc4a6b534e9572d702fab2f0523cd9018a78a5decccd0",
+  "run_pool.sh": "2595ec5ae159a4f788aaa1d2da9bee8ea86113ca6b1d1d160a728d918ffc0c75",
+  "shelly_strip.py": "b7aaa7ceb2f1e94aa3f1f46100c06ca9d6c0c3fa8764a6372239747ffc0fe5a8",
+  "strip.json": "04efaf39d8fc06e47c514ee164836c18996cf985f0565fd8d6d535c4b2f6686c"
+ },
+ "engine_sha256": {
+  "placement.py": "23faab12f34288bdf5efd9cddba480cc1f628647da11302a417470f86208d8fb",
+  "gguf.py": "805ddefc0c9ef1fb1c010f052da0546d23a35d73343738c08345a339f7486330"
+ },
+ "rows": "char (the characterisation rows, as every pool registration before 2026-09-28 night); --size off",
+ "configs": {
+  "tinyllama.rule": {
+   "model": "tinyllama-1.1b-q4km",
+   "quant": "Q4_K_M",
+   "why": "rule on pi4+jetson, hosted on the pi4 (energy campaign)",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 1
+    },
+    {
+     "node": "jetson",
+     "blocks": 21
+    }
+   ],
+   "head_on": "jetson",
+   "bench": {
+    "host": "pi4",
+    "args": "-m ~/models/tinyllama-1.1b-q4km.gguf -rpc 192.168.100.111:50052 -ngl 22",
+    "protocol": "-t 4 -p 512 -n 128 -r 14 --progress -oe jsonl"
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 1,
+     "need_mib": 164,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 7249
+    },
+    "jetson": {
+     "blocks": 21,
+     "need_mib": 671,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 2424,
+     "weights_mib": 574.4,
+     "weights_cap_mib": 2845,
+     "weights_margin_mib": 2271
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 95.4,
+    "decode_tok_s": 10.485,
+    "prefill_ms_per_token": 16.9,
+    "prefill_tok_s": 59.04,
+    "timed_s": {
+     "pp": 121.4,
+     "tg": 170.9
+    }
+   },
+   "cost_sources": {
+    "pi4": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "jetson": {
+     "host": "vulkan row",
+     "worker": "vulkan row + smoke-test RPC cost"
+    }
+   },
+   "link_pairs": {
+    "jetson": "pi4-jetson"
+   },
+   "engine": {
+    "order": [
+     "pi4",
+     "jetson"
+    ],
+    "layers": {
+     "pi4": 1,
+     "jetson": 21
+    }
+   }
+  },
+  "tinyllama.even": {
+   "model": "tinyllama-1.1b-q4km",
+   "quant": "Q4_K_M",
+   "why": "even on pi4+jetson, hosted on the pi4 (energy campaign)",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 11
+    },
+    {
+     "node": "jetson",
+     "blocks": 11
+    }
+   ],
+   "head_on": "jetson",
+   "bench": {
+    "host": "pi4",
+    "args": "-m ~/models/tinyllama-1.1b-q4km.gguf -rpc 192.168.100.111:50052 -ngl 12",
+    "protocol": "-t 4 -p 512 -n 128 -r 8 --progress -oe jsonl"
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 11,
+     "need_mib": 416,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 6997
+    },
+    "jetson": {
+     "blocks": 11,
+     "need_mib": 419,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 2676,
+     "weights_mib": 323.2,
+     "weights_cap_mib": 2845,
+     "weights_margin_mib": 2522
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 131.4,
+    "decode_tok_s": 7.61,
+    "prefill_ms_per_token": 46.9,
+    "prefill_tok_s": 21.34,
+    "timed_s": {
+     "pp": 192.0,
+     "tg": 134.6
+    }
+   },
+   "cost_sources": {
+    "pi4": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "jetson": {
+     "host": "vulkan row",
+     "worker": "vulkan row + smoke-test RPC cost"
+    }
+   },
+   "link_pairs": {
+    "jetson": "pi4-jetson"
+   },
+   "engine": {
+    "order": [
+     "pi4",
+     "jetson"
+    ],
+    "layers": {
+     "pi4": 11,
+     "jetson": 11
+    }
+   }
+  },
+  "qwen3_14b.rule": {
+   "model": "qwen3-14b-q4_k_m",
+   "quant": "Q4_K_M",
+   "why": "rule on pi4+jetson, hosted on the pi4 (energy campaign)",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 31
+    },
+    {
+     "node": "jetson",
+     "blocks": 9
+    }
+   ],
+   "head_on": "jetson",
+   "bench": {
+    "host": "pi4",
+    "args": "-m ~/models/qwen3-14b-q4_k_m.gguf -rpc 192.168.100.111:50052 -ngl 10",
+    "protocol": "-t 4 -p 64 -n 16 -r 4 --progress -oe jsonl"
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 31,
+     "need_mib": 5942,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 1471
+    },
+    "jetson": {
+     "blocks": 9,
+     "need_mib": 3021,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 74,
+     "weights_mib": 2366.1,
+     "weights_cap_mib": 2845,
+     "weights_margin_mib": 479
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 2048.6,
+    "decode_tok_s": 0.488,
+    "prefill_ms_per_token": 884.8,
+    "prefill_tok_s": 1.13,
+    "timed_s": {
+     "pp": 226.5,
+     "tg": 131.1
+    }
+   },
+   "cost_sources": {
+    "pi4": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "jetson": {
+     "host": "vulkan row",
+     "worker": "vulkan row + smoke-test RPC cost"
+    }
+   },
+   "link_pairs": {
+    "jetson": "pi4-jetson"
+   },
+   "engine": {
+    "order": [
+     "pi4",
+     "jetson"
+    ],
+    "layers": {
+     "pi4": 31,
+     "jetson": 9
+    }
+   }
+  }
+ },
+ "energy_hypotheses": [
+  {
+   "model": "tinyllama",
+   "rule": "tinyllama.rule",
+   "even": "tinyllama.even",
+   "min_saving_pct": 25.0,
+   "claim": "the rule's pool net J/token is at least 25 % below the even split's, in prefill and in decode, by each method (QR5 stretch: 'find a placement reducing energy by at least 25%')"
+  }
+ ],
+ "scoring": "testbed/scripts/score_energy_pool_run.py: throughput against the engine's prediction (within 10 %); per phase, the pool's gross and net energy per token summed over its boards' outlets (the router reported apart, not charged); the across-run spread; the hypotheses above; PASS / FAIL / N/A, reported as found"
+}

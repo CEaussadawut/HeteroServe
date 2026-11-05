@@ -1,0 +1,110 @@
+########## 2026-09-20T15:47:21+07:00  TEST B: 14B Q4_K_M pooled over wired RPC
+pi5 avail MiB : 7528
+pi4 avail MiB : 7388
+commit (pi5)  : b23701f77d47dad9de834d59ebfcbe25c9e8b46f
+commit (pi4)  : b23701f77d47dad9de834d59ebfcbe25c9e8b46f
+
+--- starting RPC worker on the Pi 4, bound to the wired interface ---
+tail: cannot open '/home/aun/logs/rpc-server.log' for reading: No such file or directory
+
+--- devices as the main node sees them ---
+/home/pi5/llama.cpp/ggml/src/ggml-rpc/ggml-rpc.cpp:547: Failed to connect to 192.168.10.12:50052
+
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/aarch64-linux-gnu/libthread_db.so.1".
+0x00007ffef06428d8 in ?? () from /lib/aarch64-linux-gnu/libc.so.6
+#0  0x00007ffef06428d8 in ?? () from /lib/aarch64-linux-gnu/libc.so.6
+#1  0x00007ffef06428fc in ?? () from /lib/aarch64-linux-gnu/libc.so.6
+#2  0x00007ffef069ace4 in wait4 () from /lib/aarch64-linux-gnu/libc.so.6
+#3  0x00007ffeefd56c48 in ggml_print_backtrace () from /home/pi5/llama.cpp/build/bin/libggml-base.so.0
+#4  0x00007ffeefd56d90 in ggml_abort () from /home/pi5/llama.cpp/build/bin/libggml-base.so.0
+#5  0x00007ffeef3820a0 in rpc_dispatcher::start(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) () from /home/pi5/llama.cpp/build/bin/libggml-rpc.so.0
+#6  0x00007ffeef3885d8 in get_dispatcher(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) () from /home/pi5/llama.cpp/build/bin/libggml-rpc.so.0
+#7  0x00007ffeef389228 in ggml_backend_rpc_add_server () from /home/pi5/llama.cpp/build/bin/libggml-rpc.so.0
+#8  0x00007ffef0a67448 in register_rpc_server_list(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) () from /home/pi5/llama.cpp/build/bin/libllama-bench-impl.so
+#9  0x00007ffef0a7188c in parse_cmd_params(int, char**) () from /home/pi5/llama.cpp/build/bin/libllama-bench-impl.so
+
+##### ngl=24 of 48 layers on the remote worker, remainder on the Pi 5 CPU
+/home/pi5/llama.cpp/ggml/src/ggml-rpc/ggml-rpc.cpp:547: Failed to connect to 192.168.10.12:50052
+
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/aarch64-linux-gnu/libthread_db.so.1".
+0x00007fffa6c928d8 in ?? () from /lib/aarch64-linux-gnu/libc.so.6
+#0  0x00007fffa6c928d8 in ?? () from /lib/aarch64-linux-gnu/libc.so.6
+#1  0x00007fffa6c928fc in ?? () from /lib/aarch64-linux-gnu/libc.so.6
+#2  0x00007fffa6ceace4 in wait4 () from /lib/aarch64-linux-gnu/libc.so.6
+#3  0x00007fffa63a6c48 in ggml_print_backtrace () from /home/pi5/llama.cpp/build/bin/libggml-base.so.0
+#4  0x00007fffa63a6d90 in ggml_abort () from /home/pi5/llama.cpp/build/bin/libggml-base.so.0
+#5  0x00007fffa59d20a0 in rpc_dispatcher::start(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) () from /home/pi5/llama.cpp/build/bin/libggml-rpc.so.0
+#6  0x00007fffa59d85d8 in get_dispatcher(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) () from /home/pi5/llama.cpp/build/bin/libggml-rpc.so.0
+#7  0x00007fffa59d9228 in ggml_backend_rpc_add_server () from /home/pi5/llama.cpp/build/bin/libggml-rpc.so.0
+#8  0x00007fffa70b7448 in register_rpc_server_list(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) () from /home/pi5/llama.cpp/build/bin/libllama-bench-impl.so
+#9  0x00007fffa70c188c in parse_cmd_params(int, char**) () from /home/pi5/llama.cpp/build/bin/libllama-bench-impl.so
+#10 0x00007fffa70c3ae8 in llama_bench(int, char**) () from /home/pi5/llama.cpp/build/bin/libllama-bench-impl.so
+#11 0x00007fffa6c3225c in ?? () from /lib/aarch64-linux-gnu/libc.so.6
+#12 0x00007fffa6c3233c in __libc_start_main () from /lib/aarch64-linux-gnu/libc.so.6
+#13 0x00005555e9b710b0 in _start ()
+[Inferior 1 (process 2310) detached]
+bash: line 1:  2309 Aborted                 /usr/bin/timeout 2400 ~/llama.cpp/build/bin/llama-bench -m ~/models/qwen2.5-14b-instruct-q4_k_m-00001-of-00003.gguf -rpc 192.168.10.12:50052 -ngl 24 -t 4 -p 64 -n 16 -r 1
+EXIT_ngl24=134
+pi5 mem: Mem:            8062         615         221          33        7468        7446
+pi4 mem: Mem:            7819         428        6121          29        1387        7391
+pi4 temp: temp=62.3'C throttled=0x80000
+
+##### ngl=30 of 48 layers on the remote worker, remainder on the Pi 5 CPU
+/home/pi5/llama.cpp/ggml/src/ggml-rpc/ggml-rpc.cpp:547: Failed to connect to 192.168.10.12:50052
+
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/aarch64-linux-gnu/libthread_db.so.1".
+0x00007fff5f8928d8 in ?? () from /lib/aarch64-linux-gnu/libc.so.6
+#0  0x00007fff5f8928d8 in ?? () from /lib/aarch64-linux-gnu/libc.so.6
+#1  0x00007fff5f8928fc in ?? () from /lib/aarch64-linux-gnu/libc.so.6
+#2  0x00007fff5f8eace4 in wait4 () from /lib/aarch64-linux-gnu/libc.so.6
+#3  0x00007fff5efa6c48 in ggml_print_backtrace () from /home/pi5/llama.cpp/build/bin/libggml-base.so.0
+#4  0x00007fff5efa6d90 in ggml_abort () from /home/pi5/llama.cpp/build/bin/libggml-base.so.0
+#5  0x00007fff5e5d20a0 in rpc_dispatcher::start(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) () from /home/pi5/llama.cpp/build/bin/libggml-rpc.so.0
+#6  0x00007fff5e5d85d8 in get_dispatcher(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) () from /home/pi5/llama.cpp/build/bin/libggml-rpc.so.0
+#7  0x00007fff5e5d9228 in ggml_backend_rpc_add_server () from /home/pi5/llama.cpp/build/bin/libggml-rpc.so.0
+#8  0x00007fff5fcb7448 in register_rpc_server_list(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) () from /home/pi5/llama.cpp/build/bin/libllama-bench-impl.so
+#9  0x00007fff5fcc188c in parse_cmd_params(int, char**) () from /home/pi5/llama.cpp/build/bin/libllama-bench-impl.so
+#10 0x00007fff5fcc3ae8 in llama_bench(int, char**) () from /home/pi5/llama.cpp/build/bin/libllama-bench-impl.so
+#11 0x00007fff5f83225c in ?? () from /lib/aarch64-linux-gnu/libc.so.6
+#12 0x00007fff5f83233c in __libc_start_main () from /lib/aarch64-linux-gnu/libc.so.6
+#13 0x00005555aff110b0 in _start ()
+[Inferior 1 (process 2343) detached]
+EXIT_ngl30=134
+bash: line 1:  2342 Aborted                 /usr/bin/timeout 2400 ~/llama.cpp/build/bin/llama-bench -m ~/models/qwen2.5-14b-instruct-q4_k_m-00001-of-00003.gguf -rpc 192.168.10.12:50052 -ngl 30 -t 4 -p 64 -n 16 -r 1
+pi5 mem: Mem:            8062         609         246          33        7450        7452
+pi4 mem: Mem:            7819         430        6119          29        1387        7389
+pi4 temp: temp=61.3'C throttled=0x80000
+
+##### ngl=36 of 48 layers on the remote worker, remainder on the Pi 5 CPU
+/home/pi5/llama.cpp/ggml/src/ggml-rpc/ggml-rpc.cpp:547: Failed to connect to 192.168.10.12:50052
+
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/aarch64-linux-gnu/libthread_db.so.1".
+0x00007fff7af128d8 in ?? () from /lib/aarch64-linux-gnu/libc.so.6
+#0  0x00007fff7af128d8 in ?? () from /lib/aarch64-linux-gnu/libc.so.6
+#1  0x00007fff7af128fc in ?? () from /lib/aarch64-linux-gnu/libc.so.6
+#2  0x00007fff7af6ace4 in wait4 () from /lib/aarch64-linux-gnu/libc.so.6
+#3  0x00007fff7a626c48 in ggml_print_backtrace () from /home/pi5/llama.cpp/build/bin/libggml-base.so.0
+#4  0x00007fff7a626d90 in ggml_abort () from /home/pi5/llama.cpp/build/bin/libggml-base.so.0
+#5  0x00007fff79c520a0 in rpc_dispatcher::start(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) () from /home/pi5/llama.cpp/build/bin/libggml-rpc.so.0
+#6  0x00007fff79c585d8 in get_dispatcher(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) () from /home/pi5/llama.cpp/build/bin/libggml-rpc.so.0
+#7  0x00007fff79c59228 in ggml_backend_rpc_add_server () from /home/pi5/llama.cpp/build/bin/libggml-rpc.so.0
+#8  0x00007fff7b337448 in register_rpc_server_list(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) () from /home/pi5/llama.cpp/build/bin/libllama-bench-impl.so
+#9  0x00007fff7b34188c in parse_cmd_params(int, char**) () from /home/pi5/llama.cpp/build/bin/libllama-bench-impl.so
+#10 0x00007fff7b343ae8 in llama_bench(int, char**) () from /home/pi5/llama.cpp/build/bin/libllama-bench-impl.so
+#11 0x00007fff7aeb225c in ?? () from /lib/aarch64-linux-gnu/libc.so.6
+#12 0x00007fff7aeb233c in __libc_start_main () from /lib/aarch64-linux-gnu/libc.so.6
+#13 0x00005555d38d10b0 in _start ()
+[Inferior 1 (process 2376) detached]
+EXIT_ngl36=134
+bash: line 1:  2375 Aborted                 /usr/bin/timeout 2400 ~/llama.cpp/build/bin/llama-bench -m ~/models/qwen2.5-14b-instruct-q4_k_m-00001-of-00003.gguf -rpc 192.168.10.12:50052 -ngl 36 -t 4 -p 64 -n 16 -r 1
+pi5 mem: Mem:            8062         592         263          33        7450        7470
+pi4 mem: Mem:            7819         430        6119          29        1387        7389
+pi4 temp: temp=61.8'C throttled=0x80000
+
+########## done 2026-09-20T15:47:32+07:00
+OUTFILE=testbed/results/pool14b_20260920_154721.log
+--- stopping worker ---

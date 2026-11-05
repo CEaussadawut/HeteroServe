@@ -1,0 +1,176 @@
+{
+ "registered_at": "2026-11-03T21:47:35+07:00",
+ "script": "testbed/scripts/register_dl1_20261103.py",
+ "runner": "testbed/scripts/lc4_20261024.py",
+ "out_prefix": "dl1",
+ "what": "the bent depth law (ATTENTION_V5) on fresh depths (512-2,048) and a dense model",
+ "follows": "v4d (testbed/dataset/v4d_predictions_20261101.json; the straight law 52 % high at 4,096)",
+ "ctx": 4096,
+ "cold_c": {
+  "pi5": 50,
+  "pi4": 55
+ },
+ "memfile": "testbed/dataset/memory_snapshot_20261103_214533.json",
+ "benches": {
+  "A": {
+   "host": "laptop",
+   "model": "qwen3moe",
+   "model_path": "~/models/qwen3-30b-a3b-q3_k_m.gguf",
+   "model_sha256": "e145c9d2f5d11c9583eb099aa75100b7ab943e77d5240c9a2cd936f81c89ef43",
+   "args": "-ngl 0 -t 4 -p 0 -n 32 -d 0,1024,2048 -r 3",
+   "assign": [
+    [
+     "laptop",
+     48
+    ]
+   ],
+   "head_at": null,
+   "servers": [],
+   "predicted": {
+    "ms_per_token_by_depth": {
+     "0": 99.8,
+     "1024": 150.81,
+     "2048": 218.86
+    },
+    "slope_ms_per_1k": 58.135
+   },
+   "predicted_v4_straight": {
+    "ms_per_token_by_depth": {
+     "0": 99.8,
+     "1024": 209.88,
+     "2048": 319.97
+    },
+    "slope_ms_per_1k": 107.505
+   }
+  },
+  "B": {
+   "host": "laptop",
+   "model": "qwen3moe",
+   "model_path": "~/models/qwen3-30b-a3b-q3_k_m.gguf",
+   "model_sha256": "e145c9d2f5d11c9583eb099aa75100b7ab943e77d5240c9a2cd936f81c89ef43",
+   "args": "-rpc 192.168.1.114:50052 -ngl 9 -ot \"^output\\.weight=CPU\" -t 4 -p 0 -n 32 -d 0,1024,2048 -r 3",
+   "assign": [
+    [
+     "laptop",
+     40
+    ],
+    [
+     "jetson",
+     8
+    ]
+   ],
+   "head_at": 0,
+   "servers": [
+    {
+     "node": "jetson",
+     "ip": "192.168.1.114",
+     "port": 50052,
+     "extra": "-d Vulkan0"
+    }
+   ],
+   "predicted": {
+    "ms_per_token_by_depth": {
+     "0": 145.14,
+     "1024": 189.71,
+     "2048": 248.48
+    },
+    "slope_ms_per_1k": 50.459
+   },
+   "predicted_v4_straight": {
+    "ms_per_token_by_depth": {
+     "0": 145.14,
+     "1024": 238.94,
+     "2048": 332.74
+    },
+    "slope_ms_per_1k": 91.602
+   }
+  },
+  "C": {
+   "host": "laptop",
+   "model": "qwen3_14b",
+   "model_path": "~/models/qwen3-14b-q4_k_m.gguf",
+   "model_sha256": "500a8806e85ee9c83f3ae08420295592451379b4f8cf2d0f41c15dffeb6b81f0",
+   "args": "-ngl 0 -t 4 -p 0 -n 32 -d 0,512,1024 -r 3",
+   "assign": [
+    [
+     "laptop",
+     40
+    ]
+   ],
+   "head_at": null,
+   "servers": [],
+   "predicted": {
+    "ms_per_token_by_depth": {
+     "0": 439.54,
+     "512": 463.89,
+     "1024": 492.68
+    },
+    "slope_ms_per_1k": 51.895
+   },
+   "predicted_v4_straight": {
+    "ms_per_token_by_depth": {
+     "0": 439.54,
+     "512": 496.88,
+     "1024": 554.21
+    },
+    "slope_ms_per_1k": 111.982
+   }
+  }
+ },
+ "order": [
+  [
+   "A"
+  ],
+  [
+   "B"
+  ],
+  [
+   "C"
+  ]
+ ],
+ "hypotheses": {
+  "DL-SLOPE": {
+   "type": "slope_within",
+   "labels": [
+    "A",
+    "B",
+    "C"
+   ],
+   "tol": 0.15,
+   "claim": "every bench's slope within 15 % of the bent law's"
+  },
+  "DL-PICK": {
+   "type": "faster_at",
+   "a": "A",
+   "b": "B",
+   "depth": 2048,
+   "claim": "at 2,048 tokens of depth, A is faster than B (bent law: 218.9 against 248.5 ms)"
+  },
+  "DL-ACC": {
+   "type": "acc_at",
+   "labels": [
+    "A",
+    "B",
+    "C"
+   ],
+   "tol": 0.15,
+   "claim": "A, B and C within 15 % of their predictions at every depth"
+  }
+ },
+ "inputs_sha256": {
+  "testbed/scripts/lc4_20261024.py": "bf039569fa2a63c88ed8cba332e212ce2e48a285e2475d8d135a23442d2896b7",
+  "testbed/scripts/register_dl1_20261103.py": "a54953d0bd5719b7888336804f6dc3e7c43cc8358dc15e74ded97a9051224434",
+  "testbed/scripts/predict_pool.py": "c440c91a8abc09f66aa3b31a92f5536f227257a2c8c6f110b1bd3e89e1c67782",
+  "testbed/scripts/attention_bend_20261103.py": "c37cc01ae277362258eca99ac90a35b4fd4fdda372d5689263e717a43221c8fc",
+  "testbed/dataset/attention_cost_20261103.json": "ce888319ef926899d32fdbaa10aad851cd3cadbc89f3236cca46b796dd5ac371",
+  "testbed/dataset/attention_cost_20261101.json": "f47aa041c378a6f58db95dcd4dc5a3d1ed845420c6e6166e6becd08d80486b20",
+  "testbed/dataset/hybrid_shapes_20261101.json": "edde431a99d8a801d6c486b285b7d6340de12fdd1f90b50d162333f7dafd3352",
+  "testbed/dataset/model_shapes.json": "c3400b14d42e61f363f2df6e68974a12847d5cb6bd7c785f9b4ace8e3b6f5478",
+  "testbed/dataset/characterisation.csv": "183b4002fb6801f2559872cba7fbc9c7f11df9d858286dc60bf0971ddde1ad2c",
+  "testbed/dataset/link.json": "61915f41652f22063ac9a43d43a511a1c797ae28dd158cbb185df04a4d4c8a0e",
+  "ThinkPad/config/cluster.json": "1f0a3529dd384647ab71a0a08e2c142226ccf2b80aa5160ffc91e5e2e9485943",
+  "testbed/scripts/throttle_poll.sh": "10a45258cafd9222932fe043b40eee767984412a97d5a6d69002fa60d6e48aa1",
+  "testbed/scripts/jetson_power_guard.sh": "6dafb56fef33f2bc0e070b2552dcb871053d3c0681358bd27436552f905d90de",
+  "testbed/dataset/memory_snapshot_20261103_214533.json": "cefa23c0ec3b2f6387684229b04aec69d7430f23cbca116cd36c01d2e673a749"
+ }
+}

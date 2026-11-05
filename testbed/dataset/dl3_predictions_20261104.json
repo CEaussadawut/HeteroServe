@@ -1,0 +1,296 @@
+{
+ "registered_at": "2026-11-04T23:37:22+07:00",
+ "script": "testbed/scripts/register_dl3_20261104.py",
+ "runner": "testbed/scripts/lc4_20261024.py",
+ "out_prefix": "dl3",
+ "what": "the Pis' depth cost: each board's per-shape attention table (FA) against the planner's law for it (V5), on models whose depth curve the board never measured",
+ "follows": "dl2 (testbed/dataset/dl2_predictions_20261104.json: the laptop's per-shape table held on three models)",
+ "cold_c": {
+  "pi5": 50,
+  "pi4": 55
+ },
+ "table": "testbed/dataset/attention_cpu_pi_20261104.json",
+ "v5": "testbed/dataset/attention_cost_20261103.json",
+ "n_kv_rule": "256 x ceil((d + 32) / 256)",
+ "checks_before_registering": {
+  "tinyllama on the Pi 5 (lc4charb pi5)": {
+   "board": "pi5",
+   "depths": [
+    0,
+    2048,
+    4096,
+    8192
+   ],
+   "measured_slope": 24.61,
+   "table_slope": 25.31,
+   "v5_slope": 24.72,
+   "table_err_pct": -2.8,
+   "v5_err_pct": -0.5
+  }
+ },
+ "benches": {
+  "P5Q06": {
+   "host": "pi5",
+   "model": "qwen3-0.6b",
+   "model_path": "~/models/qwen3-0.6b-q8_0.gguf",
+   "model_sha256": "9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031",
+   "args": "-t 4 -p 0 -n 32 -d 0,1024,2048,4096 -r 3",
+   "assign": [
+    [
+     "pi5",
+     28
+    ]
+   ],
+   "head_at": null,
+   "servers": [],
+   "shape": {
+    "head_dim": 128,
+    "n_head": 16,
+    "n_head_kv": 8,
+    "attention_layers": 28,
+    "blocks": 28
+   },
+   "predicted": {
+    "slope_ms_per_1k": 62.499,
+    "law": "FA",
+    "depth_cost_ms_by_depth": {
+     "0": 0.0,
+     "1024": 38.368,
+     "2048": 106.441,
+     "4096": 249.846
+    }
+   },
+   "predicted_v5": {
+    "depth_cost_ms_by_depth": {
+     "0": 0.0,
+     "1024": 12.984,
+     "2048": 31.247,
+     "4096": 83.613
+    },
+    "slope_ms_per_1k": 20.782
+   },
+   "laws_slope_ms_per_1k": {
+    "FA": 62.499,
+    "V5": 20.782
+   }
+  },
+  "P5Q9": {
+   "host": "pi5",
+   "model": "qwen35_9b",
+   "model_path": "~/models/qwen3.5-9b-q4_k_m.gguf",
+   "model_sha256": "d784ce9eda1a5a7b51e8f705a9e6310844bf4f173654d115823c775fdea56d43",
+   "args": "-t 4 -p 0 -n 32 -d 0,512,1024,2048 -r 3",
+   "assign": [
+    [
+     "pi5",
+     32
+    ]
+   ],
+   "head_at": null,
+   "servers": [],
+   "shape": {
+    "head_dim": 256,
+    "n_head": 16,
+    "n_head_kv": 4,
+    "attention_layers": 8,
+    "blocks": 32
+   },
+   "predicted": {
+    "slope_ms_per_1k": 32.304,
+    "law": "FA",
+    "depth_cost_ms_by_depth": {
+     "0": 0.0,
+     "512": 7.733,
+     "1024": 21.865,
+     "2048": 64.47
+    }
+   },
+   "predicted_v5": {
+    "depth_cost_ms_by_depth": {
+     "0": 0.0,
+     "512": 3.333,
+     "1024": 7.419,
+     "2048": 17.856
+    },
+    "slope_ms_per_1k": 8.824
+   },
+   "laws_slope_ms_per_1k": {
+    "FA": 32.304,
+    "V5": 8.824
+   }
+  },
+  "P4Q06": {
+   "host": "pi4",
+   "model": "qwen3-0.6b",
+   "model_path": "~/models/qwen3-0.6b-q8_0.gguf",
+   "model_sha256": "9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031",
+   "args": "-t 4 -p 0 -n 32 -d 0,1024,2048,4096 -r 3",
+   "assign": [
+    [
+     "pi4",
+     28
+    ]
+   ],
+   "head_at": null,
+   "servers": [],
+   "shape": {
+    "head_dim": 128,
+    "n_head": 16,
+    "n_head_kv": 8,
+    "attention_layers": 28,
+    "blocks": 28
+   },
+   "predicted": {
+    "slope_ms_per_1k": 113.177,
+    "law": "FA",
+    "depth_cost_ms_by_depth": {
+     "0": 0.0,
+     "1024": 108.365,
+     "2048": 228.431,
+     "4096": 461.435
+    }
+   },
+   "predicted_v5": {
+    "depth_cost_ms_by_depth": {
+     "0": 0.0,
+     "1024": 111.213,
+     "2048": 222.426,
+     "4096": 444.853
+    },
+    "slope_ms_per_1k": 108.607
+   },
+   "laws_slope_ms_per_1k": {
+    "FA": 113.177,
+    "V5": 108.607
+   }
+  },
+  "P4TL": {
+   "host": "pi4",
+   "model": "tinyllama",
+   "model_path": "~/models/tinyllama-1.1b-q4km.gguf",
+   "model_sha256": "9fecc3b3cd76bba89d504f29b616eedf7da85b96540e490ca5824d3f7d2776a0",
+   "args": "-t 4 -p 0 -n 32 -d 0,1024,2048,4096 -r 3",
+   "assign": [
+    [
+     "pi4",
+     22
+    ]
+   ],
+   "head_at": null,
+   "servers": [],
+   "shape": {
+    "head_dim": 64,
+    "n_head": 32,
+    "n_head_kv": 4,
+    "attention_layers": 22,
+    "blocks": 22
+   },
+   "predicted": {
+    "slope_ms_per_1k": 80.011,
+    "law": "FA",
+    "depth_cost_ms_by_depth": {
+     "0": 0.0,
+     "1024": 50.387,
+     "2048": 143.633,
+     "4096": 319.459
+    }
+   },
+   "predicted_v5": {
+    "depth_cost_ms_by_depth": {
+     "0": 0.0,
+     "1024": 87.382,
+     "2048": 174.764,
+     "4096": 349.527
+    },
+    "slope_ms_per_1k": 85.334
+   },
+   "laws_slope_ms_per_1k": {
+    "FA": 80.011,
+    "V5": 85.334
+   }
+  }
+ },
+ "order": [
+  [
+   "P5Q06",
+   "P4Q06"
+  ],
+  [
+   "P5Q9",
+   "P4TL"
+  ]
+ ],
+ "hypotheses": {
+  "DL3-FA-P5Q06": {
+   "type": "slope_near",
+   "label": "P5Q06",
+   "value": 62.499,
+   "tol": 0.1,
+   "claim": "P5Q06's slope within 10 % of law FA's 62.50 ms per 1,000 tokens"
+  },
+  "DL3-V5-P5Q06": {
+   "type": "slope_near",
+   "label": "P5Q06",
+   "value": 20.782,
+   "tol": 0.1,
+   "claim": "P5Q06's slope within 10 % of law V5's 20.78 ms per 1,000 tokens"
+  },
+  "DL3-FA-P5Q9": {
+   "type": "slope_near",
+   "label": "P5Q9",
+   "value": 32.304,
+   "tol": 0.1,
+   "claim": "P5Q9's slope within 10 % of law FA's 32.30 ms per 1,000 tokens"
+  },
+  "DL3-V5-P5Q9": {
+   "type": "slope_near",
+   "label": "P5Q9",
+   "value": 8.824,
+   "tol": 0.1,
+   "claim": "P5Q9's slope within 10 % of law V5's 8.82 ms per 1,000 tokens"
+  },
+  "DL3-FA-P4Q06": {
+   "type": "slope_near",
+   "label": "P4Q06",
+   "value": 113.177,
+   "tol": 0.1,
+   "claim": "P4Q06's slope within 10 % of law FA's 113.18 ms per 1,000 tokens"
+  },
+  "DL3-V5-P4Q06": {
+   "type": "slope_near",
+   "label": "P4Q06",
+   "value": 108.607,
+   "tol": 0.1,
+   "claim": "P4Q06's slope within 10 % of law V5's 108.61 ms per 1,000 tokens"
+  },
+  "DL3-FA-P4TL": {
+   "type": "slope_near",
+   "label": "P4TL",
+   "value": 80.011,
+   "tol": 0.1,
+   "claim": "P4TL's slope within 10 % of law FA's 80.01 ms per 1,000 tokens"
+  },
+  "DL3-V5-P4TL": {
+   "type": "slope_near",
+   "label": "P4TL",
+   "value": 85.334,
+   "tol": 0.1,
+   "claim": "P4TL's slope within 10 % of law V5's 85.33 ms per 1,000 tokens"
+  }
+ },
+ "conditions": "Zen may stay open (QUIET_ALLOW_APPS=zen, the owner, 4 Nov); aunsync.timer runs (every 16 min, ~20 s); the strip restarted at about 22:05 and every board booted at 22:06 (not by this study); Qwen3-0.6B copied to the Pi 5 from the laptop's verified file for P5Q06",
+ "inputs_sha256": {
+  "testbed/scripts/lc4_20261024.py": "a2ceb730223844ad68bf3e47b15c870a79d46cb228a74518e0d931e29cee746f",
+  "testbed/scripts/register_dl3_20261104.py": "3acfbc92b870359d3ace81f8da6d423bf1f9970cfc4d17776510af6dd0df8af6",
+  "testbed/scripts/register_dl2_20261104.py": "83ca201e302c530cb7b5459ee1dded2234c818a9a93ba22e1fd92e894bf3f858",
+  "testbed/scripts/dl3_fa_pi_20261104.py": "bf220307b7751aca6e4f115cffa4c8b43c88e47451ea535fd7a39aa6e78846b7",
+  "testbed/scripts/dl2_fa_cpu_20261104.py": "ecdac9d81a7419bb657dca52ad43744a62006afa06a9e1983e44a55a1763f219",
+  "testbed/scripts/fa_bench_cpu_20261104.cpp": "3aa37579c37371e04c1034a0a1d160098ccc4390d1c0391cd4f144119f4f62eb",
+  "testbed/dataset/attention_cpu_pi_20261104.json": "f06b8f889853e5dfbdf188d71ca1ebdb7ac8b5fc3f59ff1e1986b5b7ae4aa1f6",
+  "testbed/dataset/attention_cost_20261103.json": "ce888319ef926899d32fdbaa10aad851cd3cadbc89f3236cca46b796dd5ac371",
+  "testbed/dataset/hybrid_shapes_20261101.json": "edde431a99d8a801d6c486b285b7d6340de12fdd1f90b50d162333f7dafd3352",
+  "testbed/dataset/model_shapes.json": "c3400b14d42e61f363f2df6e68974a12847d5cb6bd7c785f9b4ace8e3b6f5478",
+  "ThinkPad/config/cluster.json": "1f0a3529dd384647ab71a0a08e2c142226ccf2b80aa5160ffc91e5e2e9485943",
+  "testbed/scripts/throttle_poll.sh": "10a45258cafd9222932fe043b40eee767984412a97d5a6d69002fa60d6e48aa1"
+ }
+}

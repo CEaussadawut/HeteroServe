@@ -1,0 +1,31 @@
+[New LWP 28563]
+
+This GDB supports auto-downloading debuginfo from the following URLs:
+  <https://debuginfod.ubuntu.com>
+Enable debuginfod for this session? (y or [n]) [answered N; input not from terminal]
+Debuginfod has been disabled.
+To make this setting permanent, add 'set debuginfod enabled off' to .gdbinit.
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+0x00007c89c9310913 in __GI___wait4 (pid=28565, stat_loc=0x0, options=0, usage=0x0) at ../sysdeps/unix/sysv/linux/wait4.c:30
+#0  0x00007c89c9310913 in __GI___wait4 (pid=28565, stat_loc=0x0, options=0, usage=0x0) at ../sysdeps/unix/sysv/linux/wait4.c:30
+30	in ../sysdeps/unix/sysv/linux/wait4.c
+#1  0x00007c89c94a3853 in ggml_print_backtrace () from /opt/heteroserve/llama.cpp/build/bin/libggml-base.so.0
+#2  0x00007c89c94a39fb in ggml_abort () from /opt/heteroserve/llama.cpp/build/bin/libggml-base.so.0
+#3  0x00007c89c942aa25 in rpc_dispatcher::start(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) () from /opt/heteroserve/llama.cpp/build/bin/libggml-rpc.so.0
+#4  0x00007c89c943134a in get_dispatcher(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) () from /opt/heteroserve/llama.cpp/build/bin/libggml-rpc.so.0
+#5  0x00007c89c9433375 in ggml_backend_rpc_add_server () from /opt/heteroserve/llama.cpp/build/bin/libggml-rpc.so.0
+#6  0x00007c89c8d7b7b6 in common_params_parser_init(common_params&, llama_example, void (*)(int, char**))::{lambda(common_params&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)#69}::_FUN(common_params&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) () from /opt/heteroserve/llama.cpp/build/bin/libllama-common.so.0
+#7  0x00007c89c8da06ef in common_params_parse_ex(int, char**, common_params_context&) () from /opt/heteroserve/llama.cpp/build/bin/libllama-common.so.0
+#8  0x00007c89c8da4d62 in common_params_parse(int, char**, common_params&, llama_example, void (*)(int, char**)) () from /opt/heteroserve/llama.cpp/build/bin/libllama-common.so.0
+#9  0x00007c89c957e8d3 in llama_completion(int, char**) () from /opt/heteroserve/llama.cpp/build/bin/libllama-completion-impl.so
+#10 0x00007c89c922a1ca in __libc_start_call_main (main=main@entry=0x5c0ecbcca060 <main>, argc=argc@entry=16, argv=argv@entry=0x7ffcd97ab148) at ../sysdeps/nptl/libc_start_call_main.h:58
+#11 0x00007c89c922a28b in __libc_start_main_impl (main=0x5c0ecbcca060 <main>, argc=16, argv=0x7ffcd97ab148, init=<optimized out>, fini=<optimized out>, rtld_fini=<optimized out>, stack_end=0x7ffcd97ab138) at ../csu/libc-start.c:360
+#12 0x00005c0ecbcca095 in _start ()
+[Inferior 1 (process 28561) detached]
+
+/opt/heteroserve/llama.cpp/ggml/src/ggml-rpc/ggml-rpc.cpp:547: Failed to connect to 192.168.10.11:50052
+
+warning: 30	../sysdeps/unix/sysv/linux/wait4.c: No such file or directory
+warning: 58	../sysdeps/nptl/libc_start_call_main.h: No such file or directory
+warning: 360	../csu/libc-start.c: No such file or directory

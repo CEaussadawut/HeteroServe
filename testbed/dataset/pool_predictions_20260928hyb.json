@@ -1,0 +1,250 @@
+{
+ "registered": "2026-09-28T23:38:52+07:00",
+ "campaign": "2026-09-28 late night: the predictor on two qwen35 hybrids it was never fitted on (TRANSFER)",
+ "inputs_sha256": {
+  "characterisation.csv": "fccefe2d88e14bcf3652f879726edf655f75f120a968518e58f51f174d2283ed",
+  "model_shapes.json": "c92bbc0278b030d5218d7740b3fac99f146b5bdeffe684404d94a012f7232c38",
+  "link.json": "e5084df7d3e62a47c7f93339ef4412c8e5f31db2d500ad5f189aafde95548ac5",
+  "memory_at_rest.json": "1ec5a19725d7c565b9b97449beb0130b179da895e2e93fdb5e36e9ea4f141589",
+  "cluster.json": "cbbb5c7de787536a5e406c52cefabf921013ddd5be8c986f5b46c0bf7f69fdb1",
+  "predict_pool.py": "7c3dc51c4dd0edcdf734bd6d3e4f74d3d5a1024721942f9b08450617d1b68b0a"
+ },
+ "engine_sha256": {
+  "placement.py": "d848339f33aba6f53a2e6830ba28b9b3832aa3de96891d362e143e3a2a389177",
+  "gguf.py": "805ddefc0c9ef1fb1c010f052da0546d23a35d73343738c08345a339f7486330"
+ },
+ "protocol": "llama-bench -t 4 -p 64 -n 16 -r 3 -oe jsonl -v; memprobe.sh v2",
+ "rules": [
+  "TRANSFER: the predictor transfers to the qwen35 hybrid if, on every h.* cell, |decode error| <= 5 % and |prefill error| <= 10 %; each cell's errors are reported either way.",
+  "STEADY: a cell's phase is steady if its three repetitions agree within 5 %; one that is not is reported as found and still scored (a Pi 4 host's first prefill repetition can be cold)."
+ ],
+ "configs": {
+  "h.q27.pis_rule": {
+   "model": "qwen3.8-27b-q3_k_m",
+   "quant": "Q3_K_M",
+   "why": "the engine's rule on the Pis (the Jetson cannot run qwen35 at the pin)",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 27
+    },
+    {
+     "node": "pi5",
+     "blocks": 38
+    }
+   ],
+   "head_on": "pi5",
+   "bench": {
+    "host": "pi4",
+    "args": "-m ~/models/qwen3.8-27b-q3_k_m.gguf -rpc 192.168.10.11:50052 -ngl 39"
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 27,
+     "need_mib": 4977,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 2436
+    },
+    "pi5": {
+     "blocks": 38,
+     "need_mib": 7461,
+     "reserve_mib": 0,
+     "available_mib": 7619,
+     "margin_mib": 158
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 2094.3,
+    "decode_tok_s": 0.477,
+    "prefill_ms_per_token": 1446.4,
+    "prefill_tok_s": 0.69
+   },
+   "predicted_alt": {
+    "v3": {
+     "decode_ms_per_token": 2057.1,
+     "prefill_ms_per_token": 1410.6
+    }
+   },
+   "cost_sources": {
+    "pi4": {
+     "host": "cpu row",
+     "worker": "host row (no worker row at Q3_K_M; this board never repacks)"
+    },
+    "pi5": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    }
+   },
+   "link_pairs": {
+    "pi5": "pi5-pi4"
+   }
+  },
+  "h.q27.pis_b": {
+   "model": "qwen3.8-27b-q3_k_m",
+   "quant": "Q3_K_M",
+   "why": "a second Pis-only split: more on the Pi 4 host",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 32
+    },
+    {
+     "node": "pi5",
+     "blocks": 33
+    }
+   ],
+   "head_on": "pi5",
+   "bench": {
+    "host": "pi4",
+    "args": "-m ~/models/qwen3.8-27b-q3_k_m.gguf -rpc 192.168.10.11:50052 -ngl 34"
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 32,
+     "need_mib": 5795,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 1618
+    },
+    "pi5": {
+     "blocks": 33,
+     "need_mib": 6644,
+     "reserve_mib": 0,
+     "available_mib": 7619,
+     "margin_mib": 975
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 2265.8,
+    "decode_tok_s": 0.441,
+    "prefill_ms_per_token": 1585.3,
+    "prefill_tok_s": 0.63
+   },
+   "predicted_alt": {
+    "v3": {
+     "decode_ms_per_token": 2225.4,
+     "prefill_ms_per_token": 1546.5
+    }
+   },
+   "cost_sources": {
+    "pi4": {
+     "host": "cpu row",
+     "worker": "host row (no worker row at Q3_K_M; this board never repacks)"
+    },
+    "pi5": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    }
+   },
+   "link_pairs": {
+    "pi5": "pi5-pi4"
+   }
+  },
+  "h.q9.pi5alone": {
+   "model": "qwen3.5-9b-q4_k_m",
+   "quant": "Q4_K_M",
+   "why": "the engine's rule: the Pi 5 alone (0 hops)",
+   "pipeline": [
+    {
+     "node": "pi5",
+     "blocks": 33
+    }
+   ],
+   "head_on": "pi5",
+   "bench": {
+    "host": "pi5",
+    "args": "-m ~/models/qwen3.5-9b-q4_k_m.gguf -ngl 0"
+   },
+   "memory": {
+    "pi5": {
+     "blocks": 33,
+     "need_mib": 5558,
+     "reserve_mib": 0,
+     "available_mib": 7619,
+     "margin_mib": 2061
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 466.3,
+    "decode_tok_s": 2.144,
+    "prefill_ms_per_token": 95.5,
+    "prefill_tok_s": 10.47
+   },
+   "predicted_alt": {
+    "v3": {
+     "decode_ms_per_token": 460.1,
+     "prefill_ms_per_token": 84.2
+    }
+   },
+   "cost_sources": {
+    "pi5": {
+     "host": "cpu row x 1.0806 prefill (SIZE2)",
+     "worker": "cpu-rpc-worker row"
+    }
+   },
+   "link_pairs": {}
+  },
+  "h.q9.p5p4": {
+   "model": "qwen3.5-9b-q4_k_m",
+   "quant": "Q4_K_M",
+   "why": "the 9B across both Pis (1 hop)",
+   "pipeline": [
+    {
+     "node": "pi5",
+     "blocks": 20
+    },
+    {
+     "node": "pi4",
+     "blocks": 13
+    }
+   ],
+   "head_on": "pi4",
+   "bench": {
+    "host": "pi5",
+    "args": "-m ~/models/qwen3.5-9b-q4_k_m.gguf -rpc 192.168.10.12:50052 -ngl 14"
+   },
+   "memory": {
+    "pi5": {
+     "blocks": 20,
+     "need_mib": 3679,
+     "reserve_mib": 0,
+     "available_mib": 7619,
+     "margin_mib": 3940
+    },
+    "pi4": {
+     "blocks": 13,
+     "need_mib": 2833,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 4580
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 966.2,
+    "decode_tok_s": 1.035,
+    "prefill_ms_per_token": 273.5,
+    "prefill_tok_s": 3.66
+   },
+   "predicted_alt": {
+    "v3": {
+     "decode_ms_per_token": 958.0,
+     "prefill_ms_per_token": 261.4
+    }
+   },
+   "cost_sources": {
+    "pi5": {
+     "host": "cpu row x 1.0806 prefill (SIZE2)",
+     "worker": "cpu-rpc-worker row"
+    },
+    "pi4": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    }
+   },
+   "link_pairs": {
+    "pi4": "pi5-pi4"
+   }
+  }
+ }
+}

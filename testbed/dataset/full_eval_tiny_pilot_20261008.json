@@ -1,0 +1,208 @@
+{
+ "registered": "2026-10-08T19:02:43+07:00",
+ "name": "tiny_pilot_20261008",
+ "model": "tinyllama",
+ "nodes": [
+  "pi4",
+  "jetson"
+ ],
+ "ctx": 4096,
+ "rounds": 5,
+ "reqs": 4,
+ "n": 128,
+ "gen": 96,
+ "order": [
+  [
+   "engine",
+   "pooled",
+   "halda",
+   "even"
+  ],
+  [
+   "pooled",
+   "halda",
+   "even",
+   "engine"
+  ],
+  [
+   "halda",
+   "even",
+   "engine",
+   "pooled"
+  ],
+  [
+   "even",
+   "engine",
+   "pooled",
+   "halda"
+  ],
+  [
+   "engine",
+   "pooled",
+   "halda",
+   "even"
+  ]
+ ],
+ "configs": {
+  "engine": {
+   "assign": [
+    [
+     "jetson",
+     22
+    ]
+   ],
+   "head": "last",
+   "host": "jetson",
+   "place_env": null,
+   "predicted": {
+    "decode_ms": 87.0,
+    "prefill_ms": 13.7,
+    "decode_gross_j_plan_boards": 0.9721,
+    "decode_gross_j_all_boards": 1.1801
+   },
+   "considered": [
+    [
+     "jetson",
+     "jetson 22: decode 87.0 ms, prefill 13.7 ms"
+    ],
+    [
+     "pi4",
+     "pi4 1 + jetson 21: decode 96.3 ms, prefill 17.0 ms"
+    ]
+   ]
+  },
+  "pooled": {
+   "assign": [
+    [
+     "pi4",
+     1
+    ],
+    [
+     "jetson",
+     21
+    ]
+   ],
+   "head": "last",
+   "host": "pi4",
+   "place_env": "pi4:1,jetson:21",
+   "predicted": {
+    "decode_ms": 96.3,
+    "prefill_ms": 17.0,
+    "decode_gross_j_plan_boards": 1.2479,
+    "decode_gross_j_all_boards": 1.2479
+   },
+   "considered": [
+    [
+     "pi4",
+     "fixed: pi4 1 + jetson 21, head last"
+    ]
+   ]
+  },
+  "halda": {
+   "assign": [
+    [
+     "pi4",
+     1
+    ],
+    [
+     "jetson",
+     21
+    ]
+   ],
+   "head": "host",
+   "host": "pi4",
+   "place_env": "pi4:1,jetson:21",
+   "predicted": {
+    "decode_ms": 102.6,
+    "prefill_ms": 17.1,
+    "decode_gross_j_plan_boards": 1.2805,
+    "decode_gross_j_all_boards": 1.2805
+   },
+   "considered": [
+    [
+     "pi4",
+     "fixed: pi4 1 + jetson 21, head host"
+    ]
+   ]
+  },
+  "even": {
+   "assign": [
+    [
+     "pi4",
+     11
+    ],
+    [
+     "jetson",
+     11
+    ]
+   ],
+   "head": "last",
+   "host": "pi4",
+   "place_env": "pi4:11,jetson:11",
+   "predicted": {
+    "decode_ms": 132.3,
+    "prefill_ms": 46.9,
+    "decode_gross_j_plan_boards": 1.4357,
+    "decode_gross_j_all_boards": 1.4357
+   },
+   "considered": [
+    [
+     "pi4",
+     "fixed: pi4 11 + jetson 11, head last"
+    ]
+   ]
+  }
+ },
+ "power_table": {
+  "pi5": {
+   "idle": 2.3096321070234116,
+   "pp": 9.464891986082828,
+   "tg": 8.26205030239452,
+   "source": "testbed/dataset/energy_results_20261005b.json",
+   "sha256": "84a365c26489be46"
+  },
+  "pi4": {
+   "idle": 2.390896921017403,
+   "pp": 7.462781757353395,
+   "tg": 6.3219096642345205,
+   "source": "testbed/dataset/energy_results_20261005_pi4_q4km.json",
+   "sha256": "9c946768787cc0e7"
+  },
+  "jetson": {
+   "idle": 3.1383277591973244,
+   "pp": 8.893831082803821,
+   "tg": 11.173527822798489,
+   "source": "testbed/dataset/energy_results_20261005_jetson_vk_q4km.json",
+   "sha256": "102bfb16db360832"
+  },
+  "laptop": {
+   "idle": 14.054983277591974,
+   "pp": 29.33976692499638,
+   "tg": 32.12029854570033,
+   "source": "testbed/dataset/energy_results_20261006_laptop_q4km.json",
+   "sha256": "26856942a7d72a74"
+  }
+ },
+ "inputs_sha256": {
+  "full_eval.py": "35f7b20daa053f03f4411a41fcae7ab63bc90df84738bc97f9c971df5ee2b607",
+  "serve_pool.sh": "5f50a2aa808d02694669e6456e49ecfbe5218a9ee98dee0b9172aeea1258abb2",
+  "predict_pool.py": "9024585bfee4f1db362150df79d353f5d203264aa9da6d6f367d411c84c16576",
+  "energy_model.py": "44417b726621b2a27e7702818e12f4be679a784820c1ae1a3ac88a1229181eb5",
+  "qr3_tpot.py": "7dcd6bd18521783c0af902d10c8930ca7705e80b7d1fb7ddaf31e3d4b8041f12",
+  "shelly_strip.py": "b7aaa7ceb2f1e94aa3f1f46100c06ca9d6c0c3fa8764a6372239747ffc0fe5a8"
+ },
+ "hypotheses": [
+  {
+   "id": "FE-TPOT",
+   "claim": "the placement with the lowest predicted decode has the lowest server TPOT P50 and P95, its 95 % CI clear of every other placement's"
+  },
+  {
+   "id": "FE-ENERGY",
+   "claim": "the placement with the lowest predicted gross J/token (every pool board powered) measures the lowest"
+  },
+  {
+   "id": "FE-ACC",
+   "claim": "every placement's measured mean server TPOT within 10 % of its predicted decode ms"
+  }
+ ]
+}

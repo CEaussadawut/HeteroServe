@@ -1,0 +1,14 @@
+rpc8char: the RPC term's first-worker rule (the scheduler's backward expansion) and the hybrid inputs, read from llama.cpp after rpc7, tested blind on Qwen3-30B-A3B Q3_K_M (MoE, no shared expert) and Qwen3.5-9B Q4_K_M (dense hybrid): bytes per decoded token per worker, the head on the host, unshaped; code changed since registration: none
+
+R8-MOE-FIRST  HOLDS       {'workers': {'pi5': {'measured': 76824.0, 'predicted': 76824, 'rpc_bytes_as_is': 19134, 'err_pct': 0.0}}}
+R8-MOE-LAST   HOLDS       {'workers': {'pi4': {'measured': 10946.0, 'predicted': 10946, 'rpc_bytes_as_is': 10946, 'err_pct': 0.0}}}
+R8-HYB        HOLDS       {'workers': {'pi5': {'measured': 35848.0, 'predicted': 35848, 'rpc_bytes_as_is': 35518, 'err_pct': 0.0}, 'pi4': {'measured': 19468.0, 'predicted': 19468, 'rpc_bytes_as_is': 19138, 'err_pct': 0.0}}}
+R8-BACK       HOLDS       {'workers': {'M30/pi5': {'measured': 8200.0, 'predicted': 8200}, 'M30/pi4': {'measured': 8200.0, 'predicted': 8200}, 'H9/pi5': {'measured': 16392.0, 'predicted': 16392}, 'H9/pi4': {'measured': 16392.0, 'predicted': 16392}}}
+R8-REPEAT     HOLDS       {'max_spread_pct': 0.0}
+
+arm M30 worker pi5: {'bytes_acked': 76824.0, 'bytes_received': 8200.0, 'data_segs_out': 59.86, 'data_segs_in': 7.03} (predicted {'to': 76824, 'to_rpc_bytes': 19134, 'parts': {'minus the FFN output rpc_bytes() counts': -8506, "the experts' outputs before weighting (n_embd x 8 x 4)": 65850, 'the router weights (8 x 4)': 346}, 'back': 8200, 'place': 1, 'of': 2})
+arm M30 worker pi4: {'bytes_acked': 10946.0, 'bytes_received': 8200.0, 'data_segs_out': 18.92, 'data_segs_in': 7.0} (predicted {'to': 10946, 'to_rpc_bytes': 10946, 'parts': {}, 'back': 8200, 'place': 2, 'of': 2})
+arm H9 worker pi5: {'bytes_acked': 35848.0, 'bytes_received': 16392.0, 'data_segs_out': 33.73, 'data_segs_in': 13.02} (predicted {'to': 35848, 'to_rpc_bytes': 35518, 'parts': {"the recurrent state's copy index and IMROPE's positions": 330}, 'back': 16392, 'place': 1, 'of': 2})
+arm H9 worker pi4: {'bytes_acked': 19468.0, 'bytes_received': 16392.0, 'data_segs_out': 22.78, 'data_segs_in': 13.0} (predicted {'to': 19468, 'to_rpc_bytes': 19138, 'parts': {"the recurrent state's copy index and IMROPE's positions": 330}, 'back': 16392, 'place': 2, 'of': 2})
+
+throttled: {'before': {'pi5': 'throttled=0x0', 'pi4': 'throttled=0x0'}, 'after': {'pi5': 'throttled=0x0', 'pi4': 'throttled=0x0'}}

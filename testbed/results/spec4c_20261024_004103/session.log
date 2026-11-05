@@ -1,0 +1,623 @@
+########## 2026-10-24T00:41:03+07:00 spec4c session on four nodes, with energy -> testbed/results/spec4c_20261024_004103 (registration 316066526faf467a)
+model qwen3_32b_q6k; order S1 S2 S3 S3 S2 S1; deadline none; 3 requests of 128 + 64 per arm-run, ctx 2048 (MEMFILE testbed/dataset/memory_snapshot_20261024_003912.json)
+arm S1: PLACE=laptop:43,pi5:18,jetson:3 PLACE_HEAD=last SERVE_DRAFT='-md ~/models/qwen3-0.6b-q8_0.gguf --spec-type draft-simple --spec-draft-n-max 1 --spec-draft-n-min 0 --spec-draft-p-min 0 -devd none -ngld 0' DRAFT_HOST_MIB=800 HETEROSERVE_RESERVE_MB=laptop=7168
+arm S2: PLACE=laptop:43,pi5:18,jetson:3 PLACE_HEAD=last SERVE_DRAFT='-md ~/models/qwen3-0.6b-q8_0.gguf --spec-type draft-simple --spec-draft-n-max 2 --spec-draft-n-min 0 --spec-draft-p-min 0 -devd none -ngld 0' DRAFT_HOST_MIB=800 HETEROSERVE_RESERVE_MB=laptop=7168
+arm S3: PLACE=laptop:43,pi5:18,jetson:3 PLACE_HEAD=last SERVE_DRAFT='-md ~/models/qwen3-0.6b-q8_0.gguf --spec-type draft-simple --spec-draft-n-max 3 --spec-draft-n-min 0 --spec-draft-p-min 0 -devd none -ngld 0' DRAFT_HOST_MIB=800 HETEROSERVE_RESERVE_MB=laptop=7168
+guard started
+quiet   laptop: load 0.27, on the charger, no battery charging, wifi disabled
+IDLE_BEFORE start 1792777345.708371129
+IDLE_BEFORE end 1792777525.715972095
+===== 2026-10-24T00:45:25+07:00 arm-run 1: S1
+quiet   laptop: load 0.51, on the charger, no battery charging, wifi disabled
+cold    pi5 at 46.6 C (< 50) after 0 s
+cold    pi4 at 53.0 C (< 55) after 0 s
+2026-10-24T00:46:26+07:00 start {"what": "QR3 TPOT, one user", "engine": "llama", "nodes": "pi5 pi4 jetson laptop", "prima_lw": null, "model": "qwen3_32b_q6k", "ctx": 2048, "mem": "testbed/dataset/memory_snapshot_20261024_003912.json", "clo
+2026-10-24T00:49:28+07:00 model_sha256 {"host": "laptop", "file": "~/models/qwen3-32b-q6_k.gguf", "sha256": "c4c7c3cb6da260df1fe1d3cfd090a32dc7cc348f1278158be18e301f390d6f6e", "expected": "c4c7c3cb6da260df1fe1d3cfd090a32dc7cc348f1278158be18
+2026-10-24T00:49:33+07:00 settled {"host": "laptop", "mem_available_mib": 26064}
+2026-10-24T00:49:33+07:00 serve_pool ########## 2026-10-24T00:49:33+07:00 serve qwen3_32b_q6k, ctx 2048, clocks locked, boards pi5 pi4 jetson laptop, planned against testbed/dataset/memory_snapshot_20261024_003912.json: laptop 43 + pi5 18 +
+2026-10-24T00:49:33+07:00 serve_pool hosts   laptop: fixed: laptop 43 + pi5 18 + jetson 3, head last
+2026-10-24T00:49:33+07:00 serve_pool draft   -md ~/models/qwen3-0.6b-q8_0.gguf --spec-type draft-simple --spec-draft-n-max 1 --spec-draft-n-min 0 --spec-draft-p-min 0 -devd none -ngld 0 (host charge +800 MiB)
+2026-10-24T00:49:33+07:00 serve_pool llama-server -m ~/models/qwen3-32b-q6_k.gguf --rpc 192.168.10.11:50052,192.168.1.114:50052 -ngl 22 -ts 17.5,4.5 -md ~/models/qwen3-0.6b-q8_0.gguf --spec-type draft-simple --spec-draft-n-max 1 --spec-draf
+2026-10-24T00:49:33+07:00 serve_pool gate    laptop: MemAvailable 26058 MiB, the plan needs 25674 MiB with its reserve (margin at rest 377 MiB)
+2026-10-24T00:49:34+07:00 serve_pool gate    pi5: MemAvailable 7575 MiB, the plan needs 7202 MiB with its reserve (margin at rest 368 MiB)
+2026-10-24T00:49:34+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T00:49:34+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T00:49:34+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T00:49:34+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T00:49:34+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T00:49:34+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T00:49:34+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T00:49:34+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T00:49:34+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T00:49:35+07:00 serve_pool gate    jetson: MemAvailable 3541 MiB, the plan needs 2880 MiB with its reserve (margin at rest 663 MiB)
+2026-10-24T00:49:35+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T00:49:35+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T00:49:35+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T00:49:35+07:00 serve_pool jetson  GATE ok: pmode:0000, guard live and un-tripped, eth0 is the only interface on the router LAN
+2026-10-24T00:49:35+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T00:49:35+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T00:49:35+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T00:49:36+07:00 serve_pool jetson  clocks: LOCKED
+2026-10-24T00:49:36+07:00 serve_pool worker  pi5 listening on 192.168.10.11:50052 (pid 12364)
+2026-10-24T00:49:36+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T00:49:36+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T00:49:36+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T00:49:37+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T00:49:37+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T00:49:37+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T00:49:37+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T00:49:37+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T00:49:37+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T00:49:37+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T00:49:37+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T00:49:37+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T00:49:38+07:00 serve_pool worker  jetson listening on 192.168.1.114:50052 (pid 23845)
+2026-10-24T00:49:38+07:00 serve_pool server  starting on laptop (pid 29519); loading streams the model from the SD card to the workers
+2026-10-24T00:51:44+07:00 serve_pool READY   2026-10-24T00:51:44+07:00: http://192.168.1.108:8080/ (web chat) -- health {"status":"ok"}
+2026-10-24T00:51:44+07:00 serve_pool 0.02.624.874 I load_tensors:          CPU model buffer size = 17012.44 MiB
+2026-10-24T00:51:44+07:00 serve_pool 0.02.624.895 I load_tensors: RPC0[192.168.1.114:50052] model buffer size =  1753.04 MiB
+2026-10-24T00:51:44+07:00 serve_pool 0.02.624.896 I load_tensors: RPC0[192.168.10.11:50052] model buffer size =  6866.74 MiB
+2026-10-24T00:51:44+07:00 serve_pool 2.00.733.168 I llama_context: n_ctx                 = 2048
+2026-10-24T00:51:44+07:00 serve_pool 2.00.733.169 I llama_context: flash_attn            = auto
+2026-10-24T00:51:44+07:00 serve_pool 2.00.733.379 I llama_kv_cache:        CPU KV buffer size =   344.00 MiB
+2026-10-24T00:51:44+07:00 serve_pool 2.00.960.268 I llama_kv_cache: RPC0[192.168.1.114:50052] KV buffer size =    24.00 MiB
+2026-10-24T00:51:44+07:00 serve_pool 2.00.961.243 I llama_kv_cache: RPC0[192.168.10.11:50052] KV buffer size =   144.00 MiB
+2026-10-24T00:51:44+07:00 serve_pool 2.00.961.385 I llama_kv_cache: size =  512.00 MiB (  2048 cells,  64 layers,  1/1 seqs), K (f16):  256.00 MiB, V (f16):  256.00 MiB
+2026-10-24T00:51:44+07:00 serve_pool 2.01.157.376 I sched_reserve: RPC0[192.168.10.11:50052] compute buffer size =   172.01 MiB
+2026-10-24T00:51:44+07:00 serve_pool 2.01.157.379 I sched_reserve: RPC0[192.168.1.114:50052] compute buffer size =   172.01 MiB
+2026-10-24T00:51:44+07:00 serve_pool 2.01.157.380 I sched_reserve:        CPU compute buffer size =   198.01 MiB
+2026-10-24T00:51:44+07:00 serve_pool 2.03.512.583 I load_tensors:          CPU model buffer size =   604.15 MiB
+2026-10-24T00:51:44+07:00 serve_pool 2.03.800.310 I llama_context: n_ctx                 = 2048
+2026-10-24T00:51:44+07:00 serve_pool 2.03.800.311 I llama_context: flash_attn            = auto
+2026-10-24T00:51:44+07:00 serve_pool 2.03.800.442 I llama_kv_cache:        CPU KV buffer size =   224.00 MiB
+2026-10-24T00:51:44+07:00 serve_pool 2.03.933.290 I llama_kv_cache: size =  224.00 MiB (  2048 cells,  28 layers,  1/1 seqs), K (f16):  112.00 MiB, V (f16):  112.00 MiB
+2026-10-24T00:51:44+07:00 serve_pool 2.03.937.144 I sched_reserve:        CPU compute buffer size =    28.01 MiB
+2026-10-24T00:51:44+07:00 serve_pool 2.05.923.373 I slot   load_model: id  0 | task -1 | new slot, n_ctx = 2048
+2026-10-24T00:51:44+07:00 serve_pool split   pi5: llama.cpp 6866.74 MiB, planned 6866.7 MiB (head on jetson)
+2026-10-24T00:51:44+07:00 serve_pool split   jetson: llama.cpp 1753.04 MiB, planned 1753.0 MiB (head on jetson)
+2026-10-24T00:51:44+07:00 serve_pool mem     laptop: MemAvailable 7681 MiB at READY, 26058 at the gate: the serve holds 18377 MiB, charged 18506 MiB
+2026-10-24T00:51:44+07:00 serve_pool mem     pi5: MemAvailable 498 MiB at READY, 7575 at the gate: the serve holds 7077 MiB, charged 7202 MiB
+2026-10-24T00:51:44+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T00:51:44+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T00:51:44+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T00:51:44+07:00 serve_pool mem     jetson: MemAvailable 1550 MiB at READY, 3541 at the gate: the serve holds 1991 MiB, charged 2430 MiB
+2026-10-24T00:51:44+07:00 served {"host": "laptop", "workers": "pi5 jetson", "args": "-m ~/models/qwen3-32b-q6_k.gguf --rpc 192.168.10.11:50052,192.168.1.114:50052 -ngl 22 -ts 17.5,4.5", "ctx": "2048", "serve_log": "testbed/results/serve_qw
+2026-10-24T00:51:44+07:00 jetson clocks before cpu=1479000-1479000/1479000 gpu=921600000-921600000/921600000 pmode:0000
+2026-10-24T00:51:45+07:00 jetson clocks {"lock": "ALREADY_LOCKED", "now": "cpu=1479000-1479000/1479000 gpu=921600000-921600000/921600000 pmode:0000"}
+2026-10-24T00:51:45+07:00 prompts {"doc_tokens": 7486, "head": 0, "question": 12, "warm_offset": 6986, "sha256": ["8375febbf15c9102", "a9088107122b30bb", "2832af8bf65e91bd"]}
+2026-10-24T00:51:46+07:00 health warm {"laptop": "load=1.17 pkg_mC=65000 MemAvailable_kB=7858832", "pi5": "throttled=0x0 temp=48.3'C MemAvailable_kB=512992", "jetson": "guard=\"00:51:45 V=5160 I=456 P=2431 alarms=0 minV=5120 maxP=3826 pmode
+2026-10-24T00:59:22+07:00 warm {"prompt_n": 512, "n_predict": 32, "sent_wall": 1792777906.0845873, "events": [[406.129719, [576], 1, 0.001, 406128.12, " The"], [408.349566, [12126], 2, 2220.128, 406128.12, " summary"], [408.349707, [1265], 
+2026-10-24T00:59:22+07:00 health 0 {"laptop": "load=2.31 pkg_mC=66000 MemAvailable_kB=7634992", "pi5": "throttled=0x0 temp=62.0'C MemAvailable_kB=381856", "jetson": "guard=\"00:59:22 V=5168 I=416 P=2149 alarms=0 minV=4856 maxP=8648 pmode:00
+2026-10-24T01:02:18+07:00 req 0 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792778362.8781953, "events": [[98.723413, [576], 1, 0.001, 98722.446, " The"], [100.770511, [12126], 2, 2047.04, 98722.446, " summary"], [102.85137, [1265], 3,
+2026-10-24T01:02:18+07:00 health 1 {"laptop": "load=2.45 pkg_mC=69000 MemAvailable_kB=7581440", "pi5": "throttled=0x0 temp=61.5'C MemAvailable_kB=387648", "jetson": "guard=\"01:02:18 V=5160 I=464 P=2472 alarms=0 minV=4856 maxP=8726 pmode:00
+2026-10-24T01:05:18+07:00 req 1 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792778538.830238, "events": [[100.796224, [576], 1, 0.001, 100795.339, " The"], [102.935188, [1467], 2, 2138.925, 100795.339, " text"], [102.935289, [34334], 3
+2026-10-24T01:05:18+07:00 health 2 {"laptop": "load=2.53 pkg_mC=67000 MemAvailable_kB=7625924", "pi5": "throttled=0x0 temp=61.5'C MemAvailable_kB=387712", "jetson": "guard=\"01:05:18 V=5160 I=440 P=2311 alarms=0 minV=4856 maxP=8726 pmode:00
+2026-10-24T01:08:23+07:00 req 2 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792778718.5948627, "events": [[101.050073, [576], 1, 0.001, 101049.29, " The"], [103.093757, [12126], 2, 2043.676, 101049.29, " summary"], [105.174577, [1265],
+2026-10-24T01:08:23+07:00 health end {"laptop": "load=3.24 pkg_mC=68000 MemAvailable_kB=7617140", "pi5": "throttled=0x0 temp=61.5'C MemAvailable_kB=383776", "jetson": "guard=\"01:08:23 V=4896 I=1528 P=7242 alarms=0 minV=4856 maxP=8726 pmode
+scp: Connection closed
+2026-10-24T01:08:25+07:00 serve_pool stop    llama-server on laptop stopped
+2026-10-24T01:08:26+07:00 serve_pool stop    worker on pi5 stopped
+2026-10-24T01:08:26+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T01:08:26+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T01:08:26+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T01:08:26+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T01:08:26+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T01:08:26+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T01:08:26+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T01:08:26+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T01:08:26+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T01:08:27+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T01:08:27+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T01:08:27+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T01:08:27+07:00 serve_pool stop    worker on jetson stopped
+2026-10-24T01:08:27+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T01:08:27+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T01:08:27+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T01:08:28+07:00 serve_pool stop    jetson clocks restored
+2026-10-24T01:08:28+07:00 done {"log": "testbed/results/qr3_scS11_qwen3_32b_q6k_20261024_004626.log"}
+req 0: 64 tokens, 0 merged; TTFT 98723.4 ms; client mean 1217.3 p95 2126.34 max 2200.33 | server mean 1217.3 p95 2126.33 max 2200.92
+req 1: 64 tokens, 0 merged; TTFT 100796.2 ms; client mean 1244.93 p95 2103.92 max 2138.96 | server mean 1244.93 p95 2104.04 max 2138.92
+req 2: 64 tokens, 0 merged; TTFT 101050.1 ms; client mean 1323.48 p95 2137.63 max 2199.43 | server mean 1323.48 p95 2137.72 max 2199.45
+POOLED client {"n": 189, "mean": 1261.9, "p50": 2051.87, "p95": 2134.34, "p99": 2189.69, "max": 2200.33, "min": 0.07, "p95_ci95": [2104.06, 2137.9]}
+POOLED server {"n": 189, "mean": 1261.9, "p50": 2051.94, "p95": 2134.46, "p99": 2189.67, "max": 2200.92, "min": 0.0, "p95_ci95": [2104.18, 2137.98]}
+wrote testbed/results/qr3_scS11_qwen3_32b_q6k_20261024_004626_summary.json
+ARM 1 S1 rc=0 log=testbed/results/qr3_scS11_qwen3_32b_q6k_20261024_004626.log
+===== 2026-10-24T01:08:48+07:00 arm-run 2: S2
+quiet   laptop: load 0.65, on the charger, no battery charging, wifi disabled
+cold    pi5 at 49.9 C (< 50) after 40 s
+cold    pi4 at 53.5 C (< 55) after 0 s
+2026-10-24T01:10:59+07:00 start {"what": "QR3 TPOT, one user", "engine": "llama", "nodes": "pi5 pi4 jetson laptop", "prima_lw": null, "model": "qwen3_32b_q6k", "ctx": 2048, "mem": "testbed/dataset/memory_snapshot_20261024_003912.json", "clo
+2026-10-24T01:13:59+07:00 model_sha256 {"host": "laptop", "file": "~/models/qwen3-32b-q6_k.gguf", "sha256": "c4c7c3cb6da260df1fe1d3cfd090a32dc7cc348f1278158be18e301f390d6f6e", "expected": "c4c7c3cb6da260df1fe1d3cfd090a32dc7cc348f1278158be18
+2026-10-24T01:14:14+07:00 settled {"host": "laptop", "mem_available_mib": 26020}
+2026-10-24T01:14:14+07:00 serve_pool ########## 2026-10-24T01:14:14+07:00 serve qwen3_32b_q6k, ctx 2048, clocks locked, boards pi5 pi4 jetson laptop, planned against testbed/dataset/memory_snapshot_20261024_003912.json: laptop 43 + pi5 18 +
+2026-10-24T01:14:14+07:00 serve_pool hosts   laptop: fixed: laptop 43 + pi5 18 + jetson 3, head last
+2026-10-24T01:14:14+07:00 serve_pool draft   -md ~/models/qwen3-0.6b-q8_0.gguf --spec-type draft-simple --spec-draft-n-max 2 --spec-draft-n-min 0 --spec-draft-p-min 0 -devd none -ngld 0 (host charge +800 MiB)
+2026-10-24T01:14:14+07:00 serve_pool llama-server -m ~/models/qwen3-32b-q6_k.gguf --rpc 192.168.10.11:50052,192.168.1.114:50052 -ngl 22 -ts 17.5,4.5 -md ~/models/qwen3-0.6b-q8_0.gguf --spec-type draft-simple --spec-draft-n-max 2 --spec-draf
+2026-10-24T01:14:14+07:00 serve_pool gate    laptop: MemAvailable 26017 MiB, the plan needs 25674 MiB with its reserve (margin at rest 377 MiB)
+2026-10-24T01:14:15+07:00 serve_pool gate    pi5: MemAvailable 7578 MiB, the plan needs 7202 MiB with its reserve (margin at rest 368 MiB)
+2026-10-24T01:14:15+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T01:14:15+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T01:14:15+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T01:14:15+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T01:14:15+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T01:14:15+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T01:14:16+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T01:14:16+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T01:14:16+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T01:14:16+07:00 serve_pool gate    jetson: MemAvailable 3541 MiB, the plan needs 2880 MiB with its reserve (margin at rest 663 MiB)
+2026-10-24T01:14:16+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T01:14:16+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T01:14:16+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T01:14:16+07:00 serve_pool jetson  GATE ok: pmode:0000, guard live and un-tripped, eth0 is the only interface on the router LAN
+2026-10-24T01:14:16+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T01:14:16+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T01:14:16+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T01:14:17+07:00 serve_pool jetson  clocks: LOCKED
+2026-10-24T01:14:17+07:00 serve_pool worker  pi5 listening on 192.168.10.11:50052 (pid 12678)
+2026-10-24T01:14:17+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T01:14:17+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T01:14:17+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T01:14:18+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T01:14:18+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T01:14:18+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T01:14:18+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T01:14:18+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T01:14:18+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T01:14:18+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T01:14:18+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T01:14:18+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T01:14:19+07:00 serve_pool worker  jetson listening on 192.168.1.114:50052 (pid 8603)
+2026-10-24T01:14:19+07:00 serve_pool server  starting on laptop (pid 35890); loading streams the model from the SD card to the workers
+2026-10-24T01:16:25+07:00 serve_pool READY   2026-10-24T01:16:25+07:00: http://192.168.1.108:8080/ (web chat) -- health {"status":"ok"}
+2026-10-24T01:16:25+07:00 serve_pool 0.02.665.415 I load_tensors:          CPU model buffer size = 17012.44 MiB
+2026-10-24T01:16:25+07:00 serve_pool 0.02.665.436 I load_tensors: RPC0[192.168.1.114:50052] model buffer size =  1753.04 MiB
+2026-10-24T01:16:25+07:00 serve_pool 0.02.665.437 I load_tensors: RPC0[192.168.10.11:50052] model buffer size =  6866.74 MiB
+2026-10-24T01:16:25+07:00 serve_pool 2.00.263.766 I llama_context: n_ctx                 = 2048
+2026-10-24T01:16:25+07:00 serve_pool 2.00.263.769 I llama_context: flash_attn            = auto
+2026-10-24T01:16:25+07:00 serve_pool 2.00.264.049 I llama_kv_cache:        CPU KV buffer size =   344.00 MiB
+2026-10-24T01:16:25+07:00 serve_pool 2.00.491.213 I llama_kv_cache: RPC0[192.168.1.114:50052] KV buffer size =    24.00 MiB
+2026-10-24T01:16:25+07:00 serve_pool 2.00.491.989 I llama_kv_cache: RPC0[192.168.10.11:50052] KV buffer size =   144.00 MiB
+2026-10-24T01:16:25+07:00 serve_pool 2.00.492.073 I llama_kv_cache: size =  512.00 MiB (  2048 cells,  64 layers,  1/1 seqs), K (f16):  256.00 MiB, V (f16):  256.00 MiB
+2026-10-24T01:16:25+07:00 serve_pool 2.00.686.688 I sched_reserve: RPC0[192.168.10.11:50052] compute buffer size =   172.01 MiB
+2026-10-24T01:16:25+07:00 serve_pool 2.00.686.693 I sched_reserve: RPC0[192.168.1.114:50052] compute buffer size =   172.01 MiB
+2026-10-24T01:16:25+07:00 serve_pool 2.00.686.694 I sched_reserve:        CPU compute buffer size =   198.01 MiB
+2026-10-24T01:16:25+07:00 serve_pool 2.03.049.990 I load_tensors:          CPU model buffer size =   604.15 MiB
+2026-10-24T01:16:25+07:00 serve_pool 2.03.326.781 I llama_context: n_ctx                 = 2048
+2026-10-24T01:16:25+07:00 serve_pool 2.03.326.804 I llama_context: flash_attn            = auto
+2026-10-24T01:16:25+07:00 serve_pool 2.03.327.018 I llama_kv_cache:        CPU KV buffer size =   224.00 MiB
+2026-10-24T01:16:25+07:00 serve_pool 2.03.459.416 I llama_kv_cache: size =  224.00 MiB (  2048 cells,  28 layers,  1/1 seqs), K (f16):  112.00 MiB, V (f16):  112.00 MiB
+2026-10-24T01:16:25+07:00 serve_pool 2.03.464.439 I sched_reserve:        CPU compute buffer size =    28.01 MiB
+2026-10-24T01:16:25+07:00 serve_pool 2.05.462.167 I slot   load_model: id  0 | task -1 | new slot, n_ctx = 2048
+2026-10-24T01:16:25+07:00 serve_pool split   pi5: llama.cpp 6866.74 MiB, planned 6866.7 MiB (head on jetson)
+2026-10-24T01:16:25+07:00 serve_pool split   jetson: llama.cpp 1753.04 MiB, planned 1753.0 MiB (head on jetson)
+2026-10-24T01:16:25+07:00 serve_pool mem     laptop: MemAvailable 7720 MiB at READY, 26017 at the gate: the serve holds 18297 MiB, charged 18506 MiB
+2026-10-24T01:16:25+07:00 serve_pool mem     pi5: MemAvailable 459 MiB at READY, 7578 at the gate: the serve holds 7119 MiB, charged 7202 MiB
+2026-10-24T01:16:25+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T01:16:25+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T01:16:25+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T01:16:25+07:00 serve_pool mem     jetson: MemAvailable 1549 MiB at READY, 3541 at the gate: the serve holds 1992 MiB, charged 2430 MiB
+2026-10-24T01:16:25+07:00 served {"host": "laptop", "workers": "pi5 jetson", "args": "-m ~/models/qwen3-32b-q6_k.gguf --rpc 192.168.10.11:50052,192.168.1.114:50052 -ngl 22 -ts 17.5,4.5", "ctx": "2048", "serve_log": "testbed/results/serve_qw
+2026-10-24T01:16:25+07:00 jetson clocks before cpu=1479000-1479000/1479000 gpu=921600000-921600000/921600000 pmode:0000
+2026-10-24T01:16:26+07:00 jetson clocks {"lock": "ALREADY_LOCKED", "now": "cpu=1479000-1479000/1479000 gpu=921600000-921600000/921600000 pmode:0000"}
+2026-10-24T01:16:26+07:00 prompts {"doc_tokens": 7486, "head": 0, "question": 12, "warm_offset": 6986, "sha256": ["8375febbf15c9102", "a9088107122b30bb", "2832af8bf65e91bd"]}
+2026-10-24T01:16:27+07:00 health warm {"laptop": "load=0.88 pkg_mC=64000 MemAvailable_kB=7897188", "pi5": "throttled=0x0 temp=49.4'C MemAvailable_kB=478016", "jetson": "guard=\"01:16:27 V=5136 I=568 P=2953 alarms=0 minV=4856 maxP=8726 pmode
+2026-10-24T01:24:07+07:00 warm {"prompt_n": 512, "n_predict": 32, "sent_wall": 1792779387.1520169, "events": [[405.684451, [576], 1, 0.001, 405683.358, " The"], [408.706798, [12126], 2, 3022.43, 405683.358, " summary"], [408.70689, [1265], 
+2026-10-24T01:24:08+07:00 health 0 {"laptop": "load=2.13 pkg_mC=63000 MemAvailable_kB=7641208", "pi5": "throttled=0x0 temp=61.5'C MemAvailable_kB=375104", "jetson": "guard=\"01:24:07 V=4976 I=1280 P=6467 alarms=0 minV=4856 maxP=8726 pmode:0
+2026-10-24T01:26:49+07:00 req 0 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792779848.164268, "events": [[93.315422, [576], 1, 0.001, 93314.645, " The"], [96.049117, [12126], 2, 2733.676, 93314.645, " summary"], [98.804432, [1265], 3, 
+2026-10-24T01:26:50+07:00 health 1 {"laptop": "load=1.87 pkg_mC=61000 MemAvailable_kB=7639420", "pi5": "throttled=0x0 temp=63.7'C MemAvailable_kB=385536", "jetson": "guard=\"01:26:49 V=4872 I=1712 P=8404 alarms=0 minV=4856 maxP=8726 pmode:0
+2026-10-24T01:29:44+07:00 req 1 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792780010.2108138, "events": [[92.541931, [576], 1, 0.001, 92541.19, " The"], [95.284243, [1467], 2, 2742.288, 92541.19, " text"], [95.284337, [34334], 3, 2742
+2026-10-24T01:29:44+07:00 health 2 {"laptop": "load=1.76 pkg_mC=64000 MemAvailable_kB=7616020", "pi5": "throttled=0x0 temp=63.1'C MemAvailable_kB=385392", "jetson": "guard=\"01:29:44 V=5168 I=480 P=2752 alarms=0 minV=4856 maxP=8726 pmode:00
+2026-10-24T01:32:51+07:00 req 2 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792780184.7843816, "events": [[92.853449, [576], 1, 0.001, 92852.727, " The"], [95.589161, [12126], 2, 2735.704, 92852.727, " summary"], [98.363297, [1265], 3,
+2026-10-24T01:32:51+07:00 health end {"laptop": "load=1.73 pkg_mC=67000 MemAvailable_kB=7612076", "pi5": "throttled=0x0 temp=63.1'C MemAvailable_kB=385232", "jetson": "guard=\"01:32:50 V=5168 I=424 P=2232 alarms=0 minV=4856 maxP=8726 pmode:
+scp: Connection closed
+2026-10-24T01:32:54+07:00 serve_pool stop    llama-server on laptop stopped
+2026-10-24T01:32:54+07:00 serve_pool stop    worker on pi5 stopped
+2026-10-24T01:32:54+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T01:32:54+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T01:32:54+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T01:32:55+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T01:32:55+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T01:32:55+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T01:32:55+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T01:32:55+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T01:32:55+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T01:32:55+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T01:32:55+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T01:32:55+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T01:32:55+07:00 serve_pool stop    worker on jetson stopped
+2026-10-24T01:32:55+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T01:32:55+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T01:32:55+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T01:32:56+07:00 serve_pool stop    jetson clocks restored
+2026-10-24T01:32:56+07:00 done {"log": "testbed/results/qr3_scS22_qwen3_32b_q6k_20261024_011059.log"}
+req 0: 64 tokens, 0 merged; TTFT 93315.4 ms; client mean 1082.73 p95 2777.68 max 2788.15 | server mean 1082.72 p95 2777.82 max 2788.27
+req 1: 64 tokens, 0 merged; TTFT 92541.9 ms; client mean 1293.83 p95 2781.58 max 2786.99 | server mean 1293.83 p95 2781.62 max 2787.08
+req 2: 64 tokens, 0 merged; TTFT 92853.4 ms; client mean 1488.72 p95 2787.22 max 2796.73 | server mean 1488.72 p95 2787.31 max 2796.89
+POOLED client {"n": 189, "mean": 1288.43, "p50": 0.1, "p95": 2782.68, "p99": 2789.37, "max": 2796.73, "min": 0.03, "p95_ci95": [2777.81, 2787.41]}
+POOLED server {"n": 189, "mean": 1288.42, "p50": 0.0, "p95": 2782.74, "p99": 2789.45, "max": 2796.89, "min": 0.0, "p95_ci95": [2777.95, 2787.49]}
+wrote testbed/results/qr3_scS22_qwen3_32b_q6k_20261024_011059_summary.json
+ARM 2 S2 rc=0 log=testbed/results/qr3_scS22_qwen3_32b_q6k_20261024_011059.log
+===== 2026-10-24T01:33:16+07:00 arm-run 3: S3
+quiet   laptop: load 0.46, on the charger, no battery charging, wifi disabled
+cold    pi5 at 49.9 C (< 50) after 70 s
+cold    pi4 at 53.5 C (< 55) after 0 s
+2026-10-24T01:35:28+07:00 start {"what": "QR3 TPOT, one user", "engine": "llama", "nodes": "pi5 pi4 jetson laptop", "prima_lw": null, "model": "qwen3_32b_q6k", "ctx": 2048, "mem": "testbed/dataset/memory_snapshot_20261024_003912.json", "clo
+2026-10-24T01:38:07+07:00 model_sha256 {"host": "laptop", "file": "~/models/qwen3-32b-q6_k.gguf", "sha256": "c4c7c3cb6da260df1fe1d3cfd090a32dc7cc348f1278158be18e301f390d6f6e", "expected": "c4c7c3cb6da260df1fe1d3cfd090a32dc7cc348f1278158be18
+2026-10-24T01:38:12+07:00 settled {"host": "laptop", "mem_available_mib": 26052}
+2026-10-24T01:38:12+07:00 serve_pool ########## 2026-10-24T01:38:12+07:00 serve qwen3_32b_q6k, ctx 2048, clocks locked, boards pi5 pi4 jetson laptop, planned against testbed/dataset/memory_snapshot_20261024_003912.json: laptop 43 + pi5 18 +
+2026-10-24T01:38:12+07:00 serve_pool hosts   laptop: fixed: laptop 43 + pi5 18 + jetson 3, head last
+2026-10-24T01:38:12+07:00 serve_pool draft   -md ~/models/qwen3-0.6b-q8_0.gguf --spec-type draft-simple --spec-draft-n-max 3 --spec-draft-n-min 0 --spec-draft-p-min 0 -devd none -ngld 0 (host charge +800 MiB)
+2026-10-24T01:38:12+07:00 serve_pool llama-server -m ~/models/qwen3-32b-q6_k.gguf --rpc 192.168.10.11:50052,192.168.1.114:50052 -ngl 22 -ts 17.5,4.5 -md ~/models/qwen3-0.6b-q8_0.gguf --spec-type draft-simple --spec-draft-n-max 3 --spec-draf
+2026-10-24T01:38:12+07:00 serve_pool gate    laptop: MemAvailable 26059 MiB, the plan needs 25674 MiB with its reserve (margin at rest 377 MiB)
+2026-10-24T01:38:13+07:00 serve_pool gate    pi5: MemAvailable 7585 MiB, the plan needs 7202 MiB with its reserve (margin at rest 368 MiB)
+2026-10-24T01:38:13+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T01:38:13+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T01:38:13+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T01:38:13+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T01:38:13+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T01:38:13+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T01:38:14+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T01:38:14+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T01:38:14+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T01:38:14+07:00 serve_pool gate    jetson: MemAvailable 3540 MiB, the plan needs 2880 MiB with its reserve (margin at rest 663 MiB)
+2026-10-24T01:38:14+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T01:38:14+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T01:38:14+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T01:38:14+07:00 serve_pool jetson  GATE ok: pmode:0000, guard live and un-tripped, eth0 is the only interface on the router LAN
+2026-10-24T01:38:14+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T01:38:14+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T01:38:14+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T01:38:15+07:00 serve_pool jetson  clocks: LOCKED
+2026-10-24T01:38:15+07:00 serve_pool worker  pi5 listening on 192.168.10.11:50052 (pid 13040)
+2026-10-24T01:38:15+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T01:38:15+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T01:38:15+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T01:38:16+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T01:38:16+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T01:38:16+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T01:38:16+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T01:38:16+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T01:38:16+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T01:38:16+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T01:38:16+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T01:38:16+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T01:38:17+07:00 serve_pool worker  jetson listening on 192.168.1.114:50052 (pid 25262)
+2026-10-24T01:38:17+07:00 serve_pool server  starting on laptop (pid 41445); loading streams the model from the SD card to the workers
+2026-10-24T01:40:18+07:00 serve_pool READY   2026-10-24T01:40:18+07:00: http://192.168.1.108:8080/ (web chat) -- health {"status":"ok"}
+2026-10-24T01:40:18+07:00 serve_pool 0.02.397.779 I load_tensors:          CPU model buffer size = 17012.44 MiB
+2026-10-24T01:40:18+07:00 serve_pool 0.02.397.780 I load_tensors: RPC0[192.168.1.114:50052] model buffer size =  1753.04 MiB
+2026-10-24T01:40:18+07:00 serve_pool 0.02.397.781 I load_tensors: RPC0[192.168.10.11:50052] model buffer size =  6866.74 MiB
+2026-10-24T01:40:18+07:00 serve_pool 1.54.812.185 I llama_context: n_ctx                 = 2048
+2026-10-24T01:40:18+07:00 serve_pool 1.54.812.187 I llama_context: flash_attn            = auto
+2026-10-24T01:40:18+07:00 serve_pool 1.54.812.403 I llama_kv_cache:        CPU KV buffer size =   344.00 MiB
+2026-10-24T01:40:18+07:00 serve_pool 1.55.014.151 I llama_kv_cache: RPC0[192.168.1.114:50052] KV buffer size =    24.00 MiB
+2026-10-24T01:40:18+07:00 serve_pool 1.55.015.130 I llama_kv_cache: RPC0[192.168.10.11:50052] KV buffer size =   144.00 MiB
+2026-10-24T01:40:18+07:00 serve_pool 1.55.015.247 I llama_kv_cache: size =  512.00 MiB (  2048 cells,  64 layers,  1/1 seqs), K (f16):  256.00 MiB, V (f16):  256.00 MiB
+2026-10-24T01:40:18+07:00 serve_pool 1.55.214.531 I sched_reserve: RPC0[192.168.10.11:50052] compute buffer size =   172.01 MiB
+2026-10-24T01:40:18+07:00 serve_pool 1.55.214.535 I sched_reserve: RPC0[192.168.1.114:50052] compute buffer size =   172.01 MiB
+2026-10-24T01:40:18+07:00 serve_pool 1.55.214.536 I sched_reserve:        CPU compute buffer size =   198.01 MiB
+2026-10-24T01:40:18+07:00 serve_pool 1.57.433.840 I load_tensors:          CPU model buffer size =   604.15 MiB
+2026-10-24T01:40:18+07:00 serve_pool 1.57.681.498 I llama_context: n_ctx                 = 2048
+2026-10-24T01:40:18+07:00 serve_pool 1.57.681.499 I llama_context: flash_attn            = auto
+2026-10-24T01:40:18+07:00 serve_pool 1.57.681.630 I llama_kv_cache:        CPU KV buffer size =   224.00 MiB
+2026-10-24T01:40:18+07:00 serve_pool 1.57.796.524 I llama_kv_cache: size =  224.00 MiB (  2048 cells,  28 layers,  1/1 seqs), K (f16):  112.00 MiB, V (f16):  112.00 MiB
+2026-10-24T01:40:18+07:00 serve_pool 1.57.800.302 I sched_reserve:        CPU compute buffer size =    28.01 MiB
+2026-10-24T01:40:18+07:00 serve_pool 1.59.718.272 I slot   load_model: id  0 | task -1 | new slot, n_ctx = 2048
+2026-10-24T01:40:18+07:00 serve_pool split   pi5: llama.cpp 6866.74 MiB, planned 6866.7 MiB (head on jetson)
+2026-10-24T01:40:18+07:00 serve_pool split   jetson: llama.cpp 1753.04 MiB, planned 1753.0 MiB (head on jetson)
+2026-10-24T01:40:18+07:00 serve_pool mem     laptop: MemAvailable 7721 MiB at READY, 26059 at the gate: the serve holds 18338 MiB, charged 18506 MiB
+2026-10-24T01:40:18+07:00 serve_pool mem     pi5: MemAvailable 491 MiB at READY, 7585 at the gate: the serve holds 7094 MiB, charged 7202 MiB
+2026-10-24T01:40:18+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T01:40:18+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T01:40:18+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T01:40:18+07:00 serve_pool mem     jetson: MemAvailable 1549 MiB at READY, 3540 at the gate: the serve holds 1991 MiB, charged 2430 MiB
+2026-10-24T01:40:18+07:00 served {"host": "laptop", "workers": "pi5 jetson", "args": "-m ~/models/qwen3-32b-q6_k.gguf --rpc 192.168.10.11:50052,192.168.1.114:50052 -ngl 22 -ts 17.5,4.5", "ctx": "2048", "serve_log": "testbed/results/serve_qw
+2026-10-24T01:40:18+07:00 jetson clocks before cpu=1479000-1479000/1479000 gpu=921600000-921600000/921600000 pmode:0000
+2026-10-24T01:40:19+07:00 jetson clocks {"lock": "ALREADY_LOCKED", "now": "cpu=1479000-1479000/1479000 gpu=921600000-921600000/921600000 pmode:0000"}
+2026-10-24T01:40:19+07:00 prompts {"doc_tokens": 7486, "head": 0, "question": 12, "warm_offset": 6986, "sha256": ["8375febbf15c9102", "a9088107122b30bb", "2832af8bf65e91bd"]}
+2026-10-24T01:40:19+07:00 health warm {"laptop": "load=0.61 pkg_mC=59000 MemAvailable_kB=7896052", "pi5": "throttled=0x0 temp=49.4'C MemAvailable_kB=505616", "jetson": "guard=\"01:40:19 V=5136 I=576 P=2953 alarms=0 minV=4856 maxP=8726 pmode
+2026-10-24T01:47:46+07:00 warm {"prompt_n": 512, "n_predict": 32, "sent_wall": 1792780819.9444952, "events": [[383.894751, [576], 1, 0.001, 383893.749, " The"], [387.664914, [12126], 2, 3770.173, 383893.749, " summary"], [387.665027, [1265]
+2026-10-24T01:47:47+07:00 health 0 {"laptop": "load=1.13 pkg_mC=62000 MemAvailable_kB=7641732", "pi5": "throttled=0x0 temp=63.1'C MemAvailable_kB=390592", "jetson": "guard=\"01:47:46 V=5168 I=416 P=2191 alarms=0 minV=4856 maxP=8726 pmode:00
+2026-10-24T01:50:41+07:00 req 0 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792781267.310202, "events": [[92.129113, [576], 1, 0.001, 92128.272, " The"], [95.662561, [12126], 2, 3533.466, 92128.272, " summary"], [99.159783, [1265], 3, 
+2026-10-24T01:50:42+07:00 health 1 {"laptop": "load=1.82 pkg_mC=64000 MemAvailable_kB=7674672", "pi5": "throttled=0x0 temp=64.2'C MemAvailable_kB=389072", "jetson": "guard=\"01:50:41 V=4896 I=1528 P=7242 alarms=0 minV=4856 maxP=8726 pmode:0
+2026-10-24T01:53:56+07:00 req 1 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792781442.4012764, "events": [[92.993377, [576], 1, 0.001, 92992.504, " The"], [96.521419, [1467], 2, 3528.0, 92992.504, " text"], [96.521515, [34334], 3, 3528
+2026-10-24T01:53:56+07:00 health 2 {"laptop": "load=3.94 pkg_mC=67000 MemAvailable_kB=5535356", "pi5": "throttled=0x0 temp=61.5'C MemAvailable_kB=390016", "jetson": "guard=\"01:53:55 V=5168 I=424 P=2191 alarms=0 minV=4856 maxP=8726 pmode:00
+2026-10-24T01:57:30+07:00 req 2 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792781636.9086986, "events": [[102.7124, [576], 1, 0.001, 102711.408, " The"], [106.333299, [12126], 2, 3620.845, 102711.408, " summary"], [109.994131, [1265],
+2026-10-24T01:57:30+07:00 health end {"laptop": "load=2.35 pkg_mC=65000 MemAvailable_kB=5998364", "pi5": "throttled=0x0 temp=63.1'C MemAvailable_kB=387712", "jetson": "guard=\"01:57:30 V=5136 I=584 P=3035 alarms=0 minV=4856 maxP=8726 pmode:
+scp: Connection closed
+2026-10-24T01:57:33+07:00 serve_pool stop    llama-server on laptop stopped
+2026-10-24T01:57:33+07:00 serve_pool stop    worker on pi5 stopped
+2026-10-24T01:57:33+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T01:57:33+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T01:57:33+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T01:57:33+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T01:57:33+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T01:57:33+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T01:57:34+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T01:57:34+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T01:57:34+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T01:57:34+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T01:57:34+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T01:57:34+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T01:57:34+07:00 serve_pool stop    worker on jetson stopped
+2026-10-24T01:57:34+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T01:57:34+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T01:57:34+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T01:57:35+07:00 serve_pool stop    jetson clocks restored
+2026-10-24T01:57:35+07:00 done {"log": "testbed/results/qr3_scS33_qwen3_32b_q6k_20261024_013528.log"}
+req 0: 64 tokens, 0 merged; TTFT 92129.1 ms; client mean 1308.44 p95 3533.19 max 3560.38 | server mean 1308.44 p95 3533.22 max 3560.41
+req 1: 64 tokens, 0 merged; TTFT 92993.4 ms; client mean 1603.33 p95 4430.51 max 5251.11 | server mean 1603.33 p95 4433.84 max 5253.18
+req 2: 64 tokens, 0 merged; TTFT 102712.4 ms; client mean 1757.07 p95 3729.44 max 3814.0 | server mean 1757.06 p95 3729.45 max 3814.81
+POOLED client {"n": 189, "mean": 1556.28, "p50": 0.11, "p95": 3764.33, "p99": 4713.88, "max": 5251.11, "min": 0.02, "p95_ci95": [3533.45, 4439.34]}
+POOLED server {"n": 189, "mean": 1556.28, "p50": 0.0, "p95": 3764.53, "p99": 4714.16, "max": 5253.18, "min": 0.0, "p95_ci95": [3533.46, 4443.03]}
+wrote testbed/results/qr3_scS33_qwen3_32b_q6k_20261024_013528_summary.json
+ARM 3 S3 rc=0 log=testbed/results/qr3_scS33_qwen3_32b_q6k_20261024_013528.log
+===== 2026-10-24T01:57:55+07:00 arm-run 4: S3
+quiet   laptop: load 0.98, on the charger, no battery charging, wifi disabled
+cold    pi5 at 49.9 C (< 50) after 160 s
+cold    pi4 at 51.1 C (< 55) after 0 s
+2026-10-24T02:02:08+07:00 start {"what": "QR3 TPOT, one user", "engine": "llama", "nodes": "pi5 pi4 jetson laptop", "prima_lw": null, "model": "qwen3_32b_q6k", "ctx": 2048, "mem": "testbed/dataset/memory_snapshot_20261024_003912.json", "clo
+2026-10-24T02:05:11+07:00 model_sha256 {"host": "laptop", "file": "~/models/qwen3-32b-q6_k.gguf", "sha256": "c4c7c3cb6da260df1fe1d3cfd090a32dc7cc348f1278158be18e301f390d6f6e", "expected": "c4c7c3cb6da260df1fe1d3cfd090a32dc7cc348f1278158be18
+2026-10-24T02:05:21+07:00 settled {"host": "laptop", "mem_available_mib": 24524}
+2026-10-24T02:05:21+07:00 serve_pool ########## 2026-10-24T02:05:21+07:00 serve qwen3_32b_q6k, ctx 2048, clocks locked, boards pi5 pi4 jetson laptop, planned against testbed/dataset/memory_snapshot_20261024_003912.json: laptop 43 + pi5 18 +
+2026-10-24T02:05:21+07:00 serve_pool hosts   laptop: fixed: laptop 43 + pi5 18 + jetson 3, head last
+2026-10-24T02:05:21+07:00 serve_pool draft   -md ~/models/qwen3-0.6b-q8_0.gguf --spec-type draft-simple --spec-draft-n-max 3 --spec-draft-n-min 0 --spec-draft-p-min 0 -devd none -ngld 0 (host charge +800 MiB)
+2026-10-24T02:05:21+07:00 serve_pool llama-server -m ~/models/qwen3-32b-q6_k.gguf --rpc 192.168.10.11:50052,192.168.1.114:50052 -ngl 22 -ts 17.5,4.5 -md ~/models/qwen3-0.6b-q8_0.gguf --spec-type draft-simple --spec-draft-n-max 3 --spec-draf
+2026-10-24T02:05:22+07:00 serve_pool gate    laptop: MemAvailable 24521 MiB, the plan needs 25674 MiB with its reserve (margin at rest 377 MiB)
+2026-10-24T02:05:22+07:00 serve_pool REFUSED: laptop has 24521 MiB free
+2026-10-24T02:05:22+07:00 serve_pool nothing started by serve_pool.sh (no /home/aun/.cache/heteroserve-wf/serve_pool.state)
+FATAL: serve_pool.sh start failed
+ARM 4 S3 rc=1 log=testbed/results/qr3_scS34_qwen3_32b_q6k_20261024_020208.log
+===== 2026-10-24T02:05:42+07:00 arm-run 5: S2
+quiet   laptop: load 0.93, on the charger, no battery charging, wifi disabled
+cold    pi5 at 47.7 C (< 50) after 0 s
+cold    pi4 at 53.5 C (< 55) after 0 s
+2026-10-24T02:06:42+07:00 start {"what": "QR3 TPOT, one user", "engine": "llama", "nodes": "pi5 pi4 jetson laptop", "prima_lw": null, "model": "qwen3_32b_q6k", "ctx": 2048, "mem": "testbed/dataset/memory_snapshot_20261024_003912.json", "clo
+2026-10-24T02:09:39+07:00 model_sha256 {"host": "laptop", "file": "~/models/qwen3-32b-q6_k.gguf", "sha256": "c4c7c3cb6da260df1fe1d3cfd090a32dc7cc348f1278158be18e301f390d6f6e", "expected": "c4c7c3cb6da260df1fe1d3cfd090a32dc7cc348f1278158be18
+2026-10-24T02:09:44+07:00 settled {"host": "laptop", "mem_available_mib": 27665}
+2026-10-24T02:09:44+07:00 serve_pool ########## 2026-10-24T02:09:44+07:00 serve qwen3_32b_q6k, ctx 2048, clocks locked, boards pi5 pi4 jetson laptop, planned against testbed/dataset/memory_snapshot_20261024_003912.json: laptop 43 + pi5 18 +
+2026-10-24T02:09:44+07:00 serve_pool hosts   laptop: fixed: laptop 43 + pi5 18 + jetson 3, head last
+2026-10-24T02:09:44+07:00 serve_pool draft   -md ~/models/qwen3-0.6b-q8_0.gguf --spec-type draft-simple --spec-draft-n-max 2 --spec-draft-n-min 0 --spec-draft-p-min 0 -devd none -ngld 0 (host charge +800 MiB)
+2026-10-24T02:09:44+07:00 serve_pool llama-server -m ~/models/qwen3-32b-q6_k.gguf --rpc 192.168.10.11:50052,192.168.1.114:50052 -ngl 22 -ts 17.5,4.5 -md ~/models/qwen3-0.6b-q8_0.gguf --spec-type draft-simple --spec-draft-n-max 2 --spec-draf
+2026-10-24T02:09:44+07:00 serve_pool gate    laptop: MemAvailable 27658 MiB, the plan needs 25674 MiB with its reserve (margin at rest 377 MiB)
+2026-10-24T02:09:44+07:00 serve_pool gate    pi5: MemAvailable 7587 MiB, the plan needs 7202 MiB with its reserve (margin at rest 368 MiB)
+2026-10-24T02:09:44+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T02:09:44+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T02:09:44+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T02:09:45+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T02:09:45+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T02:09:45+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T02:09:45+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T02:09:45+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T02:09:45+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T02:09:45+07:00 serve_pool gate    jetson: MemAvailable 3540 MiB, the plan needs 2880 MiB with its reserve (margin at rest 663 MiB)
+2026-10-24T02:09:45+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T02:09:45+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T02:09:45+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T02:09:46+07:00 serve_pool jetson  GATE ok: pmode:0000, guard live and un-tripped, eth0 is the only interface on the router LAN
+2026-10-24T02:09:46+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T02:09:46+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T02:09:46+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T02:09:46+07:00 serve_pool jetson  clocks: LOCKED
+2026-10-24T02:09:47+07:00 serve_pool worker  pi5 listening on 192.168.10.11:50052 (pid 13498)
+2026-10-24T02:09:47+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T02:09:47+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T02:09:47+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T02:09:47+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T02:09:47+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T02:09:47+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T02:09:48+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T02:09:48+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T02:09:48+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T02:09:48+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T02:09:48+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T02:09:48+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T02:09:48+07:00 serve_pool worker  jetson listening on 192.168.1.114:50052 (pid 14214)
+2026-10-24T02:09:48+07:00 serve_pool server  starting on laptop (pid 51951); loading streams the model from the SD card to the workers
+2026-10-24T02:11:54+07:00 serve_pool READY   2026-10-24T02:11:54+07:00: http://192.168.1.108:8080/ (web chat) -- health {"status":"ok"}
+2026-10-24T02:11:54+07:00 serve_pool 0.02.548.742 I load_tensors:          CPU model buffer size = 17012.44 MiB
+2026-10-24T02:11:54+07:00 serve_pool 0.02.548.743 I load_tensors: RPC0[192.168.1.114:50052] model buffer size =  1753.04 MiB
+2026-10-24T02:11:54+07:00 serve_pool 0.02.548.745 I load_tensors: RPC0[192.168.10.11:50052] model buffer size =  6866.74 MiB
+2026-10-24T02:11:54+07:00 serve_pool 1.56.263.531 I llama_context: n_ctx                 = 2048
+2026-10-24T02:11:54+07:00 serve_pool 1.56.263.533 I llama_context: flash_attn            = auto
+2026-10-24T02:11:54+07:00 serve_pool 1.56.263.788 I llama_kv_cache:        CPU KV buffer size =   344.00 MiB
+2026-10-24T02:11:54+07:00 serve_pool 1.56.481.556 I llama_kv_cache: RPC0[192.168.1.114:50052] KV buffer size =    24.00 MiB
+2026-10-24T02:11:54+07:00 serve_pool 1.56.482.435 I llama_kv_cache: RPC0[192.168.10.11:50052] KV buffer size =   144.00 MiB
+2026-10-24T02:11:54+07:00 serve_pool 1.56.482.547 I llama_kv_cache: size =  512.00 MiB (  2048 cells,  64 layers,  1/1 seqs), K (f16):  256.00 MiB, V (f16):  256.00 MiB
+2026-10-24T02:11:54+07:00 serve_pool 1.56.679.417 I sched_reserve: RPC0[192.168.10.11:50052] compute buffer size =   172.01 MiB
+2026-10-24T02:11:54+07:00 serve_pool 1.56.679.421 I sched_reserve: RPC0[192.168.1.114:50052] compute buffer size =   172.01 MiB
+2026-10-24T02:11:54+07:00 serve_pool 1.56.679.422 I sched_reserve:        CPU compute buffer size =   198.01 MiB
+2026-10-24T02:11:54+07:00 serve_pool 1.59.030.984 I load_tensors:          CPU model buffer size =   604.15 MiB
+2026-10-24T02:11:54+07:00 serve_pool 2.00.067.634 I llama_context: n_ctx                 = 2048
+2026-10-24T02:11:54+07:00 serve_pool 2.00.067.636 I llama_context: flash_attn            = auto
+2026-10-24T02:11:54+07:00 serve_pool 2.00.067.887 I llama_kv_cache:        CPU KV buffer size =   224.00 MiB
+2026-10-24T02:11:54+07:00 serve_pool 2.00.202.618 I llama_kv_cache: size =  224.00 MiB (  2048 cells,  28 layers,  1/1 seqs), K (f16):  112.00 MiB, V (f16):  112.00 MiB
+2026-10-24T02:11:54+07:00 serve_pool 2.00.206.694 I sched_reserve:        CPU compute buffer size =    28.01 MiB
+2026-10-24T02:11:54+07:00 serve_pool 2.02.219.591 I slot   load_model: id  0 | task -1 | new slot, n_ctx = 2048
+2026-10-24T02:11:54+07:00 serve_pool split   pi5: llama.cpp 6866.74 MiB, planned 6866.7 MiB (head on jetson)
+2026-10-24T02:11:54+07:00 serve_pool split   jetson: llama.cpp 1753.04 MiB, planned 1753.0 MiB (head on jetson)
+2026-10-24T02:11:54+07:00 serve_pool mem     laptop: MemAvailable 9472 MiB at READY, 27658 at the gate: the serve holds 18186 MiB, charged 18506 MiB
+2026-10-24T02:11:54+07:00 serve_pool mem     pi5: MemAvailable 511 MiB at READY, 7587 at the gate: the serve holds 7076 MiB, charged 7202 MiB
+2026-10-24T02:11:54+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T02:11:54+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T02:11:54+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T02:11:55+07:00 serve_pool mem     jetson: MemAvailable 1549 MiB at READY, 3540 at the gate: the serve holds 1991 MiB, charged 2430 MiB
+2026-10-24T02:11:55+07:00 served {"host": "laptop", "workers": "pi5 jetson", "args": "-m ~/models/qwen3-32b-q6_k.gguf --rpc 192.168.10.11:50052,192.168.1.114:50052 -ngl 22 -ts 17.5,4.5", "ctx": "2048", "serve_log": "testbed/results/serve_qw
+2026-10-24T02:11:55+07:00 jetson clocks before cpu=1479000-1479000/1479000 gpu=921600000-921600000/921600000 pmode:0000
+2026-10-24T02:11:56+07:00 jetson clocks {"lock": "ALREADY_LOCKED", "now": "cpu=1479000-1479000/1479000 gpu=921600000-921600000/921600000 pmode:0000"}
+2026-10-24T02:11:56+07:00 prompts {"doc_tokens": 7486, "head": 0, "question": 12, "warm_offset": 6986, "sha256": ["8375febbf15c9102", "a9088107122b30bb", "2832af8bf65e91bd"]}
+2026-10-24T02:11:56+07:00 health warm {"laptop": "load=0.66 pkg_mC=61000 MemAvailable_kB=9682868", "pi5": "throttled=0x0 temp=48.3'C MemAvailable_kB=528848", "jetson": "guard=\"02:11:55 V=5144 I=536 P=2835 alarms=0 minV=4848 maxP=8765 pmode
+2026-10-24T02:19:38+07:00 warm {"prompt_n": 512, "n_predict": 32, "sent_wall": 1792782716.710593, "events": [[406.275591, [576], 1, 0.001, 406274.363, " The"], [409.378674, [12126], 2, 3103.186, 406274.363, " summary"], [409.378786, [1265],
+2026-10-24T02:19:38+07:00 health 0 {"laptop": "load=2.01 pkg_mC=69000 MemAvailable_kB=9444052", "pi5": "throttled=0x0 temp=61.5'C MemAvailable_kB=385888", "jetson": "guard=\"02:19:38 V=5136 I=568 P=2953 alarms=0 minV=4848 maxP=8765 pmode:00
+2026-10-24T02:22:32+07:00 req 0 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792783178.6419783, "events": [[102.090718, [576], 1, 0.001, 102089.747, " The"], [105.105546, [12126], 2, 3014.86, 102089.747, " summary"], [107.938111, [1265]
+2026-10-24T02:22:32+07:00 health 1 {"laptop": "load=2.29 pkg_mC=66000 MemAvailable_kB=9413312", "pi5": "throttled=0x0 temp=61.5'C MemAvailable_kB=354160", "jetson": "guard=\"02:22:31 V=4864 I=1736 P=8482 alarms=0 minV=4848 maxP=8765 pmode:0
+2026-10-24T02:25:38+07:00 req 1 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792783352.7944496, "events": [[101.123745, [576], 1, 0.001, 101122.663, " The"], [103.941597, [1467], 2, 2817.831, 101122.663, " text"], [103.941713, [34334], 
+2026-10-24T02:25:39+07:00 health 2 {"laptop": "load=2.35 pkg_mC=65000 MemAvailable_kB=9457144", "pi5": "throttled=0x0 temp=63.1'C MemAvailable_kB=360480", "jetson": "guard=\"02:25:38 V=5144 I=520 P=2716 alarms=0 minV=4848 maxP=8765 pmode:00
+2026-10-24T02:28:58+07:00 req 2 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792783539.2905645, "events": [[101.102846, [576], 1, 0.001, 101101.905, " The"], [103.967603, [12126], 2, 2864.7, 101101.905, " summary"], [106.89149, [1265], 
+2026-10-24T02:28:59+07:00 health end {"laptop": "load=2.16 pkg_mC=66000 MemAvailable_kB=9381676", "pi5": "throttled=0x0 temp=62.0'C MemAvailable_kB=389568", "jetson": "guard=\"02:28:59 V=5136 I=576 P=2994 alarms=0 minV=4848 maxP=8765 pmode:
+scp: Connection closed
+2026-10-24T02:29:01+07:00 serve_pool stop    llama-server on laptop stopped
+2026-10-24T02:29:02+07:00 serve_pool stop    worker on pi5 stopped
+2026-10-24T02:29:02+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T02:29:02+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T02:29:02+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T02:29:02+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T02:29:02+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T02:29:02+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T02:29:02+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T02:29:02+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T02:29:02+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T02:29:02+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T02:29:02+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T02:29:02+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T02:29:03+07:00 serve_pool stop    worker on jetson stopped
+2026-10-24T02:29:03+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T02:29:03+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T02:29:03+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T02:29:03+07:00 serve_pool stop    jetson clocks restored
+2026-10-24T02:29:03+07:00 done {"log": "testbed/results/qr3_scS25_qwen3_32b_q6k_20261024_020642.log"}
+req 0: 64 tokens, 0 merged; TTFT 102090.7 ms; client mean 1132.38 p95 2942.17 max 3014.83 | server mean 1132.38 p95 2942.36 max 3014.86
+req 1: 64 tokens, 0 merged; TTFT 101123.7 ms; client mean 1346.34 p95 2911.43 max 3005.36 | server mean 1346.34 p95 2911.85 max 3008.52
+req 2: 64 tokens, 0 merged; TTFT 101102.8 ms; client mean 1561.42 p95 2987.6 max 3161.88 | server mean 1561.41 p95 2987.68 max 3162.03
+POOLED client {"n": 189, "mean": 1346.71, "p50": 0.12, "p95": 2950.53, "p99": 3021.06, "max": 3161.88, "min": 0.03, "p95_ci95": [2911.78, 2990.89]}
+POOLED server {"n": 189, "mean": 1346.71, "p50": 0.0, "p95": 2951.12, "p99": 3021.12, "max": 3162.03, "min": 0.0, "p95_ci95": [2911.9, 2990.99]}
+wrote testbed/results/qr3_scS25_qwen3_32b_q6k_20261024_020642_summary.json
+ARM 5 S2 rc=0 log=testbed/results/qr3_scS25_qwen3_32b_q6k_20261024_020642.log
+===== 2026-10-24T02:29:24+07:00 arm-run 6: S1
+quiet   laptop: load 0.74, on the charger, no battery charging, wifi disabled
+cold    pi5 at 49.4 C (< 50) after 40 s
+cold    pi4 at 52.1 C (< 55) after 0 s
+2026-10-24T02:31:35+07:00 start {"what": "QR3 TPOT, one user", "engine": "llama", "nodes": "pi5 pi4 jetson laptop", "prima_lw": null, "model": "qwen3_32b_q6k", "ctx": 2048, "mem": "testbed/dataset/memory_snapshot_20261024_003912.json", "clo
+2026-10-24T02:34:35+07:00 model_sha256 {"host": "laptop", "file": "~/models/qwen3-32b-q6_k.gguf", "sha256": "c4c7c3cb6da260df1fe1d3cfd090a32dc7cc348f1278158be18e301f390d6f6e", "expected": "c4c7c3cb6da260df1fe1d3cfd090a32dc7cc348f1278158be18
+2026-10-24T02:34:45+07:00 settled {"host": "laptop", "mem_available_mib": 27801}
+2026-10-24T02:34:46+07:00 serve_pool ########## 2026-10-24T02:34:46+07:00 serve qwen3_32b_q6k, ctx 2048, clocks locked, boards pi5 pi4 jetson laptop, planned against testbed/dataset/memory_snapshot_20261024_003912.json: laptop 43 + pi5 18 +
+2026-10-24T02:34:46+07:00 serve_pool hosts   laptop: fixed: laptop 43 + pi5 18 + jetson 3, head last
+2026-10-24T02:34:46+07:00 serve_pool draft   -md ~/models/qwen3-0.6b-q8_0.gguf --spec-type draft-simple --spec-draft-n-max 1 --spec-draft-n-min 0 --spec-draft-p-min 0 -devd none -ngld 0 (host charge +800 MiB)
+2026-10-24T02:34:46+07:00 serve_pool llama-server -m ~/models/qwen3-32b-q6_k.gguf --rpc 192.168.10.11:50052,192.168.1.114:50052 -ngl 22 -ts 17.5,4.5 -md ~/models/qwen3-0.6b-q8_0.gguf --spec-type draft-simple --spec-draft-n-max 1 --spec-draf
+2026-10-24T02:34:46+07:00 serve_pool gate    laptop: MemAvailable 27801 MiB, the plan needs 25674 MiB with its reserve (margin at rest 377 MiB)
+2026-10-24T02:34:46+07:00 serve_pool gate    pi5: MemAvailable 7585 MiB, the plan needs 7202 MiB with its reserve (margin at rest 368 MiB)
+2026-10-24T02:34:46+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T02:34:46+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T02:34:46+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T02:34:47+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T02:34:47+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T02:34:47+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T02:34:47+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T02:34:47+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T02:34:47+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T02:34:47+07:00 serve_pool gate    jetson: MemAvailable 3541 MiB, the plan needs 2880 MiB with its reserve (margin at rest 663 MiB)
+2026-10-24T02:34:47+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T02:34:47+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T02:34:47+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T02:34:48+07:00 serve_pool jetson  GATE ok: pmode:0000, guard live and un-tripped, eth0 is the only interface on the router LAN
+2026-10-24T02:34:48+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T02:34:48+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T02:34:48+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T02:34:48+07:00 serve_pool jetson  clocks: LOCKED
+2026-10-24T02:34:49+07:00 serve_pool worker  pi5 listening on 192.168.10.11:50052 (pid 13879)
+2026-10-24T02:34:49+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T02:34:49+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T02:34:49+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T02:34:49+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T02:34:49+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T02:34:49+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T02:34:50+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T02:34:50+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T02:34:50+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T02:34:50+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T02:34:50+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T02:34:50+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T02:34:50+07:00 serve_pool worker  jetson listening on 192.168.1.114:50052 (pid 31489)
+2026-10-24T02:34:50+07:00 serve_pool server  starting on laptop (pid 58380); loading streams the model from the SD card to the workers
+2026-10-24T02:36:51+07:00 serve_pool READY   2026-10-24T02:36:51+07:00: http://192.168.1.108:8080/ (web chat) -- health {"status":"ok"}
+2026-10-24T02:36:51+07:00 serve_pool 0.02.558.013 I load_tensors:          CPU model buffer size = 17012.44 MiB
+2026-10-24T02:36:51+07:00 serve_pool 0.02.558.014 I load_tensors: RPC0[192.168.1.114:50052] model buffer size =  1753.04 MiB
+2026-10-24T02:36:51+07:00 serve_pool 0.02.558.014 I load_tensors: RPC0[192.168.10.11:50052] model buffer size =  6866.74 MiB
+2026-10-24T02:36:51+07:00 serve_pool 1.53.635.050 I llama_context: n_ctx                 = 2048
+2026-10-24T02:36:51+07:00 serve_pool 1.53.635.051 I llama_context: flash_attn            = auto
+2026-10-24T02:36:51+07:00 serve_pool 1.53.635.241 I llama_kv_cache:        CPU KV buffer size =   344.00 MiB
+2026-10-24T02:36:51+07:00 serve_pool 1.53.849.685 I llama_kv_cache: RPC0[192.168.1.114:50052] KV buffer size =    24.00 MiB
+2026-10-24T02:36:51+07:00 serve_pool 1.53.850.412 I llama_kv_cache: RPC0[192.168.10.11:50052] KV buffer size =   144.00 MiB
+2026-10-24T02:36:51+07:00 serve_pool 1.53.850.561 I llama_kv_cache: size =  512.00 MiB (  2048 cells,  64 layers,  1/1 seqs), K (f16):  256.00 MiB, V (f16):  256.00 MiB
+2026-10-24T02:36:51+07:00 serve_pool 1.54.047.657 I sched_reserve: RPC0[192.168.10.11:50052] compute buffer size =   172.01 MiB
+2026-10-24T02:36:51+07:00 serve_pool 1.54.047.661 I sched_reserve: RPC0[192.168.1.114:50052] compute buffer size =   172.01 MiB
+2026-10-24T02:36:51+07:00 serve_pool 1.54.047.661 I sched_reserve:        CPU compute buffer size =   198.01 MiB
+2026-10-24T02:36:51+07:00 serve_pool 1.56.333.076 I load_tensors:          CPU model buffer size =   604.15 MiB
+2026-10-24T02:36:51+07:00 serve_pool 1.57.001.360 I llama_context: n_ctx                 = 2048
+2026-10-24T02:36:51+07:00 serve_pool 1.57.001.362 I llama_context: flash_attn            = auto
+2026-10-24T02:36:51+07:00 serve_pool 1.57.001.522 I llama_kv_cache:        CPU KV buffer size =   224.00 MiB
+2026-10-24T02:36:51+07:00 serve_pool 1.57.127.267 I llama_kv_cache: size =  224.00 MiB (  2048 cells,  28 layers,  1/1 seqs), K (f16):  112.00 MiB, V (f16):  112.00 MiB
+2026-10-24T02:36:51+07:00 serve_pool 1.57.132.927 I sched_reserve:        CPU compute buffer size =    28.01 MiB
+2026-10-24T02:36:51+07:00 serve_pool 1.59.087.521 I slot   load_model: id  0 | task -1 | new slot, n_ctx = 2048
+2026-10-24T02:36:51+07:00 serve_pool split   pi5: llama.cpp 6866.74 MiB, planned 6866.7 MiB (head on jetson)
+2026-10-24T02:36:51+07:00 serve_pool split   jetson: llama.cpp 1753.04 MiB, planned 1753.0 MiB (head on jetson)
+2026-10-24T02:36:51+07:00 serve_pool mem     laptop: MemAvailable 9500 MiB at READY, 27801 at the gate: the serve holds 18301 MiB, charged 18506 MiB
+2026-10-24T02:36:51+07:00 serve_pool mem     pi5: MemAvailable 461 MiB at READY, 7585 at the gate: the serve holds 7124 MiB, charged 7202 MiB
+2026-10-24T02:36:51+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T02:36:51+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T02:36:51+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T02:36:52+07:00 serve_pool mem     jetson: MemAvailable 1548 MiB at READY, 3541 at the gate: the serve holds 1993 MiB, charged 2430 MiB
+2026-10-24T02:36:52+07:00 served {"host": "laptop", "workers": "pi5 jetson", "args": "-m ~/models/qwen3-32b-q6_k.gguf --rpc 192.168.10.11:50052,192.168.1.114:50052 -ngl 22 -ts 17.5,4.5", "ctx": "2048", "serve_log": "testbed/results/serve_qw
+2026-10-24T02:36:52+07:00 jetson clocks before cpu=1479000-1479000/1479000 gpu=921600000-921600000/921600000 pmode:0000
+2026-10-24T02:36:53+07:00 jetson clocks {"lock": "ALREADY_LOCKED", "now": "cpu=1479000-1479000/1479000 gpu=921600000-921600000/921600000 pmode:0000"}
+2026-10-24T02:36:53+07:00 prompts {"doc_tokens": 7486, "head": 0, "question": 12, "warm_offset": 6986, "sha256": ["8375febbf15c9102", "a9088107122b30bb", "2832af8bf65e91bd"]}
+2026-10-24T02:36:53+07:00 health warm {"laptop": "load=1.02 pkg_mC=62000 MemAvailable_kB=9717932", "pi5": "throttled=0x0 temp=50.5'C MemAvailable_kB=487040", "jetson": "guard=\"02:36:53 V=5136 I=568 P=2953 alarms=0 minV=4848 maxP=8765 pmode
+2026-10-24T02:44:18+07:00 warm {"prompt_n": 512, "n_predict": 32, "sent_wall": 1792784213.631437, "events": [[395.948747, [576], 1, 0.001, 395947.482, " The"], [398.118253, [12126], 2, 2169.546, 395947.482, " summary"], [398.118337, [1265],
+2026-10-24T02:44:19+07:00 health 0 {"laptop": "load=1.92 pkg_mC=63000 MemAvailable_kB=9551124", "pi5": "throttled=0x0 temp=63.1'C MemAvailable_kB=386032", "jetson": "guard=\"02:44:18 V=5112 I=640 P=3235 alarms=0 minV=4848 maxP=8765 pmode:00
+2026-10-24T02:47:11+07:00 req 0 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792784659.0242941, "events": [[96.946907, [576], 1, 0.001, 96946.08, " The"], [98.978298, [12126], 2, 2031.403, 96946.08, " summary"], [101.037141, [1265], 3, 
+2026-10-24T02:47:11+07:00 health 1 {"laptop": "load=2.32 pkg_mC=66000 MemAvailable_kB=9504680", "pi5": "throttled=0x0 temp=62.6'C MemAvailable_kB=388688", "jetson": "guard=\"02:47:10 V=4904 I=1600 P=7899 alarms=0 minV=4848 maxP=8765 pmode:0
+2026-10-24T02:50:05+07:00 req 1 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792784831.6052818, "events": [[97.039137, [576], 1, 0.001, 97038.258, " The"], [99.060416, [1467], 2, 2021.247, 97038.258, " text"], [99.060512, [34334], 3, 20
+2026-10-24T02:50:06+07:00 health 2 {"laptop": "load=2.09 pkg_mC=66000 MemAvailable_kB=9510628", "pi5": "throttled=0x0 temp=62.6'C MemAvailable_kB=390928", "jetson": "guard=\"02:50:05 V=5168 I=424 P=2232 alarms=0 minV=4848 maxP=8765 pmode:00
+2026-10-24T02:53:05+07:00 req 2 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792785006.3892999, "events": [[98.314964, [576], 1, 0.001, 98314.078, " The"], [100.339909, [12126], 2, 2024.946, 98314.078, " summary"], [102.394994, [1265], 
+2026-10-24T02:53:06+07:00 health end {"laptop": "load=2.34 pkg_mC=66000 MemAvailable_kB=9519384", "pi5": "throttled=0x0 temp=62.6'C MemAvailable_kB=389328", "jetson": "guard=\"02:53:06 V=5152 I=496 P=2633 alarms=0 minV=4848 maxP=8765 pmode:
+scp: Connection closed
+2026-10-24T02:53:08+07:00 serve_pool stop    llama-server on laptop stopped
+2026-10-24T02:53:09+07:00 serve_pool stop    worker on pi5 stopped
+2026-10-24T02:53:09+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T02:53:09+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T02:53:09+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T02:53:09+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T02:53:09+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T02:53:09+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T02:53:09+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T02:53:09+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T02:53:09+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T02:53:10+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T02:53:10+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T02:53:10+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T02:53:10+07:00 serve_pool stop    worker on jetson stopped
+2026-10-24T02:53:10+07:00 serve_pool ** WARNING: connection is not using a post-quantum key exchange algorithm.
+2026-10-24T02:53:10+07:00 serve_pool ** This session may be vulnerable to "store now, decrypt later" attacks.
+2026-10-24T02:53:10+07:00 serve_pool ** The server may need to be upgraded. See https://openssh.com/pq.html
+2026-10-24T02:53:10+07:00 serve_pool stop    jetson clocks restored
+2026-10-24T02:53:10+07:00 done {"log": "testbed/results/qr3_scS16_qwen3_32b_q6k_20261024_023135.log"}
+req 0: 64 tokens, 0 merged; TTFT 96946.9 ms; client mean 1192.19 p95 2066.59 max 2070.38 | server mean 1192.19 p95 2066.35 max 2070.5
+req 1: 64 tokens, 0 merged; TTFT 97039.1 ms; client mean 1225.75 p95 2072.07 max 2152.98 | server mean 1225.75 p95 2072.12 max 2153.11
+req 2: 64 tokens, 0 merged; TTFT 98315.0 ms; client mean 1289.28 p95 2069.02 max 2088.83 | server mean 1289.28 p95 2069.11 max 2089.03
+POOLED client {"n": 189, "mean": 1235.74, "p50": 2023.5, "p95": 2068.34, "p99": 2089.03, "max": 2152.98, "min": 0.06, "p95_ci95": [2066.66, 2072.55]}
+POOLED server {"n": 189, "mean": 1235.74, "p50": 2023.49, "p95": 2068.39, "p99": 2089.21, "max": 2153.11, "min": 0.0, "p95_ci95": [2066.39, 2072.59]}
+wrote testbed/results/qr3_scS16_qwen3_32b_q6k_20261024_023135_summary.json
+ARM 6 S1 rc=0 log=testbed/results/qr3_scS16_qwen3_32b_q6k_20261024_023135.log
+IDLE_AFTER start 1792785211.229200759
+IDLE_AFTER end 1792785271.237654030
+guard pid 18294 stopped
+TRIP lines: 0
+draft length on v2's plan, complete (qwen3_32b_q6k laptop:43,pi5:18,jetson:3), ctx 2048; code changed since registration: none
+
+SC-ORDER   INCOMPLETE {'mean_ms_per_token': {'S1': 1248.82, 'S2': 1317.57, 'S3': 1556.28}}
+SC-BEST    INCOMPLETE {'fastest': 'S1', 'predicted': 'S1'}
+SC-ENERGY  INCOMPLETE {'j_per_token': {'S1': 55.6697, 'S2': 56.0602, 'S3': 65.8597}}
+SC-ACC     INCOMPLETE {'err_pct': {'S1': -0.4, 'S2': -9.4, 'S3': -6.0}}
+SC-TEXT    INCOMPLETE {'within_arm': {'S1': True, 'S2': True, 'S3': False}, 'across_arms_by_request (observation)': {'0': True, '1': True, '2': True}}
+
+arm S1: {'runs': [1, 6], 'requests': 6, 'complete': True, 'mean_ms_per_token': 1248.82, 'predicted': 1253.8, 'ttft_ms_p50': 98519.2, 'j_per_token_all': 55.6697, 'draft_acceptance_rate': 0.6607}
+arm S2: {'runs': [2, 5], 'requests': 6, 'complete': True, 'mean_ms_per_token': 1317.57, 'predicted': 1453.8, 'ttft_ms_p50': 97209.1, 'j_per_token_all': 56.0602, 'draft_acceptance_rate': 0.5714}
+arm S3: {'runs': [3, 4], 'requests': 3, 'complete': False, 'mean_ms_per_token': 1556.28, 'predicted': 1655.8, 'ttft_ms_p50': 92993.4, 'j_per_token_all': 65.8597, 'draft_acceptance_rate': 0.5024}
+run 1 S1 rc 0: 3 requests, mean 1261.9 ms/token, TTFT P50 100796.2 ms, J/token all 57.469, draft {'requests': 3, 'accepted': 74, 'drafted': 112, 'rate': 0.6607, 'server_mean_len': [1.72, 1.68, 1.59]}
+run 2 S2 rc 0: 3 requests, mean 1288.43 ms/token, TTFT P50 92853.4 ms, J/token all 51.9855, draft {'requests': 3, 'accepted': 100, 'drafted': 175, 'rate': 0.5714, 'server_mean_len': [2.52, 2.14, 1.85]}
+run 3 S3 rc 0: 3 requests, mean 1556.28 ms/token, TTFT P50 92993.4 ms, J/token all 65.8597, draft {'requests': 3, 'accepted': 107, 'drafted': 237, 'rate': 0.4515, 'server_mean_len': [2.7, 2.38, 2.07]}
+run 4 S3 rc 1: 0 requests, mean None ms/token, TTFT P50 None ms, J/token all None, draft {'requests': 3, 'accepted': 100, 'drafted': 175, 'rate': 0.5714, 'server_mean_len': [2.52, 2.14, 1.85]}
+run 5 S2 rc 0: 3 requests, mean 1346.71 ms/token, TTFT P50 101123.7 ms, J/token all 60.1348, draft {'requests': 3, 'accepted': 100, 'drafted': 175, 'rate': 0.5714, 'server_mean_len': [2.52, 2.14, 1.85]}
+run 6 S1 rc 0: 3 requests, mean 1235.74 ms/token, TTFT P50 97039.1 ms, J/token all 53.8703, draft {'requests': 3, 'accepted': 74, 'drafted': 112, 'rate': 0.6607, 'server_mean_len': [1.72, 1.68, 1.59]}
+session: FATAL: serve_pool.sh start failed
+SESSION DONE 2026-10-24T02:55:20+07:00

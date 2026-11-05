@@ -1,0 +1,22 @@
+########## 2026-11-01T07:40:08+07:00 serve qwen3moe, ctx 4096, clocks locked, boards laptop pi5 pi4 jetson, planned against the boards' memory now, on a 512 MiB grid: laptop 48, head on laptop; predicted decode 99.8 ms/token (10.02 tok/s) at a depth of 0 tokens (planner v4)
+memory  laptop 27090 MiB (live), pi5 7601 MiB (live), pi4 7439 MiB (live), jetson 3573 MiB (live)
+plan    planned (no plan served before for qwen3moe at ctx 4096 on these boards)
+hosts   laptop: laptop 48: decode 99.8 ms, prefill 53.3 ms; pi4: pi4 1 + laptop 47: decode 117.0 ms, prefill 61.2 ms
+llama-server -m ~/models/qwen3-30b-a3b-q3_k_m.gguf -ngl 0  -c 4096 -np 1 -t 4 -lv 4 -lm none --cache-ram 0 --host 192.168.1.108 --port 8080   pin b23701f77d47dad9de834d59ebfcbe25c9e8b46f
+gate    laptop: MemAvailable 27042 MiB, the plan needs 22951 MiB with its reserve (margin at rest 3673 MiB)
+server  starting on laptop (pid 267208); loading streams the model from the SD card to the workers
+READY   2026-11-01T07:40:29+07:00: http://192.168.1.108:8080/ (web chat) -- health {"status":"ok"}
+0.00.741.001 I load_tensors:          CPU model buffer size =  8922.74 MiB
+0.00.741.002 I load_tensors:   CPU_REPACK model buffer size =  5101.88 MiB
+0.17.882.887 I llama_context: n_ctx                 = 4096
+0.17.882.889 I llama_context: flash_attn            = auto
+0.17.883.104 I llama_kv_cache:        CPU KV buffer size =   384.00 MiB
+0.18.111.352 I llama_kv_cache: size =  384.00 MiB (  4096 cells,  48 layers,  1/1 seqs), K (f16):  192.00 MiB, V (f16):  192.00 MiB
+0.18.123.114 I sched_reserve:        CPU compute buffer size =    92.01 MiB
+0.18.503.029 I slot   load_model: id  0 | task -1 | new slot, n_ctx = 4096
+plan    remembered for the next start (serve_plan_20261101.py)
+mem     laptop: MemAvailable 12626 MiB at READY, 27042 at the gate: the serve holds 14416 MiB, charged 14759 MiB
+switch  the plan leaves pi4 pi5 jetson out: shutting down and cutting the outlets, all at once (SERVE_SWITCH=off skips this)
+{"action": "off-node", "board": "pi5", "outlet": 2, "boot_id": "a569181c-73ff-4a29-94a3-9a7faea5548f", "cmd": "poweroff", "down_after_s": 31.3, "apower_before_switch_w": 2.1, "status": {"output": false, "apower": 0.0, "source": "HTTP_in"}, "result": "outlet off", "epoch": 1793493663.534336, "at": "2026-11-01T07:41:03+0700"}
+{"action": "off-node", "board": "pi4", "outlet": 0, "boot_id": "e30e5f9a-3eb6-4eea-8f9f-c0275ed4dfb5", "cmd": "poweroff", "down_after_s": 32.3, "apower_before_switch_w": 2.0, "status": {"output": false, "apower": 0.0, "source": "HTTP_in"}, "result": "outlet off", "epoch": 1793493664.5131814, "at": "2026-11-01T07:41:04+0700"}
+{"action": "off-node", "board": "jetson", "outlet": 1, "boot_id": "bf127c36-5330-433d-a7f4-e6c5ae8361c8", "cmd": "halt", "down_after_s": 36.1, "apower_before_switch_w": 4.8, "status": {"output": false, "apower": 0.0, "source": "HTTP_in"}, "result": "outlet off", "epoch": 1793493668.9373517, "at": "2026-11-01T07:41:08+0700"}

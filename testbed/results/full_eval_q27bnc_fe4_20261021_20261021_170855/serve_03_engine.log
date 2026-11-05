@@ -1,0 +1,15 @@
+########## 2026-10-21T18:29:45+07:00 serve qwen38_27b, ctx 4096, clocks locked, boards pi5 pi4 jetson laptop, planned against testbed/dataset/memory_at_rest.json: laptop 65, head on laptop; predicted decode 766.4 ms/token (1.30 tok/s)
+hosts   laptop: laptop 65: decode 766.4 ms, prefill 475.3 ms; pi5: pi5 1 + laptop 64: decode 804.6 ms, prefill 506.3 ms
+llama-server -m ~/models/qwen3.8-27b-q3_k_m.gguf -ngl 0  -c 4096 -np 1 -t 4 -lv 4 -lm none --cache-ram 0 --host 192.168.1.108 --port 8080   pin b23701f77d47dad9de834d59ebfcbe25c9e8b46f
+gate    laptop: MemAvailable 26385 MiB, the plan needs 22355 MiB with its reserve (margin at rest 5430 MiB)
+server  starting on laptop (pid 1579766); loading streams the model from the SD card to the workers
+READY   2026-10-21T18:30:00+07:00: http://192.168.1.108:8080/ (web chat) -- health {"status":"ok"}
+0.01.345.218 I load_tensors:          CPU model buffer size = 10463.45 MiB
+0.01.345.241 I load_tensors:   CPU_REPACK model buffer size =  2081.25 MiB
+0.10.733.106 I llama_context: n_ctx                 = 4096
+0.10.733.108 I llama_context: flash_attn            = auto
+0.10.733.317 I llama_kv_cache:        CPU KV buffer size =   256.00 MiB
+0.10.884.624 I llama_kv_cache: size =  256.00 MiB (  4096 cells,  16 layers,  1/1 seqs), K (f16):  128.00 MiB, V (f16):  128.00 MiB
+0.10.990.673 I sched_reserve:        CPU compute buffer size =   136.02 MiB
+0.13.223.098 I slot   load_model: id  0 | task -1 | new slot, n_ctx = 4096
+mem     laptop: MemAvailable 13370 MiB at READY, 26385 at the gate: the serve holds 13015 MiB, charged 14163 MiB

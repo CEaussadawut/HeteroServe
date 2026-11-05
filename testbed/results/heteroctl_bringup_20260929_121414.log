@@ -1,0 +1,25 @@
+### heteroctl status
+HeteroServe testbed  (5 nodes, 3 serving)
+  [on ] t580          control          192.168.10.5      -  28000 MB
+  [on ] pi5           worker           192.168.10.11   ch1   7619 MB
+  [on ] pi4           worker-straggler 192.168.10.12   ch2   7413 MB
+  [on ] jetson        worker-gpu       192.168.50.15   ch3   3545 MB
+  [OFF] orangepi-rv2  worker-riscv     192.168.50.16   ch4   7000 MB
+
+  pi5           unreachable (http://192.168.10.11:9410/metrics: <urlopen error [Errno 111] Connection refused>)
+  pi4           unreachable (http://192.168.10.12:9410/metrics: <urlopen error [Errno 111] Connection refused>)
+  jetson        unreachable (http://192.168.50.15:9410/metrics: <urlopen error timed out>)
+rc=0
+### heteroctl preflight --save
+preflight @ 2026-09-29T05:14:19.856766+00:00
+  FAIL jetson        unreachable: http://192.168.50.15:9410/health: <urlopen error timed out>
+  FAIL pi4           unreachable: http://192.168.10.12:9410/health: <urlopen error [Errno 111] Connection refused>
+  FAIL pi5           unreachable: http://192.168.10.11:9410/health: <urlopen error [Errno 111] Connection refused>
+
+  RESULT: BLOCKED
+    x pi5: agent unreachable (http://192.168.10.11:9410/health: <urlopen error [Errno 111] Connection refused>)
+    x pi4: agent unreachable (http://192.168.10.12:9410/health: <urlopen error [Errno 111] Connection refused>)
+    x jetson: agent unreachable (http://192.168.50.15:9410/health: <urlopen error timed out>)
+
+saved -> /opt/heteroserve/data/inventory/preflight_20260929T121429Z.json
+rc=1

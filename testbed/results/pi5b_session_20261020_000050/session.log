@@ -1,0 +1,92 @@
+########## 2026-10-20T00:00:50+07:00 the replacement Pi 5's characterisation -> testbed/results/pi5b_session_20261020_000050
+registration testbed/dataset/pi5b_predictions_20261019.json sha256 53f12a70f54a4699d240449a86d22a54d843a1e446aa947742b7ee831a29b74a
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+########## 2026-10-20T00:00:52+07:00 STEP 1 memory: python3 testbed/scripts/memory_snapshot.py --reads 10
+pi5 {'mem_total_mib': 8050, 'mem_available_mib': 7641, 'mem_available_range_mib': [7641, 7643], 'reads': 10, 'load': '0.00 0.28 0.40', 'interfaces': 'lo=127.0.0.1/8 eth0=192.168.10.11/24 eth0=192.168.1.122/24'}
+pi4 {'mem_total_mib': 7819, 'mem_available_mib': 7436, 'mem_available_range_mib': [7436, 7437], 'reads': 10, 'load': '0.00 0.02 0.00', 'interfaces': 'lo=127.0.0.1/8 eth0=192.168.10.12/24 eth0=192.168.1.110/24 tailscale0=100.121.93.63/32'}
+jetson {'mem_total_mib': 3963, 'mem_available_mib': 3557, 'mem_available_range_mib': [3557, 3557], 'reads': 10, 'load': '0.02 0.13 0.08', 'interfaces': 'lo=127.0.0.1/8 eth0=192.168.1.114/24 docker0=172.17.0.1/16'}
+wrote testbed/dataset/memory_snapshot_20261020_000052.json
+STEP 1 memory rc=0 dir=testbed/dataset/memory_snapshot_20261020_000052.json 2026-10-20T00:01:24+07:00
+########## 2026-10-20T00:01:24+07:00 STEP 2 host_pp512_tg128: env NODES=pi5 MODELS=tinyllama-1.1b-q4km.gguf tinyllama-1.1b-q8_0.gguf tinyllama-1.1b-q4_0.gguf tinyllama-1.1b-q3km.gguf tinyllama-1.1b-q6_k.gguf qwen3.5-9b-q4_k_m.gguf bash testbed/scripts/run_quant_campaign.sh
+########## 2026-10-20T00:01:24+07:00 quant campaign -> testbed/results/quant_campaign_20261020_000124   pin b23701f77d47dad9de834d59ebfcbe25c9e8b46f   nodes [pi5]   models [tinyllama-1.1b-q4km.gguf tinyllama-1.1b-q8_0.gguf tinyllama-1.1b-q4_0.gguf tinyllama-1.1b-q3km.gguf tinyllama-1.1b-q6_k.gguf qwen3.5-9b-q4_k_m.gguf]
+model   pi5 tinyllama-1.1b-q4km.gguf sha256 OK
+model   pi5 tinyllama-1.1b-q8_0.gguf sha256 OK
+model   pi5 tinyllama-1.1b-q4_0.gguf sha256 OK
+model   pi5 tinyllama-1.1b-q3km.gguf sha256 OK
+model   pi5 tinyllama-1.1b-q6_k.gguf sha256 OK
+model   pi5 qwen3.5-9b-q4_k_m.gguf sha256 OK
+tree    pi5 at pin, clean
+pi5     done 2026-10-20T00:30:08+07:00 (6 runs, 6 exit 0)
+CAMPAIGN DONE 2026-10-20T00:30:08+07:00
+STEP 2 host_pp512_tg128 rc=0 dir=testbed/results/quant_campaign_20261020_000124 2026-10-20T00:30:08+07:00
+########## 2026-10-20T00:30:08+07:00 STEP 3 host_pp64_tg16: env NODES=pi5 MODELS=tinyllama-1.1b-q4km.gguf tinyllama-1.1b-q8_0.gguf tinyllama-1.1b-q4_0.gguf tinyllama-1.1b-q3km.gguf tinyllama-1.1b-q6_k.gguf qwen3.5-9b-q4_k_m.gguf PP=64 TG=16 bash testbed/scripts/run_quant_campaign.sh
+########## 2026-10-20T00:30:08+07:00 quant campaign -> testbed/results/quant_campaign_20261020_003008   pin b23701f77d47dad9de834d59ebfcbe25c9e8b46f   nodes [pi5]   models [tinyllama-1.1b-q4km.gguf tinyllama-1.1b-q8_0.gguf tinyllama-1.1b-q4_0.gguf tinyllama-1.1b-q3km.gguf tinyllama-1.1b-q6_k.gguf qwen3.5-9b-q4_k_m.gguf]
+model   pi5 tinyllama-1.1b-q4km.gguf sha256 OK
+model   pi5 tinyllama-1.1b-q8_0.gguf sha256 OK
+model   pi5 tinyllama-1.1b-q4_0.gguf sha256 OK
+model   pi5 tinyllama-1.1b-q3km.gguf sha256 OK
+model   pi5 tinyllama-1.1b-q6_k.gguf sha256 OK
+model   pi5 qwen3.5-9b-q4_k_m.gguf sha256 OK
+tree    pi5 at pin, clean
+pi5     done 2026-10-20T00:42:50+07:00 (6 runs, 6 exit 0)
+CAMPAIGN DONE 2026-10-20T00:42:50+07:00
+STEP 3 host_pp64_tg16 rc=0 dir=testbed/results/quant_campaign_20261020_003008 2026-10-20T00:42:50+07:00
+########## 2026-10-20T00:42:50+07:00 STEP 4 worker_pp512_tg128: env NODES=pi5 MODELS_PI5=tinyllama-1.1b-q4km.gguf tinyllama-1.1b-q8_0.gguf tinyllama-1.1b-q4_0.gguf tinyllama-1.1b-q3km.gguf tinyllama-1.1b-q6_k.gguf bash testbed/scripts/bench_worker_role.sh
+########## 2026-10-20T00:42:50+07:00 worker-role rows -> testbed/results/worker_role_20261020_004250
+pi5: 5 runs, 5 exit 0; 
+WORKER ROLE DONE 2026-10-20T01:03:45+07:00
+STEP 4 worker_pp512_tg128 rc=0 dir=testbed/results/worker_role_20261020_004250 2026-10-20T01:03:45+07:00
+########## 2026-10-20T01:03:45+07:00 STEP 5 worker_pp64_tg16: env NODES=pi5 MODELS_PI5=tinyllama-1.1b-q4km.gguf tinyllama-1.1b-q8_0.gguf tinyllama-1.1b-q4_0.gguf tinyllama-1.1b-q3km.gguf tinyllama-1.1b-q6_k.gguf qwen3.5-9b-q4_k_m.gguf PP=64 TG=16 bash testbed/scripts/bench_worker_role.sh
+########## 2026-10-20T01:03:45+07:00 worker-role rows -> testbed/results/worker_role_20261020_010345
+pi5: 6 runs, 6 exit 0; 
+WORKER ROLE DONE 2026-10-20T01:17:58+07:00
+STEP 5 worker_pp64_tg16 rc=0 dir=testbed/results/worker_role_20261020_010345 2026-10-20T01:17:58+07:00
+########## 2026-10-20T01:17:58+07:00 STEP 6 worker_pp_sweep: env NODES=pi5 MODELS_PI5=tinyllama-1.1b-q3km.gguf PP=1,4,16,256 TG=0 bash testbed/scripts/bench_worker_role.sh
+########## 2026-10-20T01:17:58+07:00 worker-role rows -> testbed/results/worker_role_20261020_011758
+pi5: 1 runs, 1 exit 0; 
+WORKER ROLE DONE 2026-10-20T01:21:56+07:00
+STEP 6 worker_pp_sweep rc=0 dir=testbed/results/worker_role_20261020_011758 2026-10-20T01:21:56+07:00
+checked testbed/results/quant_campaign_20261020_000124: 6 runs, all exit 0
+checked testbed/results/quant_campaign_20261020_003008: 6 runs, all exit 0
+checked testbed/results/worker_role_20261020_004250: 5 runs, all exit 0
+checked testbed/results/worker_role_20261020_010345: 6 runs, all exit 0
+checked testbed/results/worker_role_20261020_011758: 1 runs, all exit 0
+########## 2026-10-20T01:21:56+07:00 STEP 7 energy_q4km: python3 testbed/scripts/energy_phase_run.py --node pi5 --outlet 2 --outlet-name pi5 --model ~/models/tinyllama-1.1b-q4km.gguf --sha256 9fecc3b3cd76bba89d504f29b616eedf7da85b96540e490ca5824d3f7d2776a0 --pp 512:20 --tg 128:17 --cycles 3 --threads 4 --idle-before 300 --idle-after 300 --settle 30 --gap 10 --out testbed/results/energy_phase_pi5b_q4km_20261020_012156
+01:22:05 preflight ok
+01:22:05 logger start
+01:22:05 sampler start
+01:22:35 idle-before start
+01:27:35 idle-before end
+01:27:35 bench start pp1
+01:29:54 bench end pp1 exit=0
+01:30:04 bench start tg1
+01:32:23 bench end tg1 exit=0
+01:32:33 bench start pp2
+01:34:52 bench end pp2 exit=0
+01:35:02 bench start tg2
+01:37:21 bench end tg2 exit=0
+01:37:31 bench start pp3
+01:39:51 bench end pp3 exit=0
+01:40:01 bench start tg3
+01:42:21 bench end tg3 exit=0
+01:42:31 idle-after start
+01:47:31 idle-after end
+01:47:36 logger stop
+01:47:36 run end
+STEP 7 energy_q4km rc=0 dir=testbed/results/energy_phase_pi5b_q4km_20261020_012156 2026-10-20T01:47:36+07:00
+scored testbed/results/energy_phase_pi5b_q4km_20261020_012156 rc=0
+idle before: 2.874 W apower, 3.000 W counter | idle after: 2.929 W, 3.060 W
+inv       t/s    win s   W trap    W ctr     gap % J/tok net c J/tok net t overhd s  flags
+pp1     78.53    130.4   10.288   10.682     -3.69      0.0978      0.0944     0.00  IDLE_FRESH_BELOW_1HZ
+tg1     15.97    136.3    8.972    9.331     -3.86      0.3965      0.3818    -0.00  IDLE_FRESH_BELOW_1HZ
+pp2     78.40    130.6   10.535   10.992     -4.16      0.1020      0.0977     0.00  IDLE_FRESH_BELOW_1HZ
+tg2     15.88    137.1    9.003    9.378     -4.00      0.4017      0.3860     0.00  IDLE_FRESH_BELOW_1HZ
+pp3     78.14    131.1   10.719   11.166     -4.01      0.1045      0.1004     0.00  IDLE_FRESH_BELOW_1HZ
+tg3     15.83    137.4    9.012    9.359     -3.69      0.4016      0.3878    -0.00  IDLE_FRESH_BELOW_1HZ
+pp: t/s 78.35 (spread 0.50 %), W 10.51, net J/token counter 0.1014 (spread 6.60 %) trap 0.0975 (spread 6.13 %), Wh/1000 tok net counter 0.0282
+tg: t/s 15.89 (spread 0.86 %), W 9.00, net J/token counter 0.4000 (spread 1.28 %) trap 0.3852 (spread 1.54 %), Wh/1000 tok net counter 0.1111
+board: throttled ['0x0'], temp 46.1-75.2 C, ARM 1500-2400 MHz, fan states ['1', '2', '3', '4'] (n 305)
+  PASS  pp tokens/s mean in [76.9838, 85.0873]  [78.3544]
+########## 2026-10-20T01:47:41+07:00 STEP 8 energy_q4_0: python3 testbed/scripts/energy_phase_run.py --node pi5 --outlet 2 --outlet-name pi5 --model ~/models/tinyllama-1.1b-q4_0.gguf --sha256 da3087fb14aede55fde6eb81a0e55e886810e43509ec82ecdc7aa5d62a03b556 --pp 512:32 --tg 128:18 --cycles 3 --threads 4 --idle-before 300 --idle-after 120 --settle 30 --gap 10 --out testbed/results/energy_phase_pi5b_q4_0_20261020_014741

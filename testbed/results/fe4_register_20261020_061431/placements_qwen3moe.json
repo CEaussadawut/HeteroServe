@@ -1,0 +1,111 @@
+{
+ "made": "2026-10-20T06:14:32+07:00",
+ "model": "qwen3moe",
+ "nodes": [
+  "pi5",
+  "pi4",
+  "jetson",
+  "laptop"
+ ],
+ "ctx": 4096,
+ "rtt_trips": 1,
+ "reported_free_mib": {
+  "pi5": 8050,
+  "pi4": 7819,
+  "laptop": 31296,
+  "jetson": 3420
+ },
+ "placements": [
+  {
+   "label": "engine",
+   "assign": [
+    [
+     "laptop",
+     48
+    ]
+   ],
+   "head": "last",
+   "how": "plan_host_choice on ['pi5', 'pi4', 'jetson', 'laptop']",
+   "min_margin_mib": 4834,
+   "decode_ms": 99.8,
+   "prefill_ms": 53.3
+  },
+  {
+   "label": "boards",
+   "assign": [
+    [
+     "pi4",
+     16
+    ],
+    [
+     "jetson",
+     9
+    ],
+    [
+     "pi5",
+     23
+    ]
+   ],
+   "head": "last",
+   "how": "plan_host_choice on ['pi5', 'pi4', 'jetson']",
+   "min_margin_mib": 300,
+   "decode_ms": 281.2,
+   "prefill_ms": 137.8
+  },
+  {
+   "label": "default",
+   "assign": [
+    [
+     "laptop",
+     31
+    ],
+    [
+     "pi5",
+     8
+    ],
+    [
+     "pi4",
+     7
+    ],
+    [
+     "jetson",
+     2
+    ]
+   ],
+   "head": "last",
+   "how": "llama.cpp's split by reported free memory {'laptop': 31296, 'pi5': 8050, 'pi4': 7819, 'jetson': 3420} over ['laptop', 'pi5', 'pi4', 'jetson']; the output block falls on jetson, the last device with blocks",
+   "min_margin_mib": 1982,
+   "decode_ms": 216.8,
+   "prefill_ms": 90.0
+  }
+ ],
+ "dropped": [
+  {
+   "label": "single",
+   "why": "the same placement as engine",
+   "assign": [
+    [
+     "laptop",
+     48
+    ]
+   ],
+   "head": "last"
+  },
+  {
+   "label": "even",
+   "why": "no order of equal blocks fits"
+  },
+  {
+   "label": "halda",
+   "why": "the same placement as engine",
+   "assign": [
+    [
+     "laptop",
+     48
+    ]
+   ],
+   "head": "last"
+  }
+ ],
+ "placements_arg": "engine,boards=pi4:16+jetson:9+pi5:23/last,default=laptop:31+pi5:8+pi4:7+jetson:2/last"
+}

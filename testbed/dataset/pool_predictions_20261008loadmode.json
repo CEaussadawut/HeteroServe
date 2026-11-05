@@ -1,0 +1,150 @@
+{
+ "registered": "2026-10-08T03:09:37+07:00",
+ "campaign": "load-mode A/B: a Pi 4 host's weights mapped (every cell so far) against read into memory (-lm none)",
+ "inputs_sha256": {
+  "characterisation.csv": "ef94c22318ccb0ce9ab913a08174d110095d9d4e0cad65aeeb052304dbc13d6a",
+  "model_shapes.json": "c92bbc0278b030d5218d7740b3fac99f146b5bdeffe684404d94a012f7232c38",
+  "link.json": "e5084df7d3e62a47c7f93339ef4412c8e5f31db2d500ad5f189aafde95548ac5",
+  "memory_at_rest.json": "1ec5a19725d7c565b9b97449beb0130b179da895e2e93fdb5e36e9ea4f141589",
+  "predict_pool.py": "ae2971f6cff788954eb48a91f46c4737a7d9d2c07a71df008a8a1b4a6ad8a4a5",
+  "run_pool.sh": "d06e31747f7f5d6a69cdf6cdfa11048f8a5933fa88a8a2798a6de4383c0dbeef",
+  "compare_pool.py": "cfd459ba6f35b28a29aee1444c317cf002cc9528b7a7e5db03ad49b1f09f22b3",
+  "register_loadmode_20261008.py": "19f4cc05748d15bd8cb78b57806d1d682bc68fb4e02c491d2a68460754ba4568"
+ },
+ "engine_sha256": {
+  "placement.py": "3b143b4b856306b381a55420a2bc73efc461b52ecfa925fdeb68729401b85451",
+  "gguf.py": "805ddefc0c9ef1fb1c010f052da0546d23a35d73343738c08345a339f7486330"
+ },
+ "n_ctx_planned": 4096,
+ "protocol": "-t 4 -p 64 -n 16 -r 3 -oe jsonl -v",
+ "run_order": [
+  "lm.q3_14b.mmap",
+  "lm.q3_14b.none",
+  "lm.q3_14b.mmap",
+  "lm.q3_14b.none"
+ ],
+ "configs": {
+  "lm.q3_14b.mmap": {
+   "model": "qwen3-14b-q4_k_m",
+   "quant": "Q4_K_M",
+   "why": "load-mode A/B: weights memory-mapped (the default)",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 27
+    },
+    {
+     "node": "jetson",
+     "blocks": 13
+    }
+   ],
+   "head_on": "pi4",
+   "head_at": 0,
+   "bench": {
+    "host": "pi4",
+    "args": "-m ~/models/qwen3-14b-q4_k_m.gguf -rpc 192.168.100.111:50052 -ngl 14 -ot \"^output\\.weight=CPU\""
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 27,
+     "need_mib": 6241,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 1172
+    },
+    "jetson": {
+     "blocks": 13,
+     "need_mib": 2811,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 284,
+     "weights_mib": 2489.6,
+     "weights_cap_mib": 2845,
+     "weights_margin_mib": 355
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 2025.9,
+    "decode_tok_s": 0.494,
+    "prefill_ms_per_token": 796.0,
+    "prefill_tok_s": 1.26
+   },
+   "cost_sources": {
+    "pi4": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "jetson": {
+     "host": "vulkan row",
+     "worker": "vulkan row + smoke-test RPC cost"
+    }
+   }
+  },
+  "lm.q3_14b.none": {
+   "model": "qwen3-14b-q4_k_m",
+   "quant": "Q4_K_M",
+   "why": "load-mode A/B: weights read into memory (-lm none)",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 27
+    },
+    {
+     "node": "jetson",
+     "blocks": 13
+    }
+   ],
+   "head_on": "pi4",
+   "head_at": 0,
+   "bench": {
+    "host": "pi4",
+    "args": "-m ~/models/qwen3-14b-q4_k_m.gguf -rpc 192.168.100.111:50052 -ngl 14 -ot \"^output\\.weight=CPU\" -lm none"
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 27,
+     "need_mib": 6241,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 1172
+    },
+    "jetson": {
+     "blocks": 13,
+     "need_mib": 2811,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 284,
+     "weights_mib": 2489.6,
+     "weights_cap_mib": 2845,
+     "weights_margin_mib": 355
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 2025.9,
+    "decode_tok_s": 0.494,
+    "prefill_ms_per_token": 796.0,
+    "prefill_tok_s": 1.26
+   },
+   "cost_sources": {
+    "pi4": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "jetson": {
+     "host": "vulkan row",
+     "worker": "vulkan row + smoke-test RPC cost"
+    }
+   }
+  }
+ },
+ "hypotheses": [
+  {
+   "id": "H-LM-COLD",
+   "claim": "in both none cells every scored test's repetitions agree within 5 % (max/min), and compare_pool flags no page-in"
+  },
+  {
+   "id": "H-LM-SPEED",
+   "claim": "none's decode ms/token within +-3 % of mmap's (means over both runs); none's prefill within +-3 % of mmap's fastest repetition"
+  }
+ ]
+}

@@ -1,0 +1,149 @@
+{
+ "made": "2026-10-20T06:14:36+07:00",
+ "model": "tinyllama_q4_0",
+ "nodes": [
+  "pi5",
+  "pi4",
+  "jetson",
+  "laptop"
+ ],
+ "ctx": 4096,
+ "rtt_trips": 1,
+ "reported_free_mib": {
+  "pi5": 8050,
+  "pi4": 7819,
+  "laptop": 31296,
+  "jetson": 3420
+ },
+ "placements": [
+  {
+   "label": "engine",
+   "assign": [
+    [
+     "laptop",
+     22
+    ]
+   ],
+   "head": "last",
+   "how": "plan_host_choice on ['pi5', 'pi4', 'jetson', 'laptop']",
+   "min_margin_mib": 18548,
+   "decode_ms": 30.4,
+   "prefill_ms": 11.7
+  },
+  {
+   "label": "boards",
+   "assign": [
+    [
+     "pi5",
+     22
+    ]
+   ],
+   "head": "last",
+   "how": "plan_host_choice on ['pi5', 'pi4', 'jetson']",
+   "min_margin_mib": 6704,
+   "decode_ms": 53.1,
+   "prefill_ms": 7.7
+  },
+  {
+   "label": "even",
+   "assign": [
+    [
+     "laptop",
+     6
+    ],
+    [
+     "pi5",
+     6
+    ],
+    [
+     "pi4",
+     5
+    ],
+    [
+     "jetson",
+     5
+    ]
+   ],
+   "head": "last",
+   "how": "equal blocks, order ['laptop', 'pi5', 'pi4', 'jetson'], head last",
+   "min_margin_mib": 2810,
+   "decode_ms": 96.7,
+   "prefill_ms": 30.9
+  },
+  {
+   "label": "default",
+   "assign": [
+    [
+     "laptop",
+     15
+    ],
+    [
+     "pi5",
+     3
+    ],
+    [
+     "pi4",
+     4
+    ]
+   ],
+   "head": "last",
+   "how": "llama.cpp's split by reported free memory {'laptop': 31296, 'pi5': 8050, 'pi4': 7819, 'jetson': 3420} over ['laptop', 'pi5', 'pi4', 'jetson']; llama.cpp would put the output alone on jetson, which gets no blocks; served with the head on pi4, the last device with blocks (the nearest placement serve_pool.sh can write)",
+   "min_margin_mib": 7092,
+   "decode_ms": 71.6,
+   "prefill_ms": 26.3
+  },
+  {
+   "label": "pi4alone",
+   "assign": [
+    [
+     "pi4",
+     22
+    ]
+   ],
+   "head": "last",
+   "how": "named on the command line",
+   "min_margin_mib": 6581,
+   "decode_ms": 169.6,
+   "prefill_ms": 84.4
+  },
+  {
+   "label": "jetsonalone",
+   "assign": [
+    [
+     "jetson",
+     22
+    ]
+   ],
+   "head": "last",
+   "how": "named on the command line",
+   "min_margin_mib": 2050,
+   "decode_ms": 121.1,
+   "prefill_ms": 12.5
+  }
+ ],
+ "dropped": [
+  {
+   "label": "single",
+   "why": "the same placement as engine",
+   "assign": [
+    [
+     "laptop",
+     22
+    ]
+   ],
+   "head": "last"
+  },
+  {
+   "label": "halda",
+   "why": "the same placement as engine",
+   "assign": [
+    [
+     "laptop",
+     22
+    ]
+   ],
+   "head": "last"
+  }
+ ],
+ "placements_arg": "engine,boards=pi5:22/last,even=laptop:6+pi5:6+pi4:5+jetson:5/last,default=laptop:15+pi5:3+pi4:4/last,pi4alone=pi4:22/last,jetsonalone=jetson:22/last"
+}

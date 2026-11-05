@@ -1,0 +1,79 @@
+{
+ "registered": "2026-10-10T21:35:14+07:00",
+ "script": "testbed/scripts/register_kv14b_20261010.py",
+ "question": "the KV term on the served 14B with heat taken out: KV bytes (A) or query heads (B)?",
+ "configs": {
+  "kv14b.d1024hot": {
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 27
+    },
+    {
+     "node": "jetson",
+     "blocks": 13
+    }
+   ],
+   "bench": {
+    "host": "pi4",
+    "tool": "llama-bench",
+    "args": "-m ~/models/qwen3-14b-q4_k_m.gguf -rpc 192.168.1.114:50052 -ngl 14 -ot \"^output\\.weight=CPU\" -lm none",
+    "protocol": "-t 4 -p 0 -n 16 -d 1024,0 -r 3 -oe jsonl -v"
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 27,
+     "need_mib": 6336,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 1077
+    },
+    "jetson": {
+     "blocks": 13,
+     "need_mib": 2656,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 439,
+     "weights_mib": 2489.6,
+     "weights_cap_mib": 2845,
+     "weights_margin_mib": 355
+    }
+   }
+  }
+ },
+ "cell": "kv14b.d1024hot",
+ "runs": 3,
+ "kv_cost_ms_per_byte_from_0_6b": {
+  "pi4": 9.975847516741072e-07,
+  "jetson": 7.025146484375001e-08
+ },
+ "query_heads_per_kv_head": {
+  "qwen3-14b": 5.0,
+  "qwen3-0.6b": 2.0
+ },
+ "predictions": {
+  "A_ms_per_1k": 114.06564285714286,
+  "B_ms_per_1k": 279.55298214285716,
+  "registered_weight_cost_term_ms_per_1k": 38.30613134582513
+ },
+ "tolerance_pct": 15.0,
+ "hypotheses": {
+  "HK14-A": "measured slope within 15 % of predictions.A_ms_per_1k",
+  "HK14-B": "measured slope within 15 % of predictions.B_ms_per_1k"
+ },
+ "inputs_sha256": {
+  "testbed/scripts/kv14_20261010.py": "b673b4d29ea94fc966e5de5780882c9b40a45c492c81dcd08931d0d4b84b9efb",
+  "testbed/scripts/run_pool.sh": "266f71cac6606630900e61509270805e33e28b3a86b44b07ade4f2dee7d1fbbf",
+  "testbed/scripts/predict_pool.py": "b36fde31eb760256164bed95fa199f31bd90a191dfce24ded7210dec36d779ea",
+  "testbed/results/kv_depth_20261010_193538/score.json": "d2ffbfb714c3fb1a37973610feff813613795132a447797d109f341d9032eb97",
+  "testbed/dataset/kv_depth_predictions_20261010.json": "47cb47d7770203455544293e36dc8ed9eec93665b67491d8ebebd9dc01037014",
+  "testbed/scripts/jetson_power_guard.sh": "6dafb56fef33f2bc0e070b2552dcb871053d3c0681358bd27436552f905d90de",
+  "testbed/scripts/throttle_poll.sh": "15d5d305766d849820fbd23c73ddaee56d17d4fa055c0b279d515a7ca2df9184",
+  "testbed/scripts/register_kv14b_20261010.py": "eee8be1469fc0e72b2b8d1e4c54c838906432c818eccd57a5836dd623123f812"
+ },
+ "follows": {
+  "registration": "testbed/dataset/kv14_predictions_20261010.json",
+  "run": "testbed/results/kv14_20261010_201701",
+  "why": "both depths decoded hot: d = 1,024 first, d = 0 seconds after"
+ }
+}

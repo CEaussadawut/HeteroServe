@@ -1,0 +1,57 @@
+[Unit]
+Description=HeteroServe - llama.cpp rpc-server (Pi 4 worker)
+Documentation=file:///opt/heteroserve/Pi4/docs/03_build_and_models.md
+# time-sync.target rather than chrony.service: ordering after chrony has started says
+# nothing about the clock having been disciplined, and every energy window on this node is
+# joined by wall-clock timestamp.
+After=network-online.target time-sync.target heteroserve-tune.service
+Wants=network-online.target time-sync.target
+# On an unknown argument the rpc server prints usage and calls exit(0) -- a SUCCESS
+# code -- so Restart=on-failure would leave this unit sitting "dead" with the port
+# closed and no failure state, and the control node would happily place layers on a
+# worker that is not there. Restart=always below covers that; these two keys stop it
+# turning into a silent restart loop, so a permanently broken invocation surfaces as
+# `failed`. They live in [Unit], NOT [Service] -- systemd ignores them under
+# [Service] with only a warning.
+# The window has to be wide enough to catch a SLOW loop, not just a fast one. At
+# 5 starts / 120 s with RestartSec=5, any failure that takes more than ~19 s of runtime
+# before dying gives a >24 s cycle, never reaches 5 starts inside the window, and so
+# restarts for ever while `systemctl is-active` keeps answering "active" -- which is the
+# only liveness signal the control node has. 5 starts / 1800 s catches cycles up to ~6
+# minutes. During a measurement campaign this unit should not be restarting at all.
+StartLimitIntervalSec=1800
+StartLimitBurst=5
+
+[Service]
+Type=simple
+User=pi
+Group=pi
+WorkingDirectory=/opt/heteroserve
+# The script resolves the binary name and probes --help for the flags this build
+# accepts before exec'ing, because the pinned SHA is chosen on the Jetson (CUDA 10.2)
+# and neither is knowable here: the target was renamed rpc-server -> ggml-rpc-server
+# in c299a92 (2026-06-27) and -m/--mem was removed in 41386cf (2025-10-17).
+ExecStart=/opt/heteroserve/Pi4/scripts/04_rpc_server.sh foreground
+Restart=always
+RestartSec=5
+
+# Hard memory ceiling. The Pi 4 has no swap by design, so an unbounded rpc-server would
+# take the whole board down with the OOM killer mid-measurement. Failing this one service
+# instead keeps the node reachable and makes the failure visible in the log.
+MemoryMax=3G
+MemoryHigh=2800M
+# No swap on this board by design, and none via systemd either: a run that swaps is a
+# corrupted measurement, not a slow one. Matters more on a build with no --mem, where
+# the node advertises real free memory and the placement engine gets no slack.
+MemorySwapMax=0
+
+# Never let the measurement process be de-prioritised by something else on the board.
+Nice=-5
+IOSchedulingClass=best-effort
+IOSchedulingPriority=0
+
+StandardOutput=append:/opt/heteroserve/data/logs/rpc-server.systemd.log
+StandardError=append:/opt/heteroserve/data/logs/rpc-server.systemd.log
+
+[Install]
+WantedBy=multi-user.target

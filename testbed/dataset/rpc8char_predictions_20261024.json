@@ -1,0 +1,150 @@
+{
+ "registered_at": "2026-10-24T21:10:07+07:00",
+ "script": "testbed/scripts/rpc8_char_20261024.py",
+ "out_prefix": "rpc8char",
+ "what": "the RPC term's first-worker rule (the scheduler's backward expansion) and the hybrid inputs, read from llama.cpp after rpc7, tested blind on Qwen3-30B-A3B Q3_K_M (MoE, no shared expert) and Qwen3.5-9B Q4_K_M (dense hybrid): bytes per decoded token per worker, the head on the host, unshaped",
+ "ctx": 2048,
+ "arms": {
+  "M30": {
+   "model": "qwen3moe",
+   "place": "laptop:36,pi5:6,pi4:6",
+   "env": {},
+   "kind": "moe"
+  },
+  "H9": {
+   "model": "qwen35_9b",
+   "place": "laptop:25,pi5:4,pi4:4",
+   "env": {},
+   "kind": "hybrid"
+  }
+ },
+ "prompt": "The quick brown fox jumps over the lazy dog. Summarise this sentence in five words.",
+ "short": 16,
+ "long": 48,
+ "reps": 2,
+ "memfile": "testbed/dataset/memory_snapshot_20261024_210925.json",
+ "margins_mib": {
+  "M30": {
+   "laptop": 8467,
+   "pi5": 5631,
+   "pi4": 5535
+  },
+  "H9": {
+   "laptop": 14388,
+   "pi5": 6777,
+   "pi4": 6548
+  }
+ },
+ "rpc_msg": {
+  "base": 1924,
+  "mask": 2,
+  "kv_pad": 256,
+  "first": 314,
+  "last": 318,
+  "back": 8,
+  "hdr": 66,
+  "mss": 1448,
+  "msgs": 10.0,
+  "bs_in": 1917,
+  "bs_out": 48,
+  "bs_msgs": 17.4
+ },
+ "header_bytes": 314,
+ "hybrid_extra": 330,
+ "predicted": {
+  "M30": {
+   "pi5": {
+    "to": 76824,
+    "to_rpc_bytes": 19134,
+    "parts": {
+     "minus the FFN output rpc_bytes() counts": -8506,
+     "the experts' outputs before weighting (n_embd x 8 x 4)": 65850,
+     "the router weights (8 x 4)": 346
+    },
+    "back": 8200,
+    "place": 1,
+    "of": 2
+   },
+   "pi4": {
+    "to": 10946,
+    "to_rpc_bytes": 10946,
+    "parts": {},
+    "back": 8200,
+    "place": 2,
+    "of": 2
+   }
+  },
+  "H9": {
+   "pi5": {
+    "to": 35848,
+    "to_rpc_bytes": 35518,
+    "parts": {
+     "the recurrent state's copy index and IMROPE's positions": 330
+    },
+    "back": 16392,
+    "place": 1,
+    "of": 2
+   },
+   "pi4": {
+    "to": 19468,
+    "to_rpc_bytes": 19138,
+    "parts": {
+     "the recurrent state's copy index and IMROPE's positions": 330
+    },
+    "back": 16392,
+    "place": 2,
+    "of": 2
+   }
+  }
+ },
+ "models": {
+  "M30": {
+   "file": "~/models/qwen3-30b-a3b-q3_k_m.gguf",
+   "sha256": "e145c9d2f5d11c9583eb099aa75100b7ab943e77d5240c9a2cd936f81c89ef43"
+  },
+  "H9": {
+   "file": "~/models/qwen3.5-9b-q4_k_m.gguf",
+   "sha256": "d784ce9eda1a5a7b51e8f705a9e6310844bf4f173654d115823c775fdea56d43"
+  }
+ },
+ "conditions": "2026-10-24 night, after c30: the laptop on its charger, battery full, Wi-Fi off; one Claude desktop app open (this session's); the links unshaped; Qwen3-30B-A3B Q3_K_M and Qwen3.5-9B Q4_K_M served on the laptop + Pi 5 + Pi 4; bytes are counted, so the laptop's load does not enter a reported figure.",
+ "hypotheses": {
+  "R8-MOE-FIRST": {
+   "arm": "M30",
+   "place": 1,
+   "tol": 0.02,
+   "claim": "M30's first worker receives the reading's bytes a token within 2 %"
+  },
+  "R8-MOE-LAST": {
+   "arm": "M30",
+   "place": 2,
+   "against": "to_rpc_bytes",
+   "tol": 0.005,
+   "claim": "M30's last worker receives rpc_bytes()'s bytes a token within 0.5 %"
+  },
+  "R8-HYB": {
+   "arm": "H9",
+   "tol": 0.005,
+   "claim": "each H9 worker receives rpc_bytes() + 330 B a token within 0.5 %"
+  },
+  "R8-BACK": {
+   "tol": 0.005,
+   "claim": "every worker returns the hidden state plus 8 B a token within 0.5 %"
+  },
+  "R8-REPEAT": {
+   "tol": 0.01,
+   "claim": "each figure repeats within 1 % across the two repetitions"
+  }
+ },
+ "inputs_sha256": {
+  "testbed/scripts/rpc8_char_20261024.py": "9010e3e0e344ed329044c76916b60d054d1df1257d705358c9bb80d23a22bed4",
+  "testbed/scripts/predict_pool.py": "3fd7d9ba188e20cbd0dfc18de44d12d863c7717eaa884ced717c0bf247a1224d",
+  "testbed/scripts/serve_pool.sh": "9f315d70ab3404e9d73b9901508b7f53e96da590fc2527f5d62061ecae37a07f",
+  "testbed/scripts/serve_defaults.sh": "4fdedec2da1479d577117606f3d810e313ef4483a71be6c9787895133a66a095",
+  "testbed/scripts/qr3_tpot.py": "2b44f219faa6c767e64f78d54cb7608add38cbfeb26db145335a355f490b25af",
+  "ThinkPad/config/cluster.json": "1f0a3529dd384647ab71a0a08e2c142226ccf2b80aa5160ffc91e5e2e9485943",
+  "testbed/dataset/model_shapes.json": "c3400b14d42e61f363f2df6e68974a12847d5cb6bd7c785f9b4ace8e3b6f5478",
+  "testbed/results/rpc7char_20261024_195615/score.json": "bbe1050a33054368dcc82927e1d6d75eed412c1413ca89e4a022800c53637f6c",
+  "testbed/dataset/memory_snapshot_20261024_210925.json": "351065a4a409aa5ee3fcaf312da55e7b64866aa11fe4f6dcc67abdced3675f33"
+ }
+}

@@ -1,0 +1,176 @@
+{
+ "made": "2026-10-23T02:27:41+07:00",
+ "nodes": {
+  "laptop": {
+   "title": "ThinkPad T580",
+   "cpu": "i5-8350U, 4C/8T",
+   "role": "control + CPU node",
+   "mem_available_mib": 27431,
+   "mem_total_mib": 31296,
+   "outlet": "3"
+  },
+  "jetson": {
+   "title": "Jetson Nano",
+   "cpu": "128-core Maxwell GPU",
+   "role": "Vulkan GPU worker",
+   "mem_available_mib": 3528,
+   "mem_total_mib": 3963,
+   "outlet": "1"
+  },
+  "pi5": {
+   "title": "Raspberry Pi 5",
+   "cpu": "4x Cortex-A76 2.4 GHz",
+   "role": "CPU",
+   "mem_available_mib": 7554,
+   "mem_total_mib": 8062,
+   "outlet": "2"
+  },
+  "pi4": {
+   "title": "Raspberry Pi 4",
+   "cpu": "4x Cortex-A72 1.8 GHz",
+   "role": "CPU",
+   "mem_available_mib": 7383,
+   "mem_total_mib": 7819,
+   "outlet": "0"
+  }
+ },
+ "pairs": [
+  {
+   "pair": "laptop-jetson",
+   "mbps": 934.0,
+   "rtt_ms": 1.224,
+   "measured": "2026-10-11T04:19:01+07:00"
+  },
+  {
+   "pair": "pi4-jetson",
+   "mbps": 938.8,
+   "rtt_ms": 1.081,
+   "measured": "2026-10-08T18:05:05+07:00"
+  },
+  {
+   "pair": "pi4-laptop",
+   "mbps": 934.0,
+   "rtt_ms": 0.801,
+   "measured": "2026-10-11T04:17:42+07:00"
+  },
+  {
+   "pair": "pi5-jetson",
+   "mbps": 904.6,
+   "rtt_ms": 1.139,
+   "measured": "2026-10-19T23:56:29+07:00"
+  },
+  {
+   "pair": "pi5-laptop",
+   "mbps": 934.2,
+   "rtt_ms": 0.935,
+   "measured": "2026-10-19T23:57:55+07:00"
+  },
+  {
+   "pair": "pi5-pi4",
+   "mbps": 936.4,
+   "rtt_ms": 0.752,
+   "measured": "2026-10-19T23:55:03+07:00"
+  }
+ ],
+ "plans": [
+  {
+   "label": "qwen35_9b engine",
+   "assign": [
+    [
+     "laptop",
+     33
+    ]
+   ],
+   "head": "last",
+   "n_layers": 33,
+   "source": "testbed/dataset/full_eval_q9b_fe4_20261020.json"
+  },
+  {
+   "label": "qwen35_9b boards",
+   "assign": [
+    [
+     "pi5",
+     33
+    ]
+   ],
+   "head": "last",
+   "n_layers": 33,
+   "source": "testbed/dataset/full_eval_q9b_fe4_20261020.json"
+  },
+  {
+   "label": "qwen35_9b even",
+   "assign": [
+    [
+     "laptop",
+     9
+    ],
+    [
+     "pi5",
+     8
+    ],
+    [
+     "pi4",
+     8
+    ],
+    [
+     "jetson",
+     8
+    ]
+   ],
+   "head": "host",
+   "n_layers": 33,
+   "source": "testbed/dataset/full_eval_q9b_fe4_20261020.json"
+  },
+  {
+   "label": "qwen35_9b default",
+   "assign": [
+    [
+     "laptop",
+     22
+    ],
+    [
+     "pi5",
+     5
+    ],
+    [
+     "pi4",
+     5
+    ],
+    [
+     "jetson",
+     1
+    ]
+   ],
+   "head": "last",
+   "n_layers": 33,
+   "source": "testbed/dataset/full_eval_q9b_fe4_20261020.json"
+  },
+  {
+   "label": "qwen35_9b pi4alone",
+   "assign": [
+    [
+     "pi4",
+     33
+    ]
+   ],
+   "head": "last",
+   "n_layers": 33,
+   "source": "testbed/dataset/full_eval_q9b_fe4_20261020.json"
+  },
+  {
+   "label": "qwen38_27b engine",
+   "assign": [
+    [
+     "laptop",
+     65
+    ]
+   ],
+   "head": "last",
+   "n_layers": 65,
+   "source": "testbed/dataset/full_eval_q27bnc_fe4_20261021.json"
+  }
+ ],
+ "memory_from": "testbed/dataset/memory_snapshot_20261022_012536.json",
+ "link_from": "testbed/dataset/link.json",
+ "outlets_from": "testbed/energy/strip.json"
+}

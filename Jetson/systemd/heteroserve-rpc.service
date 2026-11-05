@@ -1,0 +1,72 @@
+# ggml RPC worker for the HeteroServe testbed.
+#
+# Install:  make install-units      (see the Makefile target)
+#
+# The repo location is NOT baked into this file. systemd expands ${VAR} only in
+# Exec*= command lines -- never in User= or WorkingDirectory= -- so those two
+# come from a generated drop-in instead:
+#
+#   /etc/default/heteroserve                              (command-line vars)
+#     HS_REPO=/home/you/HeteroServe/Jetson    (this repo checkout)
+#     HS_ROOT=/home/you/heteroserve           (workspace: llama.cpp, models, results)
+#     HS_RESULTS=/home/you/heteroserve/results
+#     NODE_ID=jetson-nano-01
+#
+#   /etc/systemd/system/heteroserve-rpc.service.d/10-local.conf
+#     [Service]
+#     User=you
+#     WorkingDirectory=/home/you/heteroserve
+#
+# ConditionPathExists below makes the unit fail CLOSED if that drop-in is
+# missing. That is deliberate: without it there is no User= line at all, and
+# systemd would run this unauthenticated RPC server as root.
+#
+# SECURITY: the ggml RPC protocol is unauthenticated and the server executes
+# whatever graph the client sends -- the realistic risk is remote code execution
+# on this board, not just a bad result. Only enable this on the isolated testbed
+# LAN, never on an interface reachable from the internet.
+
+[Unit]
+Description=HeteroServe ggml RPC worker (Jetson Nano)
+After=network-online.target
+Wants=network-online.target
+ConditionPathExists=/etc/default/heteroserve
+ConditionPathExists=/etc/systemd/system/heteroserve-rpc.service.d/10-local.conf
+# On an unknown argument the rpc server prints usage and calls exit(0) -- a SUCCESS
+# code -- which Restart=on-failure reads as a clean shutdown, leaving the unit dead
+# with the port closed and no failure state. 40_run_rpc_server.sh probes --help
+# before exec'ing so that should not happen, but Restart=always below makes the
+# supervision correct regardless. These two keys keep that from becoming a silent
+# restart loop; they live in [Unit], NOT [Service], where systemd ignores them.
+StartLimitIntervalSec=120
+StartLimitBurst=5
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/default/heteroserve
+# User= and WorkingDirectory= are supplied by 10-local.conf (see above).
+
+# The '+' prefix runs this as root regardless of User=. Without it, sudo has no
+# tty under systemd, jetson_clocks silently fails, and the worker then serves
+# every request at unlocked clocks -- which corrupts the measurements rather
+# than announcing itself. Kept non-fatal (a warning, not a dead unit) but LOUD:
+# grep the journal for CLOCKS-NOT-LOCKED before trusting a boot-time run.
+ExecStartPre=+/bin/sh -c '/usr/bin/jetson_clocks || echo "CLOCKS-NOT-LOCKED: jetson_clocks failed; measurements from this worker are NOT valid" >&2'
+
+# The first token of ExecStart may not itself be a variable, so exec through sh.
+ExecStart=/bin/sh -c 'exec "${HS_REPO}/scripts/40_run_rpc_server.sh"'
+Restart=always
+RestartSec=5
+
+# 4 GB shared between CPU and GPU: if this unit starts eating the box, kill it
+# rather than letting the OOM killer pick sshd.
+OOMScoreAdjust=200
+# The sweeps are long; do not let systemd's default timeout cut a run short.
+TimeoutStopSec=30
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=hs-rpc
+
+[Install]
+WantedBy=multi-user.target

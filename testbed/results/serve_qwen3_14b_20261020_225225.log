@@ -1,0 +1,21 @@
+########## 2026-10-20T22:52:25+07:00 serve qwen3_14b, ctx 4096, clocks locked, boards pi5 pi4 jetson laptop, planned against testbed/dataset/memory_at_rest.json: pi4 1 + laptop 39, head on laptop; predicted decode 501.1 ms/token (2.00 tok/s)
+hosts   pi4: fixed: pi4 1 + laptop 39, head last
+llama-server -m ~/models/qwen3-14b-q4_k_m.gguf --rpc 192.168.1.108:50053 -ngl 40  -c 4096 -np 1 -t 4 -lv 4 -lm none --host 192.168.1.110 --port 8080   pin b23701f77d47dad9de834d59ebfcbe25c9e8b46f
+gate    pi4: MemAvailable 7361 MiB, the plan needs 771 MiB with its reserve (margin at rest 6642 MiB)
+gate    laptop: MemAvailable 26615 MiB, the plan needs 17127 MiB with its reserve (margin at rest 10658 MiB)
+worker  laptop listening on 192.168.1.108:50053 (pid 66951)
+server  starting on pi4 (pid 5650); loading streams the model from the SD card to the workers
+READY   2026-10-20T22:57:59+07:00: http://192.168.1.110:8080/ (web chat) -- health {"status":"ok"}
+0.02.079.932 I load_tensors:          CPU model buffer size =   617.74 MiB
+0.02.079.934 I load_tensors: RPC0[192.168.1.108:50053] model buffer size =  7961.32 MiB
+5.26.196.874 I llama_context: n_ctx                 = 4096
+5.26.196.878 I llama_context: flash_attn            = auto
+5.26.197.541 I llama_kv_cache:        CPU KV buffer size =    16.00 MiB
+5.26.216.413 I llama_kv_cache: RPC0[192.168.1.108:50053] KV buffer size =   624.00 MiB
+5.26.216.509 I llama_kv_cache: size =  640.00 MiB (  4096 cells,  40 layers,  1/1 seqs), K (f16):  320.00 MiB, V (f16):  320.00 MiB
+5.26.598.741 I sched_reserve: RPC0[192.168.1.108:50053] compute buffer size =   126.01 MiB
+5.26.598.767 I sched_reserve:        CPU compute buffer size =   146.01 MiB
+5.27.787.119 I slot   load_model: id  0 | task -1 | new slot, n_ctx = 4096
+split   laptop: llama.cpp 7961.32 MiB, planned 7961.3 MiB (head on laptop)
+mem     pi4: MemAvailable 6685 MiB at READY, 7361 at the gate: the serve holds 676 MiB, charged 771 MiB
+mem     laptop: MemAvailable 17995 MiB at READY, 26615 at the gate: the serve holds 8620 MiB, charged 8935 MiB

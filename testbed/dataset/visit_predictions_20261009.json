@@ -1,0 +1,363 @@
+{
+ "registered": "2026-10-09T23:53:45+07:00",
+ "name": "visit_20261009",
+ "model": "tinyllama",
+ "model_path": "~/models/tinyllama-1.1b-q4km.gguf",
+ "host": "pi4",
+ "rule_under_test": {
+  "id": "VISIT",
+  "visit_ms": 1.587,
+  "with": "RTT1 (rtt_trips 1)",
+  "fitted_on": "ring_laps_predictions_20261009.json (3.173 ms per lap of two visits beyond RTT1's link terms, split evenly)"
+ },
+ "servers": {
+  "pi4": {
+   "ip": "127.0.0.1",
+   "ports": [
+    50060,
+    50061,
+    50062,
+    50063
+   ],
+   "extra": "-t 4"
+  },
+  "jetson": {
+   "ip": "192.168.1.114",
+   "ports": [
+    50052,
+    50053,
+    50054,
+    50055
+   ],
+   "extra": "-d Vulkan0"
+  }
+ },
+ "protocol": "-t 4 -ngl 99 -p 64 -n 32 -r 3 -oe jsonl -v",
+ "settings": {
+  "s0": {
+   "netshape": null
+  }
+ },
+ "rounds": 3,
+ "order": [
+  [
+   [
+    "s0",
+    [
+     "h1",
+     "h2",
+     "h4",
+     "a1",
+     "p4",
+     "j3"
+    ]
+   ]
+  ],
+  [
+   [
+    "s0",
+    [
+     "h2",
+     "h4",
+     "a1",
+     "p4",
+     "j3",
+     "h1"
+    ]
+   ]
+  ],
+  [
+   [
+    "s0",
+    [
+     "h4",
+     "a1",
+     "p4",
+     "j3",
+     "h1",
+     "h2"
+    ]
+   ]
+  ]
+ ],
+ "layouts": {
+  "h1": {
+   "stages": [
+    {
+     "board": "pi4 (host)",
+     "blocks": 4
+    },
+    {
+     "board": "jetson",
+     "blocks": 18
+    }
+   ],
+   "jetson_visits": 1,
+   "loopback_visits": 0,
+   "host_blocks": 4,
+   "rpc": "192.168.1.114:50052",
+   "ts": "1",
+   "ngl": 19,
+   "args": "-m ~/models/tinyllama-1.1b-q4km.gguf --rpc 192.168.1.114:50052 -ts 1 -t 4 -ngl 19 -p 64 -n 32 -r 3 -oe jsonl -v",
+   "predicted": {
+    "rtt1": {
+     "decode_ms": 105.83,
+     "prefill_ms": 25.916
+    },
+    "visit": {
+     "decode_ms": 107.41,
+     "prefill_ms": 25.916
+    }
+   }
+  },
+  "h2": {
+   "stages": [
+    {
+     "board": "pi4 (host)",
+     "blocks": 4
+    },
+    {
+     "board": "jetson",
+     "blocks": 9
+    },
+    {
+     "board": "jetson",
+     "blocks": 9
+    }
+   ],
+   "jetson_visits": 2,
+   "loopback_visits": 0,
+   "host_blocks": 4,
+   "rpc": "192.168.1.114:50052,192.168.1.114:50053",
+   "ts": "8.5/10.5",
+   "ngl": 19,
+   "args": "-m ~/models/tinyllama-1.1b-q4km.gguf --rpc 192.168.1.114:50052,192.168.1.114:50053 -ts 8.5/10.5 -t 4 -ngl 19 -p 64 -n 32 -r 3 -oe jsonl -v",
+   "predicted": {
+    "rtt1": {
+     "decode_ms": 107.05,
+     "prefill_ms": 26.073
+    },
+    "visit": {
+     "decode_ms": 110.22,
+     "prefill_ms": 26.073
+    }
+   }
+  },
+  "h4": {
+   "stages": [
+    {
+     "board": "pi4 (host)",
+     "blocks": 4
+    },
+    {
+     "board": "jetson",
+     "blocks": 5
+    },
+    {
+     "board": "jetson",
+     "blocks": 5
+    },
+    {
+     "board": "jetson",
+     "blocks": 4
+    },
+    {
+     "board": "jetson",
+     "blocks": 4
+    }
+   ],
+   "jetson_visits": 4,
+   "loopback_visits": 0,
+   "host_blocks": 4,
+   "rpc": "192.168.1.114:50052,192.168.1.114:50053,192.168.1.114:50054,192.168.1.114:50055",
+   "ts": "4.5/5/4/5.5",
+   "ngl": 19,
+   "args": "-m ~/models/tinyllama-1.1b-q4km.gguf --rpc 192.168.1.114:50052,192.168.1.114:50053,192.168.1.114:50054,192.168.1.114:50055 -ts 4.5/5/4/5.5 -t 4 -ngl 19 -p 64 -n 32 -r 3 -oe jsonl -v",
+   "predicted": {
+    "rtt1": {
+     "decode_ms": 109.49,
+     "prefill_ms": 26.386
+    },
+    "visit": {
+     "decode_ms": 115.83,
+     "prefill_ms": 26.386
+    }
+   }
+  },
+  "a1": {
+   "stages": [
+    {
+     "board": "pi4",
+     "blocks": 4
+    },
+    {
+     "board": "jetson",
+     "blocks": 18
+    }
+   ],
+   "jetson_visits": 1,
+   "loopback_visits": 1,
+   "host_blocks": 0,
+   "rpc": "127.0.0.1:50060,192.168.1.114:50052",
+   "ts": "3.5/19.5",
+   "ngl": null,
+   "args": "-m ~/models/tinyllama-1.1b-q4km.gguf --rpc 127.0.0.1:50060,192.168.1.114:50052 -ts 3.5/19.5 -t 4 -ngl 99 -p 64 -n 32 -r 3 -oe jsonl -v",
+   "predicted": {
+    "rtt1": {
+     "decode_ms": 106.13,
+     "prefill_ms": 25.806
+    },
+    "visit": {
+     "decode_ms": 109.31,
+     "prefill_ms": 25.806
+    }
+   }
+  },
+  "p4": {
+   "stages": [
+    {
+     "board": "pi4",
+     "blocks": 1
+    },
+    {
+     "board": "pi4",
+     "blocks": 1
+    },
+    {
+     "board": "pi4",
+     "blocks": 1
+    },
+    {
+     "board": "pi4",
+     "blocks": 1
+    },
+    {
+     "board": "jetson",
+     "blocks": 18
+    }
+   ],
+   "jetson_visits": 1,
+   "loopback_visits": 4,
+   "host_blocks": 0,
+   "rpc": "127.0.0.1:50060,127.0.0.1:50061,127.0.0.1:50062,127.0.0.1:50063,192.168.1.114:50052",
+   "ts": "0.5/1/1/1/19.5",
+   "ngl": null,
+   "args": "-m ~/models/tinyllama-1.1b-q4km.gguf --rpc 127.0.0.1:50060,127.0.0.1:50061,127.0.0.1:50062,127.0.0.1:50063,192.168.1.114:50052 -ts 0.5/1/1/1/19.5 -t 4 -ngl 99 -p 64 -n 32 -r 3 -oe jsonl -v",
+   "predicted": {
+    "rtt1": {
+     "decode_ms": 106.3,
+     "prefill_ms": 25.847
+    },
+    "visit": {
+     "decode_ms": 114.23,
+     "prefill_ms": 25.847
+    }
+   }
+  },
+  "j3": {
+   "stages": [
+    {
+     "board": "pi4",
+     "blocks": 4
+    },
+    {
+     "board": "jetson",
+     "blocks": 6
+    },
+    {
+     "board": "jetson",
+     "blocks": 6
+    },
+    {
+     "board": "jetson",
+     "blocks": 6
+    }
+   ],
+   "jetson_visits": 3,
+   "loopback_visits": 1,
+   "host_blocks": 0,
+   "rpc": "127.0.0.1:50060,192.168.1.114:50052,192.168.1.114:50053,192.168.1.114:50054",
+   "ts": "3.5/6/6/7.5",
+   "ngl": null,
+   "args": "-m ~/models/tinyllama-1.1b-q4km.gguf --rpc 127.0.0.1:50060,192.168.1.114:50052,192.168.1.114:50053,192.168.1.114:50054 -ts 3.5/6/6/7.5 -t 4 -ngl 99 -p 64 -n 32 -r 3 -oe jsonl -v",
+   "predicted": {
+    "rtt1": {
+     "decode_ms": 108.57,
+     "prefill_ms": 26.119
+    },
+    "visit": {
+     "decode_ms": 114.92,
+     "prefill_ms": 26.119
+    }
+   }
+  }
+ },
+ "series": {
+  "VISIT-J": [
+   "h1",
+   "h2",
+   "h4"
+  ],
+  "VISIT-P": [
+   "a1",
+   "p4"
+  ]
+ },
+ "predicted_slopes_ms_per_visit": {
+  "VISIT-J": {
+   "rtt1": 1.22,
+   "visit": 2.806
+  },
+  "VISIT-P": {
+   "rtt1": 0.057,
+   "visit": 1.64
+  }
+ },
+ "links": {
+  "jetson": {
+   "mbps": 938.8,
+   "rtt_ms": 1.081,
+   "pair": "pi4-jetson"
+  },
+  "loopback": {
+   "mbps": 10000.0,
+   "rtt_ms": 0.041,
+   "note": "ping 2026-10-09; bandwidth nominal"
+  }
+ },
+ "cost_sources": {
+  "pi4": {
+   "host": "cpu row",
+   "worker": "cpu-rpc-worker row"
+  },
+  "jetson": {
+   "host": "vulkan row",
+   "worker": "vulkan row + smoke-test RPC cost"
+  }
+ },
+ "inputs_sha256": {
+  "characterisation.csv": "ef94c22318ccb0ce9ab913a08174d110095d9d4e0cad65aeeb052304dbc13d6a",
+  "model_shapes.json": "c92bbc0278b030d5218d7740b3fac99f146b5bdeffe684404d94a012f7232c38",
+  "link.json": "f961e94b8781e34081e0f11b3fb6339a150ae229fe43eb4566ca44094384568c",
+  "predict_pool.py": "b36fde31eb760256164bed95fa199f31bd90a191dfce24ded7210dec36d779ea",
+  "ring_laps.sh": "704aad914ec9056a6edcf3ed5f005c8c13f6815aa79326008d59c8833b19a315",
+  "netshape.sh": "04f6d238b776be5c6593a66bd5b169f22d97e827825889d8d6b72f2fbb9827c7",
+  "register_ring_laps_20261009.py": "bf41564ab767e14c52691e645c3829dfb4d7fb70247a8cabcb836af9b94fff94",
+  "register_visit_20261009.py": "6716cb06a0bf755d8f2825f15d42783dcf50c2ca85ee1e3a2c9ae4d5c68cbdad"
+ },
+ "hypotheses": [
+  {
+   "id": "VISIT-J",
+   "claim": "least-squares slope of decode over Jetson visits in h1, h2, h4 (every round), minus RTT1's predicted slope over them, in [1.087, 2.087] ms"
+  },
+  {
+   "id": "VISIT-P",
+   "claim": "the same over loopback visits in a1 and p4, in [1.087, 2.087] ms"
+  },
+  {
+   "id": "VISIT-MAE",
+   "claim": "over the six layouts, VISIT's mean absolute decode error (against each layout's mean over rounds) is below RTT1's"
+  }
+ ],
+ "adoption": "VISIT is adopted for new registrations when VISIT-J and VISIT-MAE hold; VISIT-P decides only whether a loopback visit costs the same"
+}

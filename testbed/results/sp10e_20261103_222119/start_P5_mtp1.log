@@ -1,0 +1,36 @@
+mtp     the Pi 5's hardware TSO is off (pi5_tx_stall_20261103's fix): MTP with the Pi 5 allowed
+########## 2026-11-03T22:27:29+07:00 serve qwen35_9b, ctx 4096, clocks locked, boards pi5 pi4 jetson, planned against testbed/dataset/memory_at_rest.json: laptop 20 + pi5 7 + pi4 6, head on laptop; predicted decode 483.3 ms/token (2.07 tok/s)
+hosts   laptop: fixed: laptop 20 + pi5 7 + pi4 6, head host
+llama-server -m ~/models/qwen3.5-9b-q4_k_m.gguf --rpc 192.168.10.11:50052,192.168.10.12:50052 -ngl 14 -ts 6.5,7.5 -ot "^output\.weight=CPU"  --spec-type draft-mtp --spec-draft-n-max 1 -c 4096 -np 1 -t 4 -lv 4 -lm none --cache-ram 0 --host 192.168.1.108 --port 8080   pin b23701f77d47dad9de834d59ebfcbe25c9e8b46f
+gate    laptop: MemAvailable 27917 MiB, the plan needs 12652 MiB with its reserve (margin at rest 15133 MiB)
+gate    pi5: MemAvailable 7554 MiB, the plan needs 1134 MiB with its reserve (margin at rest 6485 MiB)
+gate    pi4: MemAvailable 7427 MiB, the plan needs 1158 MiB with its reserve (margin at rest 6255 MiB)
+worker  pi5 listening on 192.168.10.11:50052 (pid 11131)
+worker  pi4 listening on 192.168.10.12:50052 (pid 8437)
+server  starting on laptop (pid 213814); loading streams the model from the SD card to the workers
+READY   2026-11-03T22:28:02+07:00: http://192.168.1.108:8080/ (web chat) -- health {"status":"ok"}
+0.02.017.336 I load_tensors:          CPU model buffer size =  2353.79 MiB
+0.02.017.359 I load_tensors:   CPU_REPACK model buffer size =  1644.75 MiB
+0.02.017.360 I load_tensors: RPC0[192.168.10.11:50052] model buffer size =   914.23 MiB
+0.02.017.361 I load_tensors: RPC0[192.168.10.12:50052] model buffer size =   960.32 MiB
+0.28.116.345 I llama_context: n_ctx                 = 4096
+0.28.116.347 I llama_context: flash_attn            = auto
+0.28.116.496 I llama_kv_cache:        CPU KV buffer size =    80.00 MiB
+0.28.158.371 I llama_kv_cache: RPC0[192.168.10.11:50052] KV buffer size =    16.00 MiB
+0.28.159.250 I llama_kv_cache: RPC0[192.168.10.12:50052] KV buffer size =    32.00 MiB
+0.28.159.377 I llama_kv_cache: size =  128.00 MiB (  4096 cells,   8 layers,  1/1 seqs), K (f16):   64.00 MiB, V (f16):   64.00 MiB
+0.28.209.015 I sched_reserve: RPC0[192.168.10.11:50052] compute buffer size =    92.02 MiB
+0.28.209.018 I sched_reserve: RPC0[192.168.10.12:50052] compute buffer size =    92.02 MiB
+0.28.209.019 I sched_reserve:        CPU compute buffer size =   100.02 MiB
+0.28.851.135 I llama_context: n_ctx                 = 4096
+0.28.851.137 I llama_context: flash_attn            = auto
+0.28.865.190 I llama_kv_cache: RPC0[192.168.10.12:50052] KV buffer size =    16.00 MiB
+0.28.865.329 I llama_kv_cache: size =   16.00 MiB (  4096 cells,   1 layers,  1/1 seqs), K (f16):    8.00 MiB, V (f16):    8.00 MiB
+0.28.874.338 I sched_reserve: RPC0[192.168.10.12:50052] compute buffer size =    92.02 MiB
+0.28.874.342 I sched_reserve:        CPU compute buffer size =    20.02 MiB
+0.28.881.111 I sched_reserve: RPC0[192.168.10.12:50052] compute buffer size =    92.02 MiB
+split   pi5: llama.cpp 914.23 MiB, planned 914.2 MiB (head on laptop)
+split   pi4: llama.cpp 960.32 MiB, planned 960.3 MiB (head on laptop)
+mem     laptop: MemAvailable 23640 MiB at READY, 27917 at the gate: the serve holds 4277 MiB, charged 4460 MiB
+mem     pi5: MemAvailable 6505 MiB at READY, 7554 at the gate: the serve holds 1049 MiB, charged 1134 MiB
+mem     pi4: MemAvailable 6357 MiB at READY, 7427 at the gate: the serve holds 1070 MiB, charged 1158 MiB

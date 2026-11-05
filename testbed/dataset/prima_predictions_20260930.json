@@ -1,0 +1,89 @@
+{
+ "registered": "2026-09-30T05:05:28+07:00",
+ "campaign": "2026-09-30: the full evaluation's prima.cpp comparison (proposal Phase 5), Qwen3-14B Q4_K_M, one user",
+ "inputs_sha256": {
+  "characterisation.csv": "ef94c22318ccb0ce9ab913a08174d110095d9d4e0cad65aeeb052304dbc13d6a",
+  "model_shapes.json": "c92bbc0278b030d5218d7740b3fac99f146b5bdeffe684404d94a012f7232c38",
+  "link.json": "e5084df7d3e62a47c7f93339ef4412c8e5f31db2d500ad5f189aafde95548ac5",
+  "memory": "a48ee75c39aa9e66bce764535d36199f0f3d72edb9acd7f285866d9820c1d6fb",
+  "qr3_results": "1631881f7dd308aef1d439d62ad2f6c15b94ef8b4746ebea06893054c76e574e",
+  "cluster.json": "8824a3b4ea31dd5ac4e5e561584f837e1f469e52c06fcf95ed89c40d59125df5",
+  "predict_pool.py": "38f18893b923ec4a3edac856830750ffba19980b0db183c4d4d838fc18141a83",
+  "serve_pool.sh": "8aee7095b6909dda7b283fe4f98256b3cbc01af054a6a62aac741ae131b527f0",
+  "qr3_tpot.py": "9f209fb4ab5d86b6d9bb8fcdb52a64f9e9ddce11b8083e6abba0ee3fdc6ff7e4",
+  "placement.py": "23faab12f34288bdf5efd9cddba480cc1f628647da11302a417470f86208d8fb",
+  "prima_patch": "b8359f2f56534193545f5117f7e8557c5089dcf9ac558f61dfcbc3f425b2909a",
+  "prima_build.sh": "254c4b704bb6d5b4eb430da05081536482d8a44b39fe3d8b9341e477ef7fdc1b",
+  "highs_package": "82a2050617f6b7a3cc75ee2aa0c15855f683012fa9260391ef696db6cdf2267c"
+ },
+ "prima": {
+  "repo": "https://github.com/OpenCPIL/prima.cpp",
+  "commit": "288df6a2cc2120387e12d6f40798f30cc525c9ea",
+  "patch": "testbed/patches/prima-288df6a-qwen3-v1.patch (the qwen3 port: prima.cpp's own qwen2 code with upstream's per-head Q/K norms and no Q/K/V biases; its distributed path and profiler taught the two new tensors)",
+  "highs": "HiGHS v1.15.1, highs-1.15.1-aarch64-linux-gnu-static-mit.tar.gz (sha256 = GitHub's published digest), linked statically on the Pi 5 (rank 0) only",
+  "not_on_the_jetson": "gcc 7.5 < 9, ZeroMQ 4.2.5 < 4.3.2, make 4.1, fio 3.1, no internet (testbed/prima.md)"
+ },
+ "conditions": "identical where prima.cpp allows: the same model file (sha256-checked on every board that loads it), the Pi 5 and the Pi 4, the wired overlay (192.168.10.x), -t 4, a 4096-token context, the QR3 protocol and client (qr3_tpot.py: one unscored warm-up of 512/32, then 10 requests of 128-token GPL-3 prompts x 128 tokens, greedy, ignore_eos, cache_prompt false, streamed and timed per token on the laptop), each arm started only once the Pi 5 is below 50 C. Order: A, then B.",
+ "arms": {
+  "A_ours_pis": {
+   "what": "the engine's plan on the two boards prima.cpp can use, served by llama.cpp at the cluster pin (serve_pool.sh NODES='pi5 pi4', MEMFILE the 01:33 warm snapshot)",
+   "plan": [
+    {
+     "node": "pi5",
+     "blocks": 32
+    },
+    {
+     "node": "pi4",
+     "blocks": 8
+    }
+   ],
+   "head_on": "pi4",
+   "server_args": "-m ~/models/qwen3-14b-q4_k_m.gguf --rpc 192.168.10.12:50052 -ngl 9 -c 4096 -np 1 -t 4",
+   "memory": {
+    "pi5": {
+     "need_mib": 7337,
+     "reserve_mib": 0,
+     "available_mib": 7492,
+     "margin_mib": 155
+    },
+    "pi4": {
+     "need_mib": 2453,
+     "reserve_mib": 0,
+     "available_mib": 7403,
+     "margin_mib": 4950
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 1193.5,
+    "prefill_ms_per_token": 350.9
+   },
+   "run": "qr3_tpot.py run --model qwen3_14b --ctx 4096 --mem testbed/dataset/memory_snapshot_20260930_013353.json --nodes 'pi5 pi4' --tag primacmpA",
+   "log_glob": "testbed/results/qr3_primacmpA_qwen3_14b_2*.log"
+  },
+  "B_prima_halda": {
+   "what": "prima.cpp as its README runs it: the Pi 5 rank 0 (llama-server, the head, which holds the input and output layers), the Pi 4 rank 1 (llama-cli), --prefetch, -t 4, -c 4096, and NO -lw: its Halda scheduler profiles both boards and picks the split, which each rank logs ('Using window size')",
+   "run": "qr3_tpot.py run --model qwen3_14b --ctx 4096 --engine prima --tag primacmpB",
+   "log_glob": "testbed/results/qr3_primacmpB_qwen3_14b_2*.log"
+  },
+  "D_ours_full_reference": {
+   "what": "NOT RUN AGAIN: QR3's measured qwen3_14b config -- the engine's plan on the whole cluster (Pi 5 32 + Jetson 8, the Jetson's clocks locked), same protocol, same client, same day",
+   "measured": {
+    "client_mean_ms": 851.58,
+    "client_p95_ms": 854.89,
+    "ttft_client_mean_ms": 23072.05,
+    "log": "testbed/results/qr3_scored_qwen3_14b_20260930_023225.log"
+   }
+  }
+ },
+ "smoke": "UNSCORED, after this registration and before any scored arm: prima.cpp started as arm B, one 128-token request (QR3's request-0 prompt) for 16 tokens, then stopped. It checks the qwen3 port (CORRECTNESS), the server's API with the client, and records Halda's split. Its timings are not used.",
+ "rules": [
+  "CORRECTNESS: the port is taken as correct if prima.cpp's first 8 greedy tokens on QR3's request-0 prompt match llama.cpp's (arm A's request 0), compared as text. If they do not, both texts are reported and arm B is not scored until it is explained.",
+  "DECODE: the arm with the lower pooled client mean TPOT is the faster; the difference is reported in %. PREDICTED: A is faster. On two CPU boards with the model in RAM, prima.cpp's ring is a two-stage pipeline like ours; its advantages (GPUs, disk offload with prefetch, many devices) do not apply. Against that, its late-2024 base does not repack Q4_K on the Pi 5, which decodes faster (a single sequence 13 % faster, on the 9B, benchmarks.md step 1).",
+  "TTFT: the arm with the lower mean client TTFT (128-token prompt) is the faster in prefill. PREDICTED: A, whose Pi 5 prefills with the repacked kernels (1.55x faster on the 9B).",
+  "QR3: each arm's pooled client P95 against 500 / 250 ms, as QR3's rules. PREDICTED: neither arm meets 500.",
+  "HALDA-SPLIT: PREDICTED: Halda gives the Pi 5 at most 30 of the 40 blocks, because the Pi 5 must also hold the 609 MiB output layer (and prima.cpp keeps the input embedding there). Reported with the split it picks, at the smoke run and at B.",
+  "ACCURACY (A only): A's server mean TPOT within +-10 % of the predictor (as QR3).",
+  "REFERENCE: D, the engine on the whole cluster, is reported beside A and B. prima.cpp cannot use the Jetson; that is a capability difference, reported as such, and no rule is scored on it.",
+  "COMPLETE: every scored request returns 128 tokens (for B: 128 content events and tokens_predicted 128); a short one is reported and the full ones still scored."
+ ]
+}

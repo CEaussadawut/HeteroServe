@@ -1,0 +1,118 @@
+########## 2026-10-05T22:15:29+07:00 cell tinyllama.rule: host pi4, workers [jetson], llama-bench -m ~/models/tinyllama-1.1b-q4km.gguf -rpc 192.168.100.111:50052 -ngl 22   pin b23701f77d47dad9de834d59ebfcbe25c9e8b46f
+protocol -t 4 -p 512 -n 128 -r 14 --progress -oe jsonl
+backend jetson=vulkan (tree ~/llama.cpp, -d Vulkan0)
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+gate    every board idle, every tree at the pin and clean
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+jetson  GATE ok: pmode:0000, guard live and un-tripped, eth0 is the only interface on the router LAN
+gate    pi4: 57 C after 0 s (threshold 60 C); MemAvailable 7414 MiB after 0 s, the cell needs 164 MiB + a 0 MiB reserve
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+gate    jetson: 44 C after 0 s (threshold 45 C); MemAvailable 3564 MiB after 0 s, the cell needs 671 MiB + a 450 MiB reserve
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+jetson  clocks: LOCKED
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+worker  jetson listening on 192.168.100.111:50052 (pid 25429):          This is an experimental feature and is not secure! !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+probes  pi4:13222 jetson:25701
+STATE before pi4 2026-10-05T22:15:34+07:00 temp=56.0'C throttled=0x80000 memavail_mib=7412 load=1.87
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+STATE before jetson 2026-10-05T22:15:35+07:00 pmode:0000 CPU=45C GPU=44C cpu0=1479000/1479000 gpu=921600000/921600000 swap_used_kB=0 memavail_mib=3544 eth0_rx=1953135236 eth0_tx=421534857 trips=0
+##### bench tinyllama.rule on pi4
+llama-bench: benchmark 1/2: starting
+llama-bench: benchmark 1/2: warmup prompt run
+llama-bench: benchmark 1/2: prompt run 1/14
+llama-bench: benchmark 1/2: prompt run 2/14
+llama-bench: benchmark 1/2: prompt run 3/14
+llama-bench: benchmark 1/2: prompt run 4/14
+llama-bench: benchmark 1/2: prompt run 5/14
+llama-bench: benchmark 1/2: prompt run 6/14
+llama-bench: benchmark 1/2: prompt run 7/14
+llama-bench: benchmark 1/2: prompt run 8/14
+llama-bench: benchmark 1/2: prompt run 9/14
+llama-bench: benchmark 1/2: prompt run 10/14
+llama-bench: benchmark 1/2: prompt run 11/14
+llama-bench: benchmark 1/2: prompt run 12/14
+llama-bench: benchmark 1/2: prompt run 13/14
+llama-bench: benchmark 1/2: prompt run 14/14
+| model                          |       size |     params | backend    | ngl |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | --------------: | -------------------: |
+| llama 1B Q4_K - Medium         | 636.18 MiB |     1.10 B | RPC        |  22 |           pp512 |         57.67 ± 0.18 |
+{"build_commit": "b23701f", "build_number": 200, "cpu_info": "CPU", "gpu_info": "192.168.100.111:50052", "backends": "RPC", "model_filename": "/home/aun/models/tinyllama-1.1b-q4km.gguf", "model_type": "llama 1B Q4_K - Medium", "model_size": 667078656, "model_n_params": 1100048384, "n_batch": 2048, "n_ubatch": 512, "n_threads": 4, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "f16", "type_v": "f16", "n_gpu_layers": 22, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": -1, "devices": "auto", "tensor_split": "0.00", "tensor_buft_overrides": "none", "load_mode": "auto", "lazy_mode": "auto", "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "n_prompt": 512, "n_gen": 0, "n_depth": 0, "test_time": "2026-10-05T15:15:41Z", "avg_ns": 8877652146, "stddev_ns": 28112542, "avg_ts": 57.673444, "stddev_ts": 0.182879, "samples_ns": [ 8823528348, 8873772040, 8850955883, 8853678967, 8842012705, 8855606475, 8886753756, 8887406001, 8898990581, 8916522243, 8886681428, 8905130896, 8905841693, 8900249028 ],"samples_ts": [ 58.0267, 57.6981, 57.8469, 57.8291, 57.9054, 57.8165, 57.6138, 57.6096, 57.5346, 57.4215, 57.6143, 57.4949, 57.4904, 57.5265 ]}
+llama-bench: benchmark 2/2: starting
+llama-bench: benchmark 2/2: warmup generation run
+llama-bench: benchmark 2/2: generation run 1/14
+llama-bench: benchmark 2/2: generation run 2/14
+llama-bench: benchmark 2/2: generation run 3/14
+llama-bench: benchmark 2/2: generation run 4/14
+llama-bench: benchmark 2/2: generation run 5/14
+llama-bench: benchmark 2/2: generation run 6/14
+llama-bench: benchmark 2/2: generation run 7/14
+llama-bench: benchmark 2/2: generation run 8/14
+llama-bench: benchmark 2/2: generation run 9/14
+llama-bench: benchmark 2/2: generation run 10/14
+llama-bench: benchmark 2/2: generation run 11/14
+llama-bench: benchmark 2/2: generation run 12/14
+llama-bench: benchmark 2/2: generation run 13/14
+llama-bench: benchmark 2/2: generation run 14/14
+| llama 1B Q4_K - Medium         | 636.18 MiB |     1.10 B | RPC        |  22 |           tg128 |         10.20 ± 0.09 |
+{"build_commit": "b23701f", "build_number": 200, "cpu_info": "CPU", "gpu_info": "192.168.100.111:50052", "backends": "RPC", "model_filename": "/home/aun/models/tinyllama-1.1b-q4km.gguf", "model_type": "llama 1B Q4_K - Medium", "model_size": 667078656, "model_n_params": 1100048384, "n_batch": 2048, "n_ubatch": 512, "n_threads": 4, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "f16", "type_v": "f16", "n_gpu_layers": 22, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": -1, "devices": "auto", "tensor_split": "0.00", "tensor_buft_overrides": "none", "load_mode": "auto", "lazy_mode": "auto", "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "n_prompt": 0, "n_gen": 128, "n_depth": 0, "test_time": "2026-10-05T15:17:55Z", "avg_ns": 12553469927, "stddev_ns": 104577804, "avg_ts": 10.197043, "stddev_ts": 0.085166, "samples_ns": [ 12476763361, 12537902407, 12338912315, 12589271043, 12647502470, 12467025351, 12648205516, 12588766647, 12530943389, 12719611600, 12682913212, 12431851919, 12578927644, 12509982105 ],"samples_ts": [ 10.2591, 10.209, 10.3737, 10.1674, 10.1206, 10.2671, 10.12, 10.1678, 10.2147, 10.0632, 10.0923, 10.2961, 10.1757, 10.2318 ]}
+
+build: b23701f (200)
+EXIT_BENCH=0
+STATE after pi4 2026-10-05T22:20:51+07:00 temp=54.5'C throttled=0x80000 memavail_mib=7415 load=0.39
+kex_exchange_identification: read: Connection reset by peer
+Connection reset by 192.168.100.111 port 22
+STATE after jetson 
+MEMPROBE pi4 samples=313 min_avail_mib=7329 max_VmRSS_mib=666 max_RssShmem_mib=0 max_RssFile_mib=648 max_RssAnon_mib=63
+kex_exchange_identification: read: Connection reset by peer
+Connection reset by 192.168.100.111 port 22
+kex_exchange_identification: read: Connection reset by peer
+Connection reset by 192.168.100.111 port 22
+MEMPROBE jetson 
+scp: Connection closed
+!!!!! could not copy the probe log from jetson
+--- worker log jetson ---
+kex_exchange_identification: read: Connection reset by peer
+Connection reset by 192.168.100.111 port 22
+CELL DONE tinyllama.rule 2026-10-05T22:21:16+07:00
+kex_exchange_identification: read: Connection reset by peer
+Connection reset by 192.168.100.111 port 22
+kex_exchange_identification: read: Connection reset by peer
+Connection reset by 192.168.100.111 port 22
+kex_exchange_identification: read: Connection reset by peer
+Connection reset by 192.168.100.111 port 22
+cleanup worker on jetson stopped
+kex_exchange_identification: read: Connection reset by peer
+Connection reset by 192.168.100.111 port 22

@@ -1,0 +1,31 @@
+########## 2026-09-29T15:06:19+07:00 Jetson Nano standalone, tinyllama-1.1b-q4km.gguf, pp512/tg128, -r 5, cases: vulkan cpu
+mode   : cuda   binaries: /home/jetson/llama.cpp-cuda/build/bin
+commit : b23701f77d47dad9de834d59ebfcbe25c9e8b46f   patched files: 34
+model  : 9fecc3b3cd76bba89d504f29b616eedf7da85b96540e490ca5824d3f7d2776a0  /home/jetson/models/tinyllama-1.1b-q4km.gguf
+build  : { "node_id": "jetson-nano-01", "built_at_utc": "20260929T080447Z", "llama_cpp_commit": "b23701f77d47dad9de834d59ebfcbe25c9e8b46f", "llama_cpp_patch": "jetpack46-cuda102-b23701f.patch sha256 1f43a3e4a5762e97a49c6d3f4982c6a899671c785257080bd34dc9de9a2283c6", "backend": "cuda", "cmake_options": "-S /home/jetson/llama.cpp-cuda -B /home/jetson/llama.cpp-cuda/build -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=gcc-11 -DCMAKE_CXX_COMPILER=g++-11 -DLLAMA_CURL=OFF -DGGML_RPC=ON -DGGML_NATIVE=ON -DGGML_CUDA=ON -DCMAKE_CUDA_COMPILER=/usr/local/cuda-10.2/bin/nvcc -DCMAKE_CUDA_HOST_COMPILER=/usr/bin/g++-8 -DCMAKE_CUDA_ARCHITECTURES=53 -DGGML_CUDA_NO_MMA_FA=ON", "cuda_version": "release 10.2", "cuda_arch": "53", "cuda_host_cxx": "g++-8 (Ubuntu/Linaro 8.4.0-1ubuntu1~18.04) 8.4.0", "host_cxx": "g++-11 (Ubuntu 11.4.0-2ubuntu1~18.04) 11.4.0", "l4t": "32.7.6", "cmake": "cmake version 3.31.12"}
+ggml_cuda_init: found 1 CUDA devices (Total VRAM: 3963 MiB):
+  Device 0: NVIDIA Tegra X1, compute capability 5.3, VMM: no, VRAM: 3963 MiB
+ggml_backend_cuda_get_available_uma_memory: final available_memory_kb: 3247328
+Available devices:
+  CUDA0: NVIDIA Tegra X1 (3963 MiB, 3171 MiB free)
+[clocks locked] 2026-09-29T15:06:34+07:00 pmode:0000 online=0-3 cpu0 min/max=1479000/1479000 gpu min/max=921600000/921600000 swap_used_kB=0 alarms=0 CPU-therm=32C GPU-therm=32C 
+
+##### case cuda: -ngl 99
+cold gate: waited 0s for CPU < 40 C, now 32 C
+[before cuda] 2026-09-29T15:07:04+07:00 pmode:0000 online=0-3 cpu0 min/max=1479000/1479000 gpu min/max=921600000/921600000 swap_used_kB=0 alarms=0 CPU-therm=32C GPU-therm=32C 
+power_window_start cuda 1790669239.883957727
+ggml_cuda_init: found 1 CUDA devices (Total VRAM: 3963 MiB):
+  Device 0: NVIDIA Tegra X1, compute capability 5.3, VMM: no, VRAM: 3963 MiB
+| model                          |       size |     params | backend    | ngl |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | --------------: | -------------------: |
+| llama 1B Q4_K - Medium         | 636.18 MiB |     1.10 B | CUDA       |  99 |           pp512 |        115.15 ± 0.09 |
+{"build_commit": "b23701f", "build_number": 200, "cpu_info": "ARMv8 Processor rev 1 (v8l)", "gpu_info": "NVIDIA Tegra X1", "backends": "CUDA", "model_filename": "/home/jetson/models/tinyllama-1.1b-q4km.gguf", "model_type": "llama 1B Q4_K - Medium", "model_size": 667078656, "model_n_params": 1100048384, "n_batch": 2048, "n_ubatch": 512, "n_threads": 4, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "f16", "type_v": "f16", "n_gpu_layers": 99, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": -1, "devices": "auto", "tensor_split": "0.00", "tensor_buft_overrides": "none", "load_mode": "auto", "lazy_mode": "auto", "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "n_prompt": 512, "n_gen": 0, "n_depth": 0, "test_time": "2026-09-29T08:07:23Z", "avg_ns": 4446486063, "stddev_ns": 3297584, "avg_ts": 115.147156, "stddev_ts": 0.085360, "samples_ns": [ 4445484634, 4448870911, 4442918896, 4450870281, 4444285595 ],"samples_ts": [ 115.173, 115.085, 115.24, 115.034, 115.204 ]}
+| llama 1B Q4_K - Medium         | 636.18 MiB |     1.10 B | CUDA       |  99 |           tg128 |          6.15 ± 0.02 |
+{"build_commit": "b23701f", "build_number": 200, "cpu_info": "ARMv8 Processor rev 1 (v8l)", "gpu_info": "NVIDIA Tegra X1", "backends": "CUDA", "model_filename": "/home/jetson/models/tinyllama-1.1b-q4km.gguf", "model_type": "llama 1B Q4_K - Medium", "model_size": 667078656, "model_n_params": 1100048384, "n_batch": 2048, "n_ubatch": 512, "n_threads": 4, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "f16", "type_v": "f16", "n_gpu_layers": 99, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": -1, "devices": "auto", "tensor_split": "0.00", "tensor_buft_overrides": "none", "load_mode": "auto", "lazy_mode": "auto", "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "n_prompt": 0, "n_gen": 128, "n_depth": 0, "test_time": "2026-09-29T08:07:51Z", "avg_ns": 20827113777, "stddev_ns": 69472167, "avg_ts": 6.145889, "stddev_ts": 0.020411, "samples_ns": [ 20791689132, 20791793248, 20794412841, 20806784278, 20950889387 ],"samples_ts": [ 6.15631, 6.15628, 6.1555, 6.15184, 6.10953 ]}
+
+build: b23701f (200)
+EXIT_cuda=0
+power_window_end cuda 1790669376.272014270
+[after cuda] 2026-09-29T15:09:36+07:00 pmode:0000 online=0-3 cpu0 min/max=1479000/1479000 gpu min/max=921600000/921600000 swap_used_kB=0 alarms=0 CPU-therm=40C GPU-therm=40C 
+[clocks restored] 2026-09-29T15:09:39+07:00 pmode:0000 online=0-3 cpu0 min/max=102000/1479000 gpu min/max=76800000/921600000 swap_used_kB=0 alarms=0 CPU-therm=38C GPU-therm=39C 
+########## done 2026-09-29T15:09:39+07:00

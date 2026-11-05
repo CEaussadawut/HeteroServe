@@ -1,0 +1,275 @@
+{
+ "registered": "2026-10-24T04:40:45+07:00",
+ "name": "ring4_20261024",
+ "model": "tinyllama",
+ "model_path": "~/models/tinyllama-1.1b-q4km.gguf",
+ "model_sha256_key": "full_eval.SHA['tinyllama']",
+ "host": "laptop",
+ "servers": {
+  "laptop": {
+   "ip": "127.0.0.1",
+   "ports": [
+    50060,
+    50061,
+    50062,
+    50063
+   ],
+   "extra": "-t 4"
+  },
+  "pi5": {
+   "ip": "192.168.1.122",
+   "ports": [
+    50052,
+    50053,
+    50054,
+    50055
+   ],
+   "extra": "-t 4"
+  }
+ },
+ "protocol": "-t 4 -ngl 99 -p 64 -n 32 -r 3 -oe jsonl -v",
+ "rounds": 3,
+ "order": [
+  [
+   "k1",
+   "k2",
+   "k3",
+   "k4"
+  ],
+  [
+   "k2",
+   "k3",
+   "k4",
+   "k1"
+  ],
+  [
+   "k3",
+   "k4",
+   "k1",
+   "k2"
+  ]
+ ],
+ "layouts": {
+  "k1": {
+   "stages": [
+    {
+     "board": "laptop",
+     "blocks": 4,
+     "block_mib": 100.49
+    },
+    {
+     "board": "pi5",
+     "blocks": 18,
+     "block_mib": 449.25
+    }
+   ],
+   "pi5_visits": 1,
+   "rpc": "127.0.0.1:50060,192.168.1.122:50052",
+   "ts": "3.5/19.5",
+   "args": "-m ~/models/tinyllama-1.1b-q4km.gguf --rpc 127.0.0.1:50060,192.168.1.122:50052 -ts 3.5/19.5 -t 4 -ngl 99 -p 64 -n 32 -r 3 -oe jsonl -v",
+   "predicted": {
+    "rtt1": {
+     "decode_ms": 53.12,
+     "prefill_ms": 20.946
+    },
+    "rtt2": {
+     "decode_ms": 54.09,
+     "prefill_ms": 20.961
+    }
+   }
+  },
+  "k2": {
+   "stages": [
+    {
+     "board": "laptop",
+     "blocks": 2,
+     "block_mib": 53.21
+    },
+    {
+     "board": "pi5",
+     "blocks": 8,
+     "block_mib": 200.98
+    },
+    {
+     "board": "laptop",
+     "blocks": 2,
+     "block_mib": 47.28
+    },
+    {
+     "board": "pi5",
+     "blocks": 10,
+     "block_mib": 248.27
+    }
+   ],
+   "pi5_visits": 2,
+   "rpc": "127.0.0.1:50060,192.168.1.122:50052,127.0.0.1:50061,192.168.1.122:50053",
+   "ts": "1.5/8/2/11.5",
+   "args": "-m ~/models/tinyllama-1.1b-q4km.gguf --rpc 127.0.0.1:50060,192.168.1.122:50052,127.0.0.1:50061,192.168.1.122:50053 -ts 1.5/8/2/11.5 -t 4 -ngl 99 -p 64 -n 32 -r 3 -oe jsonl -v",
+   "predicted": {
+    "rtt1": {
+     "decode_ms": 54.25,
+     "prefill_ms": 21.115
+    },
+    "rtt2": {
+     "decode_ms": 56.18,
+     "prefill_ms": 21.145
+    }
+   }
+  },
+  "k3": {
+   "stages": [
+    {
+     "board": "laptop",
+     "blocks": 1,
+     "block_mib": 26.61
+    },
+    {
+     "board": "pi5",
+     "blocks": 6,
+     "block_mib": 147.77
+    },
+    {
+     "board": "laptop",
+     "blocks": 1,
+     "block_mib": 26.61
+    },
+    {
+     "board": "pi5",
+     "blocks": 5,
+     "block_mib": 127.1
+    },
+    {
+     "board": "laptop",
+     "blocks": 2,
+     "block_mib": 47.28
+    },
+    {
+     "board": "pi5",
+     "blocks": 7,
+     "block_mib": 174.38
+    }
+   ],
+   "pi5_visits": 3,
+   "rpc": "127.0.0.1:50060,192.168.1.122:50052,127.0.0.1:50061,192.168.1.122:50053,127.0.0.1:50062,192.168.1.122:50054",
+   "ts": "0.5/6/1/5/2/8.5",
+   "args": "-m ~/models/tinyllama-1.1b-q4km.gguf --rpc 127.0.0.1:50060,192.168.1.122:50052,127.0.0.1:50061,192.168.1.122:50053,127.0.0.1:50062,192.168.1.122:50054 -ts 0.5/6/1/5/2/8.5 -t 4 -ngl 99 -p 64 -n 32 -r 3 -oe jsonl -v",
+   "predicted": {
+    "rtt1": {
+     "decode_ms": 55.37,
+     "prefill_ms": 21.283
+    },
+    "rtt2": {
+     "decode_ms": 58.28,
+     "prefill_ms": 21.329
+    }
+   }
+  },
+  "k4": {
+   "stages": [
+    {
+     "board": "laptop",
+     "blocks": 1,
+     "block_mib": 26.61
+    },
+    {
+     "board": "pi5",
+     "blocks": 5,
+     "block_mib": 124.13
+    },
+    {
+     "board": "laptop",
+     "blocks": 1,
+     "block_mib": 23.64
+    },
+    {
+     "board": "pi5",
+     "blocks": 5,
+     "block_mib": 127.1
+    },
+    {
+     "board": "laptop",
+     "blocks": 1,
+     "block_mib": 26.61
+    },
+    {
+     "board": "pi5",
+     "blocks": 4,
+     "block_mib": 97.53
+    },
+    {
+     "board": "laptop",
+     "blocks": 1,
+     "block_mib": 23.64
+    },
+    {
+     "board": "pi5",
+     "blocks": 4,
+     "block_mib": 100.49
+    }
+   ],
+   "pi5_visits": 4,
+   "rpc": "127.0.0.1:50060,192.168.1.122:50052,127.0.0.1:50061,192.168.1.122:50053,127.0.0.1:50062,192.168.1.122:50054,127.0.0.1:50063,192.168.1.122:50055",
+   "ts": "0.5/5/1/5/1/4/1/5.5",
+   "args": "-m ~/models/tinyllama-1.1b-q4km.gguf --rpc 127.0.0.1:50060,192.168.1.122:50052,127.0.0.1:50061,192.168.1.122:50053,127.0.0.1:50062,192.168.1.122:50054,127.0.0.1:50063,192.168.1.122:50055 -ts 0.5/5/1/5/1/4/1/5.5 -t 4 -ngl 99 -p 64 -n 32 -r 3 -oe jsonl -v",
+   "predicted": {
+    "rtt1": {
+     "decode_ms": 56.49,
+     "prefill_ms": 21.452
+    },
+    "rtt2": {
+     "decode_ms": 60.37,
+     "prefill_ms": 21.512
+    }
+   }
+  }
+ },
+ "laptop_block_bytes_every_layout": 105373696,
+ "links": {
+  "pi5": {
+   "mbps": 934.2,
+   "rtt_ms": 0.935,
+   "pair": "pi5-laptop"
+  },
+  "loopback": {
+   "mbps": 10000.0,
+   "rtt_ms": 0.034,
+   "note": "ping 2026-10-24; bandwidth nominal"
+  }
+ },
+ "predicted_per_lap_ms": {
+  "rtt1": 1.123,
+  "rtt2": 2.093
+ },
+ "cost_sources": {
+  "laptop": {
+   "host": "t580 cpu row",
+   "worker": "worker row, laptop_worker_20261011c.json (Pi 4 host)"
+  },
+  "pi5": {
+   "host": "cpu row",
+   "worker": "cpu-rpc-worker row"
+  }
+ },
+ "replicates": "testbed/dataset/ring_laps_predictions_20261009.json (Pi 4 + Jetson)",
+ "inputs_sha256": {
+  "characterisation.csv": "183b4002fb6801f2559872cba7fbc9c7f11df9d858286dc60bf0971ddde1ad2c",
+  "model_shapes.json": "c3400b14d42e61f363f2df6e68974a12847d5cb6bd7c785f9b4ace8e3b6f5478",
+  "link.json": "61915f41652f22063ac9a43d43a511a1c797ae28dd158cbb185df04a4d4c8a0e",
+  "predict_pool.py": "1e932a5012ed8d2d902e4d4a87d7d54f8e27f83169a9331c881b6bbec2f51821",
+  "ring4_laps_20261024.sh": "73090d8d3cf77a11fb023d520889985f243ec78971ec35925f0c72fb67182890",
+  "register_ring4_20261024.py": "fbd0c00acb76ce16a678d83bc6ac9e2f7523a3ed1a75240390a9b297c0e51f99",
+  "score_ring4_20261024.py": "a294a2b5803f3a1b0bb33a8ab44f54e1acfb7934a94f79cab4387770b8154ee7",
+  "register_ring_laps_20261009.py": "bf41564ab767e14c52691e645c3829dfb4d7fb70247a8cabcb836af9b94fff94",
+  "ThinkPad/config/cluster.json": "1f0a3529dd384647ab71a0a08e2c142226ccf2b80aa5160ffc91e5e2e9485943"
+ },
+ "hypotheses": [
+  {
+   "id": "R4-SEQ",
+   "claim": "k = 1 has the lowest decode ms/token in every round, and the least-squares slope of decode ms/token over k (all rounds) is positive"
+  },
+  {
+   "id": "R4-ACC",
+   "claim": "every layout's mean decode within 10 % of its RTT1 prediction"
+  }
+ ]
+}

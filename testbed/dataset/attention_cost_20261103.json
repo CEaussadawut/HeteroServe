@@ -1,0 +1,220 @@
+{
+ "made": "2026-11-03T20:29:41+07:00",
+ "_source": "attention_bend_20261103.py: attention_cost_20261101.json's boards, with the laptop's and the Pi 5's law bent, a (1 + d / d1), fitted on testbed/results/lc4charb_20261024_065032's depth curves",
+ "boards": {
+  "pi4": {
+   "law": "query_heads",
+   "ns_per_qhead_dim": 1.89395,
+   "from": "kv14b: Qwen3-14B Pi 4 27 + Jetson 13, both depths hot, 265.56 ms per 1,000 tokens, less the Jetson's share (3.74 ms) at its law",
+   "check_from_0_6b": 1.99517,
+   "hybrid_attention_fraction": {
+    "qwen35": 0.25,
+    "qwen35moe": 0.25
+   }
+  },
+  "jetson": {
+   "law": "fa_table",
+   "table": {
+    "64x32x4": {
+     "shape": "tinyllama",
+     "layers_in_graph": 22,
+     "ms_per_layer_per_token_long": 0.0001834,
+     "ms_per_layer_per_token_short": 0.0003974,
+     "long_from_n_kv": 1280,
+     "short_n_kv": [
+      256,
+      768
+     ]
+    },
+    "128x16x8": {
+     "shape": "qwen3_0.6b",
+     "layers_in_graph": 28,
+     "ms_per_layer_per_token_long": 0.0002857,
+     "ms_per_layer_per_token_short": 0.0002911,
+     "long_from_n_kv": 1280,
+     "short_n_kv": [
+      256,
+      768
+     ]
+    },
+    "128x32x8": {
+     "shape": "qwen3_4b",
+     "layers_in_graph": 36,
+     "ms_per_layer_per_token_long": 0.0004729,
+     "ms_per_layer_per_token_short": 0.0004717,
+     "long_from_n_kv": 1280,
+     "short_n_kv": [
+      256,
+      768
+     ]
+    },
+    "128x40x8": {
+     "shape": "qwen3_14b",
+     "layers_in_graph": 40,
+     "ms_per_layer_per_token_long": 0.0005051,
+     "ms_per_layer_per_token_short": 0.0005155,
+     "long_from_n_kv": 1280,
+     "short_n_kv": [
+      256,
+      768
+     ]
+    },
+    "128x64x8": {
+     "shape": "qwen3_32b",
+     "layers_in_graph": 64,
+     "ms_per_layer_per_token_long": 0.0005148,
+     "ms_per_layer_per_token_short": 0.0005074,
+     "long_from_n_kv": 1280,
+     "short_n_kv": [
+      256,
+      768
+     ]
+    },
+    "128x32x4": {
+     "shape": "qwen3_30b_a3b",
+     "layers_in_graph": 48,
+     "ms_per_layer_per_token_long": 0.0002499,
+     "ms_per_layer_per_token_short": 0.0002548,
+     "long_from_n_kv": 1280,
+     "short_n_kv": [
+      256,
+      768
+     ]
+    },
+    "256x16x4": {
+     "shape": "qwen3.5_9b",
+     "layers_in_graph": 8,
+     "ms_per_layer_per_token_long": 0.0011262,
+     "ms_per_layer_per_token_short": 0.0011486,
+     "long_from_n_kv": 1280,
+     "short_n_kv": [
+      256,
+      768
+     ]
+    },
+    "256x16x2": {
+     "shape": "qwen3.6_35b_a3b",
+     "layers_in_graph": 10,
+     "ms_per_layer_per_token_long": 0.0004235,
+     "ms_per_layer_per_token_short": 0.0004306,
+     "long_from_n_kv": 1280,
+     "short_n_kv": [
+      256,
+      768
+     ]
+    },
+    "256x24x4": {
+     "shape": "qwen3.8_27b",
+     "layers_in_graph": 16,
+     "ms_per_layer_per_token_long": 0.0005965,
+     "ms_per_layer_per_token_short": 0.000615,
+     "long_from_n_kv": 1280,
+     "short_n_kv": [
+      256,
+      768
+     ]
+    }
+   },
+   "hybrid_attention_fraction": {
+    "qwen35": 0.25,
+    "qwen35moe": 0.25
+   },
+   "from": "fa_bench (testbed/scripts/fa_bench_20261028.cpp) on the Jetson, testbed/results/lc4nfa_20261028_081317/fa.json; the whole-model test is lc4n",
+   "why": "lc4nx (the Vulkan backend's per-op timer): of a decoded token's ops only FLASH_ATTN_EXT grows with the cache, and ggml-vulkan picks its kernel layout per shape and cache length, so no single law in the shape fits (lc4charb, lc4j, lc4k, lc4m)"
+  },
+  "laptop": {
+   "law": "query_heads",
+   "ns_per_qhead_dim": 0.21108,
+   "from": "attention_bend_20261103.py: testbed/results/lc4charb_20261024_065032's lap curve (TinyLlama Q4_K_M, 22 blocks x 2048 query-head dims), law(d) = a (1 + d / d1) by least squares; the straight V4 law was 0.54681",
+   "slope_ms_per_1k_each": [
+    31.66,
+    29.0,
+    33.41
+   ],
+   "spread_pct": 14.1,
+   "a_value_loopback": 0.71401,
+   "hybrid_attention_fraction": {
+    "qwen35": 0.25,
+    "qwen35moe": 0.25
+   },
+   "bend_d1": 5109.4
+  },
+  "pi5": {
+   "law": "query_heads",
+   "ns_per_qhead_dim": 0.17616,
+   "from": "attention_bend_20261103.py: testbed/results/lc4charb_20261024_065032's pi5 curve (TinyLlama Q4_K_M, 22 blocks x 2048 query-head dims), law(d) = a (1 + d / d1) by least squares; the straight V4 law was 0.5461",
+   "ms_per_token_by_depth": {
+    "0": 55.348,
+    "2048": 79.212,
+    "4096": 123.109,
+    "8192": 251.739
+   },
+   "hybrid_attention_fraction": {
+    "qwen35": 0.25,
+    "qwen35moe": 0.25
+   },
+   "bend_d1": 4012.6
+  }
+ },
+ "inputs_sha256": {
+  "testbed/dataset/attention_cost_20261028.json": "09cd7bd09b0c08d762f5e971e6c37b4dc230eaf0aac0352625f22e3dadd80192",
+  "testbed/dataset/hybrid_shapes_20261101.json": "edde431a99d8a801d6c486b285b7d6340de12fdd1f90b50d162333f7dafd3352",
+  "testbed/results/lc4charb_20261024_065032/score.json": "fb62d397273e61358eb74551df4a53a71067691bdcfb02c73abf23bddc928a6d",
+  "testbed/dataset/model_shapes.json": "c3400b14d42e61f363f2df6e68974a12847d5cb6bd7c785f9b4ace8e3b6f5478",
+  "testbed/scripts/attention_cost_20261101.py": "17a0f1e53b0ead698dbedf562b210ff9c65cd6c9b1e142201f89844cc5b08c60"
+ },
+ "bend_fits": {
+  "laptop": {
+   "a_ns": 0.21108,
+   "d1": 5109.4,
+   "points": [
+    [
+     2048,
+     0.29474
+    ],
+    [
+     4096,
+     0.38172
+    ],
+    [
+     8192,
+     0.54904
+    ]
+   ],
+   "residual_pct": {
+    "2048": 0.32,
+    "4096": -0.37,
+    "8192": 0.09
+   },
+   "straight_v4_ns": 0.54681,
+   "blocks": 22,
+   "qhd": 2048
+  },
+  "pi5": {
+   "a_ns": 0.17616,
+   "d1": 4012.6,
+   "points": [
+    [
+     2048,
+     0.25862
+    ],
+    [
+     4096,
+     0.36717
+    ],
+    [
+     8192,
+     0.53208
+    ]
+   ],
+   "residual_pct": {
+    "2048": 2.88,
+    "4096": -3.05,
+    "8192": 0.7
+   },
+   "straight_v4_ns": 0.5461,
+   "blocks": 22,
+   "qhd": 2048
+  }
+ }
+}

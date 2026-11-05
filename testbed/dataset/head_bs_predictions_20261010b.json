@@ -1,0 +1,128 @@
+{
+ "registered_at": "2026-10-10T19:20:40+07:00",
+ "script": "testbed/scripts/register_head_bs_20261010b.py",
+ "question": "scheduler upgrade 6: sample on the board that holds the output head, so only the token crosses the link",
+ "model_file": "~/models/qwen3-0.6b-q8_0.gguf",
+ "model_sha256": "9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031",
+ "n_layers": 28,
+ "n_embd": 1024,
+ "n_vocab": 151936,
+ "V_bytes": 607744,
+ "split": {
+  "pi4": 14,
+  "jetson": 14,
+  "head": "jetson"
+ },
+ "server_args": "-m ~/models/qwen3-0.6b-q8_0.gguf --rpc 192.168.1.114:50052 -ngl 15 -c 1024 -np 1 -t 4 -lv 4 -lm none --host 192.168.1.110 --port 8080",
+ "host_url": "http://192.168.1.110:8080",
+ "chat_format": "<|im_start|>user\n%s<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n",
+ "warmup_prompt": "Say hello in one sentence.",
+ "prompts": [
+  {
+   "id": "e01",
+   "category": "explain",
+   "lang": "en",
+   "text": "Explain how a refrigerator keeps food cold."
+  },
+  {
+   "id": "c01",
+   "category": "code",
+   "lang": "en",
+   "text": "Write a Python function that returns the n-th Fibonacci number iteratively."
+  },
+  {
+   "id": "w01",
+   "category": "writing",
+   "lang": "en",
+   "text": "Write a short, polite email asking my professor for a meeting next week."
+  },
+  {
+   "id": "th01",
+   "category": "explain",
+   "lang": "th",
+   "text": "อธิบายว่าทำไมท้องฟ้าจึงเป็นสีฟ้า"
+  }
+ ],
+ "n_predict": 64,
+ "sampling": {
+  "samplers": [
+   "top_k"
+  ],
+  "top_k": 1,
+  "temperature": 0,
+  "cache_prompt": false
+ },
+ "arms": {
+  "off": {
+   "backend_sampling": false
+  },
+  "on": {
+   "backend_sampling": true
+  }
+ },
+ "abba": [
+  "off",
+  "on",
+  "on",
+  "off"
+ ],
+ "settings": [
+  {
+   "id": "s0",
+   "rate_mbit": 0
+  },
+  {
+   "id": "b100",
+   "rate_mbit": 100
+  },
+  {
+   "id": "b50",
+   "rate_mbit": 50
+  }
+ ],
+ "shaping": {
+  "peer": "192.168.1.114",
+  "ports": "50052,5202",
+  "measure_port": 5202,
+  "pair": "pi4 jetson"
+ },
+ "nominal_goodput_mbit": {
+  "s0": 941.0,
+  "b100": 95.64068692206077,
+  "b50": 47.82034346103038
+ },
+ "predicted_saving_ms_nominal": {
+  "s0": 5.086,
+  "b100": 50.042,
+  "b50": 100.082
+ },
+ "thresholds": {
+  "bytes_fraction": 0.9,
+  "save_ms": 1.0,
+  "slope_pct": 10.0
+ },
+ "hypotheses": {
+  "HB-BYTES": "at s0, (bytes_acked per decoded token off - on) on the Jetson's RPC socket >= 0.9 V",
+  "HB-SAVE": "at each setting, |(ms per token off - on) - (n-1)/n x V / g| <= 1 ms, g = the measured Jetson -> Pi 4 goodput",
+  "HB-SLOPE": "the least-squares slope of the saving against 1 / g over the three settings within 10 % of (n-1)/n x V",
+  "HB-SAME": "each prompt's greedy text identical in both arms at every setting",
+  "works_over_rpc": "HB-BYTES and HB-SAME hold",
+  "verdict": "upgrade 6 holds when all six tests hold"
+ },
+ "inputs_sha256": {
+  "testbed/scripts/head_bs_20261010.py": "0eed74ed50ece8c3688250da03969d23376241456291856698ef47dcb9c4b97d",
+  "testbed/scripts/netshape.sh": "ce4144aa41abd8d89371145c76febdf9ef43aeb488eed9ac6cf2f43e4ef82d0f",
+  "testbed/scripts/measure_link.sh": "48e2ad0c8d2fde5c54eeafff097644168172ca193412bccfbd2bdc9e5cd85003",
+  "testbed/scripts/link_to_json.py": "1ee1c2ced73296b02604a2b9d66684d14c4686307e08b07503dfd51301a1d654",
+  "testbed/scripts/jetson_power_guard.sh": "6dafb56fef33f2bc0e070b2552dcb871053d3c0681358bd27436552f905d90de",
+  "testbed/scripts/throttle_poll.sh": "15d5d305766d849820fbd23c73ddaee56d17d4fa055c0b279d515a7ca2df9184",
+  "testbed/scripts/power_modes_char_20261010.py": "26ecb152cf574d17192deea9542dd9c769fc4c34c37cae43e1639f15ff98b6d4",
+  "testbed/scripts/register_head_bs_20261010b.py": "ba42d83529ee9138bf33dba0b23cfc89506c771b0077a39625e6463ed58c5563"
+ },
+ "supersedes": {
+  "file": "testbed/dataset/head_bs_predictions_20261010.json",
+  "sha256": "3e64c40e559bd45316ff652a3530d75daf995fdc35b381bb8541c3cc0b5addd9",
+  "why": "the server times n - 1 decode passes over n tokens; a priced one transfer per token"
+ },
+ "per_token_factor": 0.984375
+}

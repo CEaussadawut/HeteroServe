@@ -1,0 +1,96 @@
+{
+ "registered_at": "2026-10-24T06:50:32+07:00",
+ "script": "testbed/scripts/register_lc4b_20261024.py",
+ "runner": "testbed/scripts/lc4_20261024.py",
+ "out_prefix": "lc4charb",
+ "supersedes": "testbed/dataset/lc4char_predictions_20261024.json (stopped at its first gate: the Jetson's ssh warning read as a running process)",
+ "what": "the cost of context depth for TinyLlama Q4_K_M on the laptop, the Pi 5 and the Jetson",
+ "model": "tinyllama",
+ "cold_c": {
+  "pi5": 50,
+  "pi4": 55
+ },
+ "benches": {
+  "lap": {
+   "host": "laptop",
+   "model_path": "~/models/tinyllama-1.1b-q4km.gguf",
+   "model_sha256": "9fecc3b3cd76bba89d504f29b616eedf7da85b96540e490ca5824d3f7d2776a0",
+   "args": "-t 4 -p 0 -n 32 -d 0,2048,4096,8192 -r 3",
+   "predicted": {
+    "slope_ms_per_1k": 24.637,
+    "law": {
+     "law": "query_heads",
+     "ns_per_qhead_dim": 0.54681,
+     "from": "laptop_worker_remote: Qwen3-0.6B, Pi 4 host, every layer on the laptop's worker, three runs",
+     "slope_ms_per_1k_each": [
+      31.66,
+      29.0,
+      33.41
+     ],
+     "spread_pct": 14.1,
+     "a_value_loopback": 0.71401
+    },
+    "provisional": false
+   }
+  },
+  "pi5": {
+   "host": "pi5",
+   "model_path": "~/models/tinyllama-1.1b-q4km.gguf",
+   "model_sha256": "9fecc3b3cd76bba89d504f29b616eedf7da85b96540e490ca5824d3f7d2776a0",
+   "args": "-t 4 -p 0 -n 32 -d 0,2048,4096,8192 -r 3",
+   "predicted": {
+    "slope_ms_per_1k": 26.327,
+    "law": {
+     "law": "query_heads",
+     "ns_per_qhead_dim": 0.5843109013181331
+    },
+    "provisional": true
+   }
+  },
+  "jet": {
+   "host": "jetson",
+   "model_path": "~/models/tinyllama-1.1b-q4km.gguf",
+   "model_sha256": "9fecc3b3cd76bba89d504f29b616eedf7da85b96540e490ca5824d3f7d2776a0",
+   "args": "-ngl 99 -p 0 -n 32 -d 0,2048,4096,8192 -r 3",
+   "predicted": {
+    "slope_ms_per_1k": 1.583,
+    "law": {
+     "law": "kv_bytes",
+     "ns_per_kv_byte": 0.070251,
+     "from": "kv_depth: Qwen3-0.6B whole on the Jetson (Vulkan), 2 query heads per KV head; its scaling with query heads is not measured"
+    },
+    "provisional": false
+   }
+  }
+ },
+ "order": [
+  [
+   "jet",
+   "pi5",
+   "lap"
+  ]
+ ],
+ "hypotheses": {
+  "LC4C-LAWS": {
+   "type": "slope_within",
+   "labels": [
+    "lap",
+    "pi5",
+    "jet"
+   ],
+   "tol": 0.3,
+   "claim": "each board's measured slope within 30 % of its law's prediction"
+  }
+ },
+ "inputs_sha256": {
+  "testbed/scripts/lc4_20261024.py": "638fa2d437d55d0b3eb248171435df964963325c84c743c0b98ec2cefa15e759",
+  "testbed/scripts/register_lc4b_20261024.py": "72c86fa515fa02099e90ad8e5da093b4e776f1f3470339b68dda19af10b255f5",
+  "testbed/scripts/predict_pool.py": "1e932a5012ed8d2d902e4d4a87d7d54f8e27f83169a9331c881b6bbec2f51821",
+  "testbed/scripts/jetson_power_guard.sh": "6dafb56fef33f2bc0e070b2552dcb871053d3c0681358bd27436552f905d90de",
+  "testbed/scripts/throttle_poll.sh": "10a45258cafd9222932fe043b40eee767984412a97d5a6d69002fa60d6e48aa1",
+  "testbed/dataset/model_shapes.json": "c3400b14d42e61f363f2df6e68974a12847d5cb6bd7c785f9b4ace8e3b6f5478",
+  "testbed/dataset/characterisation.csv": "183b4002fb6801f2559872cba7fbc9c7f11df9d858286dc60bf0971ddde1ad2c",
+  "testbed/dataset/attention_cost_20261011b.json": "9252ec7022778e9a4392acd0311bdd48e6c73f861a162cbab2726d7530e8d36f",
+  "ThinkPad/config/cluster.json": "1f0a3529dd384647ab71a0a08e2c142226ccf2b80aa5160ffc91e5e2e9485943"
+ }
+}

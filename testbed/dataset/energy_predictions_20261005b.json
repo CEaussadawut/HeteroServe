@@ -1,0 +1,78 @@
+{
+ "registered": "2026-10-05T14:58:10+07:00",
+ "campaign": "2026-10-05: the first energy-per-token measurement. Pi 5, TinyLlama-1.1B Q4_K_M, prefill-only and decode-only phases at the wall (testbed/energy.md 'First run at home' 3)",
+ "inputs_sha256": {
+  "testbed/scripts/energy_phase_run.py": "cc96583a0de9d4f724830e684235eaf1ec6223eb4392f089887434bc4d4c637c",
+  "testbed/scripts/score_energy_phase_run.py": "dcf2ea96c6bda104b7635fd4533e8e60c4f056f37400e0c18857e6ef2bb8cfb7",
+  "testbed/scripts/shelly_strip.py": "b7aaa7ceb2f1e94aa3f1f46100c06ca9d6c0c3fa8764a6372239747ffc0fe5a8",
+  "testbed/energy/strip.json": "ffa5b0730d2255ba7decc47d957144dc38600cab61c0ef41ddaab808d091240d"
+ },
+ "model": {
+  "file_on_board": "~/models/tinyllama-1.1b-q4km.gguf",
+  "upstream": "TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF @ 52e7645ba7c309695bec7ac98f4f005b139cf465",
+  "sha256": "9fecc3b3cd76bba89d504f29b616eedf7da85b96540e490ca5824d3f7d2776a0",
+  "verified": "sha256sum on the Pi 5 at 14:48, matching testbed/models.md; the runner re-checks it in preflight and refuses on a mismatch"
+ },
+ "build": "llama.cpp b23701f7 (clean tree), build 200, ~/llama.cpp/build/bin/llama-bench on the Pi 5",
+ "command": "python3 testbed/scripts/energy_phase_run.py --node pi5 --outlet 1 --model '~/models/tinyllama-1.1b-q4km.gguf' --sha256 <above> --pp 512:20 --tg 128:17 --cycles 3 --threads 4 --idle-before 300 --idle-after 300 --settle 30 --gap 10",
+ "plan": {
+  "order": "settle 30 s; idle 300 s; then pp1, tg1, pp2, tg2, pp3, tg3 (10 s gaps); idle 300 s",
+  "pp": "llama-bench -m <model> -t 4 -p 512 -n 0 -r 20 --progress -oe jsonl (about 126 s timed per invocation at the 81.26 t/s characterisation)",
+  "tg": "llama-bench -m <model> -t 4 -p 0 -n 128 -r 17 --progress -oe jsonl (about 120 s timed)",
+  "strip": "shelly_strip.py log at 5 Hz for the whole session; outlet 1 = pi5, confirmed by load 2026-10-05",
+  "board_sampler": "get_throttled, temperature, ARM clock, fan state, load average every 5 s for the whole session"
+ },
+ "definitions": {
+  "window": "from the laptop stamp of the first timed repetition's progress line to the stamp of the first result line after the last repetition (shakedown 14:56: result line 0.749 s after the last repetition started, the line arriving promptly through ssh with stdbuf -oL); model load and warm-up outside",
+  "tokens": "n_prompt x reps (pp) or n_gen x reps (tg), from llama-bench's jsonl",
+  "net_energy": "gross energy over the window minus the idle-before mean power x window length, by each method (shelly_strip.py summarise --idle)",
+  "j_per_token": "net energy / tokens; Wh per 1,000 tokens = J/token x 1000 / 3600",
+  "methods": "both reported: the strip's counter and the trapezoid of apower. Which to quote is NOT decided here (open: the QR6 reference); every figure is 'as measured by the strip at the wall', adapter included",
+  "spread": "across the three invocations of a phase: 100 x (max - min) / mean (the house rule's across-run spread)"
+ },
+ "predictions": {
+  "pp": {
+   "tps": [
+    77.2,
+    85.3
+   ],
+   "mean_w": [
+    7.0,
+    9.5
+   ],
+   "j_per_token_net": [
+    0.056,
+    0.089
+   ]
+  },
+  "tg": {
+   "tps": [
+    17.2,
+    19.0
+   ],
+   "mean_w": [
+    6.0,
+    8.5
+   ],
+   "j_per_token_net": [
+    0.196,
+    0.342
+   ]
+  },
+  "spread_pct_max": 5.0,
+  "gap_pct": [
+   -7.0,
+   -3.0
+  ],
+  "throttled": "0x0 throughout"
+ },
+ "basis": {
+  "tps": "characterisation 2026-09-27 19:18 (b23701f, -r 3, start 35 C): pp512 81.26 t/s, tg128 18.13 t/s on the Pi 5 at 4 threads; band +/- 5 %",
+  "mean_w": "outlet 1 read 7.39 W under a 4-core busy loop and 2.31 W idle (2026-10-05). Prefill is SIMD-heavy (guessed above the busy loop), decode memory-bound (guessed below or near it). These bands were chosen before the 14:56 shakedown and are unchanged, but the shakedown's 2-3 s windows (flagged TOO_FEW_SAMPLES) showed about 9.1 W prefill and 8.2 W decode, so the power bands are NOT fully blind",
+  "j_per_token_net": "from the power bands and the t/s points, minus the 2026-10-05 idle floor range on outlet 1 (2.31 W apower to 2.45 W counter)",
+  "spread": "the house rule: the same config minutes apart drifts ~2 %",
+  "gap": "outlet 1 at idle 2026-10-05: -5.58 %; the router at 8.8 W: -5.49 %; if the gap is proportional it should hold under load"
+ },
+ "scoring": "testbed/scripts/score_energy_phase_run.py: each check PASS / FAIL / N/A (a missing value never passes). Reported as found, whatever the outcome",
+ "conditions": "Pi 5 booted ~13:46 by the strip's power-up, desktop session running, fan (pwm-fan) automatic; Pi 4 and Jetson idle on outlets 0 and 2 (the Jetson's guard running); the strip on 'WIFI-B' (fw 2.0.1, SNTP change pending a restart); the strip's web UI open in the Claude browser pane"
+}

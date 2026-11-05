@@ -1,0 +1,219 @@
+{
+ "registered_at": "2026-10-23T15:46:17+07:00",
+ "script": "testbed/scripts/register_order35_20261023.py",
+ "session": "testbed/scripts/spec4_session_20261023.sh",
+ "scorer": "testbed/scripts/score_order35_20261023.py",
+ "tag_prefix": "or",
+ "out_prefix": "order35",
+ "what": "the order check on Qwen3.6-35B-A3B Q6_K, all four nodes: the engine's pick against the predictor's best order",
+ "model": "qwen36moe_q6k",
+ "model_file": "~/models/qwen3.6-35b-a3b-q6_k.gguf",
+ "model_sha256": "a97ef79439194d8ec722bc0b6c316f0c41c0b477b35bbae8177c772ecbb0eb91",
+ "ctx": 4096,
+ "nodes": [
+  "pi5",
+  "pi4",
+  "jetson",
+  "laptop"
+ ],
+ "outlets": {
+  "pi4": 0,
+  "jetson": 1,
+  "pi5": 2,
+  "laptop": 3
+ },
+ "memfile": "testbed/dataset/memory_snapshot_20261023_154534.json",
+ "reserve_mb": "",
+ "reserve": "cluster.json's (the laptop's 8 GiB desktop reserve)",
+ "reqs": 8,
+ "n": 128,
+ "gen": 64,
+ "warm": [
+  512,
+  32
+ ],
+ "order": [
+  "P",
+  "F",
+  "P",
+  "F"
+ ],
+ "conditions": "2026-10-23 afternoon: the laptop on its charger, battery full, Wi-Fi off, no working apps; a second Claude desktop instance open and idle; Claude may work on the laptop during the session (light load), the laptop's load logged per arm-run; aunsync.timer every 16 min (~20 s).",
+ "cold_c": {
+  "pi5": 50,
+  "pi4": 55
+ },
+ "baselines_that_do_not_fit": "fe4_placements_20261020.py, memory_snapshot_20261023_104214: boards alone, single node, equal split, llama.cpp's default split (-1,292 MiB), Halda (no dense n_ff)",
+ "plans_priced": 16,
+ "arms": {
+  "P": {
+   "what": "the engine's pick (plan_optimal's objective)",
+   "assign": [
+    [
+     "laptop",
+     26
+    ],
+    [
+     "pi4",
+     2
+    ],
+    [
+     "pi5",
+     10
+    ],
+    [
+     "jetson",
+     3
+    ]
+   ],
+   "head": "host",
+   "place_env": {
+    "PLACE": "laptop:26,pi4:2,pi5:10,jetson:3",
+    "PLACE_HEAD": "host"
+   },
+   "serve_env": {
+    "SERVE_DRAFT": "none",
+    "HETEROSERVE_RESERVE_MB": ""
+   },
+   "predicted": {
+    "decode_ms": 197.0,
+    "prefill_ms": 70.9,
+    "decode_gross_j_all": 6.7298
+   },
+   "memory": {
+    "laptop": {
+     "blocks": 26,
+     "need_mib": 19394,
+     "reserve_mib": 8192,
+     "available_mib": 28305,
+     "margin_mib": 719
+    },
+    "pi4": {
+     "blocks": 2,
+     "need_mib": 1506,
+     "reserve_mib": 0,
+     "available_mib": 7425,
+     "margin_mib": 5919
+    },
+    "pi5": {
+     "blocks": 10,
+     "need_mib": 7296,
+     "reserve_mib": 0,
+     "available_mib": 7607,
+     "margin_mib": 311
+    },
+    "jetson": {
+     "blocks": 3,
+     "need_mib": 2651,
+     "reserve_mib": 450,
+     "available_mib": 3544,
+     "margin_mib": 443,
+     "weights_mib": 2311.1,
+     "weights_cap_mib": 2845,
+     "weights_margin_mib": 534
+    }
+   }
+  },
+  "F": {
+   "what": "the fastest plan by the predictor over every order",
+   "assign": [
+    [
+     "laptop",
+     26
+    ],
+    [
+     "jetson",
+     3
+    ],
+    [
+     "pi5",
+     10
+    ],
+    [
+     "pi4",
+     2
+    ]
+   ],
+   "head": "host",
+   "place_env": {
+    "PLACE": "laptop:26,jetson:3,pi5:10,pi4:2",
+    "PLACE_HEAD": "host"
+   },
+   "serve_env": {
+    "SERVE_DRAFT": "none",
+    "HETEROSERVE_RESERVE_MB": ""
+   },
+   "predicted": {
+    "decode_ms": 188.1,
+    "prefill_ms": 65.1,
+    "decode_gross_j_all": 6.5228
+   },
+   "memory": {
+    "laptop": {
+     "blocks": 26,
+     "need_mib": 19394,
+     "reserve_mib": 8192,
+     "available_mib": 28305,
+     "margin_mib": 719
+    },
+    "jetson": {
+     "blocks": 3,
+     "need_mib": 2399,
+     "reserve_mib": 450,
+     "available_mib": 3544,
+     "margin_mib": 695,
+     "weights_mib": 2058.7,
+     "weights_cap_mib": 2845,
+     "weights_margin_mib": 786
+    },
+    "pi5": {
+     "blocks": 10,
+     "need_mib": 7298,
+     "reserve_mib": 0,
+     "available_mib": 7607,
+     "margin_mib": 309
+    },
+    "pi4": {
+     "blocks": 2,
+     "need_mib": 1756,
+     "reserve_mib": 0,
+     "available_mib": 7425,
+     "margin_mib": 5669
+    }
+   }
+  }
+ },
+ "hypotheses": {
+  "OR-FASTER": {
+   "predicted": 1.0473,
+   "claim": "F's client TPOT P50 is below P's (predicted 188.1 against 197.0 ms)"
+  },
+  "OR-ACC": {
+   "tol": 0.1,
+   "claim": "each arm's server mean TPOT within 10 % of its predicted decode"
+  },
+  "OR-ENERGY": {
+   "claim": "the arm predicted cheaper (F) has the lower gross J per decoded token at all four outlets"
+  },
+  "OR-TEXT": {
+   "claim": "request 0's first 16 tokens of text are the same in every P and F run (greedy; the others recorded)"
+  }
+ },
+ "energy_definition": "per request, the gross energy at all four outlets over its decode window (first token to last), with the session's idle-before window; summed over requests and divided by gen - 1 per request",
+ "inputs_sha256": {
+  "testbed/scripts/qr3_tpot.py": "ae8a9edc9d76f98e17773e5656c186f1c82f4b2b5668ba4532951bad8f30e1ce",
+  "testbed/scripts/serve_pool.sh": "647f03b3eefa90cf562d23d1dedb04be729abe83283646c1dfe51cea8b221354",
+  "testbed/scripts/predict_pool.py": "b5f1af1a158d81f369afcf908b3d04c5eff88032acf3144030d8d7665bd29feb",
+  "testbed/scripts/energy_model.py": "10bf9f5771f693845872a45c12b154395005af8064fccdcffcac5d4563223d63",
+  "testbed/scripts/shelly_strip.py": "b7aaa7ceb2f1e94aa3f1f46100c06ca9d6c0c3fa8764a6372239747ffc0fe5a8",
+  "testbed/scripts/full_eval.py": "cfb89e752890a8d1223b4efc2b3caa6568bb74fc86bf5e830e47e59469484e4e",
+  "testbed/scripts/spec4_session_20261023.sh": "e92b84bd09aeef1bc8419c35b9966c55417ef0c02beccde9b33a59f737c33af7",
+  "testbed/scripts/score_order35_20261023.py": "73ff779584c27a3afd4c2396bdb0588869c245721199bc96c283bf45edd4c117",
+  "testbed/scripts/register_order35_20261023.py": "15fefdf41b448f2068a6f95383100ffa2f66df33fd4f66f3b612728da93d350e",
+  "testbed/scripts/order_audit_20261023.py": "7bed829458f8bf450a657394a2d91663272482aec2b37609fa2808b2a4b6909c",
+  "testbed/dataset/model_shapes.json": "c3400b14d42e61f363f2df6e68974a12847d5cb6bd7c785f9b4ace8e3b6f5478",
+  "testbed/dataset/characterisation.csv": "183b4002fb6801f2559872cba7fbc9c7f11df9d858286dc60bf0971ddde1ad2c",
+  "ThinkPad/config/cluster.json": "1f0a3529dd384647ab71a0a08e2c142226ccf2b80aa5160ffc91e5e2e9485943",
+  "testbed/dataset/memory_snapshot_20261023_154534.json": "74a94c2407c228f2ca9a0c4a554765dc29ac9dcee04e6d5d63eeccfaabc48cba"
+ }
+}

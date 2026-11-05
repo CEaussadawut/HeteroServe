@@ -1,0 +1,83 @@
+{
+  "run_id": "20260929T051758Z",
+  "strategy": "heteroserve-rule",
+  "model": "tinyllama-1.1b-q4_0",
+  "model_path": "/opt/heteroserve/models/tinyllama-1.1b-q4_0.gguf",
+  "tier": "gbe",
+  "layers": {
+    "pi5": 22
+  },
+  "order": [
+    "pi5"
+  ],
+  "participants": [
+    "pi5"
+  ],
+  "tensor_split": [
+    1.0
+  ],
+  "predicted": {
+    "ms_per_token": 58.006,
+    "tokens_per_s": 17.2397,
+    "compute_ms": 58.006,
+    "comm_ms": 0.0,
+    "comm_fraction": 0.0,
+    "participants": [
+      "pi5"
+    ],
+    "phase": "decode",
+    "joules_per_token": null,
+    "mean_power_w": null,
+    "wh_per_1k_tokens": null,
+    "energy": "not measured: no power figure for pi5",
+    "energy_weight": 0.0
+  },
+  "n_predict": 64,
+  "prompt_chars": 51,
+  "seed": 1234,
+  "command": [
+    "/opt/heteroserve/llama.cpp/build/bin/llama-completion",
+    "-m",
+    "/opt/heteroserve/models/tinyllama-1.1b-q4_0.gguf",
+    "--rpc",
+    "192.168.10.11:50052",
+    "-ngl",
+    "99",
+    "--tensor-split",
+    "1.0",
+    "-p",
+    "A transformer is a neural network architecture that",
+    "-n",
+    "64",
+    "--seed",
+    "1234",
+    "-no-cnv"
+  ],
+  "started_utc": 1790659078.1524105,
+  "ended_utc": 1790659087.2178905,
+  "conditions_start": {
+    "pi5": {
+      "error": "http://192.168.10.11:9410/metrics: <urlopen error [Errno 111] Connection refused>"
+    }
+  },
+  "conditions_end": {
+    "pi5": {
+      "error": "http://192.168.10.11:9410/metrics: <urlopen error [Errno 111] Connection refused>"
+    }
+  },
+  "wall_s": 9.065,
+  "returncode": 0,
+  "timings": {
+    "load_ms": 5403.58,
+    "prefill_ms": 215.59,
+    "prefill_tokens": 10,
+    "prefill_tokens_per_s": 46.38,
+    "ttft_ms_approx": 215.59,
+    "decode_ms": 3274.41,
+    "decode_tokens": 63,
+    "decode_tokens_per_s": 19.24,
+    "tpot_ms": 51.975,
+    "total_ms": 3523.78
+  },
+  "ok": true
+}

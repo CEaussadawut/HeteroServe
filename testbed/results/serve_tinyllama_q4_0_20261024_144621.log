@@ -1,0 +1,22 @@
+########## 2026-10-24T14:46:22+07:00 serve tinyllama_q4_0, ctx 2048, clocks locked, boards laptop pi4, planned against testbed/dataset/memory_snapshot_20261024_142953.json: laptop 11 + pi4 11, head on pi4; predicted decode 109.0 ms/token (9.17 tok/s)
+hosts   laptop: fixed: laptop 11 + pi4 11, head last
+llama-server -m ~/models/tinyllama-1.1b-q4_0.gguf --rpc 192.168.10.12:50052 -ngl 12  --backend-sampling -c 2048 -np 1 -t 4 -lv 4 -lm none --cache-ram 0 --host 192.168.1.108 --port 8080   pin b23701f77d47dad9de834d59ebfcbe25c9e8b46f
+gate    laptop: MemAvailable 27541 MiB, the plan needs 8859 MiB with its reserve (margin at rest 18673 MiB)
+gate    pi4: MemAvailable 7371 MiB, the plan needs 492 MiB with its reserve (margin at rest 6877 MiB)
+worker  pi4 listening on 192.168.10.12:50052 (pid 32150)
+server  starting on laptop (pid 216254); loading streams the model from the SD card to the workers
+READY   2026-10-24T14:46:28+07:00: http://192.168.1.108:8080/ (web chat) -- health {"status":"ok"}
+0.00.140.563 I load_tensors:          CPU model buffer size =    35.33 MiB
+0.00.140.564 I load_tensors:   CPU_REPACK model buffer size =   259.88 MiB
+0.00.140.565 I load_tensors: RPC0[192.168.10.12:50052] model buffer size =   311.32 MiB
+0.03.533.946 I llama_context: n_ctx                 = 2048
+0.03.533.950 I llama_context: flash_attn            = auto
+0.03.534.091 I llama_kv_cache:        CPU KV buffer size =    22.00 MiB
+0.03.543.148 I llama_kv_cache: RPC0[192.168.10.12:50052] KV buffer size =    22.00 MiB
+0.03.543.289 I llama_kv_cache: size =   44.00 MiB (  2048 cells,  22 layers,  1/1 seqs), K (f16):   22.00 MiB, V (f16):   22.00 MiB
+0.03.584.965 I sched_reserve: RPC0[192.168.10.12:50052] compute buffer size =    43.01 MiB
+0.03.584.969 I sched_reserve:        CPU compute buffer size =    51.01 MiB
+0.03.876.665 I slot   load_model: id  0 | task -1 | new slot, n_ctx = 2048
+split   pi4: llama.cpp 311.32 MiB, planned 311.3 MiB (head on pi4)
+mem     laptop: MemAvailable 27222 MiB at READY, 27541 at the gate: the serve holds 319 MiB, charged 667 MiB
+mem     pi4: MemAvailable 7011 MiB at READY, 7371 at the gate: the serve holds 360 MiB, charged 492 MiB

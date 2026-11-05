@@ -1,0 +1,58 @@
+{
+ "registered_at": "2026-10-10T19:25:15+07:00",
+ "script": "testbed/scripts/register_kv_depth_20261010.py",
+ "question": "scheduler upgrade 4, the KV term: decode cost grows with the context depth by the KV bytes read",
+ "model": {
+  "file": "~/models/qwen3-0.6b-q8_0.gguf",
+  "sha256": "9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031",
+  "n_layers": 28,
+  "n_head_kv": 8,
+  "head_dim": 128,
+  "kv_bytes_per_layer_per_token": 4096
+ },
+ "bench": {
+  "args": "-p 0 -n 32 -d 0,1024,2048,4096 -r 3",
+  "depths": [
+   0,
+   1024,
+   2048,
+   4096
+  ],
+  "invocations": 3,
+  "pi4": "-t 4 (CPU)",
+  "jetson": "-ngl 99 (Vulkan0), clocks locked"
+ },
+ "predictions": {
+  "pi4": {
+   "cost_ms_per_byte": 2.7283704893114473e-07,
+   "cost_source": "cpu row",
+   "slope_ms_per_1k_tokens": 31.291135467815128
+  },
+  "jetson": {
+   "cost_ms_per_byte": 1.3393544245821815e-07,
+   "cost_source": "vulkan row",
+   "slope_ms_per_1k_tokens": 15.360788024648123
+  }
+ },
+ "served_14b": {
+  "plan": "pi4 27 (host) + jetson 13 (worker), head on the host",
+  "kv_bytes_per_layer_per_token": 4096,
+  "slope_ms_per_1k_tokens": 38.30613134582513,
+  "extra_ms_at_4096": 156.90191399249974
+ },
+ "tolerance_pct": 15.0,
+ "hypotheses": {
+  "HK-PI4": "the Pi 4's mean slope over three invocations within 15 % of predictions.pi4",
+  "HK-JET": "the Jetson's, within 15 % of predictions.jetson",
+  "verdict": "the KV term holds when HK-PI4 and HK-JET hold"
+ },
+ "inputs_sha256": {
+  "testbed/scripts/kv_depth_20261010.py": "54c6e2bec4401f3d9e8614e1d1665a594d4988e8eba0e683ac3452331e85df3a",
+  "testbed/scripts/predict_pool.py": "b36fde31eb760256164bed95fa199f31bd90a191dfce24ded7210dec36d779ea",
+  "testbed/dataset/characterisation.csv": "ef94c22318ccb0ce9ab913a08174d110095d9d4e0cad65aeeb052304dbc13d6a",
+  "testbed/dataset/model_shapes.json": "c92bbc0278b030d5218d7740b3fac99f146b5bdeffe684404d94a012f7232c38",
+  "testbed/scripts/jetson_power_guard.sh": "6dafb56fef33f2bc0e070b2552dcb871053d3c0681358bd27436552f905d90de",
+  "testbed/scripts/throttle_poll.sh": "15d5d305766d849820fbd23c73ddaee56d17d4fa055c0b279d515a7ca2df9184",
+  "testbed/scripts/power_modes_char_20261010.py": "26ecb152cf574d17192deea9542dd9c769fc4c34c37cae43e1639f15ff98b6d4"
+ }
+}

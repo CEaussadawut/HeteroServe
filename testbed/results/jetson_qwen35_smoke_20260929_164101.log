@@ -1,0 +1,113 @@
+########## 2026-09-29T16:41:01+07:00 Jetson qwen35 RPC smoke (laptop host, -ngl 17, cases vulkan cuda), model qwen3.8-27b-q3_k_m.gguf 14865aaef0b6c26a
+jetson memavail 3539 MiB
+
+===== vulkan worker (~/llama.cpp/build/bin, -d Vulkan0)
+before: 16:41:36 V=5160 I=472 P=2472 alarms=0 minV=4840 maxP=8828 pmode:0000
+worker pid 24283
+| model                          |       size |     params | backend    | ngl |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | --------------: | -------------------: |
+/opt/heteroserve/llama.cpp/ggml/src/ggml-rpc/ggml-rpc.cpp:566: Remote RPC server crashed or returned malformed response
+[New LWP 90658]
+
+This GDB supports auto-downloading debuginfo from the following URLs:
+  <https://debuginfod.ubuntu.com>
+Enable debuginfod for this session? (y or [n]) [answered N; input not from terminal]
+Debuginfod has been disabled.
+To make this setting permanent, add 'set debuginfod enabled off' to .gdbinit.
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+syscall () at ../sysdeps/unix/sysv/linux/x86_64/syscall.S:38
+warning: 38	../sysdeps/unix/sysv/linux/x86_64/syscall.S: No such file or directory
+#0  syscall () at ../sysdeps/unix/sysv/linux/x86_64/syscall.S:38
+38	in ../sysdeps/unix/sysv/linux/x86_64/syscall.S
+#1  0x0000716fd4ce73c1 in std::__atomic_futex_unsigned_base::_M_futex_wait_until(unsigned int*, unsigned int, bool, std::chrono::duration<long, std::ratio<1l, 1l> >, std::chrono::duration<long, std::ratio<1l, 1000000000l> >) () from /lib/x86_64-linux-gnu/libstdc++.so.6
+#2  0x0000716fd4a51eac in rpc_dispatcher::send(rpc_cmd, std::shared_ptr<void const>, unsigned long, void*, unsigned long) () from /opt/heteroserve/llama.cpp/build/bin/libggml-rpc.so.0
+#3  0x0000716fd4a58784 in ggml_backend_rpc_buffer_type_alloc_buffer(ggml_backend_buffer_type*, unsigned long) () from /opt/heteroserve/llama.cpp/build/bin/libggml-rpc.so.0
+#4  0x0000716fd4ed1ca5 in alloc_tensor_range () from /opt/heteroserve/llama.cpp/build/bin/libggml-base.so.0
+#5  0x0000716fd4ed205d in ggml_backend_alloc_ctx_tensors_from_buft_impl.constprop () from /opt/heteroserve/llama.cpp/build/bin/libggml-base.so.0
+#6  0x0000716fd4ed3034 in ggml_backend_alloc_ctx_tensors_from_buft () from /opt/heteroserve/llama.cpp/build/bin/libggml-base.so.0
+#7  0x0000716fd40cabbf in llama_model_base::load_tensors(llama_model_loader&) () from /opt/heteroserve/llama.cpp/build/bin/libllama.so.0
+#8  0x0000716fd3fcf134 in llama_model_load(gguf_context*, void (*)(ggml_tensor*, void*), void*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >&, _IO_FILE*, llama_model_params&) () from /opt/heteroserve/llama.cpp/build/bin/libllama.so.0
+#9  0x0000716fd3fd0215 in llama_model_load_from_file_impl(gguf_context*, void (*)(ggml_tensor*, void*), void*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >&, _IO_FILE*, llama_model_params) () from /opt/heteroserve/llama.cpp/build/bin/libllama.so.0
+#10 0x0000716fd3fd05bd in llama_model_load_from_file () from /opt/heteroserve/llama.cpp/build/bin/libllama.so.0
+#11 0x0000716fd4ff7ba3 in llama_bench(int, char**) () from /opt/heteroserve/llama.cpp/build/bin/libllama-bench-impl.so
+#12 0x0000716fd482a1ca in __libc_start_call_main (main=main@entry=0x5824561fb270 <main>, argc=argc@entry=17, argv=argv@entry=0x7ffdec777c68) at ../sysdeps/nptl/libc_start_call_main.h:58
+warning: 58	../sysdeps/nptl/libc_start_call_main.h: No such file or directory
+#13 0x0000716fd482a28b in __libc_start_main_impl (main=0x5824561fb270 <main>, argc=17, argv=0x7ffdec777c68, init=<optimized out>, fini=<optimized out>, rtld_fini=<optimized out>, stack_end=0x7ffdec777c58) at ../csu/libc-start.c:360
+warning: 360	../csu/libc-start.c: No such file or directory
+#14 0x00005824561fb2a5 in _start ()
+[Inferior 1 (process 90643) detached]
+timeout: the monitored command dumped core
+testbed/scripts/jetson_qwen35_smoke.sh: line 29: 90642 Aborted                 timeout 900 "$BENCH" -m "$M" -rpc "$IP:$PORT" -ngl "$NGL" -t 4 -p 64 -n 16 -r 1 -oe jsonl < /dev/null
+EXIT_BENCH_vulkan=134
+worker alive after: NO
+--- worker log tail
+Client connection closed
+Accepted client connection
+Client connection closed
+Accepted client connection
+Client connection closed
+Accepted client connection
+Client connection closed
+Accepted client connection
+after: 16:42:05 V=5152 I=480 P=2514 alarms=0 minV=4840 maxP=8828 pmode:0000
+[18085.533373] Out of memory: Kill process 24283 (ggml-rpc-server) score 2 or sacrifice child
+[18085.541716] Killed process 24283 (ggml-rpc-server) total-vm:2253016kB, anon-rss:11300kB, file-rss:352kB, shmem-rss:0kB
+[18085.555674] oom_reaper: reaped process 24283 (ggml-rpc-server), now anon-rss:0kB, file-rss:344kB, shmem-rss:0kB
+worker stopped
+
+===== cuda worker (~/llama.cpp-cuda/build/bin, -d CUDA0)
+before: 16:42:07 V=5216 I=224 P=1291 alarms=0 minV=4840 maxP=8828 pmode:0000
+worker pid 24931
+| model                          |       size |     params | backend    | ngl |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | --------------: | -------------------: |
+/opt/heteroserve/llama.cpp/ggml/src/ggml-rpc/ggml-rpc.cpp:566: Remote RPC server crashed or returned malformed response
+[New LWP 90818]
+
+This GDB supports auto-downloading debuginfo from the following URLs:
+  <https://debuginfod.ubuntu.com>
+Enable debuginfod for this session? (y or [n]) [answered N; input not from terminal]
+Debuginfod has been disabled.
+To make this setting permanent, add 'set debuginfod enabled off' to .gdbinit.
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+syscall () at ../sysdeps/unix/sysv/linux/x86_64/syscall.S:38
+warning: 38	../sysdeps/unix/sysv/linux/x86_64/syscall.S: No such file or directory
+#0  syscall () at ../sysdeps/unix/sysv/linux/x86_64/syscall.S:38
+38	in ../sysdeps/unix/sysv/linux/x86_64/syscall.S
+#1  0x000074ceec4e73c1 in std::__atomic_futex_unsigned_base::_M_futex_wait_until(unsigned int*, unsigned int, bool, std::chrono::duration<long, std::ratio<1l, 1l> >, std::chrono::duration<long, std::ratio<1l, 1000000000l> >) () from /lib/x86_64-linux-gnu/libstdc++.so.6
+#2  0x000074ceebfe4eac in rpc_dispatcher::send(rpc_cmd, std::shared_ptr<void const>, unsigned long, void*, unsigned long) () from /opt/heteroserve/llama.cpp/build/bin/libggml-rpc.so.0
+#3  0x000074ceebfeb784 in ggml_backend_rpc_buffer_type_alloc_buffer(ggml_backend_buffer_type*, unsigned long) () from /opt/heteroserve/llama.cpp/build/bin/libggml-rpc.so.0
+#4  0x000074ceec35dca5 in alloc_tensor_range () from /opt/heteroserve/llama.cpp/build/bin/libggml-base.so.0
+#5  0x000074ceec35e05d in ggml_backend_alloc_ctx_tensors_from_buft_impl.constprop () from /opt/heteroserve/llama.cpp/build/bin/libggml-base.so.0
+#6  0x000074ceec35f034 in ggml_backend_alloc_ctx_tensors_from_buft () from /opt/heteroserve/llama.cpp/build/bin/libggml-base.so.0
+#7  0x000074ceeb8cabbf in llama_model_base::load_tensors(llama_model_loader&) () from /opt/heteroserve/llama.cpp/build/bin/libllama.so.0
+#8  0x000074ceeb7cf134 in llama_model_load(gguf_context*, void (*)(ggml_tensor*, void*), void*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >&, _IO_FILE*, llama_model_params&) () from /opt/heteroserve/llama.cpp/build/bin/libllama.so.0
+#9  0x000074ceeb7d0215 in llama_model_load_from_file_impl(gguf_context*, void (*)(ggml_tensor*, void*), void*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >&, _IO_FILE*, llama_model_params) () from /opt/heteroserve/llama.cpp/build/bin/libllama.so.0
+#10 0x000074ceeb7d05bd in llama_model_load_from_file () from /opt/heteroserve/llama.cpp/build/bin/libllama.so.0
+#11 0x000074ceec7b3ba3 in llama_bench(int, char**) () from /opt/heteroserve/llama.cpp/build/bin/libllama-bench-impl.so
+#12 0x000074ceec02a1ca in __libc_start_call_main (main=main@entry=0x6534bbfe6270 <main>, argc=argc@entry=17, argv=argv@entry=0x7ffff89beb48) at ../sysdeps/nptl/libc_start_call_main.h:58
+warning: 58	../sysdeps/nptl/libc_start_call_main.h: No such file or directory
+#13 0x000074ceec02a28b in __libc_start_main_impl (main=0x6534bbfe6270 <main>, argc=17, argv=0x7ffff89beb48, init=<optimized out>, fini=<optimized out>, rtld_fini=<optimized out>, stack_end=0x7ffff89beb38) at ../csu/libc-start.c:360
+warning: 360	../csu/libc-start.c: No such file or directory
+#14 0x00006534bbfe62a5 in _start ()
+[Inferior 1 (process 90810) detached]
+timeout: the monitored command dumped core
+testbed/scripts/jetson_qwen35_smoke.sh: line 29: 90809 Aborted                 timeout 900 "$BENCH" -m "$M" -rpc "$IP:$PORT" -ngl "$NGL" -t 4 -p 64 -n 16 -r 1 -oe jsonl < /dev/null
+EXIT_BENCH_cuda=134
+worker alive after: NO
+--- worker log tail
+Client connection closed
+Accepted client connection
+ggml_backend_cuda_get_available_uma_memory: final available_memory_kb: 3272108
+Client connection closed
+Accepted client connection
+ggml_backend_cuda_get_available_uma_memory: final available_memory_kb: 3272232
+Client connection closed
+Accepted client connection
+after: 16:42:19 V=5168 I=432 P=2270 alarms=0 minV=4840 maxP=8828 pmode:0000
+[18118.608574] systemd[1]: Starting Journal Service...
+[18118.830547] systemd-journald[25224]: File /run/log/journal/a3d9197b765643568af09eb2bd3e5ce7/system.journal corrupted or uncleanly shut down, renaming and replacing.
+[18118.882439] systemd[1]: Started Journal Service.
+worker stopped
+log: testbed/results/jetson_qwen35_smoke_20260929_164101.log

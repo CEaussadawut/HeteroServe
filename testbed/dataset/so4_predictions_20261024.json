@@ -1,0 +1,208 @@
+{
+ "registered_at": "2026-10-24T15:15:50+07:00",
+ "script": "testbed/scripts/register_so4_20261024.py",
+ "session": "testbed/scripts/ab_session_20261024.sh",
+ "scorer": "testbed/scripts/ab_score_20261024.py",
+ "scorer_extra": "testbed/scripts/so4_extra_20261024.py",
+ "tag_prefix": "so4",
+ "out_prefix": "so4",
+ "what": "the switch-off test on four nodes: scheduler v2's Qwen3-32B Q6_K plan, which leaves the Pi 4 out, with the Pi 4 on and idle (A) or powered off at its outlet (B); energy at all four outlets",
+ "plan_options": {
+  "order_check": true,
+  "load_mode": "none",
+  "host": "laptop",
+  "planning_reserve_mb": "laptop=8192",
+  "headroom_mib": 1024
+ },
+ "model": "qwen3_32b_q6k",
+ "model_file": "~/models/qwen3-32b-q6_k.gguf",
+ "model_sha256": "c4c7c3cb6da260df1fe1d3cfd090a32dc7cc348f1278158be18e301f390d6f6e",
+ "ctx": 2048,
+ "nodes": [
+  "pi5",
+  "pi4",
+  "jetson",
+  "laptop"
+ ],
+ "outlets": {
+  "pi4": 0,
+  "jetson": 1,
+  "pi5": 2,
+  "laptop": 3
+ },
+ "memfile": "testbed/dataset/memory_snapshot_20261024_151507.json",
+ "reqs": 3,
+ "n": 128,
+ "gen": 64,
+ "warm": [
+  512,
+  32
+ ],
+ "order": [
+  "A",
+  "B",
+  "B",
+  "A"
+ ],
+ "conditions": "2026-10-24 afternoon, after rpc4: the laptop on its charger, battery full, Wi-Fi off, no working apps; one Claude desktop app open (this session's); Claude works on the laptop during the session (text files, light load, no LibreOffice renders), the laptop's load logged; aunsync.timer every 16 min (~20 s). The strip's outlet 0 (the Pi 4) is switched by the study itself, with the user's go-ahead (14:44).",
+ "cold_c": {
+  "pi5": 50,
+  "pi4": 55
+ },
+ "energy_terms": {
+  "plan_gross_j": 52.4438,
+  "T_ms": 1566.26,
+  "idle_outlets_w": {
+   "pi4": 2.390896921017403
+  },
+  "pi4_idle_w": 2.390896921017403,
+  "saving_j_per_token": 3.7448
+ },
+ "memory_at_rest_mib": {
+  "laptop": 314,
+  "pi5": 342,
+  "jetson": 2533
+ },
+ "arms": {
+  "A": {
+   "assign": [
+    [
+     "laptop",
+     45
+    ],
+    [
+     "pi5",
+     18
+    ],
+    [
+     "jetson",
+     1
+    ]
+   ],
+   "head": "host",
+   "place_env": {
+    "PLACE": "laptop:45,pi5:18,jetson:1",
+    "PLACE_HEAD": "host"
+   },
+   "nodes": [
+    "laptop",
+    "pi5",
+    "jetson"
+   ],
+   "serve_env": {
+    "SERVE_DRAFT": "none",
+    "HETEROSERVE_RESERVE_MB": "laptop=7168"
+   },
+   "what": "the Pi 4 on and idle (the plan leaves it out)",
+   "predicted": {
+    "mean_ms_per_token": 1566.3,
+    "j_per_token_all": 56.1886
+   }
+  },
+  "B": {
+   "assign": [
+    [
+     "laptop",
+     45
+    ],
+    [
+     "pi5",
+     18
+    ],
+    [
+     "jetson",
+     1
+    ]
+   ],
+   "head": "host",
+   "place_env": {
+    "PLACE": "laptop:45,pi5:18,jetson:1",
+    "PLACE_HEAD": "host"
+   },
+   "nodes": [
+    "laptop",
+    "pi5",
+    "jetson"
+   ],
+   "serve_env": {
+    "SERVE_DRAFT": "none",
+    "HETEROSERVE_RESERVE_MB": "laptop=7168"
+   },
+   "what": "the Pi 4 powered off cleanly and its outlet switched off for the arm-run",
+   "predicted": {
+    "mean_ms_per_token": 1566.3,
+    "j_per_token_all": 52.4438
+   },
+   "pre": "python3 testbed/scripts/strip_switch_20261024.py off-node pi4 --log \"$OUT/so4_power.log\"",
+   "post": "python3 testbed/scripts/strip_switch_20261024.py on-node pi4 --log \"$OUT/so4_power.log\""
+  }
+ },
+ "hypotheses": {
+  "SO-SAVE": {
+   "type": "diff",
+   "metric": "j_per_token_all",
+   "a": "A",
+   "b": "B",
+   "lo": 2.621,
+   "hi": 4.868,
+   "claim": "switching the idle Pi 4 off saves its idle wall power times the time per token, within 30 % (predicted 3.74 J per token)"
+  },
+  "SO-TIME": {
+   "type": "ratio",
+   "metric": "mean_ms_per_token",
+   "a": "B",
+   "b": "A",
+   "lo": 0.98,
+   "hi": 1.02,
+   "claim": "the time per token is unchanged (B / A within 0.98-1.02): the Pi 4 is not in the plan"
+  },
+  "SO-ACC": {
+   "type": "acc",
+   "metric": "mean_ms_per_token",
+   "tol": 0.15,
+   "claim": "each arm within 15 % of the predicted 1566.3 ms per token"
+  },
+  "SO-DRIFT": {
+   "type": "spread",
+   "metric": "mean_ms_per_token",
+   "arm": "A",
+   "tol": 0.03,
+   "claim": "A's first and last arm-runs within 3 %"
+  },
+  "SO-TEXT": {
+   "type": "text_across",
+   "arms": [
+    "A",
+    "B"
+   ],
+   "claim": "request 0's first 16 tokens (greedy) are the same in every arm-run"
+  }
+ },
+ "hypotheses_extra": {
+  "SO-ZERO": {
+   "claim": "in every B arm-run the Pi 4's outlet reads off and 0 W in every strip sample of its requests"
+  },
+  "SO-BACK": {
+   "claim": "after every B arm-run the Pi 4 is back: a new boot id, its overlay address up and its clock synchronized, within 10 minutes of its outlet switching on"
+  }
+ },
+ "inputs_sha256": {
+  "testbed/scripts/qr3_tpot.py": "2b44f219faa6c767e64f78d54cb7608add38cbfeb26db145335a355f490b25af",
+  "testbed/scripts/serve_pool.sh": "9f315d70ab3404e9d73b9901508b7f53e96da590fc2527f5d62061ecae37a07f",
+  "testbed/scripts/serve_defaults.sh": "4fdedec2da1479d577117606f3d810e313ef4483a71be6c9787895133a66a095",
+  "testbed/scripts/predict_pool.py": "ac54e03b3823f0ab136916485b2263df4de876466f68ae9bc278156063e97955",
+  "testbed/scripts/energy_model.py": "10bf9f5771f693845872a45c12b154395005af8064fccdcffcac5d4563223d63",
+  "testbed/scripts/shelly_strip.py": "b7aaa7ceb2f1e94aa3f1f46100c06ca9d6c0c3fa8764a6372239747ffc0fe5a8",
+  "testbed/scripts/full_eval.py": "cfb89e752890a8d1223b4efc2b3caa6568bb74fc86bf5e830e47e59469484e4e",
+  "testbed/scripts/ab_session_20261024.sh": "92b7d9fc118d3c5ec21237e8355c96c3cde74fe31e60049fbbbebf21e4b021e2",
+  "testbed/scripts/ab_score_20261024.py": "775905ce9d250c15833d0264d90d68c26e7a9d5dfad8e2ac56f814a0d1703cae",
+  "testbed/scripts/so4_extra_20261024.py": "03dafb9523643b01bc30ce42d7d8a28d52a0e6d660cfc536bc2cb3cd354740c4",
+  "testbed/scripts/strip_switch_20261024.py": "d1aa838e403e499731bad7c3095b352af76ecd3595e3122029cdab639abd93e8",
+  "testbed/scripts/register_so4_20261024.py": "9c9cc410261debb9ab1d978ca9db2f076b773a35efd113f3a5e396de537a8077",
+  "testbed/scripts/score_prima4_20261021.py": "136121efb41ebc88455c8eb0ecf8bcf6904799937fe03cfdfb938a1988284f6b",
+  "testbed/energy/strip.json": "5fd4deb6a49db3954735d59aea99d10b09d38d0de969d61f198688607d196c3f",
+  "testbed/dataset/link.json": "61915f41652f22063ac9a43d43a511a1c797ae28dd158cbb185df04a4d4c8a0e",
+  "ThinkPad/config/cluster.json": "1f0a3529dd384647ab71a0a08e2c142226ccf2b80aa5160ffc91e5e2e9485943",
+  "testbed/dataset/memory_snapshot_20261024_151507.json": "f5ab551838792b62a2249365428669c40c07bd37860a036be335b1b7d8064aa6"
+ }
+}

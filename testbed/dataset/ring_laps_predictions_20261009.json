@@ -1,0 +1,339 @@
+{
+ "registered": "2026-10-09T20:16:31+07:00",
+ "name": "ring_laps_20261009",
+ "model": "tinyllama",
+ "model_path": "~/models/tinyllama-1.1b-q4km.gguf",
+ "host": "pi4",
+ "servers": {
+  "pi4": {
+   "ip": "127.0.0.1",
+   "ports": [
+    50060,
+    50061,
+    50062,
+    50063
+   ],
+   "extra": "-t 4"
+  },
+  "jetson": {
+   "ip": "192.168.1.114",
+   "ports": [
+    50052,
+    50053,
+    50054,
+    50055
+   ],
+   "extra": "-d Vulkan0"
+  }
+ },
+ "protocol": "-t 4 -ngl 99 -p 64 -n 32 -r 3 -oe jsonl -v",
+ "settings": {
+  "s0": {
+   "netshape": null
+  },
+  "d5": {
+   "netshape": "apply 0 2.5",
+   "added_rtt_ms_nominal": 5.0
+  }
+ },
+ "rounds": 3,
+ "order": [
+  [
+   [
+    "s0",
+    [
+     "k1",
+     "k2",
+     "k3",
+     "k4"
+    ]
+   ],
+   [
+    "d5",
+    [
+     "k1",
+     "k2",
+     "k3",
+     "k4"
+    ]
+   ]
+  ],
+  [
+   [
+    "d5",
+    [
+     "k2",
+     "k3",
+     "k4",
+     "k1"
+    ]
+   ],
+   [
+    "s0",
+    [
+     "k2",
+     "k3",
+     "k4",
+     "k1"
+    ]
+   ]
+  ],
+  [
+   [
+    "s0",
+    [
+     "k3",
+     "k4",
+     "k1",
+     "k2"
+    ]
+   ],
+   [
+    "d5",
+    [
+     "k3",
+     "k4",
+     "k1",
+     "k2"
+    ]
+   ]
+  ]
+ ],
+ "layouts": {
+  "k1": {
+   "stages": [
+    {
+     "board": "pi4",
+     "blocks": 4
+    },
+    {
+     "board": "jetson",
+     "blocks": 18
+    }
+   ],
+   "jetson_visits": 1,
+   "rpc": "127.0.0.1:50060,192.168.1.114:50052",
+   "ts": "3.5/19.5",
+   "args": "-m ~/models/tinyllama-1.1b-q4km.gguf --rpc 127.0.0.1:50060,192.168.1.114:50052 -ts 3.5/19.5 -t 4 -ngl 99 -p 64 -n 32 -r 3 -oe jsonl -v",
+   "predicted": {
+    "s0_rtt1": {
+     "decode_ms": 106.13,
+     "prefill_ms": 25.806
+    },
+    "s0_rtt2": {
+     "decode_ms": 107.26,
+     "prefill_ms": 25.824
+    },
+    "d5_rtt1": {
+     "decode_ms": 111.13,
+     "prefill_ms": 25.884
+    },
+    "d5_rtt2": {
+     "decode_ms": 117.26,
+     "prefill_ms": 25.98
+    }
+   }
+  },
+  "k2": {
+   "stages": [
+    {
+     "board": "pi4",
+     "blocks": 2
+    },
+    {
+     "board": "jetson",
+     "blocks": 8
+    },
+    {
+     "board": "pi4",
+     "blocks": 2
+    },
+    {
+     "board": "jetson",
+     "blocks": 10
+    }
+   ],
+   "jetson_visits": 2,
+   "rpc": "127.0.0.1:50060,192.168.1.114:50052,127.0.0.1:50061,192.168.1.114:50053",
+   "ts": "1.5/8/2/11.5",
+   "args": "-m ~/models/tinyllama-1.1b-q4km.gguf --rpc 127.0.0.1:50060,192.168.1.114:50052,127.0.0.1:50061,192.168.1.114:50053 -ts 1.5/8/2/11.5 -t 4 -ngl 99 -p 64 -n 32 -r 3 -oe jsonl -v",
+   "predicted": {
+    "s0_rtt1": {
+     "decode_ms": 107.41,
+     "prefill_ms": 25.976
+    },
+    "s0_rtt2": {
+     "decode_ms": 109.65,
+     "prefill_ms": 26.011
+    },
+    "d5_rtt1": {
+     "decode_ms": 117.41,
+     "prefill_ms": 26.133
+    },
+    "d5_rtt2": {
+     "decode_ms": 129.65,
+     "prefill_ms": 26.324
+    }
+   }
+  },
+  "k3": {
+   "stages": [
+    {
+     "board": "pi4",
+     "blocks": 1
+    },
+    {
+     "board": "jetson",
+     "blocks": 6
+    },
+    {
+     "board": "pi4",
+     "blocks": 1
+    },
+    {
+     "board": "jetson",
+     "blocks": 5
+    },
+    {
+     "board": "pi4",
+     "blocks": 2
+    },
+    {
+     "board": "jetson",
+     "blocks": 7
+    }
+   ],
+   "jetson_visits": 3,
+   "rpc": "127.0.0.1:50060,192.168.1.114:50052,127.0.0.1:50061,192.168.1.114:50053,127.0.0.1:50062,192.168.1.114:50054",
+   "ts": "0.5/6/1/5/2/8.5",
+   "args": "-m ~/models/tinyllama-1.1b-q4km.gguf --rpc 127.0.0.1:50060,192.168.1.114:50052,127.0.0.1:50061,192.168.1.114:50053,127.0.0.1:50062,192.168.1.114:50054 -ts 0.5/6/1/5/2/8.5 -t 4 -ngl 99 -p 64 -n 32 -r 3 -oe jsonl -v",
+   "predicted": {
+    "s0_rtt1": {
+     "decode_ms": 108.68,
+     "prefill_ms": 26.147
+    },
+    "s0_rtt2": {
+     "decode_ms": 112.05,
+     "prefill_ms": 26.199
+    },
+    "d5_rtt1": {
+     "decode_ms": 123.68,
+     "prefill_ms": 26.381
+    },
+    "d5_rtt2": {
+     "decode_ms": 142.05,
+     "prefill_ms": 26.668
+    }
+   }
+  },
+  "k4": {
+   "stages": [
+    {
+     "board": "pi4",
+     "blocks": 1
+    },
+    {
+     "board": "jetson",
+     "blocks": 5
+    },
+    {
+     "board": "pi4",
+     "blocks": 1
+    },
+    {
+     "board": "jetson",
+     "blocks": 5
+    },
+    {
+     "board": "pi4",
+     "blocks": 1
+    },
+    {
+     "board": "jetson",
+     "blocks": 4
+    },
+    {
+     "board": "pi4",
+     "blocks": 1
+    },
+    {
+     "board": "jetson",
+     "blocks": 4
+    }
+   ],
+   "jetson_visits": 4,
+   "rpc": "127.0.0.1:50060,192.168.1.114:50052,127.0.0.1:50061,192.168.1.114:50053,127.0.0.1:50062,192.168.1.114:50054,127.0.0.1:50063,192.168.1.114:50055",
+   "ts": "0.5/5/1/5/1/4/1/5.5",
+   "args": "-m ~/models/tinyllama-1.1b-q4km.gguf --rpc 127.0.0.1:50060,192.168.1.114:50052,127.0.0.1:50061,192.168.1.114:50053,127.0.0.1:50062,192.168.1.114:50054,127.0.0.1:50063,192.168.1.114:50055 -ts 0.5/5/1/5/1/4/1/5.5 -t 4 -ngl 99 -p 64 -n 32 -r 3 -oe jsonl -v",
+   "predicted": {
+    "s0_rtt1": {
+     "decode_ms": 109.96,
+     "prefill_ms": 26.317
+    },
+    "s0_rtt2": {
+     "decode_ms": 114.45,
+     "prefill_ms": 26.387
+    },
+    "d5_rtt1": {
+     "decode_ms": 129.96,
+     "prefill_ms": 26.629
+    },
+    "d5_rtt2": {
+     "decode_ms": 154.45,
+     "prefill_ms": 27.012
+    }
+   }
+  }
+ },
+ "pi4_block_bytes_every_layout": 105373696,
+ "links": {
+  "jetson": {
+   "mbps": 938.8,
+   "rtt_ms": 1.081,
+   "pair": "pi4-jetson"
+  },
+  "loopback": {
+   "mbps": 10000.0,
+   "rtt_ms": 0.041,
+   "note": "ping 2026-10-09; bandwidth nominal"
+  }
+ },
+ "predicted_per_lap_s0_ms": {
+  "s0_rtt1": 1.277,
+  "s0_rtt2": 2.397
+ },
+ "cost_sources": {
+  "pi4": {
+   "host": "cpu row",
+   "worker": "cpu-rpc-worker row"
+  },
+  "jetson": {
+   "host": "vulkan row",
+   "worker": "vulkan row + smoke-test RPC cost"
+  }
+ },
+ "inputs_sha256": {
+  "characterisation.csv": "ef94c22318ccb0ce9ab913a08174d110095d9d4e0cad65aeeb052304dbc13d6a",
+  "model_shapes.json": "c92bbc0278b030d5218d7740b3fac99f146b5bdeffe684404d94a012f7232c38",
+  "link.json": "f961e94b8781e34081e0f11b3fb6339a150ae229fe43eb4566ca44094384568c",
+  "predict_pool.py": "a85f06784a93d4508c97c4fbd0db26eebe3eb115cf27490093e58e65db2e5564",
+  "netshape.sh": "04f6d238b776be5c6593a66bd5b169f22d97e827825889d8d6b72f2fbb9827c7",
+  "ring_laps.sh": "336bf8317bc50639fb256869fcc214932b0b62f6284508b33df624e18c6cddad",
+  "register_ring_laps_20261009.py": "bf41564ab767e14c52691e645c3829dfb4d7fb70247a8cabcb836af9b94fff94"
+ },
+ "rule_under_test": "RTT1 (testbed/dataset/rule_rtt1_20261009.json)",
+ "hypotheses": [
+  {
+   "id": "RL-SEQ",
+   "claim": "at s0, k = 1 has the lowest decode ms/token in every round, and the least-squares slope of decode ms/token over k (all s0 rounds) is positive"
+  },
+  {
+   "id": "RL-RTT",
+   "claim": "c = slope through the origin of [decode at d5 - decode at s0] over k, divided by the round's ping RTT increase, averaged over rounds; RTT1 holds for c in [0.75, 1.25], the 2-trip model for c in [1.75, 2.25], otherwise neither"
+  },
+  {
+   "id": "RL-ACC",
+   "claim": "every s0 layout's mean decode within 10 % of its RTT1 prediction"
+  }
+ ]
+}

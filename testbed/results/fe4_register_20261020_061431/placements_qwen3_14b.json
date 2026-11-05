@@ -1,0 +1,169 @@
+{
+ "made": "2026-10-20T06:14:31+07:00",
+ "model": "qwen3_14b",
+ "nodes": [
+  "pi5",
+  "pi4",
+  "jetson",
+  "laptop"
+ ],
+ "ctx": 4096,
+ "rtt_trips": 1,
+ "reported_free_mib": {
+  "pi5": 8050,
+  "pi4": 7819,
+  "laptop": 31296,
+  "jetson": 3420
+ },
+ "placements": [
+  {
+   "label": "engine",
+   "assign": [
+    [
+     "laptop",
+     40
+    ]
+   ],
+   "head": "last",
+   "how": "plan_host_choice on ['pi5', 'pi4', 'jetson', 'laptop']",
+   "min_margin_mib": 10024,
+   "decode_ms": 439.5,
+   "prefill_ms": 147.8
+  },
+  {
+   "label": "boards",
+   "assign": [
+    [
+     "pi4",
+     1
+    ],
+    [
+     "jetson",
+     7
+    ],
+    [
+     "pi5",
+     32
+    ]
+   ],
+   "head": "last",
+   "how": "plan_host_choice on ['pi5', 'pi4', 'jetson']",
+   "min_margin_mib": 311,
+   "decode_ms": 867.4,
+   "prefill_ms": 297.0
+  },
+  {
+   "label": "even",
+   "assign": [
+    [
+     "laptop",
+     10
+    ],
+    [
+     "pi5",
+     10
+    ],
+    [
+     "pi4",
+     10
+    ],
+    [
+     "jetson",
+     10
+    ]
+   ],
+   "head": "host",
+   "how": "equal blocks, order ['laptop', 'pi5', 'pi4', 'jetson'], head host",
+   "min_margin_mib": 887,
+   "decode_ms": 1138.3,
+   "prefill_ms": 428.3
+  },
+  {
+   "label": "default",
+   "assign": [
+    [
+     "laptop",
+     26
+    ],
+    [
+     "pi5",
+     6
+    ],
+    [
+     "pi4",
+     7
+    ],
+    [
+     "jetson",
+     1
+    ]
+   ],
+   "head": "last",
+   "how": "llama.cpp's split by reported free memory {'laptop': 31296, 'pi5': 8050, 'pi4': 7819, 'jetson': 3420} over ['laptop', 'pi5', 'pi4', 'jetson']; the output block falls on jetson, the last device with blocks",
+   "min_margin_mib": 1617,
+   "decode_ms": 892.3,
+   "prefill_ms": 334.6
+  },
+  {
+   "label": "served1009",
+   "assign": [
+    [
+     "pi4",
+     27
+    ],
+    [
+     "jetson",
+     13
+    ]
+   ],
+   "head": "host",
+   "how": "named on the command line",
+   "min_margin_mib": 284,
+   "decode_ms": 2025.7,
+   "prefill_ms": 796.0
+  },
+  {
+   "label": "lap39",
+   "assign": [
+    [
+     "pi4",
+     1
+    ],
+    [
+     "laptop",
+     39
+    ]
+   ],
+   "head": "last",
+   "how": "named on the command line",
+   "min_margin_mib": 6642,
+   "decode_ms": 500.3,
+   "prefill_ms": 255.0
+  }
+ ],
+ "dropped": [
+  {
+   "label": "single",
+   "why": "the same placement as engine",
+   "assign": [
+    [
+     "laptop",
+     40
+    ]
+   ],
+   "head": "last"
+  },
+  {
+   "label": "halda",
+   "why": "the same placement as engine",
+   "assign": [
+    [
+     "laptop",
+     40
+    ]
+   ],
+   "head": "last"
+  }
+ ],
+ "placements_arg": "engine,boards=pi4:1+jetson:7+pi5:32/last,even=laptop:10+pi5:10+pi4:10+jetson:10/host,default=laptop:26+pi5:6+pi4:7+jetson:1/last,served1009=pi4:27+jetson:13/host,lap39=pi4:1+laptop:39/last"
+}

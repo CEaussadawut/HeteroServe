@@ -1,0 +1,84 @@
+{
+ "_note": "NOT a registration: no prediction is under test. A backend comparison for the Jetson as an RPC worker (user: 'finish all the Next CUDA steps', 2026-09-29). Both cells copy v3.qwen3_14b.rule from testbed/dataset/pool_predictions_20260928b.json (sha256 ce07518c1ab2e5ef28318e754b487f3e17af659d2ab56d88b59588e6f7265338) verbatim -- pipeline, bench args, memory gates -- and differ ONLY in the Jetson worker's backend: the unpatched pin's Vulkan build, or the pin + patch v2 CUDA build (run_pool.sh 'backend'). Run order C-V-C.",
+ "protocol": "llama-bench -t 4 -p 64 -n 16 -r 3 -oe jsonl -v; memprobe.sh v2",
+ "configs": {
+  "cu.q14.p5j5.vulkan": {
+   "model": "qwen3-14b-q4_k_m",
+   "quant": "Q4_K_M",
+   "pipeline": [
+    {
+     "node": "pi5",
+     "blocks": 35
+    },
+    {
+     "node": "jetson",
+     "blocks": 5
+    }
+   ],
+   "head_on": "jetson",
+   "bench": {
+    "host": "pi5",
+    "args": "-m ~/models/qwen3-14b-q4_k_m.gguf -rpc 192.168.100.111:50052 -ngl 6"
+   },
+   "memory": {
+    "pi5": {
+     "blocks": 35,
+     "need_mib": 7391,
+     "reserve_mib": 0,
+     "available_mib": 7619,
+     "margin_mib": 228
+    },
+    "jetson": {
+     "blocks": 5,
+     "need_mib": 2265,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 830
+    }
+   },
+   "backend": {
+    "jetson": "vulkan"
+   },
+   "why": "v3.qwen3_14b.rule, the Jetson worker on vulkan"
+  },
+  "cu.q14.p5j5.cuda": {
+   "model": "qwen3-14b-q4_k_m",
+   "quant": "Q4_K_M",
+   "pipeline": [
+    {
+     "node": "pi5",
+     "blocks": 35
+    },
+    {
+     "node": "jetson",
+     "blocks": 5
+    }
+   ],
+   "head_on": "jetson",
+   "bench": {
+    "host": "pi5",
+    "args": "-m ~/models/qwen3-14b-q4_k_m.gguf -rpc 192.168.100.111:50052 -ngl 6"
+   },
+   "memory": {
+    "pi5": {
+     "blocks": 35,
+     "need_mib": 7391,
+     "reserve_mib": 0,
+     "available_mib": 7619,
+     "margin_mib": 228
+    },
+    "jetson": {
+     "blocks": 5,
+     "need_mib": 2265,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 830
+    }
+   },
+   "backend": {
+    "jetson": "cuda"
+   },
+   "why": "v3.qwen3_14b.rule, the Jetson worker on cuda"
+  }
+ }
+}

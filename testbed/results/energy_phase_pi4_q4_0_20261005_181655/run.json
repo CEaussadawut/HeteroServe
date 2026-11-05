@@ -1,0 +1,102 @@
+{
+ "started": "2026-10-05T18:16:55+07:00",
+ "args": {
+  "node": "pi4",
+  "outlet": 0,
+  "outlet_name": "pi4",
+  "model": "~/models/tinyllama-1.1b-q4_0.gguf",
+  "sha256": "da3087fb14aede55fde6eb81a0e55e886810e43509ec82ecdc7aa5d62a03b556",
+  "llama_dir": "~/llama.cpp",
+  "bench": "./build/bin/llama-bench",
+  "threads": 4,
+  "pp": "512:3",
+  "tg": "128:6",
+  "cycles": 3,
+  "idle_before": 300.0,
+  "idle_after": 120.0,
+  "settle": 30.0,
+  "gap": 10.0,
+  "tail": 5.0,
+  "hz": 5.0,
+  "out": "testbed/results/energy_phase_pi4_q4_0_20261005_181655"
+ },
+ "out": "testbed/results/energy_phase_pi4_q4_0_20261005_181655",
+ "invocations": [
+  {
+   "label": "pp1",
+   "phase": "pp",
+   "n": 512,
+   "reps": 3,
+   "cmd": "cd ~/llama.cpp && exec stdbuf -oL -eL ./build/bin/llama-bench -m ~/models/tinyllama-1.1b-q4_0.gguf -t 4 -p 512 -n 0 -r 3 --progress -oe jsonl 2>&1",
+   "exit": 0
+  },
+  {
+   "label": "tg1",
+   "phase": "tg",
+   "n": 128,
+   "reps": 6,
+   "cmd": "cd ~/llama.cpp && exec stdbuf -oL -eL ./build/bin/llama-bench -m ~/models/tinyllama-1.1b-q4_0.gguf -t 4 -p 0 -n 128 -r 6 --progress -oe jsonl 2>&1",
+   "exit": 0
+  },
+  {
+   "label": "pp2",
+   "phase": "pp",
+   "n": 512,
+   "reps": 3,
+   "cmd": "cd ~/llama.cpp && exec stdbuf -oL -eL ./build/bin/llama-bench -m ~/models/tinyllama-1.1b-q4_0.gguf -t 4 -p 512 -n 0 -r 3 --progress -oe jsonl 2>&1",
+   "exit": 0
+  },
+  {
+   "label": "tg2",
+   "phase": "tg",
+   "n": 128,
+   "reps": 6,
+   "cmd": "cd ~/llama.cpp && exec stdbuf -oL -eL ./build/bin/llama-bench -m ~/models/tinyllama-1.1b-q4_0.gguf -t 4 -p 0 -n 128 -r 6 --progress -oe jsonl 2>&1",
+   "exit": 0
+  },
+  {
+   "label": "pp3",
+   "phase": "pp",
+   "n": 512,
+   "reps": 3,
+   "cmd": "cd ~/llama.cpp && exec stdbuf -oL -eL ./build/bin/llama-bench -m ~/models/tinyllama-1.1b-q4_0.gguf -t 4 -p 512 -n 0 -r 3 --progress -oe jsonl 2>&1",
+   "exit": 0
+  },
+  {
+   "label": "tg3",
+   "phase": "tg",
+   "n": 128,
+   "reps": 6,
+   "cmd": "cd ~/llama.cpp && exec stdbuf -oL -eL ./build/bin/llama-bench -m ~/models/tinyllama-1.1b-q4_0.gguf -t 4 -p 0 -n 128 -r 6 --progress -oe jsonl 2>&1",
+   "exit": 0
+  }
+ ],
+ "preflight": {
+  "at": "2026-10-05T18:16:55+07:00",
+  "strip_outlet_name": "pi4",
+  "strip_json_map": "pi4",
+  "node_state": [
+   "stayaun",
+   "0.41 2.29 2.09 1/313 4832",
+   "Mem:            7819         409        6128          29        1407        7410",
+   "throttled=0x80000",
+   "temp=54.0'C",
+   "no llama process"
+  ],
+  "llama_cpp": [
+   "b23701f77d47dad9de834d59ebfcbe25c9e8b46f",
+   "0",
+   "version: 0.4.1-dev (build 200, commit b23701f)",
+   "built with GNU 14.2.0 for Linux aarch64"
+  ],
+  "model_sha256": "da3087fb14aede55fde6eb81a0e55e886810e43509ec82ecdc7aa5d62a03b556",
+  "model_sha256_ok": true
+ },
+ "postflight_node_state": [
+  "stayaun",
+  "0.41 2.35 2.57 1/313 7291",
+  "throttled=0x80000",
+  "temp=54.5'C"
+ ],
+ "finished": "2026-10-05T18:41:01+07:00"
+}

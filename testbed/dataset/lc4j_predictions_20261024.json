@@ -1,0 +1,70 @@
+{
+ "registered_at": "2026-10-24T20:07:18+07:00",
+ "script": "testbed/scripts/register_lc4j_20261024.py",
+ "runner": "testbed/scripts/lc4_20261024.py",
+ "out_prefix": "lc4j",
+ "what": "the Jetson's attention law between two candidates: Qwen3-0.6B Q8_0 whole on the Jetson's GPU, decode against context depth 0-8,192, the slope tested against the query-head law (calibrated on TinyLlama today) and the 11 October KV-byte law",
+ "model": "qwen3-0.6b",
+ "cold_c": {
+  "pi5": 50,
+  "pi4": 55
+ },
+ "shape": {
+  "n_layers": 28,
+  "n_head": 16,
+  "n_head_kv": 8,
+  "head_dim": 128,
+  "kv_bytes_per_layer_per_token": 4096
+ },
+ "calibration": {
+  "tinyllama_jetson_slope_ms_per_1k": 3.522,
+  "from": "testbed/results/lc4charb_20261024_065032/score.json",
+  "kv_law": {
+   "law": "kv_bytes",
+   "ns_per_kv_byte": 0.070251,
+   "from": "kv_depth: Qwen3-0.6B whole on the Jetson (Vulkan), 2 query heads per KV head; its scaling with query heads is not measured"
+  }
+ },
+ "benches": {
+  "jq": {
+   "host": "jetson",
+   "model_path": "~/models/qwen3-0.6b-q8_0.gguf",
+   "model_sha256": "9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031",
+   "args": "-ngl 99 -p 0 -n 32 -d 0,2048,4096,8192 -r 3",
+   "predicted": {
+    "slope_ms_per_1k": 4.483,
+    "alternative_slope_ms_per_1k": 8.057
+   }
+  }
+ },
+ "order": [
+  [
+   "jq"
+  ]
+ ],
+ "hypotheses": {
+  "J-QHEAD": {
+   "type": "slope_near",
+   "label": "jq",
+   "value": 4.483,
+   "tol": 0.15,
+   "claim": "the slope follows the query heads: 4.483 ms per 1,000 tokens within 15 %"
+  },
+  "J-KV": {
+   "type": "slope_near",
+   "label": "jq",
+   "value": 8.057,
+   "tol": 0.15,
+   "claim": "the slope follows the KV bytes (the 11 October law): 8.057 ms per 1,000 tokens within 15 %"
+  }
+ },
+ "inputs_sha256": {
+  "testbed/scripts/lc4_20261024.py": "bf039569fa2a63c88ed8cba332e212ce2e48a285e2475d8d135a23442d2896b7",
+  "testbed/scripts/register_lc4j_20261024.py": "29ec57f66011a6720708ca6eb04385461b2807bdce3b5585769e01a465ae7889",
+  "testbed/scripts/jetson_power_guard.sh": "6dafb56fef33f2bc0e070b2552dcb871053d3c0681358bd27436552f905d90de",
+  "testbed/scripts/throttle_poll.sh": "10a45258cafd9222932fe043b40eee767984412a97d5a6d69002fa60d6e48aa1",
+  "testbed/dataset/attention_cost_20261011b.json": "9252ec7022778e9a4392acd0311bdd48e6c73f861a162cbab2726d7530e8d36f",
+  "testbed/results/lc4charb_20261024_065032/score.json": "fb62d397273e61358eb74551df4a53a71067691bdcfb02c73abf23bddc928a6d",
+  "ThinkPad/config/cluster.json": "1f0a3529dd384647ab71a0a08e2c142226ccf2b80aa5160ffc91e5e2e9485943"
+ }
+}

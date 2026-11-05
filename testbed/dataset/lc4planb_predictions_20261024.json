@@ -1,0 +1,130 @@
+{
+ "registered_at": "2026-10-24T07:00:22+07:00",
+ "script": "testbed/scripts/register_lc4b_20261024.py",
+ "runner": "testbed/scripts/lc4_20261024.py",
+ "out_prefix": "lc4planb",
+ "supersedes": "testbed/dataset/lc4char_predictions_20261024.json's step 2, never registered (no step 1)",
+ "what": "TinyLlama's plan without and with the depth term, served at depth 0 and 8,192",
+ "model": "tinyllama",
+ "cold_c": {
+  "pi5": 50,
+  "pi4": 55
+ },
+ "memfile": "testbed/dataset/memory_snapshot_20261024_065939.json",
+ "measured_slopes_ms_per_1k": {
+  "laptop": 25.289,
+  "pi5": 24.605,
+  "jetson": 3.522
+ },
+ "attn_ms_per_block_per_token": {
+  "laptop": 0.0011495,
+  "pi5": 0.001118409090909091,
+  "jetson": 0.0001600909090909091
+ },
+ "step1": "testbed/results/lc4charb_20261024_065032",
+ "benches": {
+  "A": {
+   "host": "laptop",
+   "model_path": "~/models/tinyllama-1.1b-q4km.gguf",
+   "model_sha256": "9fecc3b3cd76bba89d504f29b616eedf7da85b96540e490ca5824d3f7d2776a0",
+   "args": "-ngl 0 -t 4 -p 0 -n 32 -d 0,8192 -r 3",
+   "assign": [
+    [
+     "laptop",
+     22
+    ]
+   ],
+   "head_at": null,
+   "servers": [],
+   "predicted": {
+    "ms_per_token_by_depth": {
+     "0": 32.37,
+     "8192": 239.53
+    }
+   }
+  },
+  "B": {
+   "host": "laptop",
+   "model_path": "~/models/tinyllama-1.1b-q4km.gguf",
+   "model_sha256": "9fecc3b3cd76bba89d504f29b616eedf7da85b96540e490ca5824d3f7d2776a0",
+   "args": "-rpc 192.168.1.114:50052 -ngl 22 -ot \"^output\\.weight=CPU\" -t 4 -p 0 -n 32 -d 0,8192 -r 3",
+   "assign": [
+    [
+     "laptop",
+     1
+    ],
+    [
+     "jetson",
+     21
+    ]
+   ],
+   "head_at": 0,
+   "servers": [
+    {
+     "node": "jetson",
+     "ip": "192.168.1.114",
+     "port": 50052,
+     "extra": "-d Vulkan0"
+    }
+   ],
+   "predicted": {
+    "ms_per_token_by_depth": {
+     "0": 83.18,
+     "8192": 120.13
+    }
+   }
+  }
+ },
+ "order": [
+  [
+   "A"
+  ],
+  [
+   "B"
+  ],
+  [
+   "B"
+  ],
+  [
+   "A"
+  ]
+ ],
+ "hypotheses": {
+  "LC4P-SHORT": {
+   "type": "faster_at",
+   "a": "A",
+   "b": "B",
+   "depth": 0,
+   "claim": "without depth, the plan without the term is faster (predicted 32.37 against 83.18 ms)"
+  },
+  "LC4P-LONG": {
+   "type": "faster_at",
+   "a": "B",
+   "b": "A",
+   "depth": 8192,
+   "claim": "at 8,192 tokens of depth, the plan with the term is faster (predicted 120.13 against 239.53 ms)"
+  },
+  "LC4P-ACC": {
+   "type": "acc_at",
+   "labels": [
+    "A",
+    "B"
+   ],
+   "tol": 0.15,
+   "claim": "every bench within 15 % of its prediction at both depths"
+  }
+ },
+ "inputs_sha256": {
+  "testbed/scripts/lc4_20261024.py": "638fa2d437d55d0b3eb248171435df964963325c84c743c0b98ec2cefa15e759",
+  "testbed/scripts/register_lc4b_20261024.py": "72c86fa515fa02099e90ad8e5da093b4e776f1f3470339b68dda19af10b255f5",
+  "testbed/scripts/predict_pool.py": "1e932a5012ed8d2d902e4d4a87d7d54f8e27f83169a9331c881b6bbec2f51821",
+  "testbed/scripts/jetson_power_guard.sh": "6dafb56fef33f2bc0e070b2552dcb871053d3c0681358bd27436552f905d90de",
+  "testbed/scripts/throttle_poll.sh": "10a45258cafd9222932fe043b40eee767984412a97d5a6d69002fa60d6e48aa1",
+  "testbed/dataset/model_shapes.json": "c3400b14d42e61f363f2df6e68974a12847d5cb6bd7c785f9b4ace8e3b6f5478",
+  "testbed/dataset/characterisation.csv": "183b4002fb6801f2559872cba7fbc9c7f11df9d858286dc60bf0971ddde1ad2c",
+  "testbed/dataset/attention_cost_20261011b.json": "9252ec7022778e9a4392acd0311bdd48e6c73f861a162cbab2726d7530e8d36f",
+  "ThinkPad/config/cluster.json": "1f0a3529dd384647ab71a0a08e2c142226ccf2b80aa5160ffc91e5e2e9485943",
+  "testbed/results/lc4charb_20261024_065032/score.json": "fb62d397273e61358eb74551df4a53a71067691bdcfb02c73abf23bddc928a6d",
+  "testbed/dataset/memory_snapshot_20261024_065939.json": "e921860c258f3d822a8aec5ae455f195b715c70d9802508588ecbe2b31a0ecea"
+ }
+}

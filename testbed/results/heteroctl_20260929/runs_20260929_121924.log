@@ -1,0 +1,285 @@
+########## 2026-09-29T12:19:24+07:00 heteroctl run x3: qwen3-14b-q4km.gguf, profiles testbed/results/heteroctl_20260929/profiles_q4km.json, config /mnt/data/KMITL/Final/HeteroServe/testbed/results/heteroctl_20260929/cluster.pis-only.json, pin b23701f77d47dad9de834d59ebfcbe25c9e8b46f, extra: --n-predict 128 --prompt A transformer is a neural network architecture that
+gate    both boards idle, both trees at the pin and clean
+worker  pi5 listening on 192.168.10.11:50052 (pid 1891)
+worker  pi4 listening on 192.168.10.12:50052 (pid 2194)
+STATE before pi5 2026-09-29T12:19:28+07:00 temp=36.7'C throttled=0x0 memavail_mib=7631 load=0.08
+STATE before pi4 2026-09-29T12:19:28+07:00 temp=49.1'C throttled=0x0 memavail_mib=7394 load=0.11
+=== rep 1 2026-09-29T12:19:28+07:00
+heteroserve-rule  [qwen3-14b-q4km]
+  pi4             6 layers  ####                           
+  pi5            34 layers  #########################      
+  predicted: 141.6 ms/token (7.06 tok/s), not measured: no power figure for pi4, pi5
+{
+  "run_id": "20260929T051931Z",
+  "strategy": "heteroserve-rule",
+  "model": "qwen3-14b-q4km",
+  "model_path": "/opt/heteroserve/models/qwen3-14b-q4km.gguf",
+  "tier": "gbe",
+  "layers": {
+    "pi4": 6,
+    "pi5": 34
+  },
+  "order": [
+    "pi4",
+    "pi5"
+  ],
+  "participants": [
+    "pi4",
+    "pi5"
+  ],
+  "tensor_split": [
+    0.15,
+    0.85
+  ],
+  "predicted": {
+    "ms_per_token": 141.56,
+    "tokens_per_s": 7.0641,
+    "compute_ms": 141.153,
+    "comm_ms": 0.408,
+    "comm_fraction": 0.0029,
+    "participants": [
+      "pi4",
+      "pi5"
+    ],
+    "phase": "decode",
+    "joules_per_token": null,
+    "mean_power_w": null,
+    "wh_per_1k_tokens": null,
+    "energy": "not measured: no power figure for pi4, pi5",
+    "energy_weight": 0.0
+  },
+  "n_predict": 128,
+  "prompt_chars": 51,
+  "seed": 1234,
+  "command": [
+    "/opt/heteroserve/llama.cpp/build/bin/llama-completion",
+    "-m",
+    "/opt/heteroserve/models/qwen3-14b-q4km.gguf",
+    "--rpc",
+    "192.168.10.12:50052,192.168.10.11:50052",
+    "-ngl",
+    "99",
+    "--tensor-split",
+    "0.15,0.85",
+    "-p",
+    "A transformer is a neural network architecture that",
+    "-n",
+    "128",
+    "--seed",
+    "1234",
+    "-no-cnv"
+  ],
+  "started_utc": 1790659171.6524632,
+  "ended_utc": 1790659267.2620175,
+  "conditions_start": {
+    "pi4": {
+      "error": "http://192.168.10.12:9410/metrics: <urlopen error [Errno 111] Connection refused>"
+    },
+    "pi5": {
+      "error": "http://192.168.10.11:9410/metrics: <urlopen error [Errno 111] Connection refused>"
+    }
+  },
+  "conditions_end": {
+    "pi4": {
+      "error": "http://192.168.10.12:9410/metrics: <urlopen error [Errno 111] Connection refused>"
+    },
+    "pi5": {
+      "error": "http://192.168.10.11:9410/metrics: <urlopen error [Errno 111] Connection refused>"
+    }
+  },
+  "wall_s": 95.61,
+  "returncode": -6,
+  "timings": {},
+  "ok": false,
+  "failure_hint": "see llama.log"
+}
+=== rep 1 exit 1
+STATE after_rep1 pi5 2026-09-29T12:21:07+07:00 temp=37.8'C throttled=0x0 memavail_mib=7591 load=0.05
+STATE after_rep1 pi4 2026-09-29T12:21:08+07:00 temp=49.1'C throttled=0x0 memavail_mib=7231 load=0.14
+=== rep 2 2026-09-29T12:21:08+07:00
+heteroserve-rule  [qwen3-14b-q4km]
+  pi4             6 layers  ####                           
+  pi5            34 layers  #########################      
+  predicted: 141.6 ms/token (7.06 tok/s), not measured: no power figure for pi4, pi5
+{
+  "run_id": "20260929T052110Z",
+  "strategy": "heteroserve-rule",
+  "model": "qwen3-14b-q4km",
+  "model_path": "/opt/heteroserve/models/qwen3-14b-q4km.gguf",
+  "tier": "gbe",
+  "layers": {
+    "pi4": 6,
+    "pi5": 34
+  },
+  "order": [
+    "pi4",
+    "pi5"
+  ],
+  "participants": [
+    "pi4",
+    "pi5"
+  ],
+  "tensor_split": [
+    0.15,
+    0.85
+  ],
+  "predicted": {
+    "ms_per_token": 141.56,
+    "tokens_per_s": 7.0641,
+    "compute_ms": 141.153,
+    "comm_ms": 0.408,
+    "comm_fraction": 0.0029,
+    "participants": [
+      "pi4",
+      "pi5"
+    ],
+    "phase": "decode",
+    "joules_per_token": null,
+    "mean_power_w": null,
+    "wh_per_1k_tokens": null,
+    "energy": "not measured: no power figure for pi4, pi5",
+    "energy_weight": 0.0
+  },
+  "n_predict": 128,
+  "prompt_chars": 51,
+  "seed": 1234,
+  "command": [
+    "/opt/heteroserve/llama.cpp/build/bin/llama-completion",
+    "-m",
+    "/opt/heteroserve/models/qwen3-14b-q4km.gguf",
+    "--rpc",
+    "192.168.10.12:50052,192.168.10.11:50052",
+    "-ngl",
+    "99",
+    "--tensor-split",
+    "0.15,0.85",
+    "-p",
+    "A transformer is a neural network architecture that",
+    "-n",
+    "128",
+    "--seed",
+    "1234",
+    "-no-cnv"
+  ],
+  "started_utc": 1790659270.947027,
+  "ended_utc": 1790659272.444262,
+  "conditions_start": {
+    "pi4": {
+      "error": "http://192.168.10.12:9410/metrics: <urlopen error [Errno 111] Connection refused>"
+    },
+    "pi5": {
+      "error": "http://192.168.10.11:9410/metrics: <urlopen error [Errno 111] Connection refused>"
+    }
+  },
+  "conditions_end": {
+    "pi5": {
+      "error": "http://192.168.10.11:9410/metrics: <urlopen error [Errno 111] Connection refused>"
+    },
+    "pi4": {
+      "error": "http://192.168.10.12:9410/metrics: <urlopen error [Errno 111] Connection refused>"
+    }
+  },
+  "wall_s": 1.497,
+  "returncode": -6,
+  "timings": {},
+  "ok": false,
+  "failure_hint": "a worker's rpc-server is not listening - check `heteroctl rpc up` and the node's firewall"
+}
+=== rep 2 exit 1
+STATE after_rep2 pi5 2026-09-29T12:21:12+07:00 temp=38.4'C throttled=0x0 memavail_mib=7615 load=0.05
+STATE after_rep2 pi4 2026-09-29T12:21:13+07:00 temp=49.1'C throttled=0x0 memavail_mib=7299 load=0.13
+=== rep 3 2026-09-29T12:21:13+07:00
+heteroserve-rule  [qwen3-14b-q4km]
+  pi4             6 layers  ####                           
+  pi5            34 layers  #########################      
+  predicted: 141.6 ms/token (7.06 tok/s), not measured: no power figure for pi4, pi5
+{
+  "run_id": "20260929T052115Z",
+  "strategy": "heteroserve-rule",
+  "model": "qwen3-14b-q4km",
+  "model_path": "/opt/heteroserve/models/qwen3-14b-q4km.gguf",
+  "tier": "gbe",
+  "layers": {
+    "pi4": 6,
+    "pi5": 34
+  },
+  "order": [
+    "pi4",
+    "pi5"
+  ],
+  "participants": [
+    "pi4",
+    "pi5"
+  ],
+  "tensor_split": [
+    0.15,
+    0.85
+  ],
+  "predicted": {
+    "ms_per_token": 141.56,
+    "tokens_per_s": 7.0641,
+    "compute_ms": 141.153,
+    "comm_ms": 0.408,
+    "comm_fraction": 0.0029,
+    "participants": [
+      "pi4",
+      "pi5"
+    ],
+    "phase": "decode",
+    "joules_per_token": null,
+    "mean_power_w": null,
+    "wh_per_1k_tokens": null,
+    "energy": "not measured: no power figure for pi4, pi5",
+    "energy_weight": 0.0
+  },
+  "n_predict": 128,
+  "prompt_chars": 51,
+  "seed": 1234,
+  "command": [
+    "/opt/heteroserve/llama.cpp/build/bin/llama-completion",
+    "-m",
+    "/opt/heteroserve/models/qwen3-14b-q4km.gguf",
+    "--rpc",
+    "192.168.10.12:50052,192.168.10.11:50052",
+    "-ngl",
+    "99",
+    "--tensor-split",
+    "0.15,0.85",
+    "-p",
+    "A transformer is a neural network architecture that",
+    "-n",
+    "128",
+    "--seed",
+    "1234",
+    "-no-cnv"
+  ],
+  "started_utc": 1790659275.8050354,
+  "ended_utc": 1790659277.3015978,
+  "conditions_start": {
+    "pi4": {
+      "error": "http://192.168.10.12:9410/metrics: <urlopen error [Errno 111] Connection refused>"
+    },
+    "pi5": {
+      "error": "http://192.168.10.11:9410/metrics: <urlopen error [Errno 111] Connection refused>"
+    }
+  },
+  "conditions_end": {
+    "pi5": {
+      "error": "http://192.168.10.11:9410/metrics: <urlopen error [Errno 111] Connection refused>"
+    },
+    "pi4": {
+      "error": "http://192.168.10.12:9410/metrics: <urlopen error [Errno 111] Connection refused>"
+    }
+  },
+  "wall_s": 1.497,
+  "returncode": -6,
+  "timings": {},
+  "ok": false,
+  "failure_hint": "a worker's rpc-server is not listening - check `heteroctl rpc up` and the node's firewall"
+}
+=== rep 3 exit 1
+STATE after_rep3 pi5 2026-09-29T12:21:17+07:00 temp=37.3'C throttled=0x0 memavail_mib=7633 load=0.05
+STATE after_rep3 pi4 2026-09-29T12:21:17+07:00 temp=49.6'C throttled=0x0 memavail_mib=7334 load=0.13
+log: /mnt/data/KMITL/Final/HeteroServe/testbed/results/heteroctl_20260929/runs_20260929_121924.log
+worker pi5 stopped
+worker pi4 stopped

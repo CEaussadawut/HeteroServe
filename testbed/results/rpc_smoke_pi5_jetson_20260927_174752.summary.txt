@@ -1,0 +1,19 @@
+log: testbed/results/rpc_smoke_pi5_jetson_20260927_174752.log
+
+cell     test   mean t/s            min-max  n  backend  ngl  commit
+local1   pp64     63.349  [ 63.330- 63.383]  3  Vulkan    99  b23701f
+local1   tg16     11.530  [ 11.524- 11.533]  3  Vulkan    99  b23701f
+ngl=99   pp64     62.549  [ 62.538- 62.572]  3  RPC       99  b23701f
+ngl=99   tg16     11.241  [ 11.239- 11.243]  3  RPC       99  b23701f
+ngl=11   pp64     71.610  [ 69.631- 72.631]  3  RPC       11  b23701f
+ngl=11   tg16     13.639  [ 13.581- 13.686]  3  RPC       11  b23701f
+local2   pp64     63.306  [ 63.296- 63.319]  3  Vulkan    99  b23701f
+local2   tg16     11.525  [ 11.523- 11.526]  3  Vulkan    99  b23701f
+
+local bracket (drift across the run) and RPC cells against the mean of local1 and local2:
+  pp64: local2 vs local1 -0.07%   (local mean 63.328 t/s)
+  pp64: ngl=99    62.549 t/s = -1.23% vs local
+  pp64: ngl=11    71.610 t/s = +13.08% vs local
+  tg16: local2 vs local1 -0.04%   (local mean 11.527 t/s)
+  tg16: ngl=99    11.241 t/s = -2.49% vs local
+  tg16: ngl=11    13.639 t/s = +18.32% vs local

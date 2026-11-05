@@ -1,0 +1,139 @@
+########## 2026-09-29T15:10:01+07:00 Jetson CPU-backend parity: tinyllama-1.1b-q4km.gguf, ctx 512, 8 chunks of /usr/share/common-licenses/GPL-3
+model  9fecc3b3cd76bba89d504f29b616eedf7da85b96540e490ca5824d3f7d2776a0  /home/jetson/models/tinyllama-1.1b-q4km.gguf
+text   8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903  /usr/share/common-licenses/GPL-3
+cpu    /home/jetson/llama.cpp/build/bin  commit b23701f77d47dad9de834d59ebfcbe25c9e8b46f, 0 modified files
+cuda   /home/jetson/llama.cpp-cuda/build/bin  commit b23701f77d47dad9de834d59ebfcbe25c9e8b46f, patch 1f43a3e4a5762e97a49c6d3f4982c6a899671c785257080bd34dc9de9a2283c6
+power  pmode:0000; CPU 39 C
+
+===== 1. CPU reference (the unpatched pin, -ngl 0 -dev none), logits saved
+0.00.697.009 I cmn          init: llama threadpool init, n_threads = 4
+0.00.962.802 I 
+0.00.963.003 I system_info: n_threads = 4 (n_threads_batch = 4) / 4 | CPU : NEON = 1 | ARM_FMA = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 | 
+0.00.963.133 I perplexity: saving all logits to /home/jetson/heteroserve/results/jetson_parity_20260929_151001/cpu.kld
+0.00.963.150 I perplexity: tokenizing the input ..
+0.01.033.186 I perplexity: tokenization took 70.022 ms
+0.01.033.471 I perplexity: calculating perplexity over 8 chunks, n_ctx=512, batch_size=2048, n_seq=4
+4.08.797.279 I perplexity: 247.75 seconds per pass - ETA 8.25 minutes
+[1]5.6274,[2]5.9695,[3]5.0491,[4]5.5113,[5]5.2551,[6]4.6858,[7]4.4696,[8]4.3480,
+8.17.092.833 I Final estimate: PPL = 4.3480 +/- 0.25100
+
+EXIT_cpu=0
+
+===== 2. CUDA (pin + patch v2, -ngl 99) against the CPU logits
+0.03.763.111 I cmn          init: llama threadpool init, n_threads = 4
+0.04.168.863 I 
+0.04.170.608 I system_info: n_threads = 4 (n_threads_batch = 4) / 4 | CUDA : USE_GRAPHS = 1 | FA_QUANTS = q4_0-q4_0,q8_0-q8_0,f16-f16,bf16-bf16 | CPU : NEON = 1 | ARM_FMA = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 | 
+0.04.186.229 I kl_divergence: computing over 8 chunks, n_ctx=512, batch_size=2048, n_seq=4
+0.23.734.319 I kl_divergence: 19.55 seconds per pass - ETA 0.65 minutes
+
+chunk             PPL               ln(PPL(Q)/PPL(base))          KL Divergence              Δp RMS            Same top p
+   1       5.5953 ±    1.0294      -0.00572 ±    0.01017       0.01091 ±    0.00090     3.665 ±  0.337 %    94.902 ±  1.380 %
+   2       5.9711 ±    0.8400       0.00766 ±    0.01288       0.01541 ±    0.00174     4.647 ±  0.657 %    95.882 ±  0.881 %
+   3       5.0391 ±    0.5299       0.00296 ±    0.00955       0.01644 ±    0.00132     4.911 ±  0.463 %    94.902 ±  0.796 %
+   4       5.4909 ±    0.4906       0.00000 ±    0.00740       0.01404 ±    0.00101     4.467 ±  0.384 %    94.902 ±  0.689 %
+   5       5.2277 ±    0.4171      -0.00226 ±    0.00650       0.01418 ±    0.00087     4.518 ±  0.323 %    94.902 ±  0.616 %
+   6       4.6762 ±    0.3258       0.00041 ±    0.00575       0.01483 ±    0.00079     4.717 ±  0.274 %    95.163 ±  0.549 %
+   7       4.4529 ±    0.2845      -0.00163 ±    0.00523       0.01528 ±    0.00077     4.817 ±  0.255 %    95.574 ±  0.487 %
+   8       4.3319 ±    0.2505      -0.00184 ±    0.00476       0.01475 ±    0.00068     4.668 ±  0.232 %    95.343 ±  0.467 %
+
+====== Perplexity statistics ======
+Mean PPL(Q)                   :   4.331941 ±   0.250496
+Mean PPL(base)                :   4.339938 ±   0.249408
+Cor(ln(PPL(Q)), ln(PPL(base))):  99.66%
+Mean ln(PPL(Q)/PPL(base))     :  -0.001844 ±   0.004758
+Mean PPL(Q)/PPL(base)         :   0.998157 ±   0.004749
+Mean PPL(Q)-PPL(base)         :  -0.007998 ±   0.020600
+
+====== KL divergence statistics ======
+Mean    KLD:   0.014752 ±   0.000681
+Maximum KLD:   0.655199
+99.9%   KLD:   0.354969
+99.0%   KLD:   0.128594
+95.0%   KLD:   0.060997
+90.0%   KLD:   0.037900
+Median  KLD:   0.005179
+10.0%   KLD:   0.000113
+ 5.0%   KLD:   0.000032
+ 1.0%   KLD:   0.000004
+ 0.1%   KLD:   0.000000
+Minimum KLD:  -0.000002
+
+====== Token probability statistics ======
+Mean    Δp:  0.154 ± 0.103 %
+Maximum Δp: 33.508%
+99.9%   Δp: 27.521%
+99.0%   Δp: 15.593%
+95.0%   Δp:  7.066%
+90.0%   Δp:  3.956%
+75.0%   Δp:  0.871%
+Median  Δp:  0.000%
+25.0%   Δp: -0.645%
+10.0%   Δp: -3.323%
+ 5.0%   Δp: -6.509%
+ 1.0%   Δp: -14.902%
+ 0.1%   Δp: -32.056%
+Minimum Δp: -52.367%
+RMS Δp    :  4.668 ± 0.232 %
+Same top p: 95.343 ± 0.467 %
+
+EXIT_cuda=0
+
+===== 3. Vulkan (the unpatched pin, -ngl 99) against the CPU logits
+0.02.382.888 I cmn          init: llama threadpool init, n_threads = 4
+0.06.913.831 I 
+0.06.914.083 I system_info: n_threads = 4 (n_threads_batch = 4) / 4 | CPU : NEON = 1 | ARM_FMA = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 | 
+0.06.919.728 I kl_divergence: computing over 8 chunks, n_ctx=512, batch_size=2048, n_seq=4
+0.41.054.556 I kl_divergence: 34.13 seconds per pass - ETA 1.13 minutes
+
+chunk             PPL               ln(PPL(Q)/PPL(base))          KL Divergence              Δp RMS            Same top p
+   1       5.6517 ±    1.0410       0.00431 ±    0.01094       0.01161 ±    0.00099     3.679 ±  0.372 %    95.686 ±  1.275 %
+   2       5.9987 ±    0.8436       0.01227 ±    0.01272       0.01574 ±    0.00174     4.515 ±  0.681 %    96.471 ±  0.818 %
+   3       5.0628 ±    0.5326       0.00765 ±    0.00921       0.01605 ±    0.00127     4.643 ±  0.466 %    95.686 ±  0.735 %
+   4       5.5095 ±    0.4923       0.00338 ±    0.00724       0.01390 ±    0.00098     4.304 ±  0.385 %    95.882 ±  0.622 %
+   5       5.2558 ±    0.4198       0.00310 ±    0.00634       0.01410 ±    0.00085     4.347 ±  0.326 %    95.686 ±  0.569 %
+   6       4.6883 ±    0.3266       0.00300 ±    0.00562       0.01481 ±    0.00077     4.638 ±  0.274 %    95.882 ±  0.508 %
+   7       4.4620 ±    0.2849       0.00041 ±    0.00517       0.01536 ±    0.00076     4.753 ±  0.254 %    96.190 ±  0.453 %
+   8       4.3419 ±    0.2511       0.00045 ±    0.00475       0.01490 ±    0.00068     4.613 ±  0.231 %    95.735 ±  0.447 %
+
+====== Perplexity statistics ======
+Mean PPL(Q)                   :   4.341910 ±   0.251137
+Mean PPL(base)                :   4.339938 ±   0.249408
+Cor(ln(PPL(Q)), ln(PPL(base))):  99.66%
+Mean ln(PPL(Q)/PPL(base))     :   0.000454 ±   0.004748
+Mean PPL(Q)/PPL(base)         :   1.000454 ±   0.004750
+Mean PPL(Q)-PPL(base)         :   0.001971 ±   0.020621
+
+====== KL divergence statistics ======
+Mean    KLD:   0.014897 ±   0.000677
+Maximum KLD:   0.663497
+99.9%   KLD:   0.274422
+99.0%   KLD:   0.129680
+95.0%   KLD:   0.061714
+90.0%   KLD:   0.036567
+Median  KLD:   0.005162
+10.0%   KLD:   0.000113
+ 5.0%   KLD:   0.000027
+ 1.0%   KLD:   0.000005
+ 0.1%   KLD:   0.000001
+Minimum KLD:  -0.000001
+
+====== Token probability statistics ======
+Mean    Δp:  0.130 ± 0.102 %
+Maximum Δp: 32.963%
+99.9%   Δp: 27.256%
+99.0%   Δp: 15.043%
+95.0%   Δp:  6.692%
+90.0%   Δp:  3.831%
+75.0%   Δp:  0.912%
+Median  Δp:  0.000%
+25.0%   Δp: -0.650%
+10.0%   Δp: -3.293%
+ 5.0%   Δp: -5.746%
+ 1.0%   Δp: -14.742%
+ 0.1%   Δp: -25.339%
+Minimum Δp: -52.594%
+RMS Δp    :  4.613 ± 0.231 %
+Same top p: 95.735 ± 0.447 %
+
+EXIT_vulkan=0
+########## 2026-09-29T15:20:28+07:00 done; logits file 130592724 bytes

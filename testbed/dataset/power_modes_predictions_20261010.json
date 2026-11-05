@@ -1,0 +1,585 @@
+{
+ "registered_at": "2026-10-10T17:58:21+07:00",
+ "script": "testbed/scripts/register_power_modes_20261010.py",
+ "question": "scheduler upgrade 5: the Jetson's power mode while it waits (locked, low-power idle, 5 W) as a plan variable; energy and time per token predicted per mode within 5 %",
+ "model": "qwen3_14b",
+ "ctx": 1024,
+ "place": "pi4:27,jetson:13",
+ "place_head": "host",
+ "nodes": "pi4 jetson",
+ "serve_env": {
+  "SERVE_DRAFT": "none",
+  "CLOCKS": "asfound"
+ },
+ "host_url": "http://192.168.1.110:8080",
+ "sampling": {
+  "temperature": 0,
+  "top_k": 1,
+  "cache_prompt": false
+ },
+ "chat_format": "<|im_start|>user\n%s<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n",
+ "warmup_prompt": "Say hello in one sentence.",
+ "prompts": [
+  {
+   "id": "e01",
+   "category": "explain",
+   "lang": "en",
+   "text": "Explain how a refrigerator keeps food cold."
+  },
+  {
+   "id": "c01",
+   "category": "code",
+   "lang": "en",
+   "text": "Write a Python function that returns the n-th Fibonacci number iteratively."
+  },
+  {
+   "id": "w01",
+   "category": "writing",
+   "lang": "en",
+   "text": "Write a short, polite email asking my professor for a meeting next week."
+  },
+  {
+   "id": "th01",
+   "category": "explain",
+   "lang": "th",
+   "text": "อธิบายว่าทำไมท้องฟ้าจึงเป็นสีฟ้า"
+  }
+ ],
+ "n_predict": 64,
+ "order": [
+  "locked",
+  "unlocked",
+  "5w",
+  "5w",
+  "unlocked",
+  "locked"
+ ],
+ "settle_tokens": 8,
+ "idle_before_s": 120,
+ "idle_after_s": 60,
+ "outlets": {
+  "pi4": 0,
+  "laptop": 1,
+  "jetson": 2
+ },
+ "models_on_host": {
+  "~/models/qwen3-14b-q4_k_m.gguf": "500a8806e85ee9c83f3ae08420295592451379b4f8cf2d0f41c15dffeb6b81f0"
+ },
+ "modes": {
+  "locked": "MAXN, jetson_clocks: CPU 1479 MHz x4, GPU 921.6 MHz, EMC 1600 MHz, cpuidle and railgating off (every run since 09-30)",
+  "unlocked": "MAXN, governors free: nvhost_podgov, schedutil, EMC by its activity monitor, GPU railgated after 500 ms idle",
+  "5w": "nvpmodel -m 1 (cores 2-3 offline), then jetson_clocks at its maxima: CPU 921.6 MHz x2, GPU 614.4 MHz"
+ },
+ "prior": {
+  "run": "testbed/results/spec_shape_20261010_125542",
+  "requests": 8,
+  "tokens": 512,
+  "T0_ms": 1903.143982421875,
+  "E0_j": 20.195439704424203,
+  "E0_jetson_outlet_j": 9.08864455988712,
+  "by_session": {
+   "0": {
+    "T_ms": 1908.3,
+    "E_j": 19.949
+   },
+   "4": {
+    "T_ms": 1898.0,
+    "E_j": 20.442
+   }
+  },
+  "step3_same_prompts": {
+   "requests": 8,
+   "T_ms": 1915.6
+  }
+ },
+ "characterisation": {
+  "analysis": "testbed/results/pm_char_20261010_165919/analysis.json",
+  "sha256": "409ae9390b7013ac2a28ea40159117cde0eb2f8c2291fc02ca20dd0fd109cfb5",
+  "cells": {
+   "locked@0.0": {
+    "forward_ms_median": 619.7425000000001,
+    "forward_ms_p10": 602.9523999999999,
+    "period_ms_median": 637.2874975204468,
+    "strip_w": 7.783053259390353,
+    "ina_w": 5.621037995303475,
+    "gpu_mhz_mean": 921.6,
+    "railgated_share": 0.0,
+    "block_spread_forward_pct": 9.011173271774787,
+    "block_spread_strip_pct": 10.366704664593174,
+    "blocks": [
+     {
+      "block": 0,
+      "period_power_ms": 691.6578546647103,
+      "strip_w": 7.422065727699531,
+      "ina_w": 5.311756097560976,
+      "forward_ms_p10": 619.844,
+      "forward_ms_median": 661.827,
+      "gpu_mhz_mean": 921.6
+     },
+     {
+      "block": 5,
+      "period_power_ms": 611.3070326466715,
+      "strip_w": 8.191489361702128,
+      "ina_w": 5.970972222222223,
+      "forward_ms_p10": 601.528,
+      "forward_ms_median": 607.1185,
+      "gpu_mhz_mean": 921.6
+     }
+    ]
+   },
+   "locked@1.1": {
+    "forward_ms_median": 638.989,
+    "forward_ms_p10": 602.3489,
+    "period_ms_median": 1802.315592765808,
+    "strip_w": 4.705005456618859,
+    "ina_w": 3.4754183968425005,
+    "gpu_mhz_mean": 921.5999999999999,
+    "railgated_share": 0.0,
+    "block_spread_forward_pct": 28.240884552377654,
+    "block_spread_strip_pct": 9.215869579962789,
+    "blocks": [
+     {
+      "block": 0,
+      "period_power_ms": 1929.7778875597062,
+      "strip_w": 4.509547738693467,
+      "ina_w": 3.411,
+      "forward_ms_p10": 673.3705,
+      "forward_ms_median": 784.3905,
+      "gpu_mhz_mean": 921.6
+     },
+     {
+      "block": 5,
+      "period_power_ms": 1713.4382071033601,
+      "strip_w": 4.925141776937618,
+      "ina_w": 3.547970297029703,
+      "forward_ms_p10": 601.0229999999999,
+      "forward_ms_median": 611.654,
+      "gpu_mhz_mean": 921.6
+     }
+    ]
+   },
+   "locked@1.3": {
+    "forward_ms_median": 626.9214999999999,
+    "forward_ms_p10": 603.2558,
+    "period_ms_median": 1966.237187385559,
+    "strip_w": 4.715419079026491,
+    "ina_w": 3.3655356595191375,
+    "gpu_mhz_mean": 921.6000000000001,
+    "railgated_share": 0.0,
+    "block_spread_forward_pct": 18.253306238835787,
+    "block_spread_strip_pct": 8.17854753402889,
+    "blocks": [
+     {
+      "block": 0,
+      "period_power_ms": 2280.3789992486277,
+      "strip_w": 4.54581560283688,
+      "ina_w": 3.334397058823529,
+      "forward_ms_p10": 636.1569999999999,
+      "forward_ms_median": 721.5935,
+      "gpu_mhz_mean": 921.6
+     },
+     {
+      "block": 5,
+      "period_power_ms": 1912.9667743559808,
+      "strip_w": 4.917597292724197,
+      "ina_w": 3.4026548672566372,
+      "forward_ms_p10": 601.0595000000001,
+      "forward_ms_median": 610.21,
+      "gpu_mhz_mean": 921.6
+     }
+    ]
+   },
+   "locked@1.5": {
+    "forward_ms_median": 634.2965,
+    "forward_ms_p10": 604.2884999999999,
+    "period_ms_median": 2224.961042404175,
+    "strip_w": 4.566188975870373,
+    "ina_w": 3.2912893701262154,
+    "gpu_mhz_mean": 921.5999999999999,
+    "railgated_share": 0.0,
+    "block_spread_forward_pct": 36.89648278755146,
+    "block_spread_strip_pct": 1.119110801757528,
+    "blocks": [
+     {
+      "block": 0,
+      "period_power_ms": 2466.289597172891,
+      "strip_w": 4.589632545931758,
+      "ina_w": 3.2297619047619044,
+      "forward_ms_p10": 661.5355,
+      "forward_ms_median": 835.419,
+      "gpu_mhz_mean": 921.6
+     },
+     {
+      "block": 5,
+      "period_power_ms": 2113.9452265154932,
+      "strip_w": 4.538837920489296,
+      "ina_w": 3.3630720000000003,
+      "forward_ms_p10": 603.2465,
+      "forward_ms_median": 610.256,
+      "gpu_mhz_mean": 921.6
+     }
+    ]
+   },
+   "unlocked@0.0": {
+    "forward_ms_median": 630.816,
+    "forward_ms_p10": 609.7093000000001,
+    "period_ms_median": 679.2612075805664,
+    "strip_w": 7.094688634572052,
+    "ina_w": 5.17334402006744,
+    "gpu_mhz_mean": 921.6,
+    "railgated_share": 0.0,
+    "block_spread_forward_pct": 20.191382966086113,
+    "block_spread_strip_pct": 8.7258710155671,
+    "blocks": [
+     {
+      "block": 1,
+      "period_power_ms": 756.844662850903,
+      "strip_w": 6.826923076923077,
+      "ina_w": 4.948066666666667,
+      "forward_ms_p10": 630.816,
+      "forward_ms_median": 738.6085,
+      "gpu_mhz_mean": 921.6
+     },
+     {
+      "block": 4,
+      "period_power_ms": 617.9639985484462,
+      "strip_w": 7.422631578947368,
+      "ina_w": 5.44925,
+      "forward_ms_p10": 606.231,
+      "forward_ms_median": 614.527,
+      "gpu_mhz_mean": 921.6
+     }
+    ]
+   },
+   "unlocked@1.1": {
+    "forward_ms_median": 646.02,
+    "forward_ms_p10": 613.0811,
+    "period_ms_median": 1793.7840223312378,
+    "strip_w": 4.646337654763739,
+    "ina_w": 3.005037939222928,
+    "gpu_mhz_mean": 921.5999999999999,
+    "railgated_share": 0.0,
+    "block_spread_forward_pct": 23.311247471516204,
+    "block_spread_strip_pct": 5.064544994246778,
+    "blocks": [
+     {
+      "block": 1,
+      "period_power_ms": 1920.3026602345128,
+      "strip_w": 4.53766891891892,
+      "ina_w": 3.002963963963964,
+      "forward_ms_p10": 661.756,
+      "forward_ms_median": 763.2325000000001,
+      "gpu_mhz_mean": 921.6
+     },
+     {
+      "block": 4,
+      "period_power_ms": 1722.558613746397,
+      "strip_w": 4.767481203007519,
+      "ina_w": 3.0073499999999997,
+      "forward_ms_p10": 610.4535,
+      "forward_ms_median": 618.948,
+      "gpu_mhz_mean": 921.6
+     }
+    ]
+   },
+   "unlocked@1.3": {
+    "forward_ms_median": 640.6625,
+    "forward_ms_p10": 612.3322,
+    "period_ms_median": 1980.4970026016235,
+    "strip_w": 4.927390494899628,
+    "ina_w": 3.109815651259749,
+    "gpu_mhz_mean": 921.6000000000001,
+    "railgated_share": 0.0,
+    "block_spread_forward_pct": 19.057919816236122,
+    "block_spread_strip_pct": 3.5532891243072573,
+    "blocks": [
+     {
+      "block": 1,
+      "period_power_ms": 2089.619932636138,
+      "strip_w": 5.0097826086956525,
+      "ina_w": 3.07496694214876,
+      "forward_ms_p10": 655.971,
+      "forward_ms_median": 738.071,
+      "gpu_mhz_mean": 921.6
+     },
+     {
+      "block": 4,
+      "period_power_ms": 1923.4154839669504,
+      "strip_w": 4.837878787878788,
+      "ina_w": 3.147675675675676,
+      "forward_ms_p10": 610.3149999999999,
+      "forward_ms_median": 619.926,
+      "gpu_mhz_mean": 921.6
+     }
+    ]
+   },
+   "unlocked@1.5": {
+    "forward_ms_median": 642.1225,
+    "forward_ms_p10": 614.0110999999999,
+    "period_ms_median": 2180.38010597229,
+    "strip_w": 4.240563159454626,
+    "ina_w": 3.545624714247709,
+    "gpu_mhz_mean": 921.6,
+    "railgated_share": 0.0,
+    "block_spread_forward_pct": 17.360286806975502,
+    "block_spread_strip_pct": 5.809457639206106,
+    "blocks": [
+     {
+      "block": 1,
+      "period_power_ms": 2290.77204965776,
+      "strip_w": 4.125282485875706,
+      "ina_w": 2.9553257575757574,
+      "forward_ms_p10": 649.6865,
+      "forward_ms_median": 730.6605,
+      "gpu_mhz_mean": 921.6
+     },
+     {
+      "block": 4,
+      "period_power_ms": 2123.2555450931673,
+      "strip_w": 4.364939024390244,
+      "ina_w": 4.182495934959349,
+      "forward_ms_p10": 611.1049999999999,
+      "forward_ms_median": 622.579,
+      "gpu_mhz_mean": 921.6
+     }
+    ]
+   },
+   "5w@0.0": {
+    "forward_ms_median": 780.8205,
+    "forward_ms_p10": 759.7074,
+    "period_ms_median": 852.054238319397,
+    "strip_w": 5.32704733195278,
+    "ina_w": 3.7794412549713825,
+    "gpu_mhz_mean": 614.4,
+    "railgated_share": 0.0,
+    "block_spread_forward_pct": 21.662402773781373,
+    "block_spread_strip_pct": 9.48831161780217,
+    "blocks": [
+     {
+      "block": 2,
+      "period_power_ms": 955.0545484788956,
+      "strip_w": 5.110847457627119,
+      "ina_w": 3.497375,
+      "forward_ms_p10": 804.6045,
+      "forward_ms_median": 932.3215,
+      "gpu_mhz_mean": 614.4
+     },
+     {
+      "block": 3,
+      "period_power_ms": 768.3554849316997,
+      "strip_w": 5.5957805907172995,
+      "ina_w": 4.130045454545455,
+      "forward_ms_p10": 757.2524999999999,
+      "forward_ms_median": 766.3185000000001,
+      "gpu_mhz_mean": 614.4
+     }
+    ]
+   },
+   "5w@1.1": {
+    "forward_ms_median": 796.6385,
+    "forward_ms_p10": 759.4874,
+    "period_ms_median": 1969.4194793701172,
+    "strip_w": 3.9221387793341513,
+    "ina_w": 2.7247471560894048,
+    "gpu_mhz_mean": 614.4000000000001,
+    "railgated_share": 0.0,
+    "block_spread_forward_pct": 27.730541514548168,
+    "block_spread_strip_pct": 7.3912076882177935,
+    "blocks": [
+     {
+      "block": 2,
+      "period_power_ms": 2134.537773747598,
+      "strip_w": 3.791350531107739,
+      "ina_w": 2.6338536585365855,
+      "forward_ms_p10": 846.2215,
+      "forward_ms_median": 978.05,
+      "gpu_mhz_mean": 614.4
+     },
+     {
+      "block": 3,
+      "period_power_ms": 1868.144742904171,
+      "strip_w": 4.07157712305026,
+      "ina_w": 2.8286018518518516,
+      "forward_ms_p10": 757.208,
+      "forward_ms_median": 765.7135000000001,
+      "gpu_mhz_mean": 614.4
+     }
+    ]
+   },
+   "5w@1.3": {
+    "forward_ms_median": 806.546,
+    "forward_ms_p10": 758.7854,
+    "period_ms_median": 2186.2401962280273,
+    "strip_w": 3.9354797906139423,
+    "ina_w": 2.669486425222572,
+    "gpu_mhz_mean": 614.4000000000001,
+    "railgated_share": 0.0,
+    "block_spread_forward_pct": 30.448068888767253,
+    "block_spread_strip_pct": 3.493020021869264,
+    "blocks": [
+     {
+      "block": 2,
+      "period_power_ms": 2367.7801778239586,
+      "strip_w": 3.8724043715846994,
+      "ina_w": 2.6161678832116793,
+      "forward_ms_p10": 842.6424999999999,
+      "forward_ms_median": 1001.0350000000001,
+      "gpu_mhz_mean": 614.4
+     },
+     {
+      "block": 3,
+      "period_power_ms": 2068.8731439651983,
+      "strip_w": 4.007668231611894,
+      "ina_w": 2.7305083333333333,
+      "forward_ms_p10": 756.0725,
+      "forward_ms_median": 767.3820000000001,
+      "gpu_mhz_mean": 614.4
+     }
+    ]
+   },
+   "5w@1.5": {
+    "forward_ms_median": 789.361,
+    "forward_ms_p10": 759.6186,
+    "period_ms_median": 2323.4392404556274,
+    "strip_w": 3.8293707079446526,
+    "ina_w": 2.6528718191257594,
+    "gpu_mhz_mean": 614.4,
+    "railgated_share": 0.0,
+    "block_spread_forward_pct": 12.713759174759165,
+    "block_spread_strip_pct": 0.2444887418031616,
+    "blocks": [
+     {
+      "block": 2,
+      "period_power_ms": 2420.6782887058876,
+      "strip_w": 3.8248331108144193,
+      "ina_w": 2.629921985815603,
+      "forward_ms_p10": 765.9405,
+      "forward_ms_median": 869.8689999999999,
+      "gpu_mhz_mean": 614.4
+     },
+     {
+      "block": 3,
+      "period_power_ms": 2281.838805444779,
+      "strip_w": 3.8341843971631207,
+      "ina_w": 2.677218045112782,
+      "forward_ms_p10": 758.7180000000001,
+      "forward_ms_median": 771.7505000000001,
+      "gpu_mhz_mean": 614.4
+     }
+    ]
+   }
+  },
+  "idle": {
+   "locked": [
+    {
+     "strip_w": 3.2477386934673365,
+     "ina_w": 2.191,
+     "railgated_share": 0.0
+    },
+    {
+     "strip_w": 3.2628140703517587,
+     "ina_w": 2.193157894736842,
+     "railgated_share": 0.0
+    }
+   ],
+   "unlocked": [
+    {
+     "strip_w": 2.4045226130653266,
+     "ina_w": 1.557777777777778,
+     "railgated_share": 0.0
+    },
+    {
+     "strip_w": 2.550251256281407,
+     "ina_w": 1.5703783783783782,
+     "railgated_share": 0.0
+    }
+   ],
+   "5w": [
+    {
+     "strip_w": 2.8839195979899497,
+     "ina_w": 1.9077894736842107,
+     "railgated_share": 0.0
+    },
+    {
+     "strip_w": 2.95678391959799,
+     "ina_w": 1.946,
+     "railgated_share": 0.0
+    }
+   ],
+   "before_load": [
+    {
+     "strip_w": 2.2607142857142857,
+     "ina_w": 1.4070975609756096,
+     "railgated_share": 0.0
+    }
+   ]
+  }
+ },
+ "pw_pi4_w": 2.390896921017403,
+ "power_table_source": "testbed/dataset/energy_results_20261005_pi4_q4km.json",
+ "power_table_sha256": "9c946768787cc0e7",
+ "emulated_locked_jetson_j_at_T0": 9.0895,
+ "predictions": {
+  "locked": {
+   "Pw_w": 3.2076,
+   "A_j": 2.9849,
+   "fit_r2": 0.9908,
+   "fit_rms_w": 0.1324,
+   "dT_ms": 0.0,
+   "dT_ms_by_median": 0.0,
+   "T_ms": 1903.144,
+   "Ej_j": 9.0895,
+   "E_j": 20.1954,
+   "dE_j": 0.0
+  },
+  "unlocked": {
+   "Pw_w": 3.3114,
+   "A_j": 2.5899,
+   "fit_r2": 0.9605,
+   "fit_rms_w": 0.2245,
+   "dT_ms": 9.072,
+   "dT_ms_by_median": 9.9179,
+   "T_ms": 1912.216,
+   "Ej_j": 8.922,
+   "E_j": 20.0496,
+   "dE_j": -0.1458
+  },
+  "5w": {
+   "Pw_w": 2.9679,
+   "A_j": 2.0287,
+   "fit_r2": 0.993,
+   "fit_rms_w": 0.0543,
+   "dT_ms": 156.1883,
+   "dT_ms_by_median": 163.3541,
+   "T_ms": 2059.3323,
+   "Ej_j": 8.1406,
+   "E_j": 19.62,
+   "dE_j": -0.5755
+  }
+ },
+ "pick": {
+  "least_energy": "5w",
+  "margin_over_next": 0.0219,
+  "judged": true
+ },
+ "hypotheses": {
+  "PM-T": "for each mode, measured ms per token (sum predicted_ms / sum predicted_n over its 8 requests) within 5 % of predictions[mode].T_ms",
+  "PM-E": "for each mode, measured gross J per decoded token at the pi4 + jetson outlets (strip trapezoid over each request's [t0 + prompt_ms, t1], summed, over the sum of predicted_n) within 5 % of predictions[mode].E_j",
+  "PM-PICK": "the mode predicted least in energy (pick.least_energy) measures least; judged only when pick.margin_over_next >= 0.02",
+  "verdict": "upgrade 5 holds when all six PM-T and PM-E tests hold"
+ },
+ "tolerance": 0.05,
+ "pick_margin": 0.02,
+ "inputs_sha256": {
+  "testbed/scripts/power_modes_20261010.py": "0be4d788df123f37960098f82347f737b590e647224b85b3ddf3f0ccfb626b7a",
+  "testbed/scripts/power_modes_char_20261010.py": "26ecb152cf574d17192deea9542dd9c769fc4c34c37cae43e1639f15ff98b6d4",
+  "testbed/scripts/jetson_clock_poll.sh": "82f573e6f1f2a2e9cca1ad0e95c687c743a7527721491c74d1edc6ed9330ad46",
+  "testbed/scripts/jetson_power_guard.sh": "6dafb56fef33f2bc0e070b2552dcb871053d3c0681358bd27436552f905d90de",
+  "testbed/scripts/serve_pool.sh": "a501ba40f69ec6c619de4e313f80f1374a2eb65cfe1d753866b0d151fb5eb3f1",
+  "testbed/scripts/serve_defaults.sh": "4fdedec2da1479d577117606f3d810e313ef4483a71be6c9787895133a66a095",
+  "testbed/scripts/energy_model.py": "2fe7a0f4bcd5da664bfe385a7875ba486190430745c38fc7a5bc1da803c152a7",
+  "testbed/scripts/full_eval.py": "0650d6593e18345aefac4323200c8c0471261d448d3c74b6c55bad43b1aa44a0",
+  "testbed/scripts/shelly_strip.py": "b7aaa7ceb2f1e94aa3f1f46100c06ca9d6c0c3fa8764a6372239747ffc0fe5a8",
+  "testbed/scripts/throttle_poll.sh": "15d5d305766d849820fbd23c73ddaee56d17d4fa055c0b279d515a7ca2df9184"
+ }
+}

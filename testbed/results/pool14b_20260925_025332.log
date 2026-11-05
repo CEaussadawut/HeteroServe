@@ -1,0 +1,143 @@
+########## 2026-09-25T02:53:32+07:00  TEST B: 14B Q4_K_M pooled over wired RPC
+pi5 avail MiB : 7636
+pi4 avail MiB : 7428
+commit (pi5)  : b23701f77d47dad9de834d59ebfcbe25c9e8b46f
+commit (pi4)  : b23701f77d47dad9de834d59ebfcbe25c9e8b46f
+
+--- starting RPC worker on the Pi 4, bound to the wired interface ---
+worker-pid=1946
+--- waiting for the worker to listen (checked via ss, no client connect) ---
+worker listening on 192.168.10.12:50052 after 1s
+WARNING: Host ('192.168.10.12') is != '127.0.0.1'
+         Never expose the RPC server to an open network!
+         This is an experimental feature and is not secure!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+--- devices as the main node sees them ---
+Available devices:
+  RPC0: 192.168.10.12:50052 (7819 MiB, 7819 MiB free)
+
+##### ngl=20 of 48 layers on the remote worker, remainder on the Pi 5 CPU
+before: pi5 temp=45.5'C throttled=0x0 | pi4 temp=51.6'C throttled=0x0 
+| model                          |       size |     params | backend    | ngl |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | --------------: | -------------------: |
+| qwen2 14B Q4_K - Medium        |   8.37 GiB |    14.77 B | RPC        |  20 |            pp64 |          1.90 ± 0.00 |
+{"build_commit": "b23701f", "build_number": 200, "cpu_info": "CPU", "gpu_info": "192.168.10.12:50052", "backends": "RPC", "model_filename": "/home/pi5/models/qwen2.5-14b-instruct-q4_k_m-00001-of-00003.gguf", "model_type": "qwen2 14B Q4_K - Medium", "model_size": 8982142976, "model_n_params": 14770033664, "n_batch": 2048, "n_ubatch": 512, "n_threads": 4, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "f16", "type_v": "f16", "n_gpu_layers": 20, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": -1, "devices": "auto", "tensor_split": "0.00", "tensor_buft_overrides": "none", "load_mode": "auto", "lazy_mode": "auto", "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "n_prompt": 64, "n_gen": 0, "n_depth": 0, "test_time": "2026-09-24T19:58:04Z", "avg_ns": 33685932856, "stddev_ns": 17301206, "avg_ts": 1.899903, "stddev_ts": 0.000975, "samples_ns": [ 33673357652, 33705661536, 33678779382 ],"samples_ts": [ 1.90061, 1.89879, 1.90031 ]}
+| qwen2 14B Q4_K - Medium        |   8.37 GiB |    14.77 B | RPC        |  20 |            tg16 |          0.70 ± 0.00 |
+{"build_commit": "b23701f", "build_number": 200, "cpu_info": "CPU", "gpu_info": "192.168.10.12:50052", "backends": "RPC", "model_filename": "/home/pi5/models/qwen2.5-14b-instruct-q4_k_m-00001-of-00003.gguf", "model_type": "qwen2 14B Q4_K - Medium", "model_size": 8982142976, "model_n_params": 14770033664, "n_batch": 2048, "n_ubatch": 512, "n_threads": 4, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "f16", "type_v": "f16", "n_gpu_layers": 20, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": -1, "devices": "auto", "tensor_split": "0.00", "tensor_buft_overrides": "none", "load_mode": "auto", "lazy_mode": "auto", "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "n_prompt": 0, "n_gen": 16, "n_depth": 0, "test_time": "2026-09-24T20:00:20Z", "avg_ns": 22848284981, "stddev_ns": 69965794, "avg_ts": 0.700276, "stddev_ts": 0.002141, "samples_ns": [ 22803223185, 22812744669, 22928887090 ],"samples_ts": [ 0.701655, 0.701362, 0.69781 ]}
+
+build: b23701f (200)
+EXIT_ngl20=0
+pi5 mem: Mem:            8062         605        4863          33        2830        7457
+pi4 mem: Mem:            7819         415        6780          29         739        7404
+after:  pi5 temp=47.2'C throttled=0x0 | pi4 temp=65.7'C throttled=0x0 
+
+##### ngl=6 of 48 layers on the remote worker, remainder on the Pi 5 CPU
+before: pi5 temp=48.3'C throttled=0x0 | pi4 temp=64.2'C throttled=0x0 
+| model                          |       size |     params | backend    | ngl |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | --------------: | -------------------: |
+| qwen2 14B Q4_K - Medium        |   8.37 GiB |    14.77 B | RPC        |   6 |            pp64 |          3.78 ± 0.00 |
+{"build_commit": "b23701f", "build_number": 200, "cpu_info": "CPU", "gpu_info": "192.168.10.12:50052", "backends": "RPC", "model_filename": "/home/pi5/models/qwen2.5-14b-instruct-q4_k_m-00001-of-00003.gguf", "model_type": "qwen2 14B Q4_K - Medium", "model_size": 8982142976, "model_n_params": 14770033664, "n_batch": 2048, "n_ubatch": 512, "n_threads": 4, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "f16", "type_v": "f16", "n_gpu_layers": 6, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": -1, "devices": "auto", "tensor_split": "0.00", "tensor_buft_overrides": "none", "load_mode": "auto", "lazy_mode": "auto", "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "n_prompt": 64, "n_gen": 0, "n_depth": 0, "test_time": "2026-09-24T20:05:42Z", "avg_ns": 16952826473, "stddev_ns": 15160120, "avg_ts": 3.775184, "stddev_ts": 0.003378, "samples_ns": [ 16961698497, 16961458656, 16935322267 ],"samples_ts": [ 3.77321, 3.77326, 3.77908 ]}
+| qwen2 14B Q4_K - Medium        |   8.37 GiB |    14.77 B | RPC        |   6 |            tg16 |          0.97 ± 0.00 |
+{"build_commit": "b23701f", "build_number": 200, "cpu_info": "CPU", "gpu_info": "192.168.10.12:50052", "backends": "RPC", "model_filename": "/home/pi5/models/qwen2.5-14b-instruct-q4_k_m-00001-of-00003.gguf", "model_type": "qwen2 14B Q4_K - Medium", "model_size": 8982142976, "model_n_params": 14770033664, "n_batch": 2048, "n_ubatch": 512, "n_threads": 4, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "f16", "type_v": "f16", "n_gpu_layers": 6, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": -1, "devices": "auto", "tensor_split": "0.00", "tensor_buft_overrides": "none", "load_mode": "auto", "lazy_mode": "auto", "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "n_prompt": 0, "n_gen": 16, "n_depth": 0, "test_time": "2026-09-24T20:06:51Z", "avg_ns": 16526813323, "stddev_ns": 22459809, "avg_ts": 0.968125, "stddev_ts": 0.001316, "samples_ns": [ 16544921085, 16501681251, 16533837634 ],"samples_ts": [ 0.967064, 0.969598, 0.967712 ]}
+
+build: b23701f (200)
+EXIT_ngl6=0
+pi5 mem: Mem:            8062         501        7017          33         681        7560
+pi4 mem: Mem:            7819         421        6774          29         740        7398
+after:  pi5 temp=55.4'C throttled=0x0 | pi4 temp=60.3'C throttled=0x0 
+
+##### ngl=30 of 48 layers on the remote worker, remainder on the Pi 5 CPU
+before: pi5 temp=55.4'C throttled=0x0 | pi4 temp=59.9'C throttled=0x0 
+| model                          |       size |     params | backend    | ngl |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | --------------: | -------------------: |
+| qwen2 14B Q4_K - Medium        |   8.37 GiB |    14.77 B | RPC        |  30 |            pp64 |          1.40 ± 0.00 |
+{"build_commit": "b23701f", "build_number": 200, "cpu_info": "CPU", "gpu_info": "192.168.10.12:50052", "backends": "RPC", "model_filename": "/home/pi5/models/qwen2.5-14b-instruct-q4_k_m-00001-of-00003.gguf", "model_type": "qwen2 14B Q4_K - Medium", "model_size": 8982142976, "model_n_params": 14770033664, "n_batch": 2048, "n_ubatch": 512, "n_threads": 4, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "f16", "type_v": "f16", "n_gpu_layers": 30, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": -1, "devices": "auto", "tensor_split": "0.00", "tensor_buft_overrides": "none", "load_mode": "auto", "lazy_mode": "auto", "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "n_prompt": 64, "n_gen": 0, "n_depth": 0, "test_time": "2026-09-24T20:12:20Z", "avg_ns": 45587924125, "stddev_ns": 39169935, "avg_ts": 1.403881, "stddev_ts": 0.001207, "samples_ns": [ 45542989265, 45605937748, 45614845364 ],"samples_ts": [ 1.40527, 1.40333, 1.40305 ]}
+| qwen2 14B Q4_K - Medium        |   8.37 GiB |    14.77 B | RPC        |  30 |            tg16 |          0.57 ± 0.00 |
+{"build_commit": "b23701f", "build_number": 200, "cpu_info": "CPU", "gpu_info": "192.168.10.12:50052", "backends": "RPC", "model_filename": "/home/pi5/models/qwen2.5-14b-instruct-q4_k_m-00001-of-00003.gguf", "model_type": "qwen2 14B Q4_K - Medium", "model_size": 8982142976, "model_n_params": 14770033664, "n_batch": 2048, "n_ubatch": 512, "n_threads": 4, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "f16", "type_v": "f16", "n_gpu_layers": 30, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": -1, "devices": "auto", "tensor_split": "0.00", "tensor_buft_overrides": "none", "load_mode": "auto", "lazy_mode": "auto", "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "n_prompt": 0, "n_gen": 16, "n_depth": 0, "test_time": "2026-09-24T20:15:22Z", "avg_ns": 28259838640, "stddev_ns": 101188085, "avg_ts": 0.566179, "stddev_ts": 0.002031, "samples_ns": [ 28330968348, 28304550780, 28143996794 ],"samples_ts": [ 0.564753, 0.56528, 0.568505 ]}
+
+build: b23701f (200)
+EXIT_ngl30=0
+pi5 mem: Mem:            8062         613        3288          33        4426        7449
+pi4 mem: Mem:            7819         462        6732          29         741        7357
+after:  pi5 temp=48.3'C throttled=0x0 | pi4 temp=70.1'C throttled=0x80000 
+
+##### ngl=12 of 48 layers on the remote worker, remainder on the Pi 5 CPU
+before: pi5 temp=48.3'C throttled=0x0 | pi4 temp=68.1'C throttled=0x80000 
+| model                          |       size |     params | backend    | ngl |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | --------------: | -------------------: |
+| qwen2 14B Q4_K - Medium        |   8.37 GiB |    14.77 B | RPC        |  12 |            pp64 |          2.64 ± 0.00 |
+{"build_commit": "b23701f", "build_number": 200, "cpu_info": "CPU", "gpu_info": "192.168.10.12:50052", "backends": "RPC", "model_filename": "/home/pi5/models/qwen2.5-14b-instruct-q4_k_m-00001-of-00003.gguf", "model_type": "qwen2 14B Q4_K - Medium", "model_size": 8982142976, "model_n_params": 14770033664, "n_batch": 2048, "n_ubatch": 512, "n_threads": 4, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "f16", "type_v": "f16", "n_gpu_layers": 12, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": -1, "devices": "auto", "tensor_split": "0.00", "tensor_buft_overrides": "none", "load_mode": "auto", "lazy_mode": "auto", "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "n_prompt": 64, "n_gen": 0, "n_depth": 0, "test_time": "2026-09-24T20:20:58Z", "avg_ns": 24202185997, "stddev_ns": 15119054, "avg_ts": 2.644390, "stddev_ts": 0.001652, "samples_ns": [ 24218675529, 24198904406, 24188978057 ],"samples_ts": [ 2.64259, 2.64475, 2.64583 ]}
+| qwen2 14B Q4_K - Medium        |   8.37 GiB |    14.77 B | RPC        |  12 |            tg16 |          0.83 ± 0.00 |
+{"build_commit": "b23701f", "build_number": 200, "cpu_info": "CPU", "gpu_info": "192.168.10.12:50052", "backends": "RPC", "model_filename": "/home/pi5/models/qwen2.5-14b-instruct-q4_k_m-00001-of-00003.gguf", "model_type": "qwen2 14B Q4_K - Medium", "model_size": 8982142976, "model_n_params": 14770033664, "n_batch": 2048, "n_ubatch": 512, "n_threads": 4, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "f16", "type_v": "f16", "n_gpu_layers": 12, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": -1, "devices": "auto", "tensor_split": "0.00", "tensor_buft_overrides": "none", "load_mode": "auto", "lazy_mode": "auto", "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "n_prompt": 0, "n_gen": 16, "n_depth": 0, "test_time": "2026-09-24T20:22:35Z", "avg_ns": 19368103030, "stddev_ns": 7113120, "avg_ts": 0.826101, "stddev_ts": 0.000303, "samples_ns": [ 19368075032, 19375228747, 19361005312 ],"samples_ts": [ 0.826102, 0.825797, 0.826403 ]}
+
+build: b23701f (200)
+EXIT_ngl12=0
+pi5 mem: Mem:            8062         511        6016          33        1673        7551
+pi4 mem: Mem:            7819         433        6760          29         741        7385
+after:  pi5 temp=52.1'C throttled=0x0 | pi4 temp=64.7'C throttled=0x80000 
+
+##### ngl=36 of 48 layers on the remote worker, remainder on the Pi 5 CPU
+before: pi5 temp=52.7'C throttled=0x0 | pi4 temp=64.2'C throttled=0x80000 
+| model                          |       size |     params | backend    | ngl |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | --------------: | -------------------: |
+| qwen2 14B Q4_K - Medium        |   8.37 GiB |    14.77 B | RPC        |  36 |            pp64 |          1.20 ± 0.01 |
+{"build_commit": "b23701f", "build_number": 200, "cpu_info": "CPU", "gpu_info": "192.168.10.12:50052", "backends": "RPC", "model_filename": "/home/pi5/models/qwen2.5-14b-instruct-q4_k_m-00001-of-00003.gguf", "model_type": "qwen2 14B Q4_K - Medium", "model_size": 8982142976, "model_n_params": 14770033664, "n_batch": 2048, "n_ubatch": 512, "n_threads": 4, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "f16", "type_v": "f16", "n_gpu_layers": 36, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": -1, "devices": "auto", "tensor_split": "0.00", "tensor_buft_overrides": "none", "load_mode": "auto", "lazy_mode": "auto", "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "n_prompt": 64, "n_gen": 0, "n_depth": 0, "test_time": "2026-09-24T20:28:32Z", "avg_ns": 53417552224, "stddev_ns": 335684323, "avg_ts": 1.198140, "stddev_ts": 0.007511, "samples_ns": [ 53138028308, 53324755164, 53789873201 ],"samples_ts": [ 1.20441, 1.20019, 1.18982 ]}
+| qwen2 14B Q4_K - Medium        |   8.37 GiB |    14.77 B | RPC        |  36 |            tg16 |          0.51 ± 0.00 |
+{"build_commit": "b23701f", "build_number": 200, "cpu_info": "CPU", "gpu_info": "192.168.10.12:50052", "backends": "RPC", "model_filename": "/home/pi5/models/qwen2.5-14b-instruct-q4_k_m-00001-of-00003.gguf", "model_type": "qwen2 14B Q4_K - Medium", "model_size": 8982142976, "model_n_params": 14770033664, "n_batch": 2048, "n_ubatch": 512, "n_threads": 4, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "f16", "type_v": "f16", "n_gpu_layers": 36, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": -1, "devices": "auto", "tensor_split": "0.00", "tensor_buft_overrides": "none", "load_mode": "auto", "lazy_mode": "auto", "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "n_prompt": 0, "n_gen": 16, "n_depth": 0, "test_time": "2026-09-24T20:32:05Z", "avg_ns": 31106753861, "stddev_ns": 5387879, "avg_ts": 0.514358, "stddev_ts": 0.000089, "samples_ns": [ 31103945925, 31103353169, 31112962490 ],"samples_ts": [ 0.514404, 0.514414, 0.514255 ]}
+
+build: b23701f (200)
+EXIT_ngl36=0
+pi5 mem: Mem:            8062         628        2327          33        5339        7433
+pi4 mem: Mem:            7819         436        6755          29         744        7382
+after:  pi5 temp=47.7'C throttled=0x0 | pi4 temp=71.5'C throttled=0x80000 
+
+##### ngl=8 of 48 layers on the remote worker, remainder on the Pi 5 CPU
+before: pi5 temp=48.8'C throttled=0x0 | pi4 temp=71.1'C throttled=0x80000 
+| model                          |       size |     params | backend    | ngl |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | --------------: | -------------------: |
+| qwen2 14B Q4_K - Medium        |   8.37 GiB |    14.77 B | RPC        |   8 |            pp64 |          3.26 ± 0.00 |
+{"build_commit": "b23701f", "build_number": 200, "cpu_info": "CPU", "gpu_info": "192.168.10.12:50052", "backends": "RPC", "model_filename": "/home/pi5/models/qwen2.5-14b-instruct-q4_k_m-00001-of-00003.gguf", "model_type": "qwen2 14B Q4_K - Medium", "model_size": 8982142976, "model_n_params": 14770033664, "n_batch": 2048, "n_ubatch": 512, "n_threads": 4, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "f16", "type_v": "f16", "n_gpu_layers": 8, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": -1, "devices": "auto", "tensor_split": "0.00", "tensor_buft_overrides": "none", "load_mode": "auto", "lazy_mode": "auto", "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "n_prompt": 64, "n_gen": 0, "n_depth": 0, "test_time": "2026-09-24T20:37:32Z", "avg_ns": 19642845427, "stddev_ns": 20571689, "avg_ts": 3.258186, "stddev_ts": 0.003414, "samples_ns": [ 19659480878, 19649212412, 19619842991 ],"samples_ts": [ 3.25543, 3.25713, 3.262 ]}
+| qwen2 14B Q4_K - Medium        |   8.37 GiB |    14.77 B | RPC        |   8 |            tg16 |          0.90 ± 0.00 |
+{"build_commit": "b23701f", "build_number": 200, "cpu_info": "CPU", "gpu_info": "192.168.10.12:50052", "backends": "RPC", "model_filename": "/home/pi5/models/qwen2.5-14b-instruct-q4_k_m-00001-of-00003.gguf", "model_type": "qwen2 14B Q4_K - Medium", "model_size": 8982142976, "model_n_params": 14770033664, "n_batch": 2048, "n_ubatch": 512, "n_threads": 4, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "f16", "type_v": "f16", "n_gpu_layers": 8, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": -1, "devices": "auto", "tensor_split": "0.00", "tensor_buft_overrides": "none", "load_mode": "auto", "lazy_mode": "auto", "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "n_prompt": 0, "n_gen": 16, "n_depth": 0, "test_time": "2026-09-24T20:38:52Z", "avg_ns": 17760601611, "stddev_ns": 9185563, "avg_ts": 0.900871, "stddev_ts": 0.000466, "samples_ns": [ 17752593886, 17770627440, 17758583508 ],"samples_ts": [ 0.901277, 0.900362, 0.900973 ]}
+
+build: b23701f (200)
+EXIT_ngl8=0
+pi5 mem: Mem:            8062         534        6692          33        1005        7527
+pi4 mem: Mem:            7819         435        6755          29         744        7383
+after:  pi5 temp=53.8'C throttled=0x0 | pi4 temp=63.7'C throttled=0x80000 
+
+##### ngl=24 of 48 layers on the remote worker, remainder on the Pi 5 CPU
+before: pi5 temp=53.2'C throttled=0x0 | pi4 temp=63.7'C throttled=0x80000 
+| model                          |       size |     params | backend    | ngl |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | --------------: | -------------------: |
+| qwen2 14B Q4_K - Medium        |   8.37 GiB |    14.77 B | RPC        |  24 |            pp64 |          1.66 ± 0.00 |
+{"build_commit": "b23701f", "build_number": 200, "cpu_info": "CPU", "gpu_info": "192.168.10.12:50052", "backends": "RPC", "model_filename": "/home/pi5/models/qwen2.5-14b-instruct-q4_k_m-00001-of-00003.gguf", "model_type": "qwen2 14B Q4_K - Medium", "model_size": 8982142976, "model_n_params": 14770033664, "n_batch": 2048, "n_ubatch": 512, "n_threads": 4, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "f16", "type_v": "f16", "n_gpu_layers": 24, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": -1, "devices": "auto", "tensor_split": "0.00", "tensor_buft_overrides": "none", "load_mode": "auto", "lazy_mode": "auto", "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "n_prompt": 64, "n_gen": 0, "n_depth": 0, "test_time": "2026-09-24T20:44:19Z", "avg_ns": 38443564959, "stddev_ns": 81180216, "avg_ts": 1.664783, "stddev_ts": 0.003511, "samples_ns": [ 38389151316, 38404669166, 38536874396 ],"samples_ts": [ 1.66714, 1.66646, 1.66075 ]}
+| qwen2 14B Q4_K - Medium        |   8.37 GiB |    14.77 B | RPC        |  24 |            tg16 |          0.63 ± 0.00 |
+{"build_commit": "b23701f", "build_number": 200, "cpu_info": "CPU", "gpu_info": "192.168.10.12:50052", "backends": "RPC", "model_filename": "/home/pi5/models/qwen2.5-14b-instruct-q4_k_m-00001-of-00003.gguf", "model_type": "qwen2 14B Q4_K - Medium", "model_size": 8982142976, "model_n_params": 14770033664, "n_batch": 2048, "n_ubatch": 512, "n_threads": 4, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "f16", "type_v": "f16", "n_gpu_layers": 24, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": -1, "devices": "auto", "tensor_split": "0.00", "tensor_buft_overrides": "none", "load_mode": "auto", "lazy_mode": "auto", "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "n_prompt": 0, "n_gen": 16, "n_depth": 0, "test_time": "2026-09-24T20:46:53Z", "avg_ns": 25493470779, "stddev_ns": 59803882, "avg_ts": 0.627614, "stddev_ts": 0.001474, "samples_ns": [ 25540379305, 25513904977, 25426128055 ],"samples_ts": [ 0.626459, 0.627109, 0.629274 ]}
+
+build: b23701f (200)
+EXIT_ngl24=0
+pi5 mem: Mem:            8062         602        4216          33        3476        7459
+pi4 mem: Mem:            7819         454        6736          29         744        7365
+after:  pi5 temp=48.8'C throttled=0x0 | pi4 temp=69.1'C throttled=0x80000 
+
+##### ngl=16 of 48 layers on the remote worker, remainder on the Pi 5 CPU
+before: pi5 temp=48.8'C throttled=0x0 | pi4 temp=68.1'C throttled=0x80000 
+| model                          |       size |     params | backend    | ngl |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | --------------: | -------------------: |
+| qwen2 14B Q4_K - Medium        |   8.37 GiB |    14.77 B | RPC        |  16 |            pp64 |          2.21 ± 0.00 |
+{"build_commit": "b23701f", "build_number": 200, "cpu_info": "CPU", "gpu_info": "192.168.10.12:50052", "backends": "RPC", "model_filename": "/home/pi5/models/qwen2.5-14b-instruct-q4_k_m-00001-of-00003.gguf", "model_type": "qwen2 14B Q4_K - Medium", "model_size": 8982142976, "model_n_params": 14770033664, "n_batch": 2048, "n_ubatch": 512, "n_threads": 4, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "f16", "type_v": "f16", "n_gpu_layers": 16, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": -1, "devices": "auto", "tensor_split": "0.00", "tensor_buft_overrides": "none", "load_mode": "auto", "lazy_mode": "auto", "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "n_prompt": 64, "n_gen": 0, "n_depth": 0, "test_time": "2026-09-24T20:52:19Z", "avg_ns": 28996122431, "stddev_ns": 16389973, "avg_ts": 2.207192, "stddev_ts": 0.001247, "samples_ns": [ 29014611970, 28983379956, 28990375367 ],"samples_ts": [ 2.20579, 2.20816, 2.20763 ]}
+| qwen2 14B Q4_K - Medium        |   8.37 GiB |    14.77 B | RPC        |  16 |            tg16 |          0.75 ± 0.01 |
+{"build_commit": "b23701f", "build_number": 200, "cpu_info": "CPU", "gpu_info": "192.168.10.12:50052", "backends": "RPC", "model_filename": "/home/pi5/models/qwen2.5-14b-instruct-q4_k_m-00001-of-00003.gguf", "model_type": "qwen2 14B Q4_K - Medium", "model_size": 8982142976, "model_n_params": 14770033664, "n_batch": 2048, "n_ubatch": 512, "n_threads": 4, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "f16", "type_v": "f16", "n_gpu_layers": 16, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": -1, "devices": "auto", "tensor_split": "0.00", "tensor_buft_overrides": "none", "load_mode": "auto", "lazy_mode": "auto", "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "n_prompt": 0, "n_gen": 16, "n_depth": 0, "test_time": "2026-09-24T20:54:15Z", "avg_ns": 21256999695, "stddev_ns": 185261030, "avg_ts": 0.752731, "stddev_ts": 0.006529, "samples_ns": [ 21469976198, 21167901282, 21133121605 ],"samples_ts": [ 0.745227, 0.755861, 0.757105 ]}
+
+build: b23701f (200)
+EXIT_ngl16=0
+pi5 mem: Mem:            8062         575        5492          33        2195        7486
+pi4 mem: Mem:            7819         447        6743          29         745        7372
+after:  pi5 temp=51.6'C throttled=0x0 | pi4 temp=67.6'C throttled=0x80000 
+
+########## done 2026-09-25T03:55:22+07:00
+OUTFILE=testbed/results/pool14b_20260925_025332.log
+--- stopping worker ---

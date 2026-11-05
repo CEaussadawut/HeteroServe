@@ -1,0 +1,59 @@
+{
+ "registered_at": "2026-10-24T17:06:16+07:00",
+ "script": "testbed/scripts/rpc5_char_20261024.py",
+ "out_prefix": "rpc5char",
+ "what": "the RPC messages' bytes per decoded token against the blocks a worker holds (TinyLlama Q4_0, the Pi 4 holding 6, 11 or 16 blocks) and in two- and three-worker rings, the head on the host, unshaped",
+ "model": "tinyllama_q4_0",
+ "probe_disclosed": {
+  "split": "R2",
+  "to_worker_B": {
+   "pi5": 19134,
+   "pi4": 10946
+  },
+  "back_B": 8200
+ },
+ "ctx": 2048,
+ "splits": {
+  "H6": "laptop:16,pi4:6",
+  "H11": "laptop:11,pi4:11",
+  "H16": "laptop:6,pi4:16",
+  "R2": "laptop:8,pi5:7,pi4:7",
+  "R3": "laptop:4,pi5:6,jetson:6,pi4:6"
+ },
+ "prompt": "The quick brown fox jumps over the lazy dog. Summarise this sentence in five words.",
+ "short": 16,
+ "long": 144,
+ "reps": 3,
+ "memfile": "testbed/dataset/memory_snapshot_20261024_170534.json",
+ "rpc4_h": {
+  "to_pi4": 19452,
+  "back": 8200
+ },
+ "conditions": "2026-10-24 evening, after so4: the laptop on its charger, battery full, Wi-Fi off; one Claude desktop app open (this session's); the links unshaped; bytes are counted, so the laptop's load does not enter a reported figure.",
+ "hypotheses": {
+  "R5-REPEAT": {
+   "tol": 0.005,
+   "claim": "H11 reproduces rpc4's H and R2 the probe, each within 0.5 %"
+  },
+  "R5-MODEL": {
+   "tol": 0.02,
+   "claim": "every blind figure (H6, H16, R3's three workers) within 2 % of the model"
+  },
+  "R5-SLOPE": {
+   "lo": 40,
+   "hi": 120,
+   "claim": "(H16 - H6) / 10 between 40 and 120 B per block (the model: 79)"
+  },
+  "R5-BACK": {
+   "tol": 0.005,
+   "claim": "every worker returns 8,200 B a token within 0.5 %, in every split"
+  }
+ },
+ "inputs_sha256": {
+  "testbed/scripts/rpc5_char_20261024.py": "0670c43d79127d5db7db259d89670767d91aa261711e510a20119efa4f655c79",
+  "testbed/scripts/serve_pool.sh": "9f315d70ab3404e9d73b9901508b7f53e96da590fc2527f5d62061ecae37a07f",
+  "testbed/scripts/serve_defaults.sh": "4fdedec2da1479d577117606f3d810e313ef4483a71be6c9787895133a66a095",
+  "ThinkPad/config/cluster.json": "1f0a3529dd384647ab71a0a08e2c142226ccf2b80aa5160ffc91e5e2e9485943",
+  "testbed/dataset/memory_snapshot_20261024_170534.json": "f376943f39fc298887312e0ee0b9f17416ac6b1afdc1b84484ad2b1ef551624f"
+ }
+}

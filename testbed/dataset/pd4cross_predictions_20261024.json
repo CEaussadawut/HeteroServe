@@ -1,0 +1,88 @@
+{
+ "name": "pd4cross",
+ "registered_at": "2026-10-24T18:52:48+07:00",
+ "script": "testbed/scripts/register_pd4_20261024.py",
+ "runner": "testbed/scripts/pd4_cross_20261024.py",
+ "what": "where the prefill/decode hand-off stops paying as its state transfer slows: the hand-off at 43 and 11 Mbit/s (the Pi 5 -> Pi 4 transfer shaped on the Pi 4) against the Pi 5 alone without repacking, two users, Qwen3.5-9B",
+ "base": {
+  "score": "testbed/results/pd_pd4cross_20261024_183506_score.json",
+  "score_sha256": "4c9326738e52e21aa13b26022c35ee4e85646ba18e54f5b15373a6f5e5846f50",
+  "handoff_mean_done_s": 53.875,
+  "shared_nr_mean_done_s": 64.677,
+  "shared_mean_done_s": 59.441,
+  "t0_s": 0.509,
+  "state_bytes": 56889668
+ },
+ "model": {
+  "b_star_mbit": 21.52,
+  "b_star_vs_repacked_mbit": 40.88,
+  "frame_factor": 1.04558,
+  "r_hi": 43,
+  "r_lo": 11,
+  "transfer_s": {
+   "handoff@43": 11.067,
+   "handoff@11": 43.26
+  }
+ },
+ "n": 128,
+ "gen": 32,
+ "reps": 3,
+ "arms_order": [
+  "shared_nr",
+  "handoff",
+  "handoff@43",
+  "handoff@11"
+ ],
+ "conditions": "2026-10-24 evening: the replacement Pi 5 and the Pi 4 serve; the laptop only orchestrates and timestamps (it computes nothing); the overlay links unshaped except the arm's own transfer port; the strip logs all four outlets (observation only).",
+ "hypotheses": {
+  "PD4X-ABOVE": {
+   "type": "lower",
+   "a": "handoff@43",
+   "b": "shared_nr",
+   "claim": "at 43 Mbit/s the hand-off finishes sooner than shared_nr (predicted 59.2 against 64.7 s)"
+  },
+  "PD4X-BELOW": {
+   "type": "higher",
+   "a": "handoff@11",
+   "b": "shared_nr",
+   "claim": "at 11 Mbit/s it finishes later (predicted 75.3 against 64.7 s)"
+  },
+  "PD4X-ACC": {
+   "type": "acc",
+   "tol": 0.05,
+   "predicted": {
+    "handoff@43": 59.154,
+    "handoff@11": 75.251
+   },
+   "claim": "each shaped hand-off's mean completion within 5 % of the model"
+  },
+  "PD4X-XFER": {
+   "type": "xfer",
+   "tol": 0.1,
+   "predicted_s": {
+    "handoff@43": 11.067,
+    "handoff@11": 43.26
+   },
+   "claim": "each shaped transfer within 10 % of S x 8 x 1514/1448 / R"
+  },
+  "PD4X-SHAPED": {
+   "type": "shaped",
+   "min_pkts": 1000,
+   "claim": "every shaped arm-run's netem counted >= 1,000 packets each way"
+  },
+  "PD4X-STEADY": {
+   "type": "steady",
+   "tol": 0.03,
+   "claim": "each arm's three arm-runs within 3 %"
+  }
+ },
+ "inputs_sha256": {
+  "testbed/scripts/pd4_cross_20261024.py": "199d908524a1761a6d6670fb3bd333f78f98b1c1f41e2454807d9384c5b932e1",
+  "testbed/scripts/pd_twouser.py": "c5917952b45b37e9fa0efa610e93c78bf13f9f9913c34dbc68b3e9ba339ee22e",
+  "testbed/scripts/pd_handoff.py": "8eb365ac261ac0238fd19922f38ded8040c36c8212928e267dde2eb5ef3450a2",
+  "testbed/scripts/netshape.sh": "1b7ac69b554c6aa25cf03e8c9c09f8f9abe247326a1e95f1c4fae4839ab48332",
+  "testbed/scripts/shelly_strip.py": "b7aaa7ceb2f1e94aa3f1f46100c06ca9d6c0c3fa8764a6372239747ffc0fe5a8",
+  "testbed/scripts/register_pd4_20261024.py": "e115607e31d09f5b1d6fae913385ffa3f4f81f5055d78a15c86dc1e17c796810",
+  "testbed/results/pd_pd4cross_20261024_183506_score.json": "4c9326738e52e21aa13b26022c35ee4e85646ba18e54f5b15373a6f5e5846f50"
+ }
+}

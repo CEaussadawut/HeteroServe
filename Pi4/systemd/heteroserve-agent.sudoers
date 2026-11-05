@@ -1,0 +1,11 @@
+# Install to /etc/sudoers.d/heteroserve  (mode 0440, validate with: sudo visudo -c)
+# Lets the unprivileged node agent control ONLY the rpc-server unit -- nothing else.
+# Both paths are listed because systemctl is /bin/systemctl on Raspberry Pi OS and
+# /usr/bin/systemctl on some images; sudo matches on the literal path.
+Cmnd_Alias HS_RPC = /bin/systemctl start heteroserve-rpc, \
+                    /bin/systemctl stop heteroserve-rpc, \
+                    /bin/systemctl restart heteroserve-rpc, \
+                    /usr/bin/systemctl start heteroserve-rpc, \
+                    /usr/bin/systemctl stop heteroserve-rpc, \
+                    /usr/bin/systemctl restart heteroserve-rpc
+pi ALL=(root) NOPASSWD: HS_RPC

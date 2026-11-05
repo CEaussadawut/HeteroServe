@@ -1,0 +1,3444 @@
+--- a/CMakeLists.txt	2026-09-19 12:32:52.000000000 +0700
++++ b/CMakeLists.txt	2026-09-25 10:58:41.654997469 +0700
+@@ -2,6 +2,11 @@
+ project("llama.cpp" C CXX)
+ include(CheckIncludeFileCXX)
+ 
++set(CMAKE_CXX_STANDARD 17)
++set(CMAKE_CXX_STANDARD_REQUIRED ON)
++link_libraries(stdc++fs)
++set(CMAKE_CXX_FLAGS "-O3 -std=c++17 -lstdc++fs")
++
+ ### llama.cpp version
+ set(LLAMA_VERSION_MAJOR 0)
+ set(LLAMA_VERSION_MINOR 4)
+diff -ruN pin/ggml/CMakeLists.txt merged/ggml/CMakeLists.txt
+--- a/ggml/CMakeLists.txt	2026-09-19 12:32:52.000000000 +0700
++++ b/ggml/CMakeLists.txt	2026-09-25 10:58:41.657296616 +0700
+@@ -288,8 +288,9 @@
+ set(CMAKE_C_STANDARD 11)
+ set(CMAKE_C_STANDARD_REQUIRED true)
+ 
+-set(CMAKE_CXX_STANDARD 17)
++set(CMAKE_CXX_STANDARD 14)
+ set(CMAKE_CXX_STANDARD_REQUIRED true)
++set(CMAKE_CXX_FLAGS "-O3 -std=c++17")
+ 
+ set(THREADS_PREFER_PTHREAD_FLAG ON)
+ 
+diff -ruN pin/ggml/src/ggml-cuda/allreduce.cu merged/ggml/src/ggml-cuda/allreduce.cu
+--- a/ggml/src/ggml-cuda/allreduce.cu	2026-09-19 12:32:52.000000000 +0700
++++ b/ggml/src/ggml-cuda/allreduce.cu	2026-09-25 10:58:41.660359476 +0700
+@@ -390,7 +390,7 @@
+         ggml_cuda_ar_pipeline * p, ggml_backend_cuda_context * cuda_ctx, int rank, int slot) {
+     ggml_cuda_ar_event_slot & ev = p->ev_pool[rank][slot];
+     CUDA_CHECK(cudaEventRecord(ev.app, cuda_ctx->stream()));
+-    CUDA_CHECK(cudaStreamWaitEvent(p->streams[rank], ev.app));
++    CUDA_CHECK(cudaStreamWaitEvent(p->streams[rank], ev.app, 0));
+ }
+ 
+ // ---------------------------------------------------------------------------
+@@ -631,7 +631,7 @@
+         // No-op on the first AR -- no prior record exists.
+         if (p->host_large_read_done_valid) {
+             const int peer = 1 - i;
+-            CUDA_CHECK(cudaStreamWaitEvent(p->streams[i], p->host_large_read_done[peer]));
++            CUDA_CHECK(cudaStreamWaitEvent(p->streams[i], p->host_large_read_done[peer], 0));
+         }
+ 
+         if (!compute[i]) {
+@@ -665,7 +665,7 @@
+         // finish reading dev_tmp before our H2D overwrites it.  No-op on the
+         // first copy_impl call.
+         if (p->dev_tmp_kernel_done_valid) {
+-            CUDA_CHECK(cudaStreamWaitEvent(p->streams[i], p->dev_tmp_kernel_done[i]));
++            CUDA_CHECK(cudaStreamWaitEvent(p->streams[i], p->dev_tmp_kernel_done[i], 0));
+         }
+ 
+         for (size_t c = 0; c < copy_chunks; ++c) {
+@@ -673,7 +673,7 @@
+             const size_t this_bytes = (nbytes - offset) < chunk_bytes ?
+                 (nbytes - offset) : chunk_bytes;
+ 
+-            CUDA_CHECK(cudaStreamWaitEvent(p->streams[i], p->ev_pool[peer][slot].cpy[c]));
++            CUDA_CHECK(cudaStreamWaitEvent(p->streams[i], p->ev_pool[peer][slot].cpy[c], 0));
+             CUDA_CHECK(cudaMemcpyAsync(
+                 p->dev_tmp[i] + offset, p->host_large[peer].host + offset, this_bytes,
+                 cudaMemcpyHostToDevice, p->streams[i]));
+@@ -686,7 +686,7 @@
+         // Hand off from AR stream (copy engine) to compute stream: compute
+         // stream waits for all H2Ds to finish, then runs the add_kernel.
+         CUDA_CHECK(cudaEventRecord(p->ev_pool[i][slot].h2d, p->streams[i]));
+-        CUDA_CHECK(cudaStreamWaitEvent(cuda_ctx[i]->stream(), p->ev_pool[i][slot].h2d));
++        CUDA_CHECK(cudaStreamWaitEvent(cuda_ctx[i]->stream(), p->ev_pool[i][slot].h2d, 0));
+ 
+         const int block_size = 256;
+         int n_blocks = (int) ((ne + block_size - 1) / block_size);
+@@ -902,7 +902,9 @@
+             const size_t chunk_elems = remaining_elems < max_chunk_elems ? remaining_elems : max_chunk_elems;
+             const size_t chunk_dst_bytes  = chunk_elems * input_type_size;
+ 
+-            const auto [slot, token] = ggml_cuda_ar_acquire_slot(p);
++            const ggml_cuda_ar_slot_info slot_info = ggml_cuda_ar_acquire_slot(p);
++            const int slot  = slot_info.slot;
++            const int token = slot_info.token;
+             const bool last_chunk = chunk_start + (int64_t) chunk_elems == ne;
+ 
+             for (int i = 0; i < n; ++i) {
+diff -ruN pin/ggml/src/ggml-cuda/binbcast.cu merged/ggml/src/ggml-cuda/binbcast.cu
+--- a/ggml/src/ggml-cuda/binbcast.cu	2026-09-19 12:32:52.000000000 +0700
++++ b/ggml/src/ggml-cuda/binbcast.cu	2026-09-25 10:58:41.662864087 +0700
+@@ -83,8 +83,11 @@
+         const uint32_t i10 = fastmodulo(i0, ne10);
+ 
+         float result = src0_row ? (float) src0_row[size_t(i0)*s00] : 0.0f;
+-        if constexpr (sizeof...(src1_ptrs) > 0) {
+-            result = (..., (result = bin_op(result, (float)src1s[i_src1 + size_t(i10)*s10])));
++        if (sizeof...(src1_ptrs) > 0) {
++            // C++14 replacement for a unary fold: expansion inside a braced-init list
++            // is evaluated left-to-right, chaining result through bin_op.
++            const float chain[] = { (result = bin_op(result, (float)src1s[i_src1 + size_t(i10)*s10]))..., 0.0f };
++            GGML_UNUSED(chain);
+         } else {
+             result = bin_op(result, (float)src1[i_src1 + size_t(i10)*s10]);
+         }
+@@ -155,8 +158,11 @@
+ 
+     ggml_cuda_pdl_sync();
+     float result = src0_row ? (float) src0_row[size_t(i0)*s00] : 0.0f;
+-    if constexpr (sizeof...(src1_ptrs) > 0) {
+-        result = (..., (result = bin_op(result, (float)src1s[i_src1 + size_t(i10)*s10])));
++    if (sizeof...(src1_ptrs) > 0) {
++        // C++14 replacement for a unary fold: expansion inside a braced-init list
++        // is evaluated left-to-right, chaining result through bin_op.
++        const float chain[] = { (result = bin_op(result, (float)src1s[i_src1 + size_t(i10)*s10]))..., 0.0f };
++        GGML_UNUSED(chain);
+     } else {
+         result = bin_op(result, (float)src1[i_src1 + size_t(i10)*s10]);
+     }
+diff -ruN pin/ggml/src/ggml-cuda/CMakeLists.txt merged/ggml/src/ggml-cuda/CMakeLists.txt
+--- a/ggml/src/ggml-cuda/CMakeLists.txt	2026-09-19 12:32:52.000000000 +0700
++++ b/ggml/src/ggml-cuda/CMakeLists.txt	2026-09-25 11:17:08.379123458 +0700
+@@ -27,32 +27,38 @@
+         if (GGML_NATIVE AND CUDAToolkit_VERSION VERSION_GREATER_EQUAL "11.6" AND CMAKE_VERSION VERSION_GREATER_EQUAL "3.24")
+             set(CMAKE_CUDA_ARCHITECTURES "native")
+         else()
+-            if (CUDAToolkit_VERSION VERSION_LESS "13")
+-                list(APPEND CMAKE_CUDA_ARCHITECTURES 50-virtual 61-virtual 70-virtual)
++            if (CUDAToolkit_VERSION VERSION_LESS "11.0")
++                # CUDA 10.x: sm_75 (Turing) is the newest supported architecture.
++                # Compile real code for the architectures supported by CUDA 10.2 plus PTX for JIT forward compatibility.
++                list(APPEND CMAKE_CUDA_ARCHITECTURES 61-real 70-real 75-real 75-virtual)
++            else ()
++                if (CUDAToolkit_VERSION VERSION_LESS "13")
++                    list(APPEND CMAKE_CUDA_ARCHITECTURES 50-virtual 61-virtual 70-virtual)
++                endif ()
++
++                list(APPEND CMAKE_CUDA_ARCHITECTURES 75-virtual 80-virtual 86-real)
++
++                if (CUDAToolkit_VERSION VERSION_GREATER_EQUAL "11.8")
++                    list(APPEND CMAKE_CUDA_ARCHITECTURES 89-real 90-virtual)
++                endif()
++
++                if (CUDAToolkit_VERSION VERSION_GREATER_EQUAL "12.8")
++                    # The CUDA architecture 120f-virtual would in principle work for Blackwell support
++                    #     but the newly added "f" suffix conflicted with a preexising regex for validating CUDA architectures in CMake.
++                    # So either a recent CMake version or one with the backported fix is needed.
++                    # The following versions should work:
++                    #   - CMake >= v3.31.8 && CMake < v4.0.0
++                    #   - CMake >= v4.0.2
++                    # This is NOT documented in the CUDA release notes,
++                    #     check Modules/Internal/CMakeCUDAArchitecturesValidate.cmake in the CMake git repository instead.
++                    # However, the architectures 120a-real and 121a-real should work with basically any CMake version and
++                    #     until the release of e.g. Rubin there is no benefit to shipping virtual architectures for Blackwell.
++                    list(APPEND CMAKE_CUDA_ARCHITECTURES 120a-real)
++                endif()
++                if (CUDAToolkit_VERSION VERSION_GREATER_EQUAL "12.9")
++                    list(APPEND CMAKE_CUDA_ARCHITECTURES 121a-real)
++                endif()
+             endif ()
+-
+-            list(APPEND CMAKE_CUDA_ARCHITECTURES 75-virtual 80-virtual 86-real)
+-
+-            if (CUDAToolkit_VERSION VERSION_GREATER_EQUAL "11.8")
+-                list(APPEND CMAKE_CUDA_ARCHITECTURES 89-real 90-virtual)
+-            endif()
+-
+-            if (CUDAToolkit_VERSION VERSION_GREATER_EQUAL "12.8")
+-                # The CUDA architecture 120f-virtual would in principle work for Blackwell support
+-                #     but the newly added "f" suffix conflicted with a preexising regex for validating CUDA architectures in CMake.
+-                # So either a recent CMake version or one with the backported fix is needed.
+-                # The following versions should work:
+-                #   - CMake >= v3.31.8 && CMake < v4.0.0
+-                #   - CMake >= v4.0.2
+-                # This is NOT documented in the CMake release notes,
+-                #     check Modules/Internal/CMakeCUDAArchitecturesValidate.cmake in the CMake git repository instead.
+-                # However, the architectures 120a-real and 121a-real should work with basically any CMake version and
+-                #     until the release of e.g. Rubin there is no benefit to shipping virtual architectures for Blackwell.
+-                list(APPEND CMAKE_CUDA_ARCHITECTURES 120a-real)
+-            endif()
+-            if (CUDAToolkit_VERSION VERSION_GREATER_EQUAL "12.9")
+-                list(APPEND CMAKE_CUDA_ARCHITECTURES 121a-real)
+-            endif()
+         endif()
+     endif()
+ 
+@@ -105,8 +111,14 @@
+     file(GLOB   GGML_SOURCES_CUDA "*.cu")
+     file(GLOB   SRCS "template-instances/fattn-tile*.cu")
+     list(APPEND GGML_SOURCES_CUDA ${SRCS})
+-    file(GLOB   SRCS "template-instances/fattn-mma*.cu")
+-    list(APPEND GGML_SOURCES_CUDA ${SRCS})
++    # JetPack 4.6 / CUDA 10.2 port: MMA FlashAttention needs tensor cores (Volta/Turing+) and is
++    # never selected on sm_53, so GGML_CUDA_NO_MMA_FA leaves it out instead of porting it.
++    if (NOT GGML_CUDA_NO_MMA_FA)
++        file(GLOB   SRCS "template-instances/fattn-mma*.cu")
++        list(APPEND GGML_SOURCES_CUDA ${SRCS})
++    else()
++        add_compile_definitions(GGML_CUDA_NO_MMA_FA)
++    endif()
+     file(GLOB   SRCS "template-instances/mmq*.cu")
+     list(APPEND GGML_SOURCES_CUDA ${SRCS})
+     file(GLOB   SRCS "template-instances/mmf*.cu")
+diff -ruN pin/ggml/src/ggml-cuda/common.cuh merged/ggml/src/ggml-cuda/common.cuh
+--- a/ggml/src/ggml-cuda/common.cuh	2026-09-19 12:32:52.000000000 +0700
++++ b/ggml/src/ggml-cuda/common.cuh	2026-09-25 10:58:41.667352053 +0700
+@@ -48,6 +48,9 @@
+ #define CUDART_HMASK  12000 // CUDA 12.0, min. ver. for half2 -> uint mask comparisons
+ 
+ #define GGML_CUDA_CC_PASCAL          600
++// Maxwell 2nd generation (e.g. Jetson TX1): first architecture with hardware half2 arithmetic.
++// sm_50/sm_52 only support fp16 storage/conversion, so hardware fp16 gates must use this, not GGML_CUDA_CC_PASCAL.
++#define GGML_CUDA_CC_MAXWELL2        530
+ #define GGML_CUDA_CC_DP4A            610 // minimum compute capability for __dp4a, an intrinsic for byte-wise dot products
+ #define GGML_CUDA_CC_VOLTA           700
+ #define GGML_CUDA_CC_TURING          750
+@@ -264,9 +267,9 @@
+ #define GGML_USE_VMM
+ #endif // (!defined(GGML_USE_HIP) && !defined(GGML_CUDA_NO_VMM)) || (defined(GGML_USE_HIP) && !defined(GGML_HIP_NO_VMM))
+ 
+-#if defined(GGML_USE_HIP) || defined(GGML_USE_MUSA) || __CUDA_ARCH__ >= GGML_CUDA_CC_PASCAL
++#if defined(GGML_USE_HIP) || defined(GGML_USE_MUSA) || __CUDA_ARCH__ >= GGML_CUDA_CC_MAXWELL2
+ #define FP16_AVAILABLE
+-#endif // defined(GGML_USE_HIP) || defined(GGML_USE_MUSA) || __CUDA_ARCH__ >= GGML_CUDA_CC_PASCAL
++#endif // defined(GGML_USE_HIP) || defined(GGML_USE_MUSA) || __CUDA_ARCH__ >= GGML_CUDA_CC_MAXWELL2
+ 
+ #if defined(FP16_AVAILABLE) && __CUDA_ARCH__ != 610
+ #define FAST_FP16_AVAILABLE
+@@ -306,7 +309,7 @@
+ #endif // !defined(GGML_CUDA_NO_FA) && !(defined(GGML_USE_MUSA) && __MUSA_ARCH__ < 220)
+ 
+ static bool fp16_available(const int cc) {
+-    return ggml_cuda_highest_compiled_arch(cc) >= GGML_CUDA_CC_PASCAL ||
++    return ggml_cuda_highest_compiled_arch(cc) >= GGML_CUDA_CC_MAXWELL2 ||
+         (GGML_CUDA_CC_IS_MTHREADS(cc) && cc >= GGML_CUDA_CC_PH1);
+ }
+ 
+@@ -318,7 +321,7 @@
+ 
+ // To be used for feature selection of external libraries, e.g. cuBLAS.
+ static bool fast_fp16_hardware_available(const int cc) {
+-    return (GGML_CUDA_CC_IS_NVIDIA(cc) && cc >= GGML_CUDA_CC_PASCAL && cc != 610) || GGML_CUDA_CC_IS_AMD(cc) ||
++    return (GGML_CUDA_CC_IS_NVIDIA(cc) && cc >= GGML_CUDA_CC_MAXWELL2 && cc != 610) || GGML_CUDA_CC_IS_AMD(cc) ||
+         (GGML_CUDA_CC_IS_MTHREADS(cc) && cc >= GGML_CUDA_CC_QY2);
+ }
+ 
+@@ -593,52 +596,58 @@
+ struct block_reduce_policy;
+ 
+ template <typename T, typename... Ts>
+-inline constexpr bool is_any = (std::is_same_v<T, Ts> || ...);
++struct is_any : std::false_type {};
++
++template <typename T, typename U, typename... Ts>
++struct is_any<T, U, Ts...> : std::integral_constant<bool, std::is_same<T, U>::value || is_any<T, Ts...>::value> {};
+ 
+ template<typename...>
+-inline constexpr bool ggml_cuda_dependent_false_v = false;
++struct ggml_cuda_dependent_false : std::false_type {};
++
++// Type-matched zero values for ternary expressions that must type-check for every
++// template instantiation (C++14 has no if constexpr to discard branches).
++static __device__ __forceinline__ float        ggml_cuda_zero(float)        { return 0.0f; }
++static __device__ __forceinline__ half2        ggml_cuda_zero(half2)        { return __half2half2(__float2half(0.0f)); }
++static __device__ __forceinline__ nv_bfloat162 ggml_cuda_zero(nv_bfloat162) { return __floats2bfloat162_rn(0.0f, 0.0f); }
++
++// Per-type block reduce helpers: overloaded on a value of the reduced type so that
++// every instantiation type-checks (C++14, no if constexpr).
++template<int width = WARP_SIZE>
++static __device__ __forceinline__ half2 warp_reduce_max(half2 x); // defined below
++
++static __device__ __forceinline__ float  ggml_cuda_block_reduce_sum(float val)  { return warp_reduce_sum(val); }
++static __device__ __forceinline__ float2 ggml_cuda_block_reduce_sum(float2 val) { return warp_reduce_sum(val); }
++static __device__ __forceinline__ half2  ggml_cuda_block_reduce_sum(half2 val)  { return warp_reduce_sum(val); }
++static __device__ __forceinline__ int    ggml_cuda_block_reduce_sum(int val)    { return warp_reduce_sum(val); }
++
++static __device__ __forceinline__ float  ggml_cuda_block_sum_sentinel(float)  { return 0.0f; }
++static __device__ __forceinline__ float2 ggml_cuda_block_sum_sentinel(float2) { return make_float2(0.0f, 0.0f); }
++static __device__ __forceinline__ half2  ggml_cuda_block_sum_sentinel(half2)   { return make_half2(0.0f, 0.0f); }
++static __device__ __forceinline__ int    ggml_cuda_block_sum_sentinel(int)     { return 0; }
++
++static __device__ __forceinline__ float ggml_cuda_block_reduce_max(float val)  { return warp_reduce_max(val); }
++static __device__ __forceinline__ half2 ggml_cuda_block_reduce_max(half2 val)  { return warp_reduce_max(val); }
++
++static __device__ __forceinline__ float ggml_cuda_block_max_sentinel(float) { return -INFINITY; }
++static __device__ __forceinline__ half2 ggml_cuda_block_max_sentinel(half2) { return make_half2(-INFINITY, -INFINITY); }
+ 
+ template <typename T> struct block_reduce_policy<block_reduce_method::SUM, T> {
+     static __device__ T reduce(T val) {
+-        if constexpr(is_any<T, float, float2, half2, int>) {
+-            return warp_reduce_sum(val);
+-        } else {
+-            static_assert(ggml_cuda_dependent_false_v<T>, "Unsupported type for block reduce sum");
+-        }
++        return ggml_cuda_block_reduce_sum(val);
+     }
+ 
+     static __device__ T sentinel() {
+-        if constexpr (std::is_same_v<T, float>) {
+-            return 0.0f;
+-        } else if constexpr (std::is_same_v<T, float2>) {
+-            return make_float2(0.0f, 0.0f);
+-        } else if constexpr (std::is_same_v<T, half2>) {
+-            return make_half2(0.0f, 0.0f);
+-        } else if constexpr (std::is_same_v<T, int>) {
+-            return 0;
+-        } else {
+-            static_assert(ggml_cuda_dependent_false_v<T>, "Unsupported type for block reduce sum");
+-        }
++        return ggml_cuda_block_sum_sentinel(T());
+     }
+ };
+ 
+ template <typename T> struct block_reduce_policy<block_reduce_method::MAX, T> {
+     static __device__ T reduce(T val) {
+-        if constexpr (is_any<T, float, half2>) {
+-            return warp_reduce_max(val);
+-        } else {
+-            static_assert(ggml_cuda_dependent_false_v<T>, "Unsupported type for block reduce max");
+-        }
++        return ggml_cuda_block_reduce_max(val);
+     }
+ 
+     static __device__ T sentinel() {
+-        if constexpr (std::is_same_v<T, float>) {
+-            return -INFINITY;
+-        } else if constexpr (std::is_same_v<T, half2>) {
+-            return make_half2(-INFINITY, -INFINITY);
+-        } else {
+-            static_assert(ggml_cuda_dependent_false_v<T>, "Unsupported type for block reduce max");
+-        }
++        return ggml_cuda_block_max_sentinel(T());
+     }
+ };
+ 
+@@ -694,9 +703,9 @@
+ #endif
+ }
+ 
+-template<int width = WARP_SIZE>
++template<int width>
+ static __device__ __forceinline__ half2 warp_reduce_max(half2 x) {
+-#if !defined(GGML_USE_HIP) && __CUDA_ARCH__ >= GGML_CUDA_CC_PASCAL || defined(GGML_USE_HIP)
++#if !defined(GGML_USE_HIP) && __CUDA_ARCH__ >= GGML_CUDA_CC_MAXWELL2 || defined(GGML_USE_HIP)
+ #pragma unroll
+    for (int offset = width/2; offset > 0; offset >>= 1) {
+        x = ggml_cuda_hmax2(x, __shfl_xor_sync(0xffffffff, x, offset, width));
+@@ -705,7 +714,7 @@
+ #else
+    GGML_UNUSED(x);
+    NO_DEVICE_CODE;
+-#endif // !defined(GGML_USE_HIP) && __CUDA_ARCH__ >= GGML_CUDA_CC_PASCAL || defined(GGML_USE_HIP)
++#endif // !defined(GGML_USE_HIP) && __CUDA_ARCH__ >= GGML_CUDA_CC_MAXWELL2 || defined(GGML_USE_HIP)
+ }
+ 
+ #if (defined(CUDART_VERSION) && CUDART_VERSION < CUDART_HMASK) || defined(GGML_USE_HIP) || \
+@@ -806,31 +815,29 @@
+ //     If dst and src point at different address spaces then they are guaranteed to not be aliased.
+ template <int nbytes, int alignment = 0>
+ static __device__ __forceinline__ void ggml_cuda_memcpy_1(void * __restrict__ dst, const void * __restrict__ src) {
+-    static_assert(
++        static_assert(
+         nbytes <= ggml_cuda_get_max_cpy_bytes() || alignment == 0,
+         "You are misusing the alignment parameter for ggml_cuda_memcpy_1. "
+         "The intent is for the parameter is only as a workaround if either one of the pointers is not properly aligned. "
+         "If you use it to do more bytes per copy than ggml_cuda_max_cpy_bytes() the reads and writes may not be coalesced. "
+         "Call ggml_cuda_memcpy_1 in a loop instead.");
+-    if constexpr (alignment != 0) {
+-        static_assert(nbytes % alignment == 0, "bad alignment");
+-    }
+     constexpr int nb_per_cpy = alignment == 0 ? nbytes : alignment;
++    static_assert(alignment == 0 || nbytes % alignment == 0, "bad alignment");
++    static_assert(nb_per_cpy == 1 || nb_per_cpy == 2 || nb_per_cpy == 4 || nb_per_cpy == 8 || nb_per_cpy == 16,
++                  "bad nbytes");
+ 
+ #pragma unroll
+     for (int i = 0; i < nbytes/nb_per_cpy; ++i) {
+-        if constexpr (nb_per_cpy == 1) {
++        if (nb_per_cpy == 1) {
+             ((char *) dst)[i] = ((const char *) src)[i];
+-        } else if constexpr (nb_per_cpy == 2) {
++        } else if (nb_per_cpy == 2) {
+             ((short *) dst)[i] = ((const short *) src)[i];
+-        } else if constexpr (nb_per_cpy == 4) {
++        } else if (nb_per_cpy == 4) {
+             ((int *) dst)[i] = ((const int *) src)[i];
+-        } else if constexpr (nb_per_cpy == 8) {
++        } else if (nb_per_cpy == 8) {
+             ((int2 *) dst)[i] = ((const int2 *) src)[i];
+-        } else if constexpr (nb_per_cpy == 16) {
+-            ((int4 *) dst)[i] = ((const int4 *) src)[i];
+         } else {
+-            static_assert(nbytes == 0 && nbytes == -1, "bad nbytes");
++            ((int4 *) dst)[i] = ((const int4 *) src)[i];
+         }
+     }
+ }
+@@ -1352,7 +1359,9 @@
+         const int64_t       join_start = (int64_t) join_t->data;
+         const int64_t       join_end   = join_start + ggml_nbytes(join_t);
+ 
+-        for (const auto & [tensor, stream] : stream_mapping) {
++        for (const auto & mapping : stream_mapping) {
++            const ggml_tensor * tensor = mapping.first;
++            const int           stream = mapping.second;
+             const ggml_tensor * t = tensor->view_src ? tensor->view_src : tensor;
+             const int64_t       t_start = (int64_t) t->data;
+             const int64_t       t_end   = t_start + ggml_nbytes(t);
+@@ -1373,7 +1382,9 @@
+ 
+         bool writes_overlap = false;
+         bool dependent_srcs = false;
+-        for (const auto & [tensor, stream] : stream_mapping) {
++        for (const auto & mapping : stream_mapping) {
++            const ggml_tensor * tensor = mapping.first;
++            const int           stream = mapping.second;
+             const ggml_tensor * t = tensor->view_src ? tensor->view_src : tensor;
+             const int64_t       t_start = (int64_t) t->data;
+             const int64_t       t_end   = t_start + ggml_nbytes(t);
+@@ -1497,8 +1508,8 @@
+     // Check if any CUDA graph is enabled for this context (used by kernels that need to know
+     // if graphs are in use without having access to the specific graph key)
+     bool any_cuda_graph_enabled() const {
+-        for (const auto & [key, graph] : cuda_graphs) {
+-            if (graph && graph->is_enabled()) {
++        for (const auto & entry : cuda_graphs) {
++            if (entry.second && entry.second->is_enabled()) {
+                 return true;
+             }
+         }
+@@ -1507,8 +1518,8 @@
+ 
+     // Check if any CUDA graph has an instance for this context
+     bool any_cuda_graph_has_instance() const {
+-        for (const auto & [key, graph] : cuda_graphs) {
+-            if (graph && graph->instance != nullptr) {
++        for (const auto & entry : cuda_graphs) {
++            if (entry.second && entry.second->instance != nullptr) {
+                 return true;
+             }
+         }
+diff -ruN pin/ggml/src/ggml-cuda/concat.cu merged/ggml/src/ggml-cuda/concat.cu
+--- a/ggml/src/ggml-cuda/concat.cu	2026-09-19 12:32:52.000000000 +0700
++++ b/ggml/src/ggml-cuda/concat.cu	2026-09-25 10:58:41.669230166 +0700
+@@ -19,7 +19,7 @@
+ 
+     ggml_cuda_pdl_sync();
+     for (int64_t i = (int64_t) blockIdx.x * blockDim.x + threadIdx.x; i < n; i += (int64_t) blockDim.x * gridDim.x) {
+-        if constexpr (dim == 0) {
++        if (dim == 0) {
+             const int64_t row = i / ne0;
+             const int64_t i0  = i - row * ne0;
+ 
+@@ -28,7 +28,7 @@
+             } else {
+                 dst[i] = y[row * (ne0 - ne00) + (i0 - ne00)];
+             }
+-        } else if constexpr (dim == 1) {
++        } else if (dim == 1) {
+             const int64_t dst_plane  = ne0 * ne1;
+             const int64_t src0_plane = ne0 * ne01;
+             const int64_t src1_plane = dst_plane - src0_plane;
+@@ -122,13 +122,13 @@
+         if (i0 < ne00 && i1 < ne01 && i2 < ne02 && i3 < ne03) {
+             x = (const T *)(src0 + i3*nb03 + i2*nb02 + i1*nb01 + i0*nb00);
+         } else {
+-            if constexpr (dim == 0) {
++            if (dim == 0) {
+                 x = (const T *)(src1 + i3*nb13 + i2*nb12 + i1*nb11 + (i0 - ne00)*nb10);
+-            } else if constexpr (dim == 1) {
++            } else if (dim == 1) {
+                 x = (const T *)(src1 + i3*nb13 + i2*nb12 + (i1 - ne01)*nb11 + i0*nb10);
+-            } else if constexpr (dim == 2) {
++            } else if (dim == 2) {
+                 x = (const T *)(src1 + i3*nb13 + (i2 - ne02)*nb12 + i1*nb11 + i0*nb10);
+-            } else if constexpr (dim == 3) {
++            } else if (dim == 3) {
+                 x = (const T *)(src1 + (i3 - ne03)*nb13 + i2*nb12 + i1*nb11 + i0*nb10);
+             }
+         }
+diff -ruN pin/ggml/src/ggml-cuda/convert.cu merged/ggml/src/ggml-cuda/convert.cu
+--- a/ggml/src/ggml-cuda/convert.cu	2026-09-19 12:32:52.000000000 +0700
++++ b/ggml/src/ggml-cuda/convert.cu	2026-09-25 10:58:41.671700665 +0700
+@@ -42,7 +42,7 @@
+ 
+ template <bool need_check>
+ static __global__ void dequantize_block_q8_0_f16(const void * __restrict__ vx, half * __restrict__ y, const int64_t k) {
+-#if __CUDA_ARCH__ >= GGML_CUDA_CC_PASCAL
++#if __CUDA_ARCH__ >= GGML_CUDA_CC_MAXWELL2
+     constexpr int nint = CUDA_Q8_0_NE_ALIGN/sizeof(int) + WARP_SIZE;
+ 
+     const int64_t   i0 = CUDA_Q8_0_NE_ALIGN*blockIdx.x;
+@@ -78,7 +78,7 @@
+ #else
+     GGML_UNUSED_VARS(vx, y, k);
+     NO_DEVICE_CODE;
+-#endif // __CUDA_ARCH__ >= GGML_CUDA_CC_PASCAL
++#endif // __CUDA_ARCH__ >= GGML_CUDA_CC_MAXWELL2
+ }
+ 
+ template<typename dst_t>
+diff -ruN pin/ggml/src/ggml-cuda/convert.cuh merged/ggml/src/ggml-cuda/convert.cuh
+--- a/ggml/src/ggml-cuda/convert.cuh	2026-09-19 12:32:52.000000000 +0700
++++ b/ggml/src/ggml-cuda/convert.cuh	2026-09-25 10:58:41.673750157 +0700
+@@ -31,36 +31,87 @@
+ to_fp16_nc_cuda_t ggml_get_to_fp16_nc_cuda(ggml_type type);
+ to_bf16_nc_cuda_t ggml_get_to_bf16_nc_cuda(ggml_type type);
+ 
+-template<typename dst_t, typename src_t>
+- __host__ __device__ inline dst_t ggml_cuda_cast(src_t x) {
+-    if constexpr (std::is_same_v<dst_t, src_t>) {
+-        return x;
+-    } else if constexpr(std::is_same_v<dst_t, nv_bfloat16>) {
+-        return __float2bfloat16(float(x));
+-    } else if constexpr(std::is_same_v<src_t, nv_bfloat16>) {
+-        return __bfloat162float(x);
+-    } else if constexpr(std::is_same_v<src_t, float2> && std::is_same_v<dst_t, half2>) {
+-        return __float22half2_rn(x);
+-    } else if constexpr(std::is_same_v<src_t, nv_bfloat162> && std::is_same_v<dst_t, float2>) {
+-#ifdef GGML_USE_HIP
++// C++14 replacement for the former if-constexpr type dispatch in ggml_cuda_cast:
++// each destination type gets a helper with overloaded one-step conversions.
++__host__ __device__ inline float ggml_cuda_cast_to_float(const float x) {
++    return x;
++}
++
++__host__ __device__ inline float ggml_cuda_cast_to_float(const half x) {
++    return __half2float(x);
++}
++
++__host__ __device__ inline float ggml_cuda_cast_to_float(const nv_bfloat16 x) {
++    return __bfloat162float(x);
++}
++
++template <typename dst_t>
++struct ggml_cuda_cast_helper {
++    // generic fallback: convert through fp32
++    template <typename src_t>
++    static __host__ __device__ inline dst_t cast(const src_t & x) {
++        return dst_t(ggml_cuda_cast_to_float(x));
++    }
++};
++
++template <>
++struct ggml_cuda_cast_helper<float> {
++    static __host__ __device__ inline float cast(const float x) { return x; }
++    static __host__ __device__ inline float cast(const half x) { return ggml_cuda_cast_to_float(x); }
++    static __host__ __device__ inline float cast(const nv_bfloat16 x) { return ggml_cuda_cast_to_float(x); }
++    // Only reached from branches whose runtime type condition is false; kept compilable for C++14.
++    static __host__ __device__ inline float cast(const half2 x) { return __low2float(x); }
++    static __host__ __device__ inline float cast(const nv_bfloat162 x) { return __low2float(x); }
++    template <typename src_t>
++    static __host__ __device__ inline float cast(const src_t & x) { return float(x); }
++};
++
++template <>
++struct ggml_cuda_cast_helper<half> {
++    static __host__ __device__ inline half cast(const half x) { return x; }
++    template <typename src_t>
++    static __host__ __device__ inline half cast(const src_t & x) { return __float2half(ggml_cuda_cast_to_float(x)); }
++};
++
++template <>
++struct ggml_cuda_cast_helper<nv_bfloat16> {
++    static __host__ __device__ inline nv_bfloat16 cast(const nv_bfloat16 x) { return x; }
++    template <typename src_t>
++    static __host__ __device__ inline nv_bfloat16 cast(const src_t & x) { return __float2bfloat16(ggml_cuda_cast_to_float(x)); }
++};
++
++template <>
++struct ggml_cuda_cast_helper<half2> {
++    static __host__ __device__ inline half2 cast(const half2 x) { return x; }
++    static __host__ __device__ inline half2 cast(const float2 x) { return __float22half2_rn(x); }
++    // scalar broadcast, also keeps branches that are dead at runtime compilable for C++14
++    static __host__ __device__ inline half2 cast(const float x) { return __floats2half2_rn(x, x); }
++};
++
++template <>
++struct ggml_cuda_cast_helper<nv_bfloat162> {
++    static __host__ __device__ inline nv_bfloat162 cast(const nv_bfloat162 x) { return x; }
++    static __host__ __device__ inline nv_bfloat162 cast(const float2 x) { return __floats2bfloat162_rn(x.x, x.y); }
++    static __host__ __device__ inline nv_bfloat162 cast(const float x) { return __floats2bfloat162_rn(x, x); }
++};
++
++template <>
++struct ggml_cuda_cast_helper<float2> {
++    static __host__ __device__ inline float2 cast(const float2 x) { return x; }
++    static __host__ __device__ inline float2 cast(const half2 x) { return __half22float2(x); }
++    static __host__ __device__ inline float2 cast(const nv_bfloat162 x) {
++#if defined(GGML_USE_HIP)
+         return make_float2(__bfloat162float(__low2bfloat16(x)), __bfloat162float(__high2bfloat16(x)));
+-#else
+-#if __CUDA_ARCH__ >= 800
++#elif defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800 && !defined(GGML_CUDA_FORCE_BF16_SHIM)
+         return __bfloat1622float2(x);
+ #else
+         return make_float2(__bfloat162float(x.x), __bfloat162float(x.y));
+-#endif // __CUDA_ARCH__ >= 800
+-#endif // GGML_USE_HIP
+-    } else if constexpr(std::is_same_v<src_t, float2> && std::is_same_v<dst_t, nv_bfloat162>) {
+-        // bypass compile error on cuda 12.0.1
+-#ifdef GGML_USE_HIP
+-        return __float22bfloat162_rn(x);
+-#else
+-        return {x.x, x.y};
+-#endif // GGML_USE_HIP
+-    } else if constexpr(std::is_same_v<dst_t, int32_t>) {
+-        return int32_t(x);
+-    } else {
+-        return float(x);
++#endif
+     }
++};
++
++template<typename dst_t, typename src_t>
++ __host__ __device__ inline dst_t ggml_cuda_cast(src_t x) {
++    return ggml_cuda_cast_helper<dst_t>::cast(x);
+ }
++
+diff -ruN pin/ggml/src/ggml-cuda/dsv4-hc.cu merged/ggml/src/ggml-cuda/dsv4-hc.cu
+--- a/ggml/src/ggml-cuda/dsv4-hc.cu	2026-09-19 12:32:52.000000000 +0700
++++ b/ggml/src/ggml-cuda/dsv4-hc.cu	2026-09-25 11:18:04.674613794 +0700
+@@ -134,7 +134,7 @@
+     for (int64_t ih = 0; ih < hc; ++ih) {
+         const float xv = x[i0*sx0 + ih*sx1 + it*sx2];
+         float wv;
+-        if constexpr (gated) {
++        if (gated) {
+             wv = 1.0f / (1.0f + expf(-weights[i0*sw0 + ih*sw1 + it*sw2]));
+         } else {
+             wv = weights[ih*sw0 + it*sw1];
+@@ -183,7 +183,7 @@
+     const int64_t it   = ir / (n_embd * hc);
+ 
+     float sum = x[i0*sx0 + it*sx1] * post[idst*sp0 + it*sp1];
+-    if constexpr (has_comb) {
++    if (has_comb) {
+         for (int64_t isrc = 0; isrc < hc; ++isrc) {
+             sum += residual[i0*sr0 + isrc*sr1 + it*sr2] * comb[idst*sc0 + isrc*sc1 + it*sc2];
+         }
+diff -ruN pin/ggml/src/ggml-cuda/fattn-common.cuh merged/ggml/src/ggml-cuda/fattn-common.cuh
+--- a/ggml/src/ggml-cuda/fattn-common.cuh	2026-09-19 12:32:52.000000000 +0700
++++ b/ggml/src/ggml-cuda/fattn-common.cuh	2026-09-25 10:58:41.676713260 +0700
+@@ -376,9 +376,9 @@
+ 
+ template <typename T, int ne>
+ static __device__ __forceinline__ void dequantize_V_f16(const void * __restrict__ vx, void * __restrict__ dst, const int64_t i0) {
+-    if constexpr (std::is_same_v<T, half>) {
++    if (std::is_same<T, half>::value) {
+         ggml_cuda_memcpy_1<ne*sizeof(half)>(dst, (const half *) vx + i0);
+-    } else if constexpr (std::is_same_v<T, float>) {
++    } else if (std::is_same<T, float>::value) {
+         static_assert(ne % 2 == 0, "bad ne");
+         __align__(16) half2 tmp[ne/2];
+         ggml_cuda_memcpy_1<ne*sizeof(half)>(tmp, (const half *) vx + i0);
+@@ -387,14 +387,12 @@
+         for (int l = 0; l < ne/2; ++l) {
+             dst_f2[l] = __half22float2(tmp[l]);
+         }
+-    } else {
+-        static_assert(std::is_same_v<T, void>, "unsupported type");
+-    }
++}
+ }
+ 
+ template <typename T, int ne>
+ static __device__ __forceinline__ void dequantize_V_bf16(const void * __restrict__ vx, void * __restrict__ dst, const int64_t i0) {
+-    static_assert(std::is_same_v<T, float>, "BF16 V dequantization only supports float output");
++    static_assert(std::is_same<T, float>::value, "BF16 V dequantization only supports float output");
+     static_assert(ne % 2 == 0, "bad ne");
+     __align__(16) nv_bfloat162 tmp[ne/2];
+     ggml_cuda_memcpy_1<ne*sizeof(nv_bfloat16)>(tmp, (const nv_bfloat16 *) vx + i0);
+@@ -423,7 +421,7 @@
+     const int8_t * q8 = (const int8_t *) &q;
+ 
+ #ifdef FP16_AVAILABLE
+-    if constexpr (std::is_same_v<T, half>) {
++    if (std::is_same<T, half>::value) {
+         const half2 d = __half2half2(x[ib].d);
+ 
+ #pragma unroll
+@@ -432,16 +430,14 @@
+         }
+     } else
+ #endif // FP16_AVAILABLE
+-    if constexpr (std::is_same_v<T, float>) {
++    if (std::is_same<T, float>::value) {
+         const float d = x[ib].d;
+ 
+ #pragma unroll
+         for (int l = 0; l < ne; ++l) {
+             ((float *) dst)[l] = d * q8[l];
+         }
+-    } else {
+-        static_assert(std::is_same_v<T, void>, "bad type");
+-    }
++}
+ }
+ 
+ template <typename T, int ne>
+@@ -461,7 +457,7 @@
+     const int8_t * q8 = (const int8_t *) &q;
+ 
+ #ifdef FP16_AVAILABLE
+-    if constexpr (std::is_same_v<T, half>) {
++    if (std::is_same<T, half>::value) {
+         const half2 dm = x[ib].dm;
+         const half2 d  = __half2half2( __low2half(dm));
+         const half2 m  = __half2half2(__high2half(dm));
+@@ -472,16 +468,14 @@
+         }
+     } else
+ #endif // FP16_AVAILABLE
+-    if constexpr (std::is_same_v<T, float>) {
++    if (std::is_same<T, float>::value) {
+         const float2 dm = __half22float2(x[ib].dm);
+ 
+ #pragma unroll
+         for (int l = 0; l < ne; ++l) {
+             ((float *) dst)[l] = dm.x * q8[l] + dm.y;
+         }
+-    } else {
+-        static_assert(std::is_same_v<T, void>, "bad type");
+-    }
++}
+ }
+ 
+ template <typename T, int ne>
+@@ -513,7 +507,7 @@
+     const int8_t * q8 = (const int8_t *) &q;
+ 
+ #ifdef FP16_AVAILABLE
+-    if constexpr (std::is_same_v<T, half>) {
++    if (std::is_same<T, half>::value) {
+         const half2 d = __half2half2(x[ib].d);
+ 
+ #pragma unroll
+@@ -522,16 +516,14 @@
+         }
+     } else
+ #endif // FP16_AVAILABLE
+-    if constexpr (std::is_same_v<T, float>) {
++    if (std::is_same<T, float>::value) {
+         const float d = x[ib].d;
+ 
+ #pragma unroll
+         for (int l = 0; l < ne; ++l) {
+             ((float *) dst)[l] = d * q8[l];
+         }
+-    } else {
+-        static_assert(std::is_same_v<T, void>, "bad type");
+-    }
++}
+ }
+ 
+ template <typename T, int ne>
+@@ -561,7 +553,7 @@
+     const int8_t * q8 = (const int8_t *) &q;
+ 
+ #ifdef FP16_AVAILABLE
+-    if constexpr (std::is_same_v<T, half>) {
++    if (std::is_same<T, half>::value) {
+         const half2 dm = x[ib].dm;
+         const half2 d  = __half2half2( __low2half(dm));
+         const half2 m  = __half2half2(__high2half(dm));
+@@ -572,16 +564,14 @@
+         }
+     } else
+ #endif // FP16_AVAILABLE
+-    if constexpr (std::is_same_v<T, float>) {
++    if (std::is_same<T, float>::value) {
+         const float2 dm = __half22float2(x[ib].dm);
+ 
+ #pragma unroll
+         for (int l = 0; l < ne; ++l) {
+             ((float *) dst)[l] = dm.x * q8[l] + dm.y;
+         }
+-    } else {
+-        static_assert(std::is_same_v<T, void>, "bad type");
+-    }
++}
+ }
+ 
+ template <typename T, int ne>
+@@ -596,7 +586,7 @@
+     ggml_cuda_memcpy_1<ne, 2>(qs, x[ib].qs + iqs);
+ 
+ #ifdef FP16_AVAILABLE
+-    if constexpr (std::is_same<T, half>::value) {
++    if (std::is_same<T, half>::value) {
+         const half2 d = __half2half2(x[ib].d);
+ 
+ #pragma unroll
+@@ -605,60 +595,109 @@
+         }
+     } else
+ #endif // FP16_AVAILABLE
+-    if constexpr (std::is_same<T, float>::value) {
++    if (std::is_same<T, float>::value) {
+         const float d = x[ib].d;
+ 
+ #pragma unroll
+         for (int l = 0; l < ne; ++l) {
+             ((float *) dst)[l] = d * qs[l];
+         }
+-    } else {
+-        static_assert(std::is_same_v<T, void>, "unsupported type");
+-    }
++}
+ }
+ 
++// C++14: value dispatch on the ggml_type template parameter is done via template
++// specializations so that only the selected branch is instantiated (if constexpr is not available).
++template <ggml_type type_K, int D, int nthreads>
++struct get_vec_dot_KQ_impl; // unsupported K types intentionally left undefined
++
++template <int D, int nthreads>
++struct get_vec_dot_KQ_impl<GGML_TYPE_F16, D, nthreads> {
++    static constexpr __device__ vec_dot_KQ_t get() { return vec_dot_fattn_vec_KQ_f16<D, nthreads>; }
++};
++
++template <int D, int nthreads>
++struct get_vec_dot_KQ_impl<GGML_TYPE_Q4_0, D, nthreads> {
++    static constexpr __device__ vec_dot_KQ_t get() { return vec_dot_fattn_vec_KQ_q4_0<D, nthreads>; }
++};
++
++template <int D, int nthreads>
++struct get_vec_dot_KQ_impl<GGML_TYPE_Q4_1, D, nthreads> {
++    static constexpr __device__ vec_dot_KQ_t get() { return vec_dot_fattn_vec_KQ_q4_1<D, nthreads>; }
++};
++
++template <int D, int nthreads>
++struct get_vec_dot_KQ_impl<GGML_TYPE_Q5_0, D, nthreads> {
++    static constexpr __device__ vec_dot_KQ_t get() { return vec_dot_fattn_vec_KQ_q5_0<D, nthreads>; }
++};
++
++template <int D, int nthreads>
++struct get_vec_dot_KQ_impl<GGML_TYPE_Q5_1, D, nthreads> {
++    static constexpr __device__ vec_dot_KQ_t get() { return vec_dot_fattn_vec_KQ_q5_1<D, nthreads>; }
++};
++
++template <int D, int nthreads>
++struct get_vec_dot_KQ_impl<GGML_TYPE_Q8_0, D, nthreads> {
++    static constexpr __device__ vec_dot_KQ_t get() { return vec_dot_fattn_vec_KQ_q8_0<D, nthreads>; }
++};
++
++template <int D, int nthreads>
++struct get_vec_dot_KQ_impl<GGML_TYPE_BF16, D, nthreads> {
++    static constexpr __device__ vec_dot_KQ_t get() { return vec_dot_fattn_vec_KQ_bf16<D, nthreads>; }
++};
++
+ template <ggml_type type_K, int D, int nthreads>
+ constexpr __device__ vec_dot_KQ_t get_vec_dot_KQ() {
+-    if constexpr (type_K == GGML_TYPE_F16) {
+-        return vec_dot_fattn_vec_KQ_f16<D, nthreads>;
+-    } else if constexpr (type_K == GGML_TYPE_Q4_0) {
+-        return vec_dot_fattn_vec_KQ_q4_0<D, nthreads>;
+-    } else if constexpr (type_K == GGML_TYPE_Q4_1) {
+-        return vec_dot_fattn_vec_KQ_q4_1<D, nthreads>;
+-    } else if constexpr (type_K == GGML_TYPE_Q5_0) {
+-        return vec_dot_fattn_vec_KQ_q5_0<D, nthreads>;
+-    } else if constexpr (type_K == GGML_TYPE_Q5_1) {
+-        return vec_dot_fattn_vec_KQ_q5_1<D, nthreads>;
+-    } else if constexpr (type_K == GGML_TYPE_Q8_0) {
+-        return vec_dot_fattn_vec_KQ_q8_0<D, nthreads>;
+-    } else if constexpr (type_K == GGML_TYPE_BF16) {
+-        return vec_dot_fattn_vec_KQ_bf16<D, nthreads>;
+-    } else {
+-        static_assert(type_K == -1, "bad type");
+-        return nullptr;
+-    }
++    return get_vec_dot_KQ_impl<type_K, D, nthreads>::get();
+ }
+ 
+ template <ggml_type type_V, typename T, int ne>
++struct get_dequantize_V_impl; // unsupported V types intentionally left undefined
++
++template <typename T, int ne>
++struct get_dequantize_V_impl<GGML_TYPE_F16, T, ne> {
++    static constexpr __device__ dequantize_V_t get() { return dequantize_V_f16<T, ne>; }
++};
++
++template <typename T, int ne>
++struct get_dequantize_V_impl<GGML_TYPE_Q4_0, T, ne> {
++    static constexpr __device__ dequantize_V_t get() { return dequantize_V_q4_0<T, ne>; }
++};
++
++template <typename T, int ne>
++struct get_dequantize_V_impl<GGML_TYPE_Q4_1, T, ne> {
++    static constexpr __device__ dequantize_V_t get() { return dequantize_V_q4_1<T, ne>; }
++};
++
++template <typename T, int ne>
++struct get_dequantize_V_impl<GGML_TYPE_Q5_0, T, ne> {
++    static constexpr __device__ dequantize_V_t get() { return dequantize_V_q5_0<T, ne>; }
++};
++
++template <typename T, int ne>
++struct get_dequantize_V_impl<GGML_TYPE_Q5_1, T, ne> {
++    static constexpr __device__ dequantize_V_t get() { return dequantize_V_q5_1<T, ne>; }
++};
++
++template <typename T, int ne>
++struct get_dequantize_V_impl<GGML_TYPE_Q8_0, T, ne> {
++    static constexpr __device__ dequantize_V_t get() { return dequantize_V_q8_0<T, ne>; }
++};
++
++template <typename T, int ne>
++struct get_dequantize_V_impl<GGML_TYPE_BF16, T, ne> {
++    static constexpr __device__ dequantize_V_t get() { return dequantize_V_bf16<float, ne>; }
++};
++
++// F32 needs no dequantization (handled directly by the dispatching callers),
++// this specialization only keeps the C++14 fallback branch of those callers compilable.
++template <typename T, int ne>
++struct get_dequantize_V_impl<GGML_TYPE_F32, T, ne> {
++    static constexpr __device__ dequantize_V_t get() { return nullptr; }
++};
++
++template <ggml_type type_V, typename T, int ne>
+ constexpr __device__ dequantize_V_t get_dequantize_V() {
+-    if constexpr (type_V == GGML_TYPE_F16) {
+-        return dequantize_V_f16<T, ne>;
+-    } else if constexpr (type_V == GGML_TYPE_Q4_0) {
+-        return dequantize_V_q4_0<T, ne>;
+-    } else if constexpr (type_V == GGML_TYPE_Q4_1) {
+-        return dequantize_V_q4_1<T, ne>;
+-    } else if constexpr (type_V == GGML_TYPE_Q5_0) {
+-        return dequantize_V_q5_0<T, ne>;
+-    } else if constexpr (type_V == GGML_TYPE_Q5_1) {
+-        return dequantize_V_q5_1<T, ne>;
+-    } else if constexpr (type_V == GGML_TYPE_Q8_0) {
+-        return dequantize_V_q8_0<T, ne>;
+-    } else if constexpr (type_V == GGML_TYPE_BF16) {
+-        return dequantize_V_bf16<float, ne>;
+-    } else {
+-        static_assert(type_V == -1, "bad type");
+-        return nullptr;
+-    }
++    return get_dequantize_V_impl<type_V, T, ne>::get();
+ }
+ 
+ template <int ncols1>
+@@ -945,7 +984,7 @@
+     dst       += j_dst_unrolled *                 D;
+ 
+     const int tid = threadIdx.x;
+-    __builtin_assume(tid < D);
++    GGML_CUDA_ASSUME(tid < D);
+ 
+     extern __shared__ float2 meta[];
+     ggml_cuda_pdl_sync();
+diff -ruN pin/ggml/src/ggml-cuda/fattn.cu merged/ggml/src/ggml-cuda/fattn.cu
+--- a/ggml/src/ggml-cuda/fattn.cu	2026-09-19 12:32:52.000000000 +0700
++++ b/ggml/src/ggml-cuda/fattn.cu	2026-09-25 11:16:35.241021239 +0700
+@@ -1,6 +1,8 @@
+ #include "common.cuh"
+ #include "fattn-common.cuh"
++#ifndef GGML_CUDA_NO_MMA_FA  // JetPack 4.6 / CUDA 10.2 port: MMA FA needs tensor cores, never selected on sm_53
+ #include "fattn-mma-f16.cuh"
++#endif
+ #include "fattn-tile.cuh"
+ #include "fattn-vec.cuh"
+ #include "fattn.cuh"
+@@ -106,6 +108,7 @@
+ #endif // !defined(GGML_USE_HIP) && !defined(GGML_USE_MUSA)
+ }
+ 
++#ifndef GGML_CUDA_NO_MMA_FA
+ bool ggml_cuda_flash_attn_ext_mma_f16_shall_use_sparse(ggml_backend_cuda_context & ctx, ggml_tensor * dst) {
+ #if defined(GGML_USE_HIP) || defined(GGML_USE_MUSA)
+     GGML_UNUSED_VARS(ctx, dst);
+@@ -150,7 +153,7 @@
+         }
+     }
+ 
+-    if constexpr (ncols2 <= 16) {
++    if (ncols2 <= 16) {
+         if (Q->ne[1] <= 16/ncols2) {
+             ggml_cuda_flash_attn_ext_mma_f16_case<DKQ, DV, 16/ncols2, ncols2>(ctx, dst);
+             return;
+@@ -208,7 +211,7 @@
+             return;
+         }
+ 
+-        if constexpr (DKQ <= 256) {
++        if (DKQ <= 256) {
+             if (use_gqa_opt && gqa_ratio % 2 == 0) {
+                 ggml_cuda_flash_attn_ext_mma_f16_switch_ncols1<DKQ, DV, 2>(ctx, dst);
+                 return;
+@@ -254,7 +257,7 @@
+         return;
+     }
+ 
+-    if constexpr (DKQ <= 256) {
++    if (DKQ <= 256) {
+         ggml_cuda_flash_attn_ext_mma_f16_switch_ncols1<DKQ, DV, 1>(ctx, dst);
+     } else {
+         GGML_ABORT("fatal error");
+@@ -391,13 +394,15 @@
+             break;
+     }
+ }
++#endif // GGML_CUDA_NO_MMA_FA
+ 
+ #define FATTN_VEC_CASE(D, type_K_case, type_V_case)                                                                                \
+-    if constexpr (GGML_CUDA_FA_##type_K_case##_##type_V_case) {                                                                    \
++    if (GGML_CUDA_FA_##type_K_case##_##type_V_case) {                                                                              \
+         const bool type_K_okay = type_K == GGML_TYPE_##type_K_case || (type_K == GGML_TYPE_F32 && GGML_TYPE_##type_K_case == GGML_TYPE_F16); \
+         const bool type_V_okay = type_V == GGML_TYPE_##type_V_case || (type_V == GGML_TYPE_F32 && GGML_TYPE_##type_V_case == GGML_TYPE_F16); \
+         if (head_size == (D) && type_K_okay && type_V_okay) {                                                                      \
+-            return ggml_cuda_flash_attn_ext_vec_case<D, GGML_TYPE_##type_K_case, GGML_TYPE_##type_V_case>;                         \
++            return fattn_vec_case_ptr<(GGML_CUDA_FA_##type_K_case##_##type_V_case) != 0,                                           \
++                                      D, GGML_TYPE_##type_K_case, GGML_TYPE_##type_V_case>::get();                                  \
+         }                                                                                                                          \
+     }                                                                                                                              \
+ 
+@@ -408,6 +413,18 @@
+ 
+ typedef void (* fattn_vec_case_t)(ggml_backend_cuda_context & ctx, ggml_tensor * dst);
+ 
++// JetPack 4.6 / CUDA 10.2 port (C++14, no `if constexpr`): taking the address of a vec template
++// instance forces it to exist, so a K/V pair that was not compiled must never name it. The false
++// specialisation returns nullptr without instantiating ggml_cuda_flash_attn_ext_vec_case.
++template <bool compiled, int D, ggml_type type_K, ggml_type type_V>
++struct fattn_vec_case_ptr {
++    static fattn_vec_case_t get() { return nullptr; }
++};
++template <int D, ggml_type type_K, ggml_type type_V>
++struct fattn_vec_case_ptr<true, D, type_K, type_V> {
++    static fattn_vec_case_t get() { return ggml_cuda_flash_attn_ext_vec_case<D, type_K, type_V>; }
++};
++
+ // Vector kernel for the given head size and K/V types, nullptr if its template instance was not compiled:
+ static fattn_vec_case_t ggml_cuda_get_fattn_vec_case(const int64_t head_size, const ggml_type type_K, const ggml_type type_V) {
+     FATTN_VEC_CASES_ALL_D(F16,  F16)
+@@ -735,7 +752,11 @@
+             ggml_cuda_flash_attn_ext_vec(ctx, dst);
+             break;
+         case BEST_FATTN_KERNEL_MMA_F16:
++#ifndef GGML_CUDA_NO_MMA_FA
+             ggml_cuda_flash_attn_ext_mma_f16(ctx, dst);
++#else
++            GGML_ABORT("MMA FlashAttention is excluded from this build (GGML_CUDA_NO_MMA_FA): it needs tensor cores");
++#endif
+             break;
+     }
+ }
+diff -ruN pin/ggml/src/ggml-cuda/fattn-tile.cuh merged/ggml/src/ggml-cuda/fattn-tile.cuh
+--- a/ggml/src/ggml-cuda/fattn-tile.cuh	2026-09-19 12:32:52.000000000 +0700
++++ b/ggml/src/ggml-cuda/fattn-tile.cuh	2026-09-25 11:14:27.488078421 +0700
+@@ -646,10 +646,10 @@
+         KQ_max_new[jc0] = warp_reduce_max<warp_size>(KQ_max_new[jc0]);
+     }
+ 
+-    if constexpr (np == 1) {
++    if (np == 1) {
+         __syncthreads();
+     } else {
+-        static_assert(cpw == 1, "bad cpw");
++        static_assert(!(np != 1) || cpw == 1, "bad cpw");
+         __shared__ float KQ_max_new_shared[nwarps];
+         if (threadIdx.x == 0) {
+             KQ_max_new_shared[threadIdx.y] = KQ_max_new[0];
+@@ -711,7 +711,7 @@
+     }
+ 
+     // VKQ = V @ KQ matrix multiplication:
+-    static_assert(DV <= DKQ, "bad DV");
++    static_assert(DV <= DKQ, "DV must not exceed DKQ");
+     static_assert(DV % nbatch_K == 0 || (nbatch_K % 3 == 0 && DV % (nbatch_K*2/3) == 0), "bad nbatch_K");
+     constexpr int nbatch_V = (DV % nbatch_K == 0 ? nbatch_K : nbatch_K*2/3) * nbatch_fa / DV; // Number of V columns that fit in SRAM for K.
+     static_assert(nbatch_fa % nbatch_V == 0, "bad nbatch_V");
+@@ -983,9 +983,9 @@
+         KQ_sum[jc0] = warp_reduce_sum<warp_size>(KQ_sum[jc0]);
+     }
+ 
+-    if constexpr (np > 1) {
+-        static_assert(cpw == 1, "bad cpw");
+-        static_assert(nbatch_fa*nbatch_K >= nwarps*DVp, "KV_tmp too small");
++    if (np > 1) {
++        static_assert(np <= 1 || cpw == 1, "bad cpw");
++        static_assert(np <= 1 || nbatch_fa*nbatch_K >= nwarps*DVp, "bad batch sizes");
+ 
+ #ifdef FAST_FP16_AVAILABLE
+         half2 * VKQ_combine    = (half2 *) KV_tmp;
+@@ -1145,88 +1145,107 @@
+ #endif // FLASH_ATTN_AVAILABLE
+ }
+ 
++// C++14: each cols_per_block branch can only be instantiated for combinations that the
++// original if constexpr guards selected (invalid kernel configs fail static asserts inside
++// flash_attn_tile). Branches are wrapped in std::enable_if; the disabled ones are no-ops
++// that are never reached at runtime because the runtime guards match the compile-time ones.
++
++#ifdef GGML_USE_HIP
++
++template <int DKQ, int DV, int cols_per_block, int ncols2, bool use_logit_softcap>
++static typename std::enable_if<cols_per_block >= ncols2, void>::type
++launch_fattn_tile_case(ggml_backend_cuda_context & ctx, ggml_tensor * dst) {
++    constexpr int warp_size = 32;
++    constexpr size_t nbytes_shared = 0;
++    const int cc        = ggml_cuda_info().devices[ggml_cuda_get_device()].cc;
++    const int nwarps    = ggml_cuda_fattn_tile_get_nthreads (DKQ, DV, cols_per_block, cc) / warp_size;
++    const int nbatch_fa = ggml_cuda_fattn_tile_get_nbatch_fa(DKQ, DV, cols_per_block, cc);
++    fattn_kernel_t fattn_kernel = flash_attn_tile<DKQ, DV, cols_per_block/ncols2, ncols2, use_logit_softcap>;
++    launch_fattn<DV, cols_per_block/ncols2, ncols2>
++        (ctx, dst, fattn_kernel, nwarps, nbytes_shared, nbatch_fa, true, true, false, /*use_sparse=*/false, warp_size);
++}
++
++template <int DKQ, int DV, int cols_per_block, int ncols2, bool use_logit_softcap>
++static typename std::enable_if<cols_per_block < ncols2, void>::type
++launch_fattn_tile_case(ggml_backend_cuda_context &, ggml_tensor *) {
++    // Invalid combination, never called (the runtime guard excludes it).
++}
++
++#else
++
++template <int DKQ, int DV, int cols_per_block, int ncols2, bool use_logit_softcap>
++static typename std::enable_if<
++    cols_per_block >= ncols2 && ggml_cuda_fattn_tile_get_config_nvidia_fp16(DKQ, DV, cols_per_block) != 0,
++    void>::type
++launch_fattn_tile_case(ggml_backend_cuda_context & ctx, ggml_tensor * dst) {
++    constexpr int warp_size = 32;
++    constexpr size_t nbytes_shared = 0;
++    const int cc        = ggml_cuda_info().devices[ggml_cuda_get_device()].cc;
++    const int nwarps    = ggml_cuda_fattn_tile_get_nthreads (DKQ, DV, cols_per_block, cc) / warp_size;
++    const int nbatch_fa = ggml_cuda_fattn_tile_get_nbatch_fa(DKQ, DV, cols_per_block, cc);
++    fattn_kernel_t fattn_kernel = flash_attn_tile<DKQ, DV, cols_per_block/ncols2, ncols2, use_logit_softcap>;
++    launch_fattn<DV, cols_per_block/ncols2, ncols2>
++        (ctx, dst, fattn_kernel, nwarps, nbytes_shared, nbatch_fa, true, true, false, /*use_sparse=*/false, warp_size);
++}
++
++template <int DKQ, int DV, int cols_per_block, int ncols2, bool use_logit_softcap>
++static typename std::enable_if<
++    !(cols_per_block >= ncols2 && ggml_cuda_fattn_tile_get_config_nvidia_fp16(DKQ, DV, cols_per_block) != 0),
++    void>::type
++launch_fattn_tile_case(ggml_backend_cuda_context &, ggml_tensor *) {
++    // Invalid combination (no kernel config), never called (the runtime guard excludes it).
++}
++
++#endif // GGML_USE_HIP
++
+ template <int DKQ, int DV, int ncols2, bool use_logit_softcap>
+ static void launch_fattn_tile_switch_ncols1(ggml_backend_cuda_context & ctx, ggml_tensor * dst) {
+     const ggml_tensor * Q = dst->src[0];
+ 
+-    const int id        = ggml_cuda_get_device();
+-    const int cc        = ggml_cuda_info().devices[id].cc;
+-    const int warp_size = 32;
+-
+-    constexpr size_t nbytes_shared = 0;
++    constexpr int warp_size = 32;
+ 
+ #ifdef GGML_USE_HIP
+-    if constexpr (DKQ <= 128) {
++    if (DKQ <= 128) {
+         if (Q->ne[1] > 32/ncols2) {
+-            constexpr int cols_per_block = 64;
+-            const int nwarps    = ggml_cuda_fattn_tile_get_nthreads (DKQ, DV, cols_per_block, cc) / warp_size;
+-            const int nbatch_fa = ggml_cuda_fattn_tile_get_nbatch_fa(DKQ, DV, cols_per_block, cc);
+-            fattn_kernel_t fattn_kernel = flash_attn_tile<DKQ, DV, cols_per_block/ncols2, ncols2, use_logit_softcap>;
+-            launch_fattn<DV, cols_per_block/ncols2, ncols2>
+-                (ctx, dst, fattn_kernel, nwarps, nbytes_shared, nbatch_fa, true, true, false, false, warp_size);
++            launch_fattn_tile_case<DKQ, DV, 64, ncols2, use_logit_softcap>(ctx, dst);
+             return;
+         }
+     }
+ #endif // GGML_USE_HIP
+ 
+ #ifndef GGML_USE_HIP
+-    if constexpr (DKQ <= 256)
++    if (DKQ <= 256)
+ #endif // GGML_USE_HIP
+     {
+         if (Q->ne[1] > 16/ncols2) {
+-            constexpr int cols_per_block = 32;
+-            const int nwarps    = ggml_cuda_fattn_tile_get_nthreads (DKQ, DV, cols_per_block, cc) / warp_size;
+-            const int nbatch_fa = ggml_cuda_fattn_tile_get_nbatch_fa(DKQ, DV, cols_per_block, cc);
+-            fattn_kernel_t fattn_kernel = flash_attn_tile<DKQ, DV, cols_per_block/ncols2, ncols2, use_logit_softcap>;
+-            launch_fattn<DV, cols_per_block/ncols2, ncols2>
+-                (ctx, dst, fattn_kernel, nwarps, nbytes_shared, nbatch_fa, true, true, false, false, warp_size);
++            launch_fattn_tile_case<DKQ, DV, 32, ncols2, use_logit_softcap>(ctx, dst);
+             return;
+         }
+     }
+ 
+-    if constexpr (ncols2 <= 16) {
++    if (ncols2 <= 16) {
+         if (Q->ne[1] > 8/ncols2) {
+-            constexpr int cols_per_block = 16;
+-            const int nwarps    = ggml_cuda_fattn_tile_get_nthreads (DKQ, DV, cols_per_block, cc) / warp_size;
+-            const int nbatch_fa = ggml_cuda_fattn_tile_get_nbatch_fa(DKQ, DV, cols_per_block, cc);
+-            fattn_kernel_t fattn_kernel = flash_attn_tile<DKQ, DV, cols_per_block/ncols2, ncols2, use_logit_softcap>;
+-            launch_fattn<DV, cols_per_block/ncols2, ncols2>
+-                (ctx, dst, fattn_kernel, nwarps, nbytes_shared, nbatch_fa, true, true, false, false, warp_size);
++            launch_fattn_tile_case<DKQ, DV, 16, ncols2, use_logit_softcap>(ctx, dst);
+             return;
+         }
+     }
+ 
+-    if constexpr (ncols2 <= 8) {
++    if (ncols2 <= 8) {
+         if (Q->ne[1] > 4/ncols2) {
+-            constexpr int cols_per_block = 8;
+-            const int nwarps    = ggml_cuda_fattn_tile_get_nthreads (DKQ, DV, cols_per_block, cc) / warp_size;
+-            const int nbatch_fa = ggml_cuda_fattn_tile_get_nbatch_fa(DKQ, DV, cols_per_block, cc);
+-            fattn_kernel_t fattn_kernel = flash_attn_tile<DKQ, DV, cols_per_block/ncols2, ncols2, use_logit_softcap>;
+-            launch_fattn<DV, cols_per_block/ncols2, ncols2>
+-                (ctx, dst, fattn_kernel, nwarps, nbytes_shared, nbatch_fa, true, true, false, false, warp_size);
++            launch_fattn_tile_case<DKQ, DV, 8, ncols2, use_logit_softcap>(ctx, dst);
+             return;
+         }
+     }
+ 
+-    if constexpr (ncols2 <= 4) {
++    if (ncols2 <= 4) {
+         if (Q->ne[1] > 2/ncols2) {
+-            constexpr int cols_per_block = 4;
+-            const int nwarps    = ggml_cuda_fattn_tile_get_nthreads (DKQ, DV, cols_per_block, cc) / warp_size;
+-            const int nbatch_fa = ggml_cuda_fattn_tile_get_nbatch_fa(DKQ, DV, cols_per_block, cc);
+-            fattn_kernel_t fattn_kernel = flash_attn_tile<DKQ, DV, cols_per_block/ncols2, ncols2, use_logit_softcap>;
+-            launch_fattn<DV, cols_per_block/ncols2, ncols2>
+-                (ctx, dst, fattn_kernel, nwarps, nbytes_shared, nbatch_fa, true, true, false, false, warp_size);
++            launch_fattn_tile_case<DKQ, DV, 4, ncols2, use_logit_softcap>(ctx, dst);
+             return;
+         }
+     }
+ 
+-    if constexpr (ncols2 <= 2) {
+-        constexpr int cols_per_block = 2;
+-        const int nwarps    = ggml_cuda_fattn_tile_get_nthreads (DKQ, DV, cols_per_block, cc) / warp_size;
+-        const int nbatch_fa = ggml_cuda_fattn_tile_get_nbatch_fa(DKQ, DV, cols_per_block, cc);
+-        fattn_kernel_t fattn_kernel = flash_attn_tile<DKQ, DV, cols_per_block/ncols2, ncols2, use_logit_softcap>;
+-        launch_fattn<DV, cols_per_block/ncols2, ncols2>
+-            (ctx, dst, fattn_kernel, nwarps, nbytes_shared, nbatch_fa, true, true, false, false, warp_size);
++    if (ncols2 <= 2) {
++        launch_fattn_tile_case<DKQ, DV, 2, ncols2, use_logit_softcap>(ctx, dst);
+         return;
+     }
+ 
+@@ -1252,7 +1271,7 @@
+     const int gqa_limit = nvidia && gqa_ratio <= 4 && DV <= 256 ? 16 : INT_MAX;
+     const bool use_gqa_opt = mask && max_bias == 0.0f && Q->ne[1] <= gqa_limit && K->ne[1] % FATTN_KQ_STRIDE == 0;
+ 
+-    if constexpr (DKQ == 320) {
++    if (DKQ == 320) {
+         // This branch is only used for Mistral Small 4 which has a GQA ratio of 32.
+         // On AMD, simply use that GQA ratio with 32 columns / block since we always have enough SRAM.
+         // On NVIDIA however, the tile kernel is only used for GPUs that can't use the mma kernel (Pascal and older).
+@@ -1271,7 +1290,7 @@
+         GGML_ABORT("flash-attn tile (320/256): expected GQA ratio multiple of 32");
+     }
+ 
+-    if constexpr (DKQ == 576) {
++    if (DKQ == 576) {
+         if (use_gqa_opt && gqa_ratio % 16 == 0) {
+             launch_fattn_tile_switch_ncols1<DKQ, DV, 16, use_logit_softcap>(ctx, dst);
+             return;
+@@ -1282,7 +1301,7 @@
+         }
+     }
+ 
+-    if constexpr (DKQ == 192) {
++    if (DKQ == 192) {
+         // MiMo-V2.5 / V2.5-Pro / V2-Flash: gqa_ratio is 8 (SWA) or 16 (full attn)
+         if (use_gqa_opt && gqa_ratio % 16 == 0) {
+             launch_fattn_tile_switch_ncols1<DKQ, DV, 16, use_logit_softcap>(ctx, dst);
+@@ -1295,7 +1314,7 @@
+         GGML_ABORT("flash-attn tile (192/128): expected GQA ratio multiple of 8");
+     }
+ 
+-    if constexpr (DKQ <= 512 && DKQ != 320 && DKQ != 192) {
++    if (DKQ <= 512 && DKQ != 320 && DKQ != 192) {
+         if (use_gqa_opt && gqa_ratio % 8 == 0) {
+             launch_fattn_tile_switch_ncols1<DKQ, DV, 8, use_logit_softcap>(ctx, dst);
+             return;
+@@ -1311,7 +1330,7 @@
+             return;
+         }
+ 
+-        if constexpr (DV <= 256) {
++        if (DV <= 256) {
+             launch_fattn_tile_switch_ncols1<DKQ, DV, 1, use_logit_softcap>(ctx, dst);
+             return;
+         }
+diff -ruN pin/ggml/src/ggml-cuda/fattn-vec.cuh merged/ggml/src/ggml-cuda/fattn-vec.cuh
+--- a/ggml/src/ggml-cuda/fattn-vec.cuh	2026-09-19 12:32:52.000000000 +0700
++++ b/ggml/src/ggml-cuda/fattn-vec.cuh	2026-09-25 10:58:41.688207283 +0700
+@@ -117,7 +117,7 @@
+     static_assert(D % (2*WARP_SIZE) == 0, "D not divisible by 2*WARP_SIZE == 64.");
+     constexpr int nwarps = nthreads / WARP_SIZE;
+     const int tid = WARP_SIZE*threadIdx.y + threadIdx.x;
+-    __builtin_assume(tid < nthreads);
++    GGML_CUDA_ASSUME(tid < nthreads);
+ 
+     constexpr int ne_KQ      = ncols*D;
+     constexpr int ne_combine = nwarps*V_cols_per_iter*D;
+@@ -147,7 +147,7 @@
+     float2  Q_ds[ncols][1 > D/(sizeof(int)*nthreads_KQ) ? 1 : D/(sizeof(int)*nthreads_KQ)];
+ 
+     ggml_cuda_pdl_sync();
+-    if constexpr (Q_q8_1) {
++    if (Q_q8_1) {
+ #pragma unroll
+         for (int j0 = 0; j0 < ncols; j0 += nwarps) {
+             const int j = j0 + threadIdx.y;
+@@ -332,7 +332,7 @@
+ #pragma unroll
+             for (int i_VKQ_0 = 0; i_VKQ_0 < D/2; i_VKQ_0 += nthreads_V*V_rows_per_thread/2) {
+                 half2 tmp[V_rows_per_thread/2];
+-                if constexpr (type_V == GGML_TYPE_BF16) {
++                if (type_V == GGML_TYPE_BF16) {
+                     float2 tmp_f[V_rows_per_thread/2];
+                     dequantize_V(V + k*nb21, tmp_f,
+                         2*i_VKQ_0 + (nthreads_V == WARP_SIZE ? threadIdx.x : threadIdx.x % nthreads_V)*V_rows_per_thread);
+diff -ruN pin/ggml/src/ggml-cuda/gated_delta_net.cu merged/ggml/src/ggml-cuda/gated_delta_net.cu
+--- a/ggml/src/ggml-cuda/gated_delta_net.cu	2026-09-19 12:32:52.000000000 +0700
++++ b/ggml/src/ggml-cuda/gated_delta_net.cu	2026-09-25 10:58:41.690670688 +0700
+@@ -81,7 +81,7 @@
+             q_reg[r] = q_t[i];
+         }
+ 
+-        if constexpr (!KDA) {
++        if (!KDA) {
+             const float g_val = expf(*g_t);
+ 
+             // kv[col] = (S^T @ k)[col] = sum_i S[i][col] * k[i]
+@@ -142,7 +142,7 @@
+ 
+         attn_data += S_v * H;
+ 
+-        if constexpr (keep_rs_t) {
++        if (keep_rs_t) {
+             // snapshot slot mapping: slot 0 = most recent state, slot s = s tokens back.
+             // When n_tokens < K only slots 0..n_tokens-1 are written; older slots are caller-owned.
+             const int target_slot = (int) n_tokens - 1 - t;
+@@ -157,7 +157,7 @@
+         }
+     }
+ 
+-    if constexpr (!keep_rs_t) {
++    if (!keep_rs_t) {
+ #pragma unroll
+         for (int r = 0; r < rows_per_lane; r++) {
+             const int i          = r * warp_size + lane;
+diff -ruN pin/ggml/src/ggml-cuda/getrows.cu merged/ggml/src/ggml-cuda/getrows.cu
+--- a/ggml/src/ggml-cuda/getrows.cu	2026-09-19 12:32:52.000000000 +0700
++++ b/ggml/src/ggml-cuda/getrows.cu	2026-09-25 10:58:41.693244345 +0700
+@@ -254,7 +254,7 @@
+     GGML_ASSERT(ne11 <= std::numeric_limits<uint32_t>::max() / ne12);
+     const uint3 ne12_fdv = init_fastdiv_values(ne12);
+ 
+-    if constexpr (std::is_same<src0_t, dst_t>::value) {
++    if (std::is_same<src0_t, dst_t>::value) {
+         constexpr int VEC = 16 / sizeof(dst_t);
+         const int64_t ne00v = ne00 / VEC;
+         const int64_t vec_block_num_y = (ne00v + CUDA_GET_ROWS_BLOCK_SIZE - 1) / CUDA_GET_ROWS_BLOCK_SIZE;
+diff -ruN pin/ggml/src/ggml-cuda/ggml-cuda.cu merged/ggml/src/ggml-cuda/ggml-cuda.cu
+--- a/ggml/src/ggml-cuda/ggml-cuda.cu	2026-09-19 12:32:52.000000000 +0700
++++ b/ggml/src/ggml-cuda/ggml-cuda.cu	2026-09-25 10:58:41.698927227 +0700
+@@ -1366,41 +1366,38 @@
+ template<>
+ struct batched_mul_mat_traits<GGML_TYPE_F32> {
+     using cuda_type = float;
+-    static inline const cublasComputeType_t compute_type = CUBLAS_COMPUTE_32F;
+-    static inline const cudaDataType_t data_type = CUDA_R_32F;
+-    static inline const ggml_type ggml_type_val = GGML_TYPE_F32;
+-    static inline const float alpha = 1.0f;
+-    static inline const float beta = 0.0f;
+-    static inline const void* get_alpha() { static const float val = alpha; return &val; }
+-    static inline const void* get_beta() { static const float val = beta; return &val; }
++    static constexpr cublasComputeType_t compute_type = CUBLAS_COMPUTE_32F;
++    static constexpr cudaDataType_t data_type = CUDA_R_32F;
++    static constexpr ggml_type ggml_type_val = GGML_TYPE_F32;
++    static inline const void* get_alpha() { static const float val = 1.0f; return &val; }
++    static inline const void* get_beta() { static const float val = 0.0f; return &val; }
+     static inline auto convert(ggml_type src_type) { return ggml_get_to_fp32_cuda(src_type); }
+     static inline auto convert_nc(ggml_type src_type) { return ggml_get_to_fp32_nc_cuda(src_type); }
+ };
+ 
++#if CUDART_VERSION >= 11000 && !defined(GGML_CUDA_FORCE_BF16_SHIM)
++// CUDA < 11.0 has no bf16 cuBLAS support (no CUDA_R_16BF), bf16 falls back to F32 compute instead.
+ template<>
+ struct batched_mul_mat_traits<GGML_TYPE_BF16> {
+     using cuda_type = nv_bfloat16;
+-    static inline const cublasComputeType_t compute_type = CUBLAS_COMPUTE_32F;
+-    static inline const cudaDataType_t data_type = CUDA_R_16BF;
+-    static inline const ggml_type ggml_type_val = GGML_TYPE_BF16;
+-    static inline const float alpha = 1.0f;
+-    static inline const float beta = 0.0f;
+-    static inline const void* get_alpha() { static const float val = alpha; return &val; }
+-    static inline const void* get_beta() { static const float val = beta; return &val; }
++    static constexpr cublasComputeType_t compute_type = CUBLAS_COMPUTE_32F;
++    static constexpr cudaDataType_t data_type = CUDA_R_16BF;
++    static constexpr ggml_type ggml_type_val = GGML_TYPE_BF16;
++    static inline const void* get_alpha() { static const float val = 1.0f; return &val; }
++    static inline const void* get_beta() { static const float val = 0.0f; return &val; }
+     static inline auto convert(ggml_type src_type) { return ggml_get_to_bf16_cuda(src_type); }
+     static inline auto convert_nc(ggml_type src_type) { return ggml_get_to_bf16_nc_cuda(src_type); }
+ };
++#endif // CUDART_VERSION >= 11000 && !defined(GGML_CUDA_FORCE_BF16_SHIM)
+ 
+ template<>
+ struct batched_mul_mat_traits<GGML_TYPE_F16> {
+     using cuda_type = half;
+-    static inline const cublasComputeType_t compute_type = CUBLAS_COMPUTE_16F;
+-    static inline const cudaDataType_t data_type = CUDA_R_16F;
+-    static inline const ggml_type ggml_type_val = GGML_TYPE_F16;
+-    static inline const half alpha = 1.0;
+-    static inline const half beta = 0.0;
+-    static inline const void* get_alpha() { static const half val = alpha; return &val; }
+-    static inline const void* get_beta() { static const half val = beta; return &val; }
++    static constexpr cublasComputeType_t compute_type = CUBLAS_COMPUTE_16F;
++    static constexpr cudaDataType_t data_type = CUDA_R_16F;
++    static constexpr ggml_type ggml_type_val = GGML_TYPE_F16;
++    static inline const void* get_alpha() { static const half val = 1.0f; return &val; }
++    static inline const void* get_beta() { static const half val = 0.0f; return &val; }
+     static inline auto convert(ggml_type src_type) { return ggml_get_to_fp16_cuda(src_type); }
+     static inline auto convert_nc(ggml_type src_type) { return ggml_get_to_fp16_nc_cuda(src_type); }
+ };
+@@ -1521,7 +1518,7 @@
+         alpha = batched_mul_mat_traits<GGML_TYPE_F32>::get_alpha();
+         beta = batched_mul_mat_traits<GGML_TYPE_F32>::get_beta();
+     } else {
+-        if constexpr (compute_type == GGML_TYPE_F32) {
++        if (compute_type == GGML_TYPE_F32) {
+             dst_ptr = (char *) dst_ddf;  // Direct F32 output
+         } else {
+             dst_ptr = (char *) dst_temp.alloc(ne_dst);
+@@ -1648,20 +1645,32 @@
+             compute_type = GGML_TYPE_F32;
+         } else if (env_cpp == "f16" || env_cpp == "fp16") {
+             compute_type = GGML_TYPE_F16;
++#if CUDART_VERSION >= 11000 && !defined(GGML_CUDA_FORCE_BF16_SHIM)
+         } else if (env_cpp == "bf16") {
+             compute_type = GGML_TYPE_BF16;
++#endif // CUDART_VERSION >= 11000
+         } else if (env_cpp != "auto") {
+             GGML_LOG_WARN("%s: unknown value for GGML_CUDA_CUBLAS_COMPUTE_TYPE: %s", __func__, env_cpp.c_str());
+         }
+     }
+ 
++#if CUDART_VERSION < 11000 || defined(GGML_CUDA_FORCE_BF16_SHIM)
++    // No bf16 cuBLAS on this toolkit: compute in F32 instead (values are converted via the
++    // software bf16 <-> fp32 kernels, results are identical to a native bf16 GEMM up to rounding).
++    if (compute_type == GGML_TYPE_BF16) {
++        compute_type = GGML_TYPE_F32;
++    }
++#endif // CUDART_VERSION < 11000
++
+     switch (compute_type) {
+         case GGML_TYPE_F32:
+             ggml_cuda_mul_mat_cublas_impl<GGML_TYPE_F32>(ctx, src0, src1, dst);
+             break;
++#if CUDART_VERSION >= 11000 && !defined(GGML_CUDA_FORCE_BF16_SHIM)
+         case GGML_TYPE_BF16:
+             ggml_cuda_mul_mat_cublas_impl<GGML_TYPE_BF16>(ctx, src0, src1, dst);
+             break;
++#endif // CUDART_VERSION >= 11000 && !defined(GGML_CUDA_FORCE_BF16_SHIM)
+         case GGML_TYPE_F16:
+             ggml_cuda_mul_mat_cublas_impl<GGML_TYPE_F16>(ctx, src0, src1, dst);
+             break;
+@@ -1757,7 +1766,8 @@
+         return false;
+     }
+ 
+-    if (const bool swapped = ggml_get_op_params_i32(glu, 1); swapped) {
++    const bool swapped = ggml_get_op_params_i32(glu, 1);
++    if (swapped) {
+         return false;
+     }
+ 
+@@ -1921,7 +1931,7 @@
+ 
+     // [TAG_MUL_MAT_ID_CUDA_GRAPHS]
+     if (src1->type == GGML_TYPE_F32 && dst->type == GGML_TYPE_F32) {
+-        static_assert(MMVQ_MAX_BATCH_SIZE == MMVF_MAX_BATCH_SIZE);
++        static_assert(MMVQ_MAX_BATCH_SIZE == MMVF_MAX_BATCH_SIZE, "");
+         if (ne2 <= MMVQ_MAX_BATCH_SIZE) {
+             if (ggml_is_quantized(src0->type)) {
+                 const int mmvq_mmid_max = get_mmvq_mmid_max_batch(src0->type, cc);
+@@ -4207,7 +4217,7 @@
+ 
+             for (int i = 1; i <= concurrent_event->n_streams; ++i) {
+                 cudaStream_t stream = cuda_ctx->stream(cuda_ctx->device, i);
+-                CUDA_CHECK(cudaStreamWaitEvent(stream, concurrent_event->fork_event));
++                CUDA_CHECK(cudaStreamWaitEvent(stream, concurrent_event->fork_event, 0));
+             }
+         }
+     };
+@@ -4220,8 +4230,8 @@
+ 
+             if (stream_ctx.concurrent_events.size() > 0) {
+                 should_launch_concurrent_events = true;
+-                for (const auto & [tensor, event] : stream_ctx.concurrent_events) {
+-                    should_launch_concurrent_events = should_launch_concurrent_events && event.is_valid();
++                for (const auto & entry : stream_ctx.concurrent_events) {
++                    should_launch_concurrent_events = should_launch_concurrent_events && entry.second.is_valid();
+                 }
+             }
+ 
+@@ -4234,7 +4244,8 @@
+                     node_to_idx[cgraph->nodes[i]] = i;
+                 }
+ 
+-                for (auto & [fork_node, event] : stream_ctx.concurrent_events) {
++                for (auto & fork_entry : stream_ctx.concurrent_events) {
++                    ggml_cuda_concurrent_event & event = fork_entry.second;
+                     // Find positions of all nodes from this event in the current graph
+                     std::vector<int> positions;
+                     positions.reserve(event.original_order.size());
+@@ -4291,7 +4302,7 @@
+                             // Wait on join events of forked streams in the main stream
+                             CUDA_CHECK(cudaEventRecord(concurrent_event->join_events[i - 1],
+                                                        cuda_ctx->stream(cuda_ctx->device, i)));
+-                            CUDA_CHECK(cudaStreamWaitEvent(cuda_ctx->stream(), concurrent_event->join_events[i - 1]));
++                            CUDA_CHECK(cudaStreamWaitEvent(cuda_ctx->stream(), concurrent_event->join_events[i - 1], 0));
+                         }
+ 
+                         is_concurrent_event_active = false;
+@@ -4609,7 +4620,9 @@
+     // store {fork_idx, join_idx}
+     std::vector<std::pair<int, int>> concurrent_node_ranges;
+ 
+-    for (const auto & [root_node, count] : fan_out) {
++    for (const auto & fan_entry : fan_out) {
++        const ggml_tensor * root_node = fan_entry.first;
++        const int count = fan_entry.second;
+         if (count >= min_fan_out && count <= max_fan_out) {
+             const int root_node_idx = node_indices[root_node];
+ 
+@@ -4620,8 +4633,8 @@
+             }
+ 
+             bool is_part_of_event = false;
+-            for (const auto & [start, end] : concurrent_node_ranges) {
+-                if (root_node_idx >= start && root_node_idx <= end) {
++            for (const auto & node_range : concurrent_node_ranges) {
++                if (root_node_idx >= node_range.first && root_node_idx <= node_range.second) {
+                     is_part_of_event = true;
+                 }
+             }
+diff -ruN pin/ggml/src/ggml-cuda/lightning-indexer.cu merged/ggml/src/ggml-cuda/lightning-indexer.cu
+--- a/ggml/src/ggml-cuda/lightning-indexer.cu	2026-09-19 12:32:52.000000000 +0700
++++ b/ggml/src/ggml-cuda/lightning-indexer.cu	2026-09-25 10:58:41.701490472 +0700
+@@ -75,7 +75,7 @@
+ 
+     constexpr int n_k = K_VECS_PER_BLOCK * (N_EMBD / 4);
+ 
+-    if constexpr (TYPE_K == GGML_TYPE_F16) {
++    if (TYPE_K == GGML_TYPE_F16) {
+ #pragma unroll
+         for (int i_k = tid; i_k < n_k; i_k += THREADS_PER_BLOCK) {
+             const int i_k_vec = i_k / (N_EMBD / 4);
+@@ -272,7 +272,7 @@
+ 
+     float4 k_reg_f[K_VECS_PER_WARP];
+ 
+-    if constexpr (TYPE_K == GGML_TYPE_F32) {
++    if (TYPE_K == GGML_TYPE_F32) {
+         // direct copy of float4
+ #pragma unroll
+         for (int k = 0; k < K_VECS_PER_WARP; ++k) {
+diff -ruN pin/ggml/src/ggml-cuda/mma.cuh merged/ggml/src/ggml-cuda/mma.cuh
+--- a/ggml/src/ggml-cuda/mma.cuh	2026-09-19 12:32:52.000000000 +0700
++++ b/ggml/src/ggml-cuda/mma.cuh	2026-09-25 10:58:41.704341730 +0700
+@@ -117,15 +117,15 @@
+         }
+ 
+         static __device__ __forceinline__ int get_i(const int l) {
+-            if constexpr (I == 16 && J == 4) {
++            if (I == 16 && J == 4) {
+                 return threadIdx.x % 16;
+-            } else if constexpr (I == 16 && J == 8) {
++            } else if (I == 16 && J == 8) {
+                 return threadIdx.x % 16;
+-            } else if constexpr (I == 32 && J == 4) {
++            } else if (I == 32 && J == 4) {
+                 return threadIdx.x % 32;
+-            } else if constexpr (I == 16 && J == 16) {
++            } else if (I == 16 && J == 16) {
+                 return threadIdx.x % 16;
+-            } else if constexpr (I == 32 && J == 32) {
++            } else if (I == 32 && J == 32) {
+                 return threadIdx.x % 32;
+             } else {
+                 NO_DEVICE_CODE;
+@@ -134,15 +134,15 @@
+         }
+ 
+         static __device__ __forceinline__ int get_j(const int l) {
+-            if constexpr (I == 16 && J == 4) {
++            if (I == 16 && J == 4) {
+                 return threadIdx.x / 16;
+-            } else if constexpr (I == 16 && J == 8) {
++            } else if (I == 16 && J == 8) {
+                 return 2 * (threadIdx.x / 16) + l;
+-            } else if constexpr (I == 32 && J == 4) {
++            } else if (I == 32 && J == 4) {
+                 return 2 * (threadIdx.x / 32) + l;
+-            } else if constexpr (I == 16 && J == 16) {
++            } else if (I == 16 && J == 16) {
+                 return 4 * (threadIdx.x / 16) + l;
+-            } else if constexpr (I == 32 && J == 32) {
++            } else if (I == 32 && J == 32) {
+                 return 4 * (threadIdx.x / 32) + 8 * (l / 4) + (l % 4);
+             } else {
+                 NO_DEVICE_CODE;
+@@ -159,7 +159,7 @@
+         }
+ 
+         static __device__ __forceinline__ int get_i(const int l) {
+-            if constexpr (I == 32 && J == 8) {
++            if (I == 32 && J == 8) {
+ #ifdef GGML_CUDA_MMA_NO_VOLTA_PERM
+                 return (((threadIdx.x % 16) / 4) * 8) + ((threadIdx.x / 16) * 4) + (l & 2) + (threadIdx.x % 2);
+ #else
+@@ -172,7 +172,7 @@
+         }
+ 
+         static __device__ __forceinline__ int get_j(const int l) {
+-            if constexpr (I == 32 && J == 8) {
++            if (I == 32 && J == 8) {
+                 return (threadIdx.x & 2) + (l & (4 + 1));
+             } else {
+                 NO_DEVICE_CODE;
+@@ -191,7 +191,7 @@
+         }
+ 
+         static __device__ __forceinline__ int get_i(const int l) {
+-            if constexpr (supported()) {
++            if (supported()) {
+                 return threadIdx.x % 16;
+             } else {
+                 NO_DEVICE_CODE;
+@@ -200,9 +200,9 @@
+         }
+ 
+         static __device__ __forceinline__ int get_j(const int l) {
+-            if constexpr (I == 16 && J == 16) {
++            if (I == 16 && J == 16) {
+ #if defined(RDNA3)
+-                if constexpr (std::is_same_v<T, float> || std::is_same_v<T, int>) {
++                if (std::is_same<T, float> ::value|| std::is_same<T, int>::value) {
+                     // matrix C
+                     return 2 * l + (threadIdx.x / 16);
+                 } else {
+@@ -213,10 +213,10 @@
+                 // matrix C is the transposed matrix A&B on RDNA4
+                 return ne * (threadIdx.x / 16) + l;
+ #endif // defined(RDNA3)
+-            } else if constexpr (I == 16 && J == 8) {
++            } else if (I == 16 && J == 8) {
+                 // mmq input for RDNA4
+                 return ne * (threadIdx.x / 16) + l;
+-            } else if constexpr (I == 16 && J == 4) {
++            } else if (I == 16 && J == 4) {
+                 return ne * (threadIdx.x / 16) + l;
+             } else {
+                 NO_DEVICE_CODE;
+@@ -237,15 +237,15 @@
+         }
+ 
+         static __device__ __forceinline__ int get_i(const int l) {
+-            if constexpr (I == 8 && J == 4) {
++            if (I == 8 && J == 4) {
+                 return threadIdx.x / 4;
+-            } else if constexpr (I == 8 && J == 8) {
++            } else if (I == 8 && J == 8) {
+                 return threadIdx.x / 4;
+-            } else if constexpr (I == 16 && J == 8) {
++            } else if (I == 16 && J == 8) {
+                 return ((l / 2) * 8) + (threadIdx.x / 4);
+-            } else if constexpr (I == 16 && J == 16) {
++            } else if (I == 16 && J == 16) {
+                 return (((l / 2) % 2) * 8) + (threadIdx.x / 4);
+-            } else if constexpr (I == 32 && J == 8) {
++            } else if (I == 32 && J == 8) {
+                 return tile<16, 8, T>::get_i(l); // Memory layout simply repeated with same pattern in i direction.
+             } else {
+                 NO_DEVICE_CODE;
+@@ -254,15 +254,15 @@
+         }
+ 
+         static __device__ __forceinline__ int get_j(const int l) {
+-            if constexpr (I == 8 && J == 4) {
++            if (I == 8 && J == 4) {
+                 return threadIdx.x % 4;
+-            } else if constexpr (I == 8 && J == 8) {
++            } else if (I == 8 && J == 8) {
+                 return (l * 4) + (threadIdx.x % 4);
+-            } else if constexpr (I == 16 && J == 8) {
++            } else if (I == 16 && J == 8) {
+                 return ((threadIdx.x % 4) * 2) + (l % 2);
+-            } else if constexpr (I == 16 && J == 16) {
++            } else if (I == 16 && J == 16) {
+                 return ((l / 4) * 8) + ((threadIdx.x % 4) * 2) + (l % 2);
+-            } else if constexpr (I == 32 && J == 8) {
++            } else if (I == 32 && J == 8) {
+                 return tile<16, 8, T>::get_j(l); // Memory layout simply repeated with same pattern in i direction.
+             } else {
+                 NO_DEVICE_CODE;
+@@ -288,7 +288,7 @@
+         }
+ 
+         static __device__ __forceinline__ int get_i(const int l) {
+-            if constexpr (I == 32 && J == 4) {
++            if (I == 32 && J == 4) {
+ #ifdef GGML_CUDA_MMA_NO_VOLTA_PERM
+                 return (((threadIdx.x % 16) / 4) * 8) + ((threadIdx.x / 16) * 4) + (threadIdx.x % 4);
+ #else
+@@ -301,7 +301,7 @@
+         }
+ 
+         static __device__ __forceinline__ int get_j(const int l) {
+-            if constexpr (I == 32 && J == 4) {
++            if (I == 32 && J == 4) {
+                 return l;
+             } else {
+                 NO_DEVICE_CODE;
+@@ -320,11 +320,11 @@
+         }
+ 
+         static __device__ __forceinline__ int get_i(const int l) {
+-            if constexpr (I == 16 && J == 8) {
++            if (I == 16 && J == 8) {
+                 return threadIdx.x % 16;
+-            } else if constexpr (I == 16 && J == 16) {
++            } else if (I == 16 && J == 16) {
+                 return threadIdx.x % 16;
+-            } else if constexpr (I == 32 && J == 8) {
++            } else if (I == 32 && J == 8) {
+                 return (threadIdx.x % 16) * 2 + l / (ne/2);
+             } else {
+                 NO_DEVICE_CODE;
+@@ -333,15 +333,15 @@
+         }
+ 
+         static __device__ __forceinline__ int get_j(const int l) {
+-            if constexpr (I == 16 && J == 8) {
++            if (I == 16 && J == 8) {
+                 return (threadIdx.x / 16) * ne + l;
+-            } else if constexpr (I == 16 && J == 16) {
++            } else if (I == 16 && J == 16) {
+ #ifdef RDNA3
+                 return l*2 + (threadIdx.x / 16);
+ #else
+                 return (threadIdx.x / 16) * ne + l;
+ #endif // RDNA3
+-            } else if constexpr (I == 32 && J == 8) {
++            } else if (I == 32 && J == 8) {
+                 return (threadIdx.x / 16) * (ne/2) + l % (ne/2);
+             } else {
+                 NO_DEVICE_CODE;
+@@ -360,11 +360,11 @@
+         }
+ 
+         static __device__ __forceinline__ int get_i(const int l) {
+-            if constexpr (I == 16 && J == 8) {
++            if (I == 16 && J == 8) {
+                 return threadIdx.x % 16;
+-            } else if constexpr (I == 16 && J == 16) {
++            } else if (I == 16 && J == 16) {
+                 return threadIdx.x % 16;
+-            } else if constexpr (I == 32 && J == 8) {
++            } else if (I == 32 && J == 8) {
+                 return (threadIdx.x % 16) * 2 + l / (ne/2);
+             } else {
+                 NO_DEVICE_CODE;
+@@ -373,11 +373,11 @@
+         }
+ 
+         static __device__ __forceinline__ int get_j(const int l) {
+-            if constexpr (I == 16 && J == 8) {
++            if (I == 16 && J == 8) {
+                 return (threadIdx.x / 16) * ne + l;
+-            } else if constexpr (I == 16 && J == 16) {
++            } else if (I == 16 && J == 16) {
+                 return (threadIdx.x / 16) * ne + l;
+-            } else if constexpr (I == 32 && J == 8) {
++            } else if (I == 32 && J == 8) {
+                 return (threadIdx.x / 16) * (ne/2) + l % (ne/2);
+             } else {
+                 NO_DEVICE_CODE;
+@@ -398,13 +398,13 @@
+         }
+ 
+         static __device__ __forceinline__ int get_i(const int l) {
+-            if constexpr (I == 8 && J == 8) {
++            if (I == 8 && J == 8) {
+                 return threadIdx.x / 4;
+-            } else if constexpr (I == 16 && J == 4) {
++            } else if (I == 16 && J == 4) {
+                 return (l * 8) + (threadIdx.x / 4);
+-            } else if constexpr (I == 16 && J == 8) {
++            } else if (I == 16 && J == 8) {
+                 return ((l % 2) * 8) + (threadIdx.x / 4);
+-            } else if constexpr (I == 32 && J == 8) {
++            } else if (I == 32 && J == 8) {
+                 return ((l / 4) * 16) + ((l % 2) * 8) + (threadIdx.x / 4);
+             } else {
+                 NO_DEVICE_CODE;
+@@ -413,13 +413,13 @@
+         }
+ 
+         static __device__ __forceinline__ int get_j(const int l) {
+-            if constexpr (I == 8 && J == 8) {
++            if (I == 8 && J == 8) {
+                 return (l * 4) + (threadIdx.x % 4);
+-            } else if constexpr (I == 16 && J == 4) {
++            } else if (I == 16 && J == 4) {
+                 return threadIdx.x % 4;
+-            } else if constexpr (I == 16 && J == 8) {
++            } else if (I == 16 && J == 8) {
+                 return ((l / 2) * 4) + (threadIdx.x % 4);
+-            } else if constexpr (I == 32 && J == 8) {
++            } else if (I == 32 && J == 8) {
+                 return ((l & 2) * 2) + (threadIdx.x % 4);
+             } else {
+                 NO_DEVICE_CODE;
+@@ -477,11 +477,11 @@
+         }
+ 
+         static __device__ __forceinline__ int get_i(const int l) {
+-            if constexpr (I == 8 && J == 8) {
++            if (I == 8 && J == 8) {
+                 return threadIdx.x / 4;
+-            } else if constexpr (I == 16 && J == 4) {
++            } else if (I == 16 && J == 4) {
+                 return (l * 8) + (threadIdx.x / 4);
+-            } else if constexpr (I == 16 && J == 8) {
++            } else if (I == 16 && J == 8) {
+                 return ((l % 2) * 8) + (threadIdx.x / 4);
+             } else {
+                 NO_DEVICE_CODE;
+@@ -490,11 +490,11 @@
+         }
+ 
+         static __device__ __forceinline__ int get_j(const int l) {
+-            if constexpr (I == 8 && J == 8) {
++            if (I == 8 && J == 8) {
+                 return (l * 4) + (threadIdx.x % 4);
+-            } else if constexpr (I == 16 && J == 4) {
++            } else if (I == 16 && J == 4) {
+                 return threadIdx.x % 4;
+-            } else if constexpr (I == 16 && J == 8) {
++            } else if (I == 16 && J == 8) {
+                 return ((l / 2) * 4) + (threadIdx.x % 4);
+             } else {
+                 NO_DEVICE_CODE;
+@@ -546,9 +546,9 @@
+         }
+ 
+         static __device__ __forceinline__ int get_i(const int l) {
+-            if constexpr (I == 16) {
++            if (I == 16) {
+                 return threadIdx.x % 16;
+-            } else if constexpr (I == 32) {
++            } else if (I == 32) {
+                 return (threadIdx.x % 16) * 2 + l / (ne/2);
+             } else {
+                 NO_DEVICE_CODE;
+@@ -557,9 +557,9 @@
+         }
+ 
+         static __device__ __forceinline__ int get_j(const int l) {
+-            if constexpr (I == 16) {
++            if (I == 16) {
+                 return l;
+-            } else if constexpr (I == 32) {
++            } else if (I == 32) {
+                 return l % (ne/2);
+             } else {
+                 NO_DEVICE_CODE;
+@@ -600,7 +600,7 @@
+         }
+ 
+         static __device__ __forceinline__ int get_i(const int /*l*/) {
+-            if constexpr (I == 8 && J == 4) {
++            if (I == 8 && J == 4) {
+                 return ((threadIdx.x / 16) * 4) + (threadIdx.x % 4);
+             } else {
+                 NO_DEVICE_CODE;
+@@ -609,7 +609,7 @@
+         }
+ 
+         static __device__ __forceinline__ int get_j(const int l) {
+-            if constexpr (I == 8 && J == 4) {
++            if (I == 8 && J == 4) {
+                 return l;
+             } else {
+                 NO_DEVICE_CODE;
+@@ -656,7 +656,7 @@
+         }
+ 
+         static __device__ __forceinline__ int get_i(const int l) {
+-            if constexpr (I == 8 && J == 4) {
++            if (I == 8 && J == 4) {
+                 return ((l / 2) * 4) + (threadIdx.x % 4);
+             } else {
+                 NO_DEVICE_CODE;
+@@ -665,7 +665,7 @@
+         }
+ 
+         static __device__ __forceinline__ int get_j(const int l) {
+-            if constexpr (I == 8 && J == 4) {
++            if (I == 8 && J == 4) {
+                 return ((threadIdx.x / 16) * 2) + (l % 2);
+             } else {
+                 NO_DEVICE_CODE;
+@@ -894,7 +894,7 @@
+             : "l"(xs));
+ #elif defined(AMD_MFMA_AVAILABLE) || defined(AMD_WMMA_AVAILABLE)
+         static_assert(dl == DATA_LAYOUT_I_MAJOR || dl == DATA_LAYOUT_I_MAJOR_MIRRORED, "bad data layout");
+-        if constexpr (I == 32) {
++        if (I == 32) {
+ #pragma unroll
+             for (int l0 = 0; l0 < t.ne/2; ++l0) {
+                 const half2 tmp0 = xs0[(2*t.get_j(l0) + 0)*stride + t.get_i(l0)/2];
+@@ -1133,7 +1133,7 @@
+         const int * Bxi = (const int *) B.x;
+         float *     Dxi = (float *) D.x;
+ 
+-        if constexpr (type == GGML_TYPE_MXFP4) {
++        if (type == GGML_TYPE_MXFP4) {
+             asm volatile(
+                 "mma.sync.aligned.kind::mxf4.block_scale.scale_vec::2X.m16n8k64.row.col.f32.e2m1.e2m1.f32.ue8m0 "
+                 "{%0, %1, %2, %3}, {%4, %5, %6, %7}, {%8, %9}, {%0, %1, %2, %3}, "
+diff -ruN pin/ggml/src/ggml-cuda/mmf.cuh merged/ggml/src/ggml-cuda/mmf.cuh
+--- a/ggml/src/ggml-cuda/mmf.cuh	2026-09-19 12:32:52.000000000 +0700
++++ b/ggml/src/ggml-cuda/mmf.cuh	2026-09-25 11:13:53.627837912 +0700
+@@ -56,29 +56,29 @@
+ // TODO: handle this in a consistent and simpler way after AMD MFMA support has been added
+ #if defined(VOLTA_MMA_AVAILABLE) || defined(TURING_MMA_AVAILABLE) || defined(AMD_WMMA_AVAILABLE) || defined(AMD_MFMA_AVAILABLE)
+ #if defined(AMD_WMMA_AVAILABLE)
+-    if constexpr (!(std::is_same_v<T, half2> || std::is_same_v<T, nv_bfloat162>) || rows_per_block != MMF_ROWS_PER_BLOCK) {NO_DEVICE_CODE;} else {
++    if (!(std::is_same<T, half2> ::value|| std::is_same<T, nv_bfloat162>::value) || rows_per_block != MMF_ROWS_PER_BLOCK) {NO_DEVICE_CODE;} else {
+     typedef tile<16, 8,  T,     get_input_data_layout()> tile_A;
+     typedef tile<16, 8,  T,     get_input_data_layout()> tile_B;
+     typedef tile<16, 16, float, DATA_LAYOUT_J_MAJOR>     tile_C;
+ #elif defined(AMD_MFMA_AVAILABLE)
+-    if constexpr (rows_per_block != MMF_ROWS_PER_BLOCK_CDNA) {NO_DEVICE_CODE;} else {
++    if (rows_per_block != MMF_ROWS_PER_BLOCK_CDNA) {NO_DEVICE_CODE;} else {
+     typedef tile<16, 8,  T,     DATA_LAYOUT_I_MAJOR> tile_A;
+     typedef tile<16, 8,  T,     DATA_LAYOUT_I_MAJOR> tile_B;
+     typedef tile<16, 16, float, DATA_LAYOUT_J_MAJOR> tile_C;
+ #else
+ #ifdef VOLTA_MMA_AVAILABLE
+-    if constexpr (!std::is_same_v<T, half2> || rows_per_block != MMF_ROWS_PER_BLOCK) {NO_DEVICE_CODE;} else {
++    if (!std::is_same<T, half2> ::value|| rows_per_block != MMF_ROWS_PER_BLOCK) {NO_DEVICE_CODE;} else {
+     typedef tile<32, 4, T,     DATA_LAYOUT_I_MAJOR>          tile_A;
+     typedef tile< 8, 4, T,     DATA_LAYOUT_I_MAJOR_MIRRORED> tile_B;
+     typedef tile<32, 8, float, DATA_LAYOUT_I_MAJOR>          tile_C;
+ #else
+-    if constexpr (rows_per_block != MMF_ROWS_PER_BLOCK) {NO_DEVICE_CODE;} else {
++    if (rows_per_block != MMF_ROWS_PER_BLOCK) {NO_DEVICE_CODE;} else {
+     typedef tile<16, 8, T>     tile_A;
+     typedef tile<8,  8, T>     tile_B;
+     typedef tile<16, 8, float> tile_C;
+ #endif // VOLTA_MMA_AVAILABLE
+ #endif // defined(AMD_WMMA_AVAILABLE)
+-    if constexpr (!tile_A::supported() || !tile_B::supported() || !tile_C::supported()) {
++    if (!tile_A::supported() || !tile_B::supported() || !tile_C::supported()) {
+         NO_DEVICE_CODE;
+         return;
+     }
+@@ -95,7 +95,7 @@
+ 
+     const int channel_dst = has_ids ? 0 : blockIdx.y;
+ 
+-    if constexpr (has_ids) {
++    if (has_ids) {
+         // experts + tiles of ncols_dst are packed in the y dimension
+         int col_tiles = (ncols_dst_total + cols_per_block - 1) / cols_per_block;
+         const int nchannels_x = gridDim.y / col_tiles;
+@@ -114,8 +114,8 @@
+     y   += int64_t(sample_y)  *stride_sample_y   + (has_ids ? 0 : channel_y  *stride_channel_y);
+     dst += int64_t(sample_dst)*stride_sample_dst + (has_ids ? 0 : channel_dst*stride_channel_dst);
+ 
+-    if constexpr (has_ids) {
+-        constexpr int y_stride_scale = std::is_same_v<T, float> ? 1 : 2;
++    if (has_ids) {
++        constexpr int y_stride_scale = std::is_same<T, float> ::value? 1 : 2;
+         const int64_t col_offset = col_base;
+         y   += col_offset * stride_col_y * y_stride_scale;
+         dst += col_offset * stride_col_dst;
+@@ -134,7 +134,7 @@
+ 
+     T * tile_xy = (T *) compute_base + threadIdx.y*(tile_A::I * tile_k_padded);
+ 
+-    if constexpr (has_ids) {
++    if (has_ids) {
+         int found = 0;
+ 
+         for (int j0 = 0; j0 < cols_per_block; j0 += nwarps) {
+@@ -187,24 +187,24 @@
+ #pragma unroll
+         for (int itB = 0; itB < ntB; ++itB) {
+             ggml_cuda_syncwarp();
+-            if constexpr (std::is_same_v<T, float>) {
++            if (std::is_same<T, float>::value) {
+ #pragma unroll
+                 for (int j0 = 0; j0 < tile_B::I; ++j0) {
+                     const int j = j0 + itB*tile_B::I;
+ 
+-                    if constexpr (!has_ids) {
+-                        tile_xy[j0*tile_k_padded + threadIdx.x] = j < cols_per_block ? y[j*stride_col_y + col] : 0.0f;
++                    if (!has_ids) {
++                        tile_xy[j0*tile_k_padded + threadIdx.x] = ggml_cuda_cast<T>(j < cols_per_block ? y[j*stride_col_y + col] : 0.0f);
+                     } else {
+                         const bool valid = j < cols_per_block && (col_base + j) < ncols_dst_total && slot_map[j] >= 0;
+-                        tile_xy[j0*tile_k_padded + threadIdx.x] = valid ? y[slot_map[j]*stride_channel_y + j*stride_col_y + col] : 0.0f;
++                        tile_xy[j0*tile_k_padded + threadIdx.x] = ggml_cuda_cast<T>(valid ? y[slot_map[j]*stride_channel_y + j*stride_col_y + col] : 0.0f);
+                     }
+                 }
+-            } else if constexpr (std::is_same_v<T, half2> || std::is_same_v<T, nv_bfloat162>) {
++            } else if (std::is_same<T, half2> ::value|| std::is_same<T, nv_bfloat162>::value) {
+ #pragma unroll
+                 for (int j0 = 0; j0 < tile_B::I; ++j0) {
+                     const int j = j0 + itB*tile_B::I;
+ 
+-                    if constexpr (!has_ids) {
++                    if (!has_ids) {
+                         const float2 tmp = j < cols_per_block ? y2[j*stride_col_y + col] : make_float2(0.0f, 0.0f);
+                         tile_xy[j0*tile_k_padded + threadIdx.x] = ggml_cuda_cast<T>(tmp);
+                     } else {
+@@ -213,8 +213,6 @@
+                         tile_xy[j0*tile_k_padded + threadIdx.x] = ggml_cuda_cast<T>(tmp);
+                     }
+                 }
+-            } else {
+-                static_assert(std::is_same_v<T, void>, "unsupported type");
+             }
+             ggml_cuda_syncwarp();
+ #pragma unroll
+@@ -276,7 +274,7 @@
+             }
+         }
+ 
+-        if constexpr (!has_ids) {
++        if (!has_ids) {
+ #pragma unroll
+             for (int i0 = 0; i0 < sizeof(sum)/sizeof(sum[0]); ++i0) {
+                 dst[j*stride_col_dst + row0 + i0*warp_size + threadIdx.x] = sum[i0];
+@@ -316,29 +314,29 @@
+ // TODO: handle this in a consistent and simpler way after AMD MFMA support has been added
+ #if defined(VOLTA_MMA_AVAILABLE) || defined(TURING_MMA_AVAILABLE) || defined(AMD_WMMA_AVAILABLE) || defined(AMD_MFMA_AVAILABLE)
+ #if defined(AMD_WMMA_AVAILABLE)
+-    if constexpr (!(std::is_same_v<T, half2> || std::is_same_v<T, nv_bfloat162>) || rows_per_block != MMF_ROWS_PER_BLOCK) {NO_DEVICE_CODE;} else {
++    if (!(std::is_same<T, half2> ::value|| std::is_same<T, nv_bfloat162>::value) || rows_per_block != MMF_ROWS_PER_BLOCK) {NO_DEVICE_CODE;} else {
+     typedef tile<16, 8,  T,     get_input_data_layout()> tile_A;
+     typedef tile<16, 8,  T,     get_input_data_layout()> tile_B;
+     typedef tile<16, 16, float, DATA_LAYOUT_J_MAJOR>     tile_C;
+ #elif defined(AMD_MFMA_AVAILABLE)
+-    if constexpr (rows_per_block != MMF_ROWS_PER_BLOCK_CDNA) {NO_DEVICE_CODE;} else {
++    if (rows_per_block != MMF_ROWS_PER_BLOCK_CDNA) {NO_DEVICE_CODE;} else {
+     typedef tile<16, 8,  T,     DATA_LAYOUT_I_MAJOR> tile_A;
+     typedef tile<16, 8,  T,     DATA_LAYOUT_I_MAJOR> tile_B;
+     typedef tile<16, 16, float, DATA_LAYOUT_J_MAJOR> tile_C;
+ #else
+ #ifdef VOLTA_MMA_AVAILABLE
+-    if constexpr (!std::is_same_v<T, half2> || rows_per_block != MMF_ROWS_PER_BLOCK) {NO_DEVICE_CODE;} else {
++    if (!std::is_same<T, half2> ::value|| rows_per_block != MMF_ROWS_PER_BLOCK) {NO_DEVICE_CODE;} else {
+     typedef tile<32, 4, T,     DATA_LAYOUT_I_MAJOR>          tile_A;
+     typedef tile< 8, 4, T,     DATA_LAYOUT_I_MAJOR_MIRRORED> tile_B;
+     typedef tile<32, 8, float, DATA_LAYOUT_I_MAJOR>          tile_C;
+ #else
+-    if constexpr (rows_per_block != MMF_ROWS_PER_BLOCK) {NO_DEVICE_CODE;} else {
++    if (rows_per_block != MMF_ROWS_PER_BLOCK) {NO_DEVICE_CODE;} else {
+     typedef tile<16, 8, T>     tile_A;
+     typedef tile<8,  8, T>     tile_B;
+     typedef tile<16, 8, float> tile_C;
+ #endif // VOLTA_MMA_AVAILABLE
+ #endif // defined(AMD_WMMA_AVAILABLE)
+-    if constexpr (!tile_A::supported() || !tile_B::supported() || !tile_C::supported()) {
++    if (!tile_A::supported() || !tile_B::supported() || !tile_C::supported()) {
+         NO_DEVICE_CODE;
+         return;
+     }
+@@ -403,7 +401,7 @@
+             }
+         }
+ 
+-        if constexpr (std::is_same_v<T, float>) {
++        if (std::is_same<T, float>::value) {
+             float vals_buf[2][tile_B::I];
+             auto gather_tile = [&](int tile_idx_local, float *vals) {
+ #pragma unroll
+@@ -417,7 +415,7 @@
+                         const int token   = (int) qrm.x;
+                         const int channel = (int) qrm.y;
+                         if (token < ncols_dst_total) {
+-                            val = y[channel*stride_channel_y + token*stride_col_y + col];
++                            val = ggml_cuda_cast<float>(y[channel*stride_channel_y + token*stride_col_y + col]);
+                         }
+                     }
+                     vals[j0] = val;
+@@ -433,7 +431,7 @@
+                 ggml_cuda_syncwarp();
+ #pragma unroll
+                 for (int j0 = 0; j0 < tile_B::I; ++j0) {
+-                    tile_xy[j0*tile_k_padded + threadIdx.x] = vals_buf[curr_buf][j0];
++                    tile_xy[j0*tile_k_padded + threadIdx.x] = ggml_cuda_cast<T>(vals_buf[curr_buf][j0]);
+                 }
+ 
+                 if (itB + 1 < ntB) {
+@@ -456,7 +454,7 @@
+                     next_buf ^= 1;
+                 }
+             }
+-        } else if constexpr (std::is_same_v<T, half2> || std::is_same_v<T, nv_bfloat162>) {
++        } else if (std::is_same<T, half2> ::value|| std::is_same<T, nv_bfloat162>::value) {
+             float2 vals_buf[2][tile_B::I];
+             auto gather_tile = [&](int tile_idx_local, float2 *vals) {
+ #pragma unroll
+@@ -512,9 +510,7 @@
+                     next_buf ^= 1;
+                 }
+             }
+-        } else {
+-            static_assert(std::is_same_v<T, void>, "unsupported type");
+-        }
++}
+     }
+ 
+     float * buf_iw = (float *) compute_base;
+diff -ruN pin/ggml/src/ggml-cuda/mmid.cu merged/ggml/src/ggml-cuda/mmid.cu
+--- a/ggml/src/ggml-cuda/mmid.cu	2026-09-19 12:32:52.000000000 +0700
++++ b/ggml/src/ggml-cuda/mmid.cu	2026-09-25 11:14:27.487765294 +0700
+@@ -28,6 +28,60 @@
+ // ids_src1 describes how to permute the flattened column indices of src1 in order to get a compact src1 tensor sorted by expert.
+ // ids_dst describes the same mapping but for the dst tensor.
+ // The upper and lower bounds for the ith expert in the compact src1 tensor are stored in expert_bounds[i:i+1].
++// Optimized implementation for specific numbers of experts used.
++// C++14: enabled only for n_expert_used_template > 0 via std::enable_if so that the
++// generic instantiation (n_expert_used_template == 0) does not instantiate this body.
++template <int n_expert_used_template, int warp_size>
++static __device__ __forceinline__ typename std::enable_if<(n_expert_used_template > 0), void>::type
++mm_ids_helper_specialized(
++        const int32_t * __restrict__ ids, mm_ids_helper_store * store,
++        const int n_tokens, const int n_expert_used, const int si1, const int expert,
++        int & nex_prev, int & it_compact) {
++    // upstream b23701f7: a warp holds a whole number of token slots, so the slot count is padded to a power of 2
++    constexpr int neu_padded = mm_ids_pow2<n_expert_used_template>::value;
++    static_assert(neu_padded <= warp_size && warp_size % neu_padded == 0, "bad n_expert_used");
++    for (int it0 = 0; it0 < n_tokens; it0 += warp_size/neu_padded) {
++        const int it = it0 + threadIdx.x / neu_padded;
++
++        const int iex = threadIdx.x % neu_padded; // The index at which the expert is used, if any.
++        const int expert_used = (neu_padded == n_expert_used || iex < n_expert_used) && it < n_tokens ?
++            ids[it*si1 + iex] : INT_MAX;
++        const int iex_used = expert_used == expert ? iex : -1;
++        nex_prev += expert_used < expert;
++
++        // Whether the threads at this token position have used the expert:
++        const int it_compact_add_self = warp_reduce_any<neu_padded>(iex_used != -1);
++
++        // Do a scan over threads at lower token positions in warp to get the correct index for writing data:
++        int it_compact_add_lower = 0;
++#pragma unroll
++        for (int offset = neu_padded; offset < warp_size; offset += neu_padded) {
++            const int tmp = __shfl_up_sync(0xFFFFFFFF, it_compact_add_self, offset, warp_size);
++            if (threadIdx.x >= static_cast<unsigned int>(offset)) {
++                it_compact_add_lower += tmp;
++            }
++        }
++
++        if (iex_used != -1) {
++            store[it_compact + it_compact_add_lower] = mm_ids_helper_store(it, iex_used);
++        }
++
++        // The thread with the highest index in the warp always has the sum over the whole warp, use it to increment all threads:
++        it_compact += __shfl_sync(0xFFFFFFFF, it_compact_add_lower + it_compact_add_self, warp_size - 1, warp_size);
++    }
++}
++
++template <int n_expert_used_template, int warp_size>
++static __device__ __forceinline__ typename std::enable_if<(n_expert_used_template == 0), void>::type
++mm_ids_helper_specialized(
++        const int32_t * __restrict__, mm_ids_helper_store *, int, int, int, int, int &, int &) {
++    // Never called: the generic implementation below handles n_expert_used_template == 0.
++}
++
++// Helper function for mul_mat_id, converts ids to a more convenient format.
++// ids_src1 describes how to permute the flattened column indices of src1 in order to get a compact src1 tensor sorted by expert.
++// ids_dst describes the same mapping but for the dst tensor.
++// The upper and lower bounds for the ith expert in the compact src1 tensor are stored in expert_bounds[i:i+1].
+ template <int n_expert_used_template>
+ __launch_bounds__(ggml_cuda_get_physical_warp_size(), 1)
+ static __global__ void mm_ids_helper(
+@@ -46,7 +100,7 @@
+     int nex_prev   = 0; // Number of columns for experts with a lower index.
+     int it_compact = 0; // Running index for the compact slice of this expert.
+ 
+-    if constexpr (n_expert_used_template == 0) {
++    if (n_expert_used_template == 0) {
+         // Generic implementation:
+         for (int it = 0; it < n_tokens; ++it) {
+             int iex_used = -1; // The index at which the expert is used, if any.
+@@ -68,37 +122,8 @@
+         }
+     } else {
+         // Implementation optimized for specific numbers of experts used:
+-        // a warp holds a whole number of token slots, so the slot count is padded to a power of 2
+-        static_assert(neu_padded <= warp_size && warp_size % neu_padded == 0, "bad n_expert_used");
+-        for (int it0 = 0; it0 < n_tokens; it0 += warp_size/neu_padded) {
+-            const int it = it0 + threadIdx.x / neu_padded;
+-
+-            const int iex = threadIdx.x % neu_padded; // The index at which the expert is used, if any.
+-            const int expert_used = (neu_padded == n_expert_used || iex < n_expert_used) && it < n_tokens ?
+-                ids[it*si1 + iex] : INT_MAX;
+-            const int iex_used = expert_used == expert ? iex : -1;
+-            nex_prev += expert_used < expert;
+-
+-            // Whether the threads at this token position have used the expert:
+-            const int it_compact_add_self = warp_reduce_any<neu_padded>(iex_used != -1);
+-
+-            // Do a scan over threads at lower token positions in warp to get the correct index for writing data:
+-            int it_compact_add_lower = 0;
+-#pragma unroll
+-            for (int offset = neu_padded; offset < warp_size; offset += neu_padded) {
+-                const int tmp = __shfl_up_sync(0xFFFFFFFF, it_compact_add_self, offset, warp_size);
+-                if (threadIdx.x >= static_cast<unsigned int>(offset)) {
+-                    it_compact_add_lower += tmp;
+-                }
+-            }
+-
+-            if (iex_used != -1) {
+-                store[it_compact + it_compact_add_lower] = mm_ids_helper_store(it, iex_used);
+-            }
+-
+-            // The thread with the highest index in the warp always has the sum over the whole warp, use it to increment all threads:
+-            it_compact += __shfl_sync(0xFFFFFFFF, it_compact_add_lower + it_compact_add_self, warp_size - 1, warp_size);
+-        }
++        mm_ids_helper_specialized<n_expert_used_template, warp_size>(
++                ids, store, n_tokens, n_expert_used, si1, expert, nex_prev, it_compact);
+     }
+     nex_prev = warp_reduce_sum<warp_size>(nex_prev);
+     ggml_cuda_syncwarp();
+diff -ruN pin/ggml/src/ggml-cuda/mmq.cu merged/ggml/src/ggml-cuda/mmq.cu
+--- a/ggml/src/ggml-cuda/mmq.cu	2026-09-19 12:32:52.000000000 +0700
++++ b/ggml/src/ggml-cuda/mmq.cu	2026-09-25 10:58:41.712050136 +0700
+@@ -148,7 +148,7 @@
+             if (use_native_fp4) {
+                 static constexpr size_t align_float8 = 32;
+                 const bool use_aligned_float8 = ggml_cuda_is_aligned(src1, align_float8);
+-                static_assert(sizeof(block_fp4_mmq) == 4 * sizeof(block_q8_1));
++                static_assert(sizeof(block_fp4_mmq) == 4 * sizeof(block_q8_1), "");
+                 quantize_mmq_fp4_cuda(src1_d, nullptr, src1_q8_1.get(), src1_scale.ptr, src0->type, use_aligned_float8, ne10, s11, s12, s13, ne10_padded,
+                                         ne11, ne12, ne13, stream);
+ 
+diff -ruN pin/ggml/src/ggml-cuda/mmq.cuh merged/ggml/src/ggml-cuda/mmq.cuh
+--- a/ggml/src/ggml-cuda/mmq.cuh	2026-09-19 12:32:52.000000000 +0700
++++ b/ggml/src/ggml-cuda/mmq.cuh	2026-09-25 10:58:41.715184510 +0700
+@@ -462,7 +462,7 @@
+                 continue;
+             }
+ 
+-            if constexpr (type == GGML_TYPE_NVFP4) {
++            if (type == GGML_TYPE_NVFP4) {
+                 if (y_scale_used) {
+                     dst[ids_dst[j]*stride + i] = y_scale[j] * sum[(j0/nwarps) * (I/warp_size) + i0/warp_size];
+                 } else {
+@@ -512,7 +512,7 @@
+                     continue;
+                 }
+ 
+-                if constexpr (type == GGML_TYPE_NVFP4) {
++                if (type == GGML_TYPE_NVFP4) {
+                     if (y_scale_used) {
+                         dst[ids_dst[j]*stride + i] = y_scale[j] * sum[(j0/tile_C::J + n)*tile_C::ne + l];
+                     } else {
+@@ -990,7 +990,7 @@
+     }
+     __syncthreads();
+ 
+-    if constexpr (!ggml_cuda_mmq_get_stream_k(type, J, fallback)) {
++    if (!ggml_cuda_mmq_get_stream_k(type, J, fallback)) {
+         const uint2 tmp2 = fast_div_modulo(blockIdx.z, nchannels_y);
+         const int wt = tmp2.x;
+         const int zt = tmp2.y;
+@@ -1004,7 +1004,7 @@
+         int offset_y       = wt*stride_sample_y   + zt*stride_channel_y;
+         int offset_dst     = wt*stride_sample_dst + zt*stride_channel_dst + jt*J*stride_col_dst;
+         int offset_y_scale;
+-        if constexpr (type == GGML_TYPE_NVFP4) {
++        if (type == GGML_TYPE_NVFP4) {
+             offset_y_scale = wt*nchannels_y.z*ncols_y + zt*ncols_y;
+         } else {
+             GGML_UNUSED(offset_y_scale);
+@@ -1017,7 +1017,7 @@
+ 
+             offset_y   = 0;
+             offset_dst = 0;
+-            if constexpr (type == GGML_TYPE_NVFP4) {
++            if (type == GGML_TYPE_NVFP4) {
+                 offset_y_scale = 0;
+             }
+ 
+@@ -1042,7 +1042,7 @@
+         offset_y   += (col_low + jt*J)*(sizeof(block_q8_1_mmq)/sizeof(int));
+         offset_dst += it*I;
+         const float * y_scale_tile = nullptr;
+-        if constexpr (type == GGML_TYPE_NVFP4) {
++        if (type == GGML_TYPE_NVFP4) {
+             offset_y_scale += col_low + jt*J;
+             y_scale_tile = y_scale ? y_scale + offset_y_scale : nullptr;
+         }
+@@ -1092,7 +1092,7 @@
+         int offset_y       = wt*stride_sample_y   + zt*stride_channel_y;
+         int offset_dst     = wt*stride_sample_dst + zt*stride_channel_dst + jt*J*stride_col_dst;
+         int offset_y_scale;
+-        if constexpr (type == GGML_TYPE_NVFP4) {
++        if (type == GGML_TYPE_NVFP4) {
+             offset_y_scale = wt*nchannels_y.z*ncols_y + zt*ncols_y;
+         } else {
+             GGML_UNUSED(offset_y_scale);
+@@ -1105,7 +1105,7 @@
+ 
+             offset_y   = 0;
+             offset_dst = 0;
+-            if constexpr (type == GGML_TYPE_NVFP4) {
++            if (type == GGML_TYPE_NVFP4) {
+                 offset_y_scale = 0;
+             }
+ 
+@@ -1136,7 +1136,7 @@
+         offset_y += (col_low + jt * J) * (sizeof(block_q8_1_mmq) / sizeof(int));
+         offset_dst += it*I;
+         const float * y_scale_tile = nullptr;
+-        if constexpr (type == GGML_TYPE_NVFP4) {
++        if (type == GGML_TYPE_NVFP4) {
+             offset_y_scale += col_low + jt * J;
+             y_scale_tile = y_scale ? y_scale + offset_y_scale : nullptr;
+         }
+@@ -1181,7 +1181,7 @@
+     int offset_y       = wt*stride_sample_y   + zt*stride_channel_y;
+     int offset_dst     = wt*stride_sample_dst + zt*stride_channel_dst + jt*J*stride_col_dst;
+     int offset_y_scale;
+-    if constexpr (type == GGML_TYPE_NVFP4) {
++    if (type == GGML_TYPE_NVFP4) {
+         offset_y_scale = wt*nchannels_y.z*ncols_y + zt*ncols_y;
+     } else {
+         GGML_UNUSED(offset_y_scale);
+@@ -1194,7 +1194,7 @@
+ 
+         offset_y   = 0;
+         offset_dst = 0;
+-        if constexpr (type == GGML_TYPE_NVFP4) {
++        if (type == GGML_TYPE_NVFP4) {
+             offset_y_scale = 0;
+         }
+ 
+@@ -1220,7 +1220,7 @@
+     offset_y += (col_low + jt * J) * (sizeof(block_q8_1_mmq) / sizeof(int));
+     offset_dst += it*I;
+     const float * y_scale_tile = nullptr;
+-    if constexpr (type == GGML_TYPE_NVFP4) {
++    if (type == GGML_TYPE_NVFP4) {
+         offset_y_scale += col_low + jt * J;
+         y_scale_tile = y_scale ? y_scale + offset_y_scale : nullptr;
+     }
+diff -ruN pin/ggml/src/ggml-cuda/mmq-load-tiles.cuh merged/ggml/src/ggml-cuda/mmq-load-tiles.cuh
+--- a/ggml/src/ggml-cuda/mmq-load-tiles.cuh	2026-09-19 12:32:52.000000000 +0700
++++ b/ggml/src/ggml-cuda/mmq-load-tiles.cuh	2026-09-25 10:58:41.718000667 +0700
+@@ -1651,7 +1651,7 @@
+     for (int i0 = 0; i0 < I; i0 += rows_per_warp * nwarps) {
+         int i = i0 + threadIdx.y * rows_per_warp + row_in_warp;
+ 
+-        if constexpr (fallback) {
++        if (fallback) {
+             i = min(i, i_max);
+         }
+ 
+@@ -1695,7 +1695,7 @@
+     for (int i0 = 0; i0 < I; i0 += rows_per_warp * nwarps) {
+         int i = i0 + threadIdx.y * rows_per_warp + row_in_warp;
+ 
+-        if constexpr (fallback) {
++        if (fallback) {
+             i = min(i, i_max);
+         }
+ 
+@@ -1749,7 +1749,7 @@
+     for (int i0 = 0; i0 < I; i0 += rows_per_warp * nwarps) {
+         int i = i0 + threadIdx.y * rows_per_warp + row_in_warp;
+ 
+-        if constexpr (fallback) {
++        if (fallback) {
+             i = min(i, i_max);
+         }
+ 
+diff -ruN pin/ggml/src/ggml-cuda/mmvf.cu merged/ggml/src/ggml-cuda/mmvf.cu
+--- a/ggml/src/ggml-cuda/mmvf.cu	2026-09-19 12:32:52.000000000 +0700
++++ b/ggml/src/ggml-cuda/mmvf.cu	2026-09-25 11:13:53.625552299 +0700
+@@ -26,7 +26,7 @@
+     int sample_dst;
+ 
+     ggml_cuda_pdl_sync();
+-    if constexpr (is_multi_token_id) {
++    if (is_multi_token_id) {
+         // Multi-token MUL_MAT_ID path, adding these in the normal path causes a perf regression for n_tokens=1 case
+         token_idx  = blockIdx.z;
+         channel_x  = ids[channel_dst + token_idx * ids_stride];
+@@ -47,7 +47,7 @@
+     x   += int64_t(sample_x)  *stride_sample_x   + channel_x  *stride_channel_x   + row*stride_row;
+     y   += int64_t(sample_y)  *stride_sample_y   + channel_y  *stride_channel_y;
+     dst += int64_t(sample_dst)*stride_sample_dst + channel_dst*stride_channel_dst;
+-    if constexpr (is_multi_token_id) {
++    if (is_multi_token_id) {
+         y   += token_idx*stride_col_y2*2;
+         dst += token_idx*stride_col_dst;
+     }
+@@ -61,7 +61,7 @@
+     const float * x_bias = nullptr;
+     const float * gate_bias = nullptr;
+ 
+-    if constexpr (has_fusion) {
++    if (has_fusion) {
+         use_gate = fusion.gate != nullptr;
+         use_bias = fusion.x_bias != nullptr;
+         use_gate_bias = fusion.gate_bias != nullptr;
+@@ -86,7 +86,7 @@
+         gate_x += int64_t(sample_x)  *stride_sample_x   + channel_x  *stride_channel_x   + row*stride_row;
+     }
+ 
+-    if constexpr (has_fusion) {
++    if (has_fusion) {
+         const int channel_bias = ids ? channel_x : channel_dst;
+         if (use_bias) {
+             x_bias += int64_t(sample_dst)*stride_sample_dst + channel_bias*stride_channel_dst;
+@@ -101,14 +101,14 @@
+     extern __shared__ char data_mmv[];
+     float * buf_iw = (float *) data_mmv;
+     [[maybe_unused]] float * buf_iw_gate = nullptr;
+-    if constexpr (has_fusion) {
++    if (has_fusion) {
+         buf_iw_gate = (float *) (data_mmv + warp_size*sizeof(float));
+     }
+ 
+     if (block_size > warp_size) {
+         if (tid < warp_size) {
+             buf_iw[tid] = 0.0f;
+-            if constexpr (has_fusion) {
++            if (has_fusion) {
+                 if (use_gate) {
+                     buf_iw_gate[tid] = 0.0f;
+                 }
+@@ -119,17 +119,17 @@
+ 
+     float sumf[ncols_dst] = {0.0f};
+     float sumf_gate[ncols_dst];
+-    if constexpr (has_fusion) {
++    if (has_fusion) {
+ #pragma unroll
+         for (int j = 0; j < ncols_dst; ++j) {
+             sumf_gate[j] = 0.0f;
+         }
+     }
+ 
+-    if constexpr (std::is_same_v<T, float>) {
++    if (std::is_same<T, float>::value) {
+         const float2 * x2 = (const float2 *) x;
+         [[maybe_unused]] const float2 * gate_x2 = nullptr;
+-        if constexpr (has_fusion) {
++        if (has_fusion) {
+             if (use_gate) {
+                 gate_x2 = (const float2 *) gate_x;
+             }
+@@ -138,7 +138,7 @@
+         for (int col2 = tid; col2 < ncols2; col2 += block_size) {
+             const float2 tmpx = x2[col2];
+             float2 tmpx_gate = make_float2(0.0f, 0.0f);
+-            if constexpr (has_fusion) {
++            if (has_fusion) {
+                 if (use_gate) {
+                     tmpx_gate = gate_x2[col2];
+                 }
+@@ -150,7 +150,7 @@
+                 ggml_cuda_mad(sumf[j], tmpx.x, tmpy.x);
+                 ggml_cuda_mad(sumf[j], tmpx.y, tmpy.y);
+ 
+-                if constexpr (has_fusion) {
++                if (has_fusion) {
+                     if (use_gate) {
+                         ggml_cuda_mad(sumf_gate[j], tmpx_gate.x, tmpy.x);
+                         ggml_cuda_mad(sumf_gate[j], tmpx_gate.y, tmpy.y);
+@@ -158,20 +158,20 @@
+                 }
+             }
+         }
+-    } else if constexpr (std::is_same_v<T, half>) {
++    } else if (std::is_same<T, half>::value) {
+         const half2 * x2 = (const half2 *) x;
+         [[maybe_unused]] const half2 * gate_x2 = nullptr;
+-        if constexpr (has_fusion) {
++        if (has_fusion) {
+             if (use_gate) {
+                 gate_x2 = (const half2 *) gate_x;
+             }
+         }
+ 
+-        if (std::is_same_v<type_acc, float>) {
++        if (std::is_same<type_acc, float>::value) {
+             for (int col2 = tid; col2 < ncols2; col2 += block_size) {
+                 const float2 tmpx = __half22float2(x2[col2]);
+                 float2 tmpx_gate = make_float2(0.0f, 0.0f);
+-                if constexpr (has_fusion) {
++                if (has_fusion) {
+                     if (use_gate) {
+                         tmpx_gate = __half22float2(gate_x2[col2]);
+                     }
+@@ -182,7 +182,7 @@
+                     ggml_cuda_mad(sumf[j], tmpx.x, tmpy.x);
+                     ggml_cuda_mad(sumf[j], tmpx.y, tmpy.y);
+ 
+-                    if constexpr (has_fusion) {
++                    if (has_fusion) {
+                         if (use_gate) {
+                             ggml_cuda_mad(sumf_gate[j], tmpx_gate.x, tmpy.x);
+                             ggml_cuda_mad(sumf_gate[j], tmpx_gate.y, tmpy.y);
+@@ -198,7 +198,7 @@
+             for (int col2 = tid; col2 < ncols2; col2 += block_size) {
+                 const half2 tmpx = x2[col2];
+                 half2 tmpx_gate = make_half2(0.0f, 0.0f);
+-                if constexpr (has_fusion) {
++                if (has_fusion) {
+                     if (use_gate) {
+                         tmpx_gate = gate_x2[col2];
+                     }
+@@ -208,7 +208,7 @@
+                     const float2 tmpy = y2[j*stride_col_y2 + col2];
+                     sumh2[j] += tmpx * make_half2(tmpy.x, tmpy.y);
+ 
+-                    if constexpr (has_fusion) {
++                    if (has_fusion) {
+                         if (use_gate) {
+                             sumh2_gate[j] += tmpx_gate * make_half2(tmpy.x, tmpy.y);
+                         }
+@@ -221,7 +221,7 @@
+                 sumf[j] = __low2float(sumh2[j]) + __high2float(sumh2[j]);
+             }
+ 
+-            if constexpr (has_fusion) {
++            if (has_fusion) {
+                 if (use_gate) {
+ #pragma unroll
+                     for (int j = 0; j < ncols_dst; ++j) {
+@@ -233,12 +233,12 @@
+             NO_DEVICE_CODE;
+ #endif // FP16_AVAILABLE
+         }
+-    } else if constexpr (std::is_same_v<T, nv_bfloat16>) {
++    } else if (std::is_same<T, nv_bfloat16>::value) {
+ //TODO: add support for ggml_cuda_mad for hip_bfloat162
+ #if defined(GGML_USE_HIP)
+         const int * x2 = (const int *) x;
+         const int * gate_x2 = nullptr;
+-        if constexpr (has_fusion) {
++        if (has_fusion) {
+             if (use_gate) {
+                 gate_x2 = (const int *) gate_x;
+             }
+@@ -246,7 +246,7 @@
+         for (int col2 = tid; col2 < ncols2; col2 += block_size) {
+             const int tmpx = x2[col2];
+             int tmpx_gate = 0;
+-            if constexpr (has_fusion) {
++            if (has_fusion) {
+                 if (use_gate) {
+                     tmpx_gate = gate_x2[col2];
+                 }
+@@ -259,7 +259,7 @@
+                 ggml_cuda_mad(sumf[j], tmpx0, tmpy.x);
+                 ggml_cuda_mad(sumf[j], tmpx1, tmpy.y);
+ 
+-                if constexpr (has_fusion) {
++                if (has_fusion) {
+                     if (use_gate) {
+                         const float tmpx0_gate = ggml_cuda_cast<float>(reinterpret_cast<const nv_bfloat16 *>(&tmpx_gate)[0]);
+                         const float tmpx1_gate = ggml_cuda_cast<float>(reinterpret_cast<const nv_bfloat16 *>(&tmpx_gate)[1]);
+@@ -272,7 +272,7 @@
+ #else
+         const nv_bfloat162 * x2 = (const nv_bfloat162 *) x;
+         [[maybe_unused]] const nv_bfloat162 * gate_x2 = nullptr;
+-        if constexpr (has_fusion) {
++        if (has_fusion) {
+             if (use_gate) {
+                 gate_x2 = (const nv_bfloat162 *) gate_x;
+             }
+@@ -280,7 +280,7 @@
+         for (int col2 = tid; col2 < ncols2; col2 += block_size) {
+             const nv_bfloat162 tmpx = x2[col2];
+             [[maybe_unused]] nv_bfloat162 tmpx_gate;
+-            if constexpr (has_fusion) {
++            if (has_fusion) {
+                 if (use_gate) {
+                     tmpx_gate = gate_x2[col2];
+                 }
+@@ -291,7 +291,7 @@
+                 ggml_cuda_mad(sumf[j], tmpx.x, tmpy.x);
+                 ggml_cuda_mad(sumf[j], tmpx.y, tmpy.y);
+ 
+-                if constexpr (has_fusion) {
++                if (has_fusion) {
+                     if (use_gate) {
+                         ggml_cuda_mad(sumf_gate[j], tmpx_gate.x, tmpy.x);
+                         ggml_cuda_mad(sumf_gate[j], tmpx_gate.y, tmpy.y);
+@@ -300,16 +300,14 @@
+             }
+         }
+ #endif
+-    } else {
+-        static_assert(std::is_same_v<T, void>, "unsupported type");
+-    }
++}
+ 
+     ggml_cuda_pdl_lc();
+ #pragma unroll
+     for (int j = 0; j < ncols_dst; ++j) {
+         sumf[j] = warp_reduce_sum<warp_size>(sumf[j]);
+ 
+-        if constexpr (has_fusion) {
++        if (has_fusion) {
+             if (use_gate) {
+                 sumf_gate[j] = warp_reduce_sum<warp_size>(sumf_gate[j]);
+             }
+@@ -317,7 +315,7 @@
+ 
+         if (block_size > warp_size) {
+             buf_iw[tid/warp_size] = sumf[j];
+-            if constexpr (has_fusion) {
++            if (has_fusion) {
+                 if (use_gate) {
+                     buf_iw_gate[tid/warp_size] = sumf_gate[j];
+                 }
+@@ -326,7 +324,7 @@
+             if (tid < warp_size) {
+                 sumf[j] = buf_iw[tid];
+                 sumf[j] = warp_reduce_sum<warp_size>(sumf[j]);
+-                if constexpr (has_fusion) {
++                if (has_fusion) {
+                     if (use_gate) {
+                         sumf_gate[j] = buf_iw_gate[tid];
+                         sumf_gate[j] = warp_reduce_sum<warp_size>(sumf_gate[j]);
+@@ -346,7 +344,7 @@
+ 
+     float value = sumf[tid];
+ 
+-    if constexpr (has_fusion) {
++    if (has_fusion) {
+         if (use_bias) {
+             value += x_bias[tid*stride_col_dst + row];
+         }
+@@ -378,7 +376,7 @@
+ 
+     dst[tid*stride_col_dst + row] = value;
+ 
+-    if constexpr (!has_fusion) {
++    if (!has_fusion) {
+         GGML_UNUSED_VARS(use_gate, use_bias, use_gate_bias, glu_op, glu_limit, gate_x, x_bias, gate_bias, sumf_gate);
+     }
+ }
+@@ -395,7 +393,7 @@
+     const ggml_cuda_kernel_launch_params launch_params = {block_nums, block_dims, nbytes_shared, stream};
+ 
+     const bool has_fusion = fusion.gate != nullptr || fusion.x_bias != nullptr || fusion.gate_bias != nullptr;
+-    if constexpr (ncols_dst == 1) {
++    if (ncols_dst == 1) {
+         if (has_fusion) {
+             ggml_cuda_kernel_launch(mul_mat_vec_f<T, type_acc, ncols_dst, block_size, true, is_multi_token_id>, launch_params,
+                 x, y, ids, fusion, dst, ncols, nchannels_y, stride_row, stride_col_y, stride_col_dst,
+@@ -616,7 +614,7 @@
+         const int64_t nsamples_dst, const int64_t stride_sample_x, const int64_t stride_sample_y, const int64_t stride_sample_dst,
+         const int64_t ids_stride, enum ggml_prec prec, cudaStream_t stream) {
+ 
+-    if constexpr(std::is_same_v<T, half>) {
++    if(std::is_same<T, half>::value) {
+         if (prec == GGML_PREC_DEFAULT) {
+             mul_mat_vec_f_cuda_switch_ncols_dst<T, half>
+                 (x, y, ids, fusion, dst, ncols, nrows, ncols_dst, stride_row, stride_col_y, stride_col_dst,
+diff -ruN pin/ggml/src/ggml-cuda/mmvq.cu merged/ggml/src/ggml-cuda/mmvq.cu
+--- a/ggml/src/ggml-cuda/mmvq.cu	2026-09-19 12:32:52.000000000 +0700
++++ b/ggml/src/ggml-cuda/mmvq.cu	2026-09-25 11:18:04.673771552 +0700
+@@ -636,7 +636,7 @@
+     ggml_glu_op active_glu;
+     float glu_limit = 0.0f;
+ 
+-    if constexpr (has_fusion) {
++    if (has_fusion) {
+         use_gate      = fusion.gate      != nullptr;
+         use_bias      = fusion.x_bias    != nullptr;
+         use_gate_bias = fusion.gate_bias != nullptr && use_gate;
+@@ -645,7 +645,7 @@
+         gate_bias     = (const float *) fusion.gate_bias;
+         active_glu    = fusion.glu_op;
+         glu_limit     = fusion.glu_limit;
+-        if constexpr (type == GGML_TYPE_NVFP4) {
++        if (type == GGML_TYPE_NVFP4) {
+             use_scale      = fusion.x_scale    != nullptr;
+             use_gate_scale = fusion.gate_scale != nullptr && use_gate;
+             x_scale        = (const float *) fusion.x_scale;
+@@ -658,7 +658,7 @@
+     [[maybe_unused]] float gate_biases[ncols_dst] = { 0.0f };
+     [[maybe_unused]] float x_scales = 1.0f;
+     [[maybe_unused]] float gate_scales = 1.0f;
+-    if constexpr (has_fusion) {
++    if (has_fusion) {
+         // 1. Hide latency by prefetching bias, gates and scales here
+         // 2. load only on threads that won't die after partial sum calculation
+         const uint32_t channel_bias = ids ? channel_x : channel_dst;
+@@ -678,7 +678,7 @@
+                     gate_biases[j] = gate_bias[j * stride_col_dst + threadIdx.x];
+                 }
+             }
+-            if constexpr (type == GGML_TYPE_NVFP4) {
++            if (type == GGML_TYPE_NVFP4) {
+                 if (use_scale) {
+                     x_scales = x_scale[ids ? channel_x : 0];
+                 }
+@@ -704,7 +704,7 @@
+ 
+ #if defined(__CUDA_ARCH__) && __CUDA_ARCH__ == GGML_CUDA_CC_DGX_SPARK
+         // start the next iterations' weight loads early
+-        if constexpr (mmvq_should_prefetch(type)) {
++        if (mmvq_should_prefetch(type)) {
+             constexpr int pf_dist = 2; // loop iterations, not blocks
+             const int kbx_pf = kbx + pf_dist*blocks_per_iter;
+             if (kbx_pf < blocks_per_row_x) {
+@@ -712,7 +712,7 @@
+                 for (int i = 0; i < rows_per_cuda_block; ++i) {
+                     const size_t off = (size_t)(kbx_offset + i*stride_row_x + kbx_pf) * ggml_cuda_type_traits<type>::bs;
+                     mmvq_prefetch_l2((const char *) vx + off);
+-                    if constexpr (has_fusion) {
++                    if (has_fusion) {
+                         if (use_gate) {
+                             mmvq_prefetch_l2((const char *) vgate + off);
+                         }
+@@ -728,7 +728,7 @@
+             for (int i = 0; i < rows_per_cuda_block; ++i) {
+                 tmp[j][i] += vec_dot_q_cuda(
+                     vx, &y[j*stride_col_y + kby], kbx_offset + i*stride_row_x + kbx, kqs);
+-                if constexpr (has_fusion) {
++                if (has_fusion) {
+                     if (use_gate) {
+                         tmp_gate[j][i] += vec_dot_q_cuda(
+                             vgate, &y[j*stride_col_y + kby], kbx_offset + i*stride_row_x + kbx, kqs);
+@@ -747,7 +747,7 @@
+ #pragma unroll
+             for (int i = 0; i < rows_per_cuda_block; ++i) {
+                 tmp_shared[threadIdx.y-1][j][i][threadIdx.x] = tmp[j][i];
+-                if constexpr (has_fusion) {
++                if (has_fusion) {
+                     if (use_gate) {
+                         tmp_shared_gate[threadIdx.y-1][j][i][threadIdx.x] = tmp_gate[j][i];
+                     }
+@@ -770,14 +770,14 @@
+ #pragma unroll
+             for (int l = 0; l < nwarps-1; ++l) {
+                 tmp[j][i] += tmp_shared[l][j][i][threadIdx.x];
+-                if constexpr (has_fusion) {
++                if (has_fusion) {
+                     if (use_gate) {
+                         tmp_gate[j][i] += tmp_shared_gate[l][j][i][threadIdx.x];
+                     }
+                 }
+             }
+             tmp[j][i] = warp_reduce_sum<warp_size>(tmp[j][i]);
+-            if constexpr (has_fusion) {
++            if (has_fusion) {
+                 if (use_gate) {
+                     tmp_gate[j][i] = warp_reduce_sum<warp_size>(tmp_gate[j][i]);
+                 }
+@@ -785,14 +785,14 @@
+ 
+             if (threadIdx.x == i && (rows_per_cuda_block == 1 || uint32_t(row0 + i) < stride_col_dst)) {
+                 float result = tmp[j][i];
+-                if constexpr (has_fusion) {
+-                    if constexpr (type == GGML_TYPE_NVFP4) {
++                if (has_fusion) {
++                    if (type == GGML_TYPE_NVFP4) {
+                         result *= x_scales;
+                     }
+                     result += x_biases[j];
+                     if (use_gate) {
+                         float gate_value = tmp_gate[j][i];
+-                        if constexpr (type == GGML_TYPE_NVFP4) {
++                        if (type == GGML_TYPE_NVFP4) {
+                             gate_value *= gate_scales;
+                         }
+                         gate_value += gate_biases[j];
+@@ -820,10 +820,10 @@
+         }
+     }
+ 
+-    if constexpr (!has_fusion) {
++    if (!has_fusion) {
+         GGML_UNUSED_VARS(use_gate, use_bias, use_gate_bias, use_scale, use_gate_scale, active_glu, glu_limit, gate_bias, x_bias, x_scale, gate_scale, tmp_gate);
+     }
+-    if constexpr (type != GGML_TYPE_NVFP4) {
++    if (type != GGML_TYPE_NVFP4) {
+         GGML_UNUSED_VARS(use_scale, use_gate_scale, x_scale, gate_scale, x_scales, gate_scales);
+     }
+ }
+@@ -863,14 +863,14 @@
+     ggml_glu_op   active_glu = GGML_GLU_OP_SWIGLU;
+     float         glu_limit  = 0.0f;
+ 
+-    if constexpr (has_fusion) {
++    if (has_fusion) {
+         use_gate   = fusion.gate != nullptr;
+         vgate      = fusion.gate;
+         x_bias     = (const float *) fusion.x_bias;
+         gate_bias  = (const float *) fusion.gate_bias;
+         active_glu = fusion.glu_op;
+         glu_limit  = fusion.glu_limit;
+-        if constexpr (type == GGML_TYPE_NVFP4) {
++        if (type == GGML_TYPE_NVFP4) {
+             x_scale    = (const float *) fusion.x_scale;
+             gate_scale = (const float *) fusion.gate_scale;
+         }
+@@ -905,7 +905,7 @@
+ #pragma unroll
+         for (int i = 0; i < c_rows_per_block; ++i) {
+             tmp[i] += vec_dot_q_cuda(vx, &y[kby], kbx_offset + i*stride_row_x + kbx, kqs);
+-            if constexpr (has_fusion) {
++            if (has_fusion) {
+                 if (use_gate) {
+                     tmp_gate[i] += vec_dot_q_cuda(vgate, &y[kby], kbx_offset + i*stride_row_x + kbx, kqs);
+                 }
+@@ -919,7 +919,7 @@
+ #pragma unroll
+     for (int i = 0; i < c_rows_per_block; ++i) {
+         tmp[i] = warp_reduce_sum<warp_size>(tmp[i]);
+-        if constexpr (has_fusion) {
++        if (has_fusion) {
+             if (use_gate) {
+                 tmp_gate[i] = warp_reduce_sum<warp_size>(tmp_gate[i]);
+             }
+@@ -929,10 +929,10 @@
+     // Write results
+     if (threadIdx.x < c_rows_per_block && (c_rows_per_block == 1 || uint32_t(row0 + threadIdx.x) < nrows_x)) {
+         float result = tmp[threadIdx.x];
+-        if constexpr (has_fusion) {
++        if (has_fusion) {
+             const uint32_t bias_idx = channel_x*stride_channel_dst + row0 + threadIdx.x;
+ 
+-            if constexpr (type == GGML_TYPE_NVFP4) {
++            if (type == GGML_TYPE_NVFP4) {
+                 if (x_scale) {
+                     result *= x_scale[channel_x];
+                 }
+@@ -942,7 +942,7 @@
+             }
+             if (use_gate) {
+                 float gate_value = tmp_gate[threadIdx.x];
+-                if constexpr (type == GGML_TYPE_NVFP4) {
++                if (type == GGML_TYPE_NVFP4) {
+                     if (gate_scale) {
+                         gate_value *= gate_scale[channel_x];
+                     }
+@@ -972,9 +972,9 @@
+         dst[channel_dst*stride_channel_dst + token_idx*stride_col_dst + row0 + threadIdx.x] = result;
+     }
+ 
+-    if constexpr (!has_fusion) {
++    if (!has_fusion) {
+         GGML_UNUSED_VARS(use_gate, tmp_gate, vgate, x_bias, gate_bias, active_glu, glu_limit, x_scale, gate_scale);
+-    } else if constexpr (type != GGML_TYPE_NVFP4) {
++    } else if (type != GGML_TYPE_NVFP4) {
+         GGML_UNUSED_VARS(x_scale, gate_scale);
+     }
+ }
+@@ -1003,7 +1003,7 @@
+ 
+     const bool has_fusion = fusion.gate != nullptr || fusion.x_bias != nullptr || fusion.gate_bias != nullptr ||
+                             fusion.x_scale != nullptr || fusion.gate_scale != nullptr;
+-    if constexpr (c_ncols_dst == 1) {
++    if (c_ncols_dst == 1) {
+         if (has_fusion) {
+             const ggml_cuda_kernel_launch_params launch_params = ggml_cuda_kernel_launch_params(block_nums, block_dims, nbytes_shared, stream);
+             ggml_cuda_kernel_launch(mul_mat_vec_q<type, c_ncols_dst, true, small_k, halve_iters>, launch_params,
+diff -ruN pin/ggml/src/ggml-cuda/norm.cu merged/ggml/src/ggml-cuda/norm.cu
+--- a/ggml/src/ggml-cuda/norm.cu	2026-09-19 12:32:52.000000000 +0700
++++ b/ggml/src/ggml-cuda/norm.cu	2026-09-25 10:58:41.727142098 +0700
+@@ -111,14 +111,14 @@
+     x   += sample*stride_sample + channel*stride_channel + row*stride_row;
+     dst += ((sample*nchannels + channel)*nrows + row)*ncols;
+ 
+-    if constexpr (do_multiply) {
++    if (do_multiply) {
+         const uint32_t mul_row     = fastmodulo(row, mul_nrows_packed);
+         const uint32_t mul_channel = fastmodulo(channel, mul_nchannels_packed);
+         const uint32_t mul_sample  = fastmodulo(sample, mul_nsamples_packed);
+         mul += mul_sample * mul_stride_sample + mul_channel * mul_stride_channel + mul_row * mul_stride_row;
+     }
+ 
+-    if constexpr (do_add) {
++    if (do_add) {
+         const int add_row     = fastmodulo(row, add_nrows_packed);
+         const int add_channel = fastmodulo(channel, add_nchannels_packed);
+         const int add_sample  = fastmodulo(sample, add_nsamples_packed);
+@@ -141,11 +141,11 @@
+     const float scale = rsqrtf(mean + eps);
+ 
+     for (int col = tid; col < ncols; col += block_size) {
+-        if constexpr (do_multiply && do_add) {
++        if (do_multiply && do_add) {
+             const int mul_col = fastmodulo(col, mul_ncols_packed);
+             const int add_col = fastmodulo(col, add_ncols_packed);
+             dst[col]          = scale * x[col] * mul[mul_col] + add[add_col];
+-        } else if constexpr (do_multiply) {
++        } else if (do_multiply) {
+             const int mul_col = fastmodulo(col, mul_ncols_packed);
+             dst[col]          = scale * x[col] * mul[mul_col];
+         } else {
+@@ -177,8 +177,8 @@
+     // sum up partial sums
+     sum_xx = warp_reduce_sum(sum_xx);
+     sum_xg = warp_reduce_sum(sum_xg);
+-    if constexpr (block_size > WARP_SIZE) {
+-        static_assert(block_size == 1024, "unexpected block_size");
++    if (block_size > WARP_SIZE) {
++        static_assert(block_size <= WARP_SIZE || block_size == 1024, "unexpected block_size");
+         __shared__ float s_sum_xx[32];
+         __shared__ float s_sum_xg[32];
+         const int warp_id = threadIdx.x / WARP_SIZE;
+diff -ruN pin/ggml/src/ggml-cuda/quantize.cu merged/ggml/src/ggml-cuda/quantize.cu
+--- a/ggml/src/ggml-cuda/quantize.cu	2026-09-19 12:32:52.000000000 +0700
++++ b/ggml/src/ggml-cuda/quantize.cu	2026-09-25 10:58:41.729604540 +0700
+@@ -134,7 +134,7 @@
+     const int64_t blocks_per_col = (ne0 + QK_FP4_MMQ - 1) / QK_FP4_MMQ;
+ 
+     int64_t base_idx;
+-    if constexpr (scatter) {
++    if (scatter) {
+         base_idx = (int64_t) blockIdx.x * s02; // one physical row per token
+     } else {
+         const int64_t i2  = blockIdx.y % ne2;
+@@ -145,7 +145,7 @@
+     const float * __restrict__  x_row = x + base_idx;
+ 
+     float amax = 0.0f;
+-    if constexpr (use_aligned_float8) {
++    if (use_aligned_float8) {
+         for (int64_t i0 = 8 * threadIdx.x; i0 < ne00; i0 += 8 * blockDim.x) {
+             const float * x_base = x_row + i0;
+             const float8 v = reinterpret_cast<const float8 *>(x_base)[0];
+@@ -180,7 +180,7 @@
+         amax = warp_reduce_max<WARP_SIZE>(amax);
+         if (lane == 0) {
+             warp_amax[0] = amax / (6.0f * 448.0f);
+-            if constexpr (scatter) {
++            if (scatter) {
+ #pragma unroll
+                 for (int slot = 0; slot < n_expert_used; ++slot) {
+                     const int64_t i = ids[(int64_t) blockIdx.x * n_expert_used + slot];
+@@ -205,7 +205,7 @@
+         const float inv_col_scale = row_scale > 0.0f ? 1.0f / row_scale : 0.0f;
+ 
+         float vals[QK_NVFP4_SUB];
+-        if constexpr (use_aligned_float8) {
++        if (use_aligned_float8) {
+             const float * x_base = x_row + i0_base;
+             const float8 v0 = i0_base +  7 < ne00 ? reinterpret_cast<const float8 *>(x_base)[0]     : float8{0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+             const float8 v1 = i0_base + 15 < ne00 ? reinterpret_cast<const float8 *>(x_base + 8)[0] : float8{0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+@@ -306,7 +306,7 @@
+         }
+ #endif // CUDART_VERSION >= 12080
+ 
+-        if constexpr (scatter) {
++        if (scatter) {
+ #pragma unroll
+             for (int slot = 0; slot < n_expert_used; ++slot) {
+                 const int64_t i = ids[(int64_t) blockIdx.x * n_expert_used + slot];
+@@ -370,7 +370,7 @@
+ 
+     ggml_cuda_pdl_sync();
+     int64_t base_pos;
+-    if constexpr (scatter) {
++    if (scatter) {
+         base_pos = (int64_t) blockIdx.x * s02; // one physical row per token
+     } else {
+         const int64_t i2  = blockIdx.z % ne2;
+@@ -424,7 +424,7 @@
+     }
+ 
+     block_fp4_mmq * y = (block_fp4_mmq *) vy;
+-    if constexpr (scatter) {
++    if (scatter) {
+ #pragma unroll
+         for (int slot = 0; slot < n_expert_used; ++slot) {
+             const int64_t i = ids[(int64_t) blockIdx.x * n_expert_used + slot];
+@@ -473,7 +473,7 @@
+     ggml_cuda_pdl_sync();
+ 
+     int64_t base_idx;
+-    if constexpr (scatter) {
++    if (scatter) {
+         base_idx = (int64_t) blockIdx.x * s02; // one physical row per token
+     } else {
+         const int64_t i2  = blockIdx.z % ne2;
+@@ -525,7 +525,7 @@
+ #pragma unroll
+     for (int slot = 0; slot < nwrite; ++slot) {
+         int64_t ib;
+-        if constexpr (scatter) {
++        if (scatter) {
+             const int64_t i = ids[(int64_t) blockIdx.x * n_expert_used + slot];
+             ib = k_block*ne1 + i;
+         } else {
+diff -ruN pin/ggml/src/ggml-cuda/rope.cu merged/ggml/src/ggml-cuda/rope.cu
+--- a/ggml/src/ggml-cuda/rope.cu	2026-09-19 12:32:52.000000000 +0700
++++ b/ggml/src/ggml-cuda/rope.cu	2026-09-25 10:58:41.732052263 +0700
+@@ -86,10 +86,10 @@
+     }
+ 
+     const auto & store_coaelsced = [&](float x0, float x1) {
+-        if constexpr (std::is_same_v<float, D>) {
++        if (std::is_same<float, D>::value) {
+             float2 v = make_float2(x0, x1);
+             ggml_cuda_memcpy_1<8>(dst + idst, &v);
+-        } else if constexpr (std::is_same_v<half, D>) {
++        } else if (std::is_same<half, D>::value) {
+             half2 v = make_half2(x0, x1);
+             ggml_cuda_memcpy_1<4>(dst + idst, &v);
+         }
+diff -ruN pin/ggml/src/ggml-cuda/softmax.cu merged/ggml/src/ggml-cuda/softmax.cu
+--- a/ggml/src/ggml-cuda/softmax.cu	2026-09-19 12:32:52.000000000 +0700
++++ b/ggml/src/ggml-cuda/softmax.cu	2026-09-25 10:58:41.734116625 +0700
+@@ -6,7 +6,9 @@
+ #include <hip/hip_cooperative_groups.h>
+ #else
+ #include <cooperative_groups.h>
++#if CUDART_VERSION >= 11000
+ #include <cooperative_groups/reduce.h>
++#endif // CUDART_VERSION >= 11000
+ #endif // GGML_USE_HIP
+ 
+ #include <cstdint>
+@@ -143,6 +145,9 @@
+ }
+ 
+ // TODO: Template to allow keeping ncols in registers if they fit
++// CUDA 10.x: cg::this_grid()/grid_group require -rdc=true, the path is only
++// compiled for CUDA >= 11.0 (the dispatcher falls back to soft_max_f32).
++#if CUDART_VERSION >= 11000
+ static __device__ void soft_max_f32_parallelize_cols_single_row(const float * __restrict__ x,
+                                                                 float * __restrict__ dst,
+                                                                 float * __restrict__ tmp_maxs,
+@@ -248,6 +253,7 @@
+         col += step_size * n_elem_per_thread;
+     }
+ }
++#endif // CUDART_VERSION >= 11000
+ 
+ #ifdef __clang__
+ #pragma clang diagnostic pop
+@@ -295,8 +301,12 @@
+         return false;
+     };
+ 
+-    // unary fold over launch_kernel
+-    if ((launch_kernel(std::integral_constant<int, Ns>{}) || ...)) {
++    // C++14 replacement for a binary || fold over launch_kernel:
++    // braced-init lists expand left-to-right, the leading flag keeps the short-circuit behavior.
++    bool launched = false;
++    const int launched_probe[] = { (launched || (launched = launch_kernel(std::integral_constant<int, Ns>{})))..., 0 };
++    GGML_UNUSED(launched_probe);
++    if (launched) {
+         return;
+     }
+ 
+@@ -305,6 +315,7 @@
+     soft_max_f32<true, 0, 0><<<block_nums, block_dims, nbytes_shared, stream>>>(x, mask, sinks, dst, p);
+ }
+ 
++#if CUDART_VERSION >= 11000
+ __launch_bounds__(8*WARP_SIZE, 1) static __global__ void soft_max_f32_parallelize_cols(const float * __restrict__ x,
+                                                      float * __restrict__ dst,
+                                                      float * __restrict__ tmp_maxs,
+@@ -323,6 +334,7 @@
+                                                  tmp_sums, shared_vals[0], shared_vals[1], p);
+     }
+ }
++#endif // CUDART_VERSION >= 11000
+ 
+ template <typename T>
+ static void soft_max_f32_cuda(const float *                                x,
+@@ -352,6 +364,7 @@
+         // Parallelize across SMs for top-p/dist-sampling
+         // The heuristic for parallelizing rows across SMs vs parallelizing single row & looping over all rows was done on the basis of a B6000 GPU and
+         // Can be adapted further for lower-SM-count GPUs, though keeping data in registers should be implemented first as that is the optimal solution.
++#if CUDART_VERSION >= 11000
+         if (ggml_cuda_info().devices[id].supports_cooperative_launch &&
+             ncols_x / (params.ne01 * params.ne02 * params.ne03) > 8192 && mask == nullptr && sinks == nullptr &&
+             params.scale == 1.0f && params.max_bias == 0.0f) {
+@@ -363,7 +376,9 @@
+             CUDA_CHECK(cudaLaunchCooperativeKernel((void *) soft_max_f32_parallelize_cols,
+                                                    dim3(ggml_cuda_info().devices[id].nsm, 1, 1),
+                                                    dim3(WARP_SIZE * 8, 1, 1), kernel_args, 0, stream));
+-        } else {
++        } else
++#endif // CUDART_VERSION >= 11000
++        {
+             const size_t nbytes_shared_low = WARP_SIZE * sizeof(float);
+             soft_max_f32<false, 0, 0>
+                 <<<block_nums, block_dims, nbytes_shared_low, stream>>>(x, mask, sinks, dst, params);
+diff -ruN pin/ggml/src/ggml-cuda/topk-moe.cu merged/ggml/src/ggml-cuda/topk-moe.cu
+--- a/ggml/src/ggml-cuda/topk-moe.cu	2026-09-19 12:32:52.000000000 +0700
++++ b/ggml/src/ggml-cuda/topk-moe.cu	2026-09-25 10:58:41.736068102 +0700
+@@ -153,7 +153,7 @@
+     // when no bias, we use wt directly for both selection and weight values
+     [[maybe_unused]] float selection_wt[has_bias ? experts_per_thread : 1];
+ 
+-    if constexpr (has_bias) {
++    if (has_bias) {
+ #pragma unroll
+         for (int i = 0; i < experts_per_thread; i++) {
+             selection_wt[i] = -INFINITY;
+@@ -184,7 +184,7 @@
+         float max_val    = wt[0];
+         int   max_expert = threadIdx.x;
+ 
+-        if constexpr (has_bias) {
++        if (has_bias) {
+             float max_val_s = selection_wt[0];
+ 
+ #pragma unroll
+diff -ruN pin/ggml/src/ggml-cuda/tri.cu merged/ggml/src/ggml-cuda/tri.cu
+--- a/ggml/src/ggml-cuda/tri.cu	2026-09-19 12:32:52.000000000 +0700
++++ b/ggml/src/ggml-cuda/tri.cu	2026-09-25 10:58:41.738338368 +0700
+@@ -23,7 +23,7 @@
+     const T * src_row = src + i1*nb01 + i2*nb02 + i3*nb03;
+     T       * dst_row = dst + i1*nb1  + i2*nb2  + i3*nb3;
+ 
+-    if constexpr (prefix_keep) {
++    if (prefix_keep) {
+         for (int64_t i0 = threadIdx.x; i0 < split_point; i0 += blockDim.x) {
+             dst_row[i0] = src_row[i0];
+         }
+diff -ruN pin/ggml/src/ggml-cuda/vendors/cuda-bf16-shim.cuh merged/ggml/src/ggml-cuda/vendors/cuda-bf16-shim.cuh
+--- a/ggml/src/ggml-cuda/vendors/cuda-bf16-shim.cuh	1970-01-01 07:00:00.000000000 +0700
++++ b/ggml/src/ggml-cuda/vendors/cuda-bf16-shim.cuh	2026-09-25 10:58:41.740309302 +0700
+@@ -0,0 +1,282 @@
++// Software bf16 fallback for CUDA toolkits that predate cuda_bf16.h (CUDA < 11.0).
++// Provides nv_bfloat16/nv_bfloat162 with the API surface used by the ggml CUDA backend.
++// All arithmetic is performed in fp32 and rounded back to bf16, so the numerical
++// behavior matches hardware bf16 that stores fp32 values rounded to 8 mantissa bits.
++// The type layout is bit-identical to cuda_bf16.h (uint16_t), so tensors allocated
++// elsewhere can be reinterpreted freely.
++#pragma once
++
++#include <cstdint>
++#include <cstring>
++
++struct __nv_bfloat16_raw {
++    uint16_t x;
++};
++
++struct __nv_bfloat162_raw {
++    __nv_bfloat16_raw x;
++    __nv_bfloat16_raw y;
++};
++
++// Round-to-nearest-even fp32 -> bf16, NaN-preserving.
++static __host__ __device__ __forceinline__ uint16_t ggml_cuda_fp32_to_bf16_bits(const float f) {
++    uint32_t bits;
++    memcpy(&bits, &f, sizeof(bits));
++
++    if ((bits & 0x7F800000u) == 0x7F800000u && (bits & 0x007FFFFFu) != 0) {
++        // NaN: keep it a quiet NaN after truncation
++        return (uint16_t)((bits >> 16) | 0x0040u);
++    }
++
++    const uint32_t rounding_bias = 0x7FFFu + ((bits >> 16) & 1u);
++    return (uint16_t)((bits + rounding_bias) >> 16);
++}
++
++static __host__ __device__ __forceinline__ float ggml_cuda_bf16_bits_to_fp32(const uint16_t h) {
++    uint32_t bits = (uint32_t) h << 16;
++    float f;
++    memcpy(&f, &bits, sizeof(f));
++    return f;
++}
++
++struct __nv_bfloat16 {
++    __nv_bfloat16_raw __x;
++
++    __host__ __device__ __nv_bfloat16() = default;
++
++    __host__ __device__ __nv_bfloat16(const __nv_bfloat16_raw & h) : __x(h) {}
++
++    __host__ __device__ __nv_bfloat16(const __nv_bfloat16 & h) : __x(h.__x) {}
++
++    __host__ __device__ __nv_bfloat16 & operator=(const __nv_bfloat16_raw & h) {
++        __x = h;
++        return *this;
++    }
++
++    __host__ __device__ operator __nv_bfloat16_raw() const { return __x; }
++
++    __host__ __device__ __nv_bfloat16(const float f) : __x(__nv_bfloat16_raw{ggml_cuda_fp32_to_bf16_bits(f)}) {}
++
++    __host__ __device__ __nv_bfloat16 & operator=(const float f) {
++        __x.x = ggml_cuda_fp32_to_bf16_bits(f);
++        return *this;
++    }
++
++    __host__ __device__ operator float() const { return ggml_cuda_bf16_bits_to_fp32(__x.x); }
++};
++
++typedef __nv_bfloat16 nv_bfloat16;
++
++struct __nv_bfloat162 {
++    __nv_bfloat16 x;
++    __nv_bfloat16 y;
++
++    __host__ __device__ __nv_bfloat162() = default;
++
++    __host__ __device__ __nv_bfloat162(const __nv_bfloat162_raw & h) : x(h.x), y(h.y) {}
++
++    __host__ __device__ __nv_bfloat162 & operator=(const __nv_bfloat162_raw & h) {
++        x = h.x;
++        y = h.y;
++        return *this;
++    }
++
++    __host__ __device__ operator __nv_bfloat162_raw() const {
++        __nv_bfloat162_raw h;
++        h.x = x;
++        h.y = y;
++        return h;
++    }
++
++    __host__ __device__ __nv_bfloat162(const __nv_bfloat16 & x_, const __nv_bfloat16 & y_) : x(x_), y(y_) {}
++
++    __host__ __device__ __nv_bfloat162(const float x_, const float y_) : x(x_), y(y_) {}
++};
++
++typedef __nv_bfloat162 nv_bfloat162;
++
++// ---------------------------------------------------------------------------
++// conversion intrinsics (names mirror cuda_bf16.h)
++// ---------------------------------------------------------------------------
++
++static __host__ __device__ __forceinline__ nv_bfloat16 __float2bfloat16(const float f) {
++    nv_bfloat16 h;
++    h.__x.x = ggml_cuda_fp32_to_bf16_bits(f);
++    return h;
++}
++
++static __host__ __device__ __forceinline__ nv_bfloat16 __float2bfloat16_rn(const float f) {
++    return __float2bfloat16(f);
++}
++
++static __host__ __device__ __forceinline__ float __bfloat162float(const nv_bfloat16 h) {
++    return ggml_cuda_bf16_bits_to_fp32(h.__x.x);
++}
++
++static __host__ __device__ __forceinline__ nv_bfloat16 __bfloat16_as_ushort(const uint16_t v) {
++    nv_bfloat16 h;
++    h.__x.x = v;
++    return h;
++}
++
++static __host__ __device__ __forceinline__ uint16_t __ushort_as_bfloat16(const nv_bfloat16 h) {
++    return h.__x.x;
++}
++
++static __host__ __device__ __forceinline__ nv_bfloat16 __low2bfloat16(const nv_bfloat162 h) {
++    return h.x;
++}
++
++static __host__ __device__ __forceinline__ nv_bfloat16 __high2bfloat16(const nv_bfloat162 h) {
++    return h.y;
++}
++
++static __host__ __device__ __forceinline__ float __low2float(const nv_bfloat162 h) {
++    return ggml_cuda_bf16_bits_to_fp32(h.x.__x.x);
++}
++
++static __host__ __device__ __forceinline__ float __high2float(const nv_bfloat162 h) {
++    return ggml_cuda_bf16_bits_to_fp32(h.y.__x.x);
++}
++
++static __host__ __device__ __forceinline__ float2 __bfloat1622float2(const nv_bfloat162 h) {
++    return make_float2(ggml_cuda_bf16_bits_to_fp32(h.x.__x.x), ggml_cuda_bf16_bits_to_fp32(h.y.__x.x));
++}
++
++static __host__ __device__ __forceinline__ nv_bfloat162 __floats2bfloat162_rn(const float x, const float y) {
++    return nv_bfloat162(x, y);
++}
++
++static __host__ __device__ __forceinline__ nv_bfloat162 __float22bfloat162_rn(const float2 f) {
++    return nv_bfloat162(f.x, f.y);
++}
++
++static __host__ __device__ __forceinline__ nv_bfloat162 __halves2bfloat162(const nv_bfloat16 x, const nv_bfloat16 y) {
++    return nv_bfloat162(x, y);
++}
++
++static __host__ __device__ __forceinline__ nv_bfloat162 make_bfloat162(const nv_bfloat16 x, const nv_bfloat16 y) {
++    return nv_bfloat162(x, y);
++}
++
++static __host__ __device__ __forceinline__ nv_bfloat162 __lowhigh2highlow(const nv_bfloat162 h) {
++    return nv_bfloat162(h.y, h.x);
++}
++
++// ---------------------------------------------------------------------------
++// arithmetic (computed in fp32, rounded back to bf16)
++// ---------------------------------------------------------------------------
++
++#define GGML_CUDA_BF16_BINOP(op)                                                                           \
++    static __host__ __device__ __forceinline__ nv_bfloat16 operator op (const nv_bfloat16 a,                \
++                                                                        const nv_bfloat16 b) {              \
++        return __float2bfloat16(__bfloat162float(a) op __bfloat162float(b));                                \
++    }                                                                                                       \
++    static __host__ __device__ __forceinline__ nv_bfloat16 operator op (const nv_bfloat16 a, const float b) { \
++        return __float2bfloat16(__bfloat162float(a) op b);                                                  \
++    }                                                                                                       \
++    static __host__ __device__ __forceinline__ nv_bfloat16 operator op (const float a, const nv_bfloat16 b) { \
++        return __float2bfloat16(a op __bfloat162float(b));                                                  \
++    }                                                                                                       \
++    static __host__ __device__ __forceinline__ nv_bfloat162 operator op (const nv_bfloat162 a,              \
++                                                                        const nv_bfloat162 b) {              \
++        return __floats2bfloat162_rn(__low2float(a) op __low2float(b), __high2float(a) op __high2float(b)); \
++    }
++
++GGML_CUDA_BF16_BINOP(+)
++GGML_CUDA_BF16_BINOP(-)
++GGML_CUDA_BF16_BINOP(*)
++GGML_CUDA_BF16_BINOP(/)
++
++#undef GGML_CUDA_BF16_BINOP
++
++#define GGML_CUDA_BF16_CMPOUND(op)                                                            \
++    static __host__ __device__ __forceinline__ nv_bfloat16 & operator op (nv_bfloat16 & a,      \
++                                                                           const nv_bfloat16 b) { \
++        a = a op b;                                                                            \
++        return a;                                                                              \
++    }                                                                                          \
++    static __host__ __device__ __forceinline__ nv_bfloat16 & operator op (nv_bfloat16 & a,      \
++                                                                           const float b) {       \
++        a = a op nv_bfloat16(b);                                                               \
++        return a;                                                                              \
++    }                                                                                          \
++    static __host__ __device__ __forceinline__ nv_bfloat162 & operator op (nv_bfloat162 & a,    \
++                                                                             const nv_bfloat162 b) { \
++        a = a op b;                                                                            \
++        return a;                                                                              \
++    }
++
++GGML_CUDA_BF16_CMPOUND(+=)
++GGML_CUDA_BF16_CMPOUND(-=)
++GGML_CUDA_BF16_CMPOUND(*=)
++GGML_CUDA_BF16_CMPOUND(/=)
++
++#undef GGML_CUDA_BF16_CMPOUND
++
++#define GGML_CUDA_BF16_CMP(op)                                                                       \
++    static __host__ __device__ __forceinline__ bool operator op (const nv_bfloat16 a, const nv_bfloat16 b) { \
++        return __bfloat162float(a) op __bfloat162float(b);                                            \
++    }                                                                                                 \
++    static __host__ __device__ __forceinline__ bool operator op (const nv_bfloat16 a, const float b) {  \
++        return __bfloat162float(a) op b;                                                              \
++    }                                                                                                 \
++    static __host__ __device__ __forceinline__ bool operator op (const float a, const nv_bfloat16 b) {  \
++        return a op __bfloat162float(b);                                                              \
++    }
++
++GGML_CUDA_BF16_CMP(==)
++GGML_CUDA_BF16_CMP(!=)
++GGML_CUDA_BF16_CMP(<)
++GGML_CUDA_BF16_CMP(>)
++GGML_CUDA_BF16_CMP(<=)
++GGML_CUDA_BF16_CMP(>=)
++
++#undef GGML_CUDA_BF16_CMP
++
++static __host__ __device__ __forceinline__ nv_bfloat16 operator-(const nv_bfloat16 a) {
++    return __float2bfloat16(-__bfloat162float(a));
++}
++
++static __host__ __device__ __forceinline__ nv_bfloat162 operator-(const nv_bfloat162 a) {
++    return __floats2bfloat162_rn(-__low2float(a), -__high2float(a));
++}
++
++static __host__ __device__ __forceinline__ nv_bfloat16 __hneg(const nv_bfloat16 a) {
++    return -a;
++}
++
++static __host__ __device__ __forceinline__ nv_bfloat162 __hneg2(const nv_bfloat162 a) {
++    return -a;
++}
++
++static __host__ __device__ __forceinline__ nv_bfloat16 __hadd(const nv_bfloat16 a, const nv_bfloat16 b) { return a + b; }
++static __host__ __device__ __forceinline__ nv_bfloat16 __hsub(const nv_bfloat16 a, const nv_bfloat16 b) { return a - b; }
++static __host__ __device__ __forceinline__ nv_bfloat16 __hmul(const nv_bfloat16 a, const nv_bfloat16 b) { return a * b; }
++static __host__ __device__ __forceinline__ nv_bfloat16 __hfma(const nv_bfloat16 a, const nv_bfloat16 b, const nv_bfloat16 c) {
++    return __float2bfloat16(__bfloat162float(a) * __bfloat162float(b) + __bfloat162float(c));
++}
++
++static __host__ __device__ __forceinline__ nv_bfloat162 __hadd2(const nv_bfloat162 a, const nv_bfloat162 b) { return a + b; }
++static __host__ __device__ __forceinline__ nv_bfloat162 __hsub2(const nv_bfloat162 a, const nv_bfloat162 b) { return a - b; }
++static __host__ __device__ __forceinline__ nv_bfloat162 __hmul2(const nv_bfloat162 a, const nv_bfloat162 b) { return a * b; }
++static __host__ __device__ __forceinline__ nv_bfloat162 __hfma2(const nv_bfloat162 a, const nv_bfloat162 b, const nv_bfloat162 c) {
++    return __floats2bfloat162_rn(__low2float(a) * __low2float(b) + __low2float(c),
++                                 __high2float(a) * __high2float(b) + __high2float(c));
++}
++
++static __host__ __device__ __forceinline__ nv_bfloat16 __hmax(const nv_bfloat16 a, const nv_bfloat16 b) {
++    return __float2bfloat16(fmaxf(__bfloat162float(a), __bfloat162float(b)));
++}
++
++static __host__ __device__ __forceinline__ nv_bfloat16 __hmin(const nv_bfloat16 a, const nv_bfloat16 b) {
++    return __float2bfloat16(fminf(__bfloat162float(a), __bfloat162float(b)));
++}
++
++static __host__ __device__ __forceinline__ nv_bfloat162 __hmax2(const nv_bfloat162 a, const nv_bfloat162 b) {
++    return __floats2bfloat162_rn(fmaxf(__low2float(a), __low2float(b)), fmaxf(__high2float(a), __high2float(b)));
++}
++
++static __host__ __device__ __forceinline__ nv_bfloat162 __hmin2(const nv_bfloat162 a, const nv_bfloat162 b) {
++    return __floats2bfloat162_rn(fminf(__low2float(a), __low2float(b)), fminf(__high2float(a), __high2float(b)));
++}
+diff -ruN pin/ggml/src/ggml-cuda/vendors/cuda.h merged/ggml/src/ggml-cuda/vendors/cuda.h
+--- a/ggml/src/ggml-cuda/vendors/cuda.h	2026-09-19 12:32:52.000000000 +0700
++++ b/ggml/src/ggml-cuda/vendors/cuda.h	2026-09-25 10:58:41.742252034 +0700
+@@ -3,7 +3,13 @@
+ #include <cuda_runtime.h>
+ #include <cuda.h>
+ #include <cublas_v2.h>
++#if CUDART_VERSION >= 11000 && !defined(GGML_CUDA_FORCE_BF16_SHIM)
+ #include <cuda_bf16.h>
++#else
++// CUDA < 11.0 has no cuda_bf16.h: fall back to a software bf16 implementation.
++// GGML_CUDA_FORCE_BF16_SHIM can be defined on newer toolkits to exercise the fallback.
++#include "cuda-bf16-shim.cuh"
++#endif
+ #include <cuda_fp16.h>
+ 
+ #ifdef GGML_USE_NCCL

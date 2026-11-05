@@ -1,0 +1,1155 @@
+{
+ "registered": "2026-10-08T18:07:02+07:00",
+ "campaign": "the network study: a shaped Pi 4 <-> Jetson link (netshape.sh), TinyLlama Pi 4 1 + Jetson 21, the head last or on the host; does the predictor's link term, and the head placement it decides, hold?",
+ "inputs_sha256": {
+  "characterisation.csv": "ef94c22318ccb0ce9ab913a08174d110095d9d4e0cad65aeeb052304dbc13d6a",
+  "model_shapes.json": "c92bbc0278b030d5218d7740b3fac99f146b5bdeffe684404d94a012f7232c38",
+  "link.json": "f961e94b8781e34081e0f11b3fb6339a150ae229fe43eb4566ca44094384568c",
+  "memory_at_rest.json": "1ec5a19725d7c565b9b97449beb0130b179da895e2e93fdb5e36e9ea4f141589",
+  "predict_pool.py": "9024585bfee4f1db362150df79d353f5d203264aa9da6d6f367d411c84c16576",
+  "run_pool.sh": "3eafbc43fabece135aa611b26ed699f3eb25f303e30147f28660cbf5e155f349",
+  "compare_pool.py": "17604c2f0fe3541a77c0918500b313b2874cbec0ae9e5f733b2a71ecf1b96125",
+  "netshape.sh": "376159b1cc28f2d40ca8f1e1fe79334e7d87a64554239e807ece442381de2223",
+  "measure_link.sh": "b8c58410ea0b5d081abed9f5fe04185cff16ef22c579893ee9ad95b66c32b49c",
+  "link_to_json.py": "6f5b0b2a7f024690d667ca2a509d6475517954bef1b065831c08ed303db5481b",
+  "netshape_campaign.sh": "ee5f98748bfa08ee2961a3630089217d70f008982384016b646ffe49c2a20f0e",
+  "score_netshape_20261008.py": "4c8818da998302a181caa8798b258a7d3c7440a7342e0c2b3a8cf5a463dd61a1",
+  "register_netshape_20261008.py": "7aa26c22c5e590ba40ae6d3195b7f4438dd2fd7dc5241c5f3cd11db98969d8c5"
+ },
+ "engine_sha256": {
+  "placement.py": "3b143b4b856306b381a55420a2bc73efc461b52ecfa925fdeb68729401b85451",
+  "gguf.py": "805ddefc0c9ef1fb1c010f052da0546d23a35d73343738c08345a339f7486330"
+ },
+ "protocol": "-t 4 -p 64 -n 16 -r 3 -oe jsonl -v",
+ "base_link": {
+  "pair": "pi4-jetson",
+  "mbps": 938.8,
+  "rtt_ms": 1.081
+ },
+ "settings": [
+  {
+   "id": "s0",
+   "rate_mbit": 0,
+   "delay_ms_one_way": 0.0
+  },
+  {
+   "id": "b200",
+   "rate_mbit": 200,
+   "delay_ms_one_way": 0.0
+  },
+  {
+   "id": "b100",
+   "rate_mbit": 100,
+   "delay_ms_one_way": 0.0
+  },
+  {
+   "id": "b50",
+   "rate_mbit": 50,
+   "delay_ms_one_way": 0.0
+  },
+  {
+   "id": "b20",
+   "rate_mbit": 20,
+   "delay_ms_one_way": 0.0
+  },
+  {
+   "id": "d1",
+   "rate_mbit": 0,
+   "delay_ms_one_way": 1.0
+  },
+  {
+   "id": "d5",
+   "rate_mbit": 0,
+   "delay_ms_one_way": 5.0
+  },
+  {
+   "id": "s0r",
+   "rate_mbit": 0,
+   "delay_ms_one_way": 0.0
+  }
+ ],
+ "run_order": [
+  "ns.tiny.last.s0",
+  "ns.tiny.host.s0",
+  "ns.tiny.host.b200",
+  "ns.tiny.last.b200",
+  "ns.tiny.last.b100",
+  "ns.tiny.host.b100",
+  "ns.tiny.host.b50",
+  "ns.tiny.last.b50",
+  "ns.tiny.last.b20",
+  "ns.tiny.host.b20",
+  "ns.tiny.host.d1",
+  "ns.tiny.last.d1",
+  "ns.tiny.last.d5",
+  "ns.tiny.host.d5",
+  "ns.tiny.host.s0r",
+  "ns.tiny.last.s0r"
+ ],
+ "configs": {
+  "ns.tiny.last.s0": {
+   "model": "tinyllama-1.1b-q4km",
+   "quant": "Q4_K_M",
+   "setting": "s0",
+   "layout": "last",
+   "rate_mbit": 0,
+   "delay_ms_one_way": 0.0,
+   "why": "network study 2026-10-08: setting s0, head on the Jetson",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 1
+    },
+    {
+     "node": "jetson",
+     "blocks": 21
+    }
+   ],
+   "head_on": "jetson",
+   "head_at": null,
+   "bench": {
+    "host": "pi4",
+    "args": "-m ~/models/tinyllama-1.1b-q4km.gguf -rpc 192.168.1.109:50052 -ngl 22"
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 1,
+     "need_mib": 168,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 7245
+    },
+    "jetson": {
+     "blocks": 21,
+     "need_mib": 754,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 2341,
+     "weights_mib": 574.4,
+     "weights_cap_mib": 2845,
+     "weights_margin_mib": 2271
+    }
+   },
+   "link_nominal": {
+    "mbps": 938.8,
+    "rtt_ms": 1.081,
+    "pair": "pi4-jetson"
+   },
+   "predicted": {
+    "decode_ms_per_token": 96.3,
+    "decode_tok_s": 10.383,
+    "prefill_ms_per_token": 17.0,
+    "prefill_tok_s": 58.99
+   },
+   "cost_sources": {
+    "pi4": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "jetson": {
+     "host": "vulkan row",
+     "worker": "vulkan row + smoke-test RPC cost"
+    }
+   }
+  },
+  "ns.tiny.host.s0": {
+   "model": "tinyllama-1.1b-q4km",
+   "quant": "Q4_K_M",
+   "setting": "s0",
+   "layout": "host",
+   "rate_mbit": 0,
+   "delay_ms_one_way": 0.0,
+   "why": "network study 2026-10-08: setting s0, head on the host",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 1
+    },
+    {
+     "node": "jetson",
+     "blocks": 21
+    }
+   ],
+   "head_on": "pi4",
+   "head_at": 0,
+   "bench": {
+    "host": "pi4",
+    "args": "-m ~/models/tinyllama-1.1b-q4km.gguf -rpc 192.168.1.109:50052 -ngl 22 -ot \"^output\\.weight=CPU\""
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 1,
+     "need_mib": 219,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 7194
+    },
+    "jetson": {
+     "blocks": 21,
+     "need_mib": 660,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 2435,
+     "weights_mib": 523.1,
+     "weights_cap_mib": 2845,
+     "weights_margin_mib": 2322
+    }
+   },
+   "link_nominal": {
+    "mbps": 938.8,
+    "rtt_ms": 1.081,
+    "pair": "pi4-jetson"
+   },
+   "predicted": {
+    "decode_ms_per_token": 102.6,
+    "decode_tok_s": 9.742,
+    "prefill_ms_per_token": 17.1,
+    "prefill_tok_s": 58.56
+   },
+   "cost_sources": {
+    "pi4": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "jetson": {
+     "host": "vulkan row",
+     "worker": "vulkan row + smoke-test RPC cost"
+    }
+   }
+  },
+  "ns.tiny.host.b200": {
+   "model": "tinyllama-1.1b-q4km",
+   "quant": "Q4_K_M",
+   "setting": "b200",
+   "layout": "host",
+   "rate_mbit": 200,
+   "delay_ms_one_way": 0.0,
+   "why": "network study 2026-10-08: setting b200, head on the host",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 1
+    },
+    {
+     "node": "jetson",
+     "blocks": 21
+    }
+   ],
+   "head_on": "pi4",
+   "head_at": 0,
+   "bench": {
+    "host": "pi4",
+    "args": "-m ~/models/tinyllama-1.1b-q4km.gguf -rpc 192.168.1.109:50052 -ngl 22 -ot \"^output\\.weight=CPU\""
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 1,
+     "need_mib": 219,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 7194
+    },
+    "jetson": {
+     "blocks": 21,
+     "need_mib": 660,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 2435,
+     "weights_mib": 523.1,
+     "weights_cap_mib": 2845,
+     "weights_margin_mib": 2322
+    }
+   },
+   "link_nominal": {
+    "mbps": 200.0,
+    "rtt_ms": 1.081,
+    "pair": "pi4-jetson"
+   },
+   "predicted": {
+    "decode_ms_per_token": 103.2,
+    "decode_tok_s": 9.694,
+    "prefill_ms_per_token": 17.6,
+    "prefill_tok_s": 56.85
+   },
+   "cost_sources": {
+    "pi4": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "jetson": {
+     "host": "vulkan row",
+     "worker": "vulkan row + smoke-test RPC cost"
+    }
+   }
+  },
+  "ns.tiny.last.b200": {
+   "model": "tinyllama-1.1b-q4km",
+   "quant": "Q4_K_M",
+   "setting": "b200",
+   "layout": "last",
+   "rate_mbit": 200,
+   "delay_ms_one_way": 0.0,
+   "why": "network study 2026-10-08: setting b200, head on the Jetson",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 1
+    },
+    {
+     "node": "jetson",
+     "blocks": 21
+    }
+   ],
+   "head_on": "jetson",
+   "head_at": null,
+   "bench": {
+    "host": "pi4",
+    "args": "-m ~/models/tinyllama-1.1b-q4km.gguf -rpc 192.168.1.109:50052 -ngl 22"
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 1,
+     "need_mib": 168,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 7245
+    },
+    "jetson": {
+     "blocks": 21,
+     "need_mib": 754,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 2341,
+     "weights_mib": 574.4,
+     "weights_cap_mib": 2845,
+     "weights_margin_mib": 2271
+    }
+   },
+   "link_nominal": {
+    "mbps": 200.0,
+    "rtt_ms": 1.081,
+    "pair": "pi4-jetson"
+   },
+   "predicted": {
+    "decode_ms_per_token": 100.6,
+    "decode_tok_s": 9.94,
+    "prefill_ms_per_token": 17.3,
+    "prefill_tok_s": 57.89
+   },
+   "cost_sources": {
+    "pi4": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "jetson": {
+     "host": "vulkan row",
+     "worker": "vulkan row + smoke-test RPC cost"
+    }
+   }
+  },
+  "ns.tiny.last.b100": {
+   "model": "tinyllama-1.1b-q4km",
+   "quant": "Q4_K_M",
+   "setting": "b100",
+   "layout": "last",
+   "rate_mbit": 100,
+   "delay_ms_one_way": 0.0,
+   "why": "network study 2026-10-08: setting b100, head on the Jetson",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 1
+    },
+    {
+     "node": "jetson",
+     "blocks": 21
+    }
+   ],
+   "head_on": "jetson",
+   "head_at": null,
+   "bench": {
+    "host": "pi4",
+    "args": "-m ~/models/tinyllama-1.1b-q4km.gguf -rpc 192.168.1.109:50052 -ngl 22"
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 1,
+     "need_mib": 168,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 7245
+    },
+    "jetson": {
+     "blocks": 21,
+     "need_mib": 754,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 2341,
+     "weights_mib": 574.4,
+     "weights_cap_mib": 2845,
+     "weights_margin_mib": 2271
+    }
+   },
+   "link_nominal": {
+    "mbps": 100.0,
+    "rtt_ms": 1.081,
+    "pair": "pi4-jetson"
+   },
+   "predicted": {
+    "decode_ms_per_token": 106.0,
+    "decode_tok_s": 9.43,
+    "prefill_ms_per_token": 17.7,
+    "prefill_tok_s": 56.56
+   },
+   "cost_sources": {
+    "pi4": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "jetson": {
+     "host": "vulkan row",
+     "worker": "vulkan row + smoke-test RPC cost"
+    }
+   }
+  },
+  "ns.tiny.host.b100": {
+   "model": "tinyllama-1.1b-q4km",
+   "quant": "Q4_K_M",
+   "setting": "b100",
+   "layout": "host",
+   "rate_mbit": 100,
+   "delay_ms_one_way": 0.0,
+   "why": "network study 2026-10-08: setting b100, head on the host",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 1
+    },
+    {
+     "node": "jetson",
+     "blocks": 21
+    }
+   ],
+   "head_on": "pi4",
+   "head_at": 0,
+   "bench": {
+    "host": "pi4",
+    "args": "-m ~/models/tinyllama-1.1b-q4km.gguf -rpc 192.168.1.109:50052 -ngl 22 -ot \"^output\\.weight=CPU\""
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 1,
+     "need_mib": 219,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 7194
+    },
+    "jetson": {
+     "blocks": 21,
+     "need_mib": 660,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 2435,
+     "weights_mib": 523.1,
+     "weights_cap_mib": 2845,
+     "weights_margin_mib": 2322
+    }
+   },
+   "link_nominal": {
+    "mbps": 100.0,
+    "rtt_ms": 1.081,
+    "pair": "pi4-jetson"
+   },
+   "predicted": {
+    "decode_ms_per_token": 103.8,
+    "decode_tok_s": 9.633,
+    "prefill_ms_per_token": 18.2,
+    "prefill_tok_s": 54.8
+   },
+   "cost_sources": {
+    "pi4": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "jetson": {
+     "host": "vulkan row",
+     "worker": "vulkan row + smoke-test RPC cost"
+    }
+   }
+  },
+  "ns.tiny.host.b50": {
+   "model": "tinyllama-1.1b-q4km",
+   "quant": "Q4_K_M",
+   "setting": "b50",
+   "layout": "host",
+   "rate_mbit": 50,
+   "delay_ms_one_way": 0.0,
+   "why": "network study 2026-10-08: setting b50, head on the host",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 1
+    },
+    {
+     "node": "jetson",
+     "blocks": 21
+    }
+   ],
+   "head_on": "pi4",
+   "head_at": 0,
+   "bench": {
+    "host": "pi4",
+    "args": "-m ~/models/tinyllama-1.1b-q4km.gguf -rpc 192.168.1.109:50052 -ngl 22 -ot \"^output\\.weight=CPU\""
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 1,
+     "need_mib": 219,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 7194
+    },
+    "jetson": {
+     "blocks": 21,
+     "need_mib": 660,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 2435,
+     "weights_mib": 523.1,
+     "weights_cap_mib": 2845,
+     "weights_margin_mib": 2322
+    }
+   },
+   "link_nominal": {
+    "mbps": 50.0,
+    "rtt_ms": 1.081,
+    "pair": "pi4-jetson"
+   },
+   "predicted": {
+    "decode_ms_per_token": 105.1,
+    "decode_tok_s": 9.512,
+    "prefill_ms_per_token": 19.6,
+    "prefill_tok_s": 51.13
+   },
+   "cost_sources": {
+    "pi4": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "jetson": {
+     "host": "vulkan row",
+     "worker": "vulkan row + smoke-test RPC cost"
+    }
+   }
+  },
+  "ns.tiny.last.b50": {
+   "model": "tinyllama-1.1b-q4km",
+   "quant": "Q4_K_M",
+   "setting": "b50",
+   "layout": "last",
+   "rate_mbit": 50,
+   "delay_ms_one_way": 0.0,
+   "why": "network study 2026-10-08: setting b50, head on the Jetson",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 1
+    },
+    {
+     "node": "jetson",
+     "blocks": 21
+    }
+   ],
+   "head_on": "jetson",
+   "head_at": null,
+   "bench": {
+    "host": "pi4",
+    "args": "-m ~/models/tinyllama-1.1b-q4km.gguf -rpc 192.168.1.109:50052 -ngl 22"
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 1,
+     "need_mib": 168,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 7245
+    },
+    "jetson": {
+     "blocks": 21,
+     "need_mib": 754,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 2341,
+     "weights_mib": 574.4,
+     "weights_cap_mib": 2845,
+     "weights_margin_mib": 2271
+    }
+   },
+   "link_nominal": {
+    "mbps": 50.0,
+    "rtt_ms": 1.081,
+    "pair": "pi4-jetson"
+   },
+   "predicted": {
+    "decode_ms_per_token": 116.9,
+    "decode_tok_s": 8.551,
+    "prefill_ms_per_token": 18.5,
+    "prefill_tok_s": 54.06
+   },
+   "cost_sources": {
+    "pi4": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "jetson": {
+     "host": "vulkan row",
+     "worker": "vulkan row + smoke-test RPC cost"
+    }
+   }
+  },
+  "ns.tiny.last.b20": {
+   "model": "tinyllama-1.1b-q4km",
+   "quant": "Q4_K_M",
+   "setting": "b20",
+   "layout": "last",
+   "rate_mbit": 20,
+   "delay_ms_one_way": 0.0,
+   "why": "network study 2026-10-08: setting b20, head on the Jetson",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 1
+    },
+    {
+     "node": "jetson",
+     "blocks": 21
+    }
+   ],
+   "head_on": "jetson",
+   "head_at": null,
+   "bench": {
+    "host": "pi4",
+    "args": "-m ~/models/tinyllama-1.1b-q4km.gguf -rpc 192.168.1.109:50052 -ngl 22"
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 1,
+     "need_mib": 168,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 7245
+    },
+    "jetson": {
+     "blocks": 21,
+     "need_mib": 754,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 2341,
+     "weights_mib": 574.4,
+     "weights_cap_mib": 2845,
+     "weights_margin_mib": 2271
+    }
+   },
+   "link_nominal": {
+    "mbps": 20.0,
+    "rtt_ms": 1.081,
+    "pair": "pi4-jetson"
+   },
+   "predicted": {
+    "decode_ms_per_token": 149.6,
+    "decode_tok_s": 6.683,
+    "prefill_ms_per_token": 20.9,
+    "prefill_tok_s": 47.75
+   },
+   "cost_sources": {
+    "pi4": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "jetson": {
+     "host": "vulkan row",
+     "worker": "vulkan row + smoke-test RPC cost"
+    }
+   }
+  },
+  "ns.tiny.host.b20": {
+   "model": "tinyllama-1.1b-q4km",
+   "quant": "Q4_K_M",
+   "setting": "b20",
+   "layout": "host",
+   "rate_mbit": 20,
+   "delay_ms_one_way": 0.0,
+   "why": "network study 2026-10-08: setting b20, head on the host",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 1
+    },
+    {
+     "node": "jetson",
+     "blocks": 21
+    }
+   ],
+   "head_on": "pi4",
+   "head_at": 0,
+   "bench": {
+    "host": "pi4",
+    "args": "-m ~/models/tinyllama-1.1b-q4km.gguf -rpc 192.168.1.109:50052 -ngl 22 -ot \"^output\\.weight=CPU\""
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 1,
+     "need_mib": 219,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 7194
+    },
+    "jetson": {
+     "blocks": 21,
+     "need_mib": 660,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 2435,
+     "weights_mib": 523.1,
+     "weights_cap_mib": 2845,
+     "weights_margin_mib": 2322
+    }
+   },
+   "link_nominal": {
+    "mbps": 20.0,
+    "rtt_ms": 1.081,
+    "pair": "pi4-jetson"
+   },
+   "predicted": {
+    "decode_ms_per_token": 109.1,
+    "decode_tok_s": 9.17,
+    "prefill_ms_per_token": 23.5,
+    "prefill_tok_s": 42.57
+   },
+   "cost_sources": {
+    "pi4": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "jetson": {
+     "host": "vulkan row",
+     "worker": "vulkan row + smoke-test RPC cost"
+    }
+   }
+  },
+  "ns.tiny.host.d1": {
+   "model": "tinyllama-1.1b-q4km",
+   "quant": "Q4_K_M",
+   "setting": "d1",
+   "layout": "host",
+   "rate_mbit": 0,
+   "delay_ms_one_way": 1.0,
+   "why": "network study 2026-10-08: setting d1, head on the host",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 1
+    },
+    {
+     "node": "jetson",
+     "blocks": 21
+    }
+   ],
+   "head_on": "pi4",
+   "head_at": 0,
+   "bench": {
+    "host": "pi4",
+    "args": "-m ~/models/tinyllama-1.1b-q4km.gguf -rpc 192.168.1.109:50052 -ngl 22 -ot \"^output\\.weight=CPU\""
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 1,
+     "need_mib": 219,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 7194
+    },
+    "jetson": {
+     "blocks": 21,
+     "need_mib": 660,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 2435,
+     "weights_mib": 523.1,
+     "weights_cap_mib": 2845,
+     "weights_margin_mib": 2322
+    }
+   },
+   "link_nominal": {
+    "mbps": 938.8,
+    "rtt_ms": 3.081,
+    "pair": "pi4-jetson"
+   },
+   "predicted": {
+    "decode_ms_per_token": 106.6,
+    "decode_tok_s": 9.377,
+    "prefill_ms_per_token": 17.1,
+    "prefill_tok_s": 58.35
+   },
+   "cost_sources": {
+    "pi4": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "jetson": {
+     "host": "vulkan row",
+     "worker": "vulkan row + smoke-test RPC cost"
+    }
+   }
+  },
+  "ns.tiny.last.d1": {
+   "model": "tinyllama-1.1b-q4km",
+   "quant": "Q4_K_M",
+   "setting": "d1",
+   "layout": "last",
+   "rate_mbit": 0,
+   "delay_ms_one_way": 1.0,
+   "why": "network study 2026-10-08: setting d1, head on the Jetson",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 1
+    },
+    {
+     "node": "jetson",
+     "blocks": 21
+    }
+   ],
+   "head_on": "jetson",
+   "head_at": null,
+   "bench": {
+    "host": "pi4",
+    "args": "-m ~/models/tinyllama-1.1b-q4km.gguf -rpc 192.168.1.109:50052 -ngl 22"
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 1,
+     "need_mib": 168,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 7245
+    },
+    "jetson": {
+     "blocks": 21,
+     "need_mib": 754,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 2341,
+     "weights_mib": 574.4,
+     "weights_cap_mib": 2845,
+     "weights_margin_mib": 2271
+    }
+   },
+   "link_nominal": {
+    "mbps": 938.8,
+    "rtt_ms": 3.081,
+    "pair": "pi4-jetson"
+   },
+   "predicted": {
+    "decode_ms_per_token": 100.3,
+    "decode_tok_s": 9.969,
+    "prefill_ms_per_token": 17.0,
+    "prefill_tok_s": 58.77
+   },
+   "cost_sources": {
+    "pi4": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "jetson": {
+     "host": "vulkan row",
+     "worker": "vulkan row + smoke-test RPC cost"
+    }
+   }
+  },
+  "ns.tiny.last.d5": {
+   "model": "tinyllama-1.1b-q4km",
+   "quant": "Q4_K_M",
+   "setting": "d5",
+   "layout": "last",
+   "rate_mbit": 0,
+   "delay_ms_one_way": 5.0,
+   "why": "network study 2026-10-08: setting d5, head on the Jetson",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 1
+    },
+    {
+     "node": "jetson",
+     "blocks": 21
+    }
+   ],
+   "head_on": "jetson",
+   "head_at": null,
+   "bench": {
+    "host": "pi4",
+    "args": "-m ~/models/tinyllama-1.1b-q4km.gguf -rpc 192.168.1.109:50052 -ngl 22"
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 1,
+     "need_mib": 168,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 7245
+    },
+    "jetson": {
+     "blocks": 21,
+     "need_mib": 754,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 2341,
+     "weights_mib": 574.4,
+     "weights_cap_mib": 2845,
+     "weights_margin_mib": 2271
+    }
+   },
+   "link_nominal": {
+    "mbps": 938.8,
+    "rtt_ms": 11.081,
+    "pair": "pi4-jetson"
+   },
+   "predicted": {
+    "decode_ms_per_token": 116.3,
+    "decode_tok_s": 8.598,
+    "prefill_ms_per_token": 17.3,
+    "prefill_tok_s": 57.92
+   },
+   "cost_sources": {
+    "pi4": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "jetson": {
+     "host": "vulkan row",
+     "worker": "vulkan row + smoke-test RPC cost"
+    }
+   }
+  },
+  "ns.tiny.host.d5": {
+   "model": "tinyllama-1.1b-q4km",
+   "quant": "Q4_K_M",
+   "setting": "d5",
+   "layout": "host",
+   "rate_mbit": 0,
+   "delay_ms_one_way": 5.0,
+   "why": "network study 2026-10-08: setting d5, head on the host",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 1
+    },
+    {
+     "node": "jetson",
+     "blocks": 21
+    }
+   ],
+   "head_on": "pi4",
+   "head_at": 0,
+   "bench": {
+    "host": "pi4",
+    "args": "-m ~/models/tinyllama-1.1b-q4km.gguf -rpc 192.168.1.109:50052 -ngl 22 -ot \"^output\\.weight=CPU\""
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 1,
+     "need_mib": 219,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 7194
+    },
+    "jetson": {
+     "blocks": 21,
+     "need_mib": 660,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 2435,
+     "weights_mib": 523.1,
+     "weights_cap_mib": 2845,
+     "weights_margin_mib": 2322
+    }
+   },
+   "link_nominal": {
+    "mbps": 938.8,
+    "rtt_ms": 11.081,
+    "pair": "pi4-jetson"
+   },
+   "predicted": {
+    "decode_ms_per_token": 122.6,
+    "decode_tok_s": 8.154,
+    "prefill_ms_per_token": 17.4,
+    "prefill_tok_s": 57.51
+   },
+   "cost_sources": {
+    "pi4": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "jetson": {
+     "host": "vulkan row",
+     "worker": "vulkan row + smoke-test RPC cost"
+    }
+   }
+  },
+  "ns.tiny.host.s0r": {
+   "model": "tinyllama-1.1b-q4km",
+   "quant": "Q4_K_M",
+   "setting": "s0r",
+   "layout": "host",
+   "rate_mbit": 0,
+   "delay_ms_one_way": 0.0,
+   "why": "network study 2026-10-08: setting s0r, head on the host",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 1
+    },
+    {
+     "node": "jetson",
+     "blocks": 21
+    }
+   ],
+   "head_on": "pi4",
+   "head_at": 0,
+   "bench": {
+    "host": "pi4",
+    "args": "-m ~/models/tinyllama-1.1b-q4km.gguf -rpc 192.168.1.109:50052 -ngl 22 -ot \"^output\\.weight=CPU\""
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 1,
+     "need_mib": 219,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 7194
+    },
+    "jetson": {
+     "blocks": 21,
+     "need_mib": 660,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 2435,
+     "weights_mib": 523.1,
+     "weights_cap_mib": 2845,
+     "weights_margin_mib": 2322
+    }
+   },
+   "link_nominal": {
+    "mbps": 938.8,
+    "rtt_ms": 1.081,
+    "pair": "pi4-jetson"
+   },
+   "predicted": {
+    "decode_ms_per_token": 102.6,
+    "decode_tok_s": 9.742,
+    "prefill_ms_per_token": 17.1,
+    "prefill_tok_s": 58.56
+   },
+   "cost_sources": {
+    "pi4": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "jetson": {
+     "host": "vulkan row",
+     "worker": "vulkan row + smoke-test RPC cost"
+    }
+   }
+  },
+  "ns.tiny.last.s0r": {
+   "model": "tinyllama-1.1b-q4km",
+   "quant": "Q4_K_M",
+   "setting": "s0r",
+   "layout": "last",
+   "rate_mbit": 0,
+   "delay_ms_one_way": 0.0,
+   "why": "network study 2026-10-08: setting s0r, head on the Jetson",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 1
+    },
+    {
+     "node": "jetson",
+     "blocks": 21
+    }
+   ],
+   "head_on": "jetson",
+   "head_at": null,
+   "bench": {
+    "host": "pi4",
+    "args": "-m ~/models/tinyllama-1.1b-q4km.gguf -rpc 192.168.1.109:50052 -ngl 22"
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 1,
+     "need_mib": 168,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 7245
+    },
+    "jetson": {
+     "blocks": 21,
+     "need_mib": 754,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 2341,
+     "weights_mib": 574.4,
+     "weights_cap_mib": 2845,
+     "weights_margin_mib": 2271
+    }
+   },
+   "link_nominal": {
+    "mbps": 938.8,
+    "rtt_ms": 1.081,
+    "pair": "pi4-jetson"
+   },
+   "predicted": {
+    "decode_ms_per_token": 96.3,
+    "decode_tok_s": 10.383,
+    "prefill_ms_per_token": 17.0,
+    "prefill_tok_s": 58.99
+   },
+   "cost_sources": {
+    "pi4": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "jetson": {
+     "host": "vulkan row",
+     "worker": "vulkan row + smoke-test RPC cost"
+    }
+   }
+  }
+ },
+ "crossover_mbps_predicted_nominal": 130.4,
+ "supersedes": {
+  "file": "testbed/dataset/pool_predictions_20261008netshape.json",
+  "sha256": "736fcafab1a44e5756c84baf0d0fb64a51cfa0c0fb2586a11aff1fc171557667",
+  "why": "The router changed (the T628L stopped about 13:57 and was replaced by the home router 192.168.1.1, about 17:00). The first registration's cells launch -rpc 192.168.100.111:50052, which no longer exists: the Jetson is 192.168.1.109. Same cells, settings and hypotheses. The base link was re-measured on the new router (pi4-jetson 938.8 Mbit/s, 1.081 ms, against 938.1 and 0.612 on the T628L), and netshape.sh, measure_link.sh and the GATE-NET checks were updated for the new subnet. No cell of the first registration ever ran."
+ },
+ "hypotheses": [
+  {
+   "id": "NS-FLIP",
+   "claim": "at every setting where the re-priced predictions of the two layouts differ by >= 3 %, the layout predicted faster measures faster in decode"
+  },
+  {
+   "id": "NS-CROSS",
+   "claim": "the crossover interpolated from the measured decode gaps (linear in 1/bandwidth between the bracketing settings) is within a factor 1.5 of the re-priced crossover"
+  },
+  {
+   "id": "NS-ACC",
+   "claim": "every cell's measured decode is within 10 % of its re-priced prediction"
+  },
+  {
+   "id": "NS-RTT",
+   "claim": "per layout, decode's increase over s0 at d1 and d5 against the measured RTT increase, fitted through the origin, has a slope in [1.5, 2.5] (the predictor charges 2)"
+  }
+ ]
+}

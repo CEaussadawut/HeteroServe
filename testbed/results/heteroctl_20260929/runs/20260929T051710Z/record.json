@@ -1,0 +1,80 @@
+{
+  "run_id": "20260929T051710Z",
+  "strategy": "heteroserve-rule",
+  "model": "tinyllama-1.1b-q4_0",
+  "model_path": "/opt/heteroserve/models/tinyllama-1.1b-q4_0.gguf",
+  "tier": "gbe",
+  "layers": {
+    "pi5": 22
+  },
+  "order": [
+    "pi5"
+  ],
+  "participants": [
+    "pi5"
+  ],
+  "tensor_split": [
+    1.0
+  ],
+  "predicted": {
+    "ms_per_token": 58.006,
+    "tokens_per_s": 17.2397,
+    "compute_ms": 58.006,
+    "comm_ms": 0.0,
+    "comm_fraction": 0.0,
+    "participants": [
+      "pi5"
+    ],
+    "phase": "decode",
+    "joules_per_token": null,
+    "mean_power_w": null,
+    "wh_per_1k_tokens": null,
+    "energy": "not measured: no power figure for pi5",
+    "energy_weight": 0.0
+  },
+  "n_predict": 64,
+  "prompt_chars": 39,
+  "seed": 1234,
+  "command": [
+    "/opt/heteroserve/llama.cpp/build/bin/llama-completion",
+    "-m",
+    "/opt/heteroserve/models/tinyllama-1.1b-q4_0.gguf",
+    "--rpc",
+    "192.168.10.11:50052",
+    "-ngl",
+    "99",
+    "--tensor-split",
+    "1.0",
+    "-p",
+    "Explain what a transformer is, briefly.",
+    "-n",
+    "64",
+    "--seed",
+    "1234",
+    "-no-cnv"
+  ],
+  "started_utc": 1790659030.7255545,
+  "ended_utc": 1790659036.5289943,
+  "conditions_start": {
+    "pi5": {
+      "error": "http://192.168.10.11:9410/metrics: <urlopen error [Errno 111] Connection refused>"
+    }
+  },
+  "conditions_end": {
+    "pi5": {
+      "error": "http://192.168.10.11:9410/metrics: <urlopen error [Errno 111] Connection refused>"
+    }
+  },
+  "wall_s": 5.803,
+  "returncode": 0,
+  "timings": {
+    "load_ms": 5429.76,
+    "prefill_ms": 225.28,
+    "prefill_tokens": 11,
+    "prefill_tokens_per_s": 48.83,
+    "ttft_ms_approx": 225.28,
+    "total_ms": 226.37
+  },
+  "ok": false,
+  "failure_hint": "see llama.log"
+}

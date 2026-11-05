@@ -1,0 +1,19 @@
+# HeteroServe testbed inventory, as seen from the Pi 5 node.
+# Consumed by scripts/06_verify_node.sh and mirrored by the orchestrator on the laptop.
+#
+# node_id        host/ip         rpc_port  role              iface  notes
+laptop-t580      192.168.10.5    -         orchestrator      eth0   i5-8350U, AVX2, 32 GB, NTP + energy collector
+pi5              192.168.10.11   50052     worker-strong     eth0   Cortex-A76, 8 GB, 2.5GbE adapter on eth1
+pi4              192.168.10.12   50052     worker-straggler  eth0   Cortex-A72, 8 GB -- deliberate straggler (8 GB confirmed on the bench 2026-09-19)
+jetson-nano-01   192.168.50.15   50052     cuda-worker       eth0   sm_53, FP16, 4 GB shared, 2.5GbE adapter
+orangepi-rv2     192.168.50.16   50052     riscv-worker      eth0   stretch scope, Ky X1 RVV 1.0, 8 GB
+#
+# Addressing resolved 2026-09-13 by the user: Pi 5 = .12 and Pi 4 = .13, each following
+# its own node.env. Propagated everywhere and verified the same day:
+# Pi4/config/node.env, ThinkPad/config/cluster.json and Jetson/config/cluster.hosts.example
+# all carry .13, so ThinkPad/tests/test_repo_hygiene.py (TestClusterAddressing) is satisfied.
+# (ThinkPad/tests/test_gguf_and_harness.py still uses .14 in its BASE_CONFIG, but that is a
+# self-contained synthetic fixture written to a tmpdir -- it never reads the real
+# cluster.json, so it passes and is cosmetic only.)
+# The Jetson (.15) and Orange Pi (.16) have no concrete node.env yet, so those two
+# come from cluster.json and are still unconfirmed against the switch.

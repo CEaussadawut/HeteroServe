@@ -1,0 +1,333 @@
+{
+ "registered_at": "2026-11-03T22:21:19+07:00",
+ "script": "testbed/scripts/register_sp10e_20261103.py",
+ "session": "testbed/scripts/sp10_session_20261103.py",
+ "scorer": "testbed/scripts/score_sp10_20261103.py",
+ "out_prefix": "sp10e",
+ "request_timeout_s": 600,
+ "what": "sp10d again, after the Pi 5's hardware TSO was turned off: the 9B's checking cost from each node's own batch curve (per-node), on two three-node plans it was not fitted on",
+ "follows": {
+  "registrations": [
+   "testbed/dataset/sp10_predictions_20261103.json",
+   "testbed/dataset/sp10c_predictions_20261103.json"
+  ],
+  "why": "carrying the laptop-alone R missed the 9B's laptop + board plans at m 4 (12-18 %)"
+ },
+ "memfile": "testbed/dataset/memory_snapshot_20261103_203101.json",
+ "order": [
+  "P5",
+  "P6"
+ ],
+ "configs": {
+  "P5": {
+   "MODEL": "qwen35_9b",
+   "CTX": "4096",
+   "PLACE": "laptop:20,pi5:7,pi4:6",
+   "PLACE_HEAD": "host",
+   "specs": [
+    "none",
+    "mtp1",
+    "mtp2",
+    "mtp3"
+   ]
+  },
+  "P6": {
+   "MODEL": "qwen35_9b",
+   "CTX": "4096",
+   "PLACE": "laptop:12,pi5:11,pi4:10",
+   "PLACE_HEAD": "host",
+   "specs": [
+    "none",
+    "mtp1",
+    "mtp2",
+    "mtp3"
+   ]
+  }
+ },
+ "spec_args": {
+  "none": "",
+  "mtp1": "--spec-type draft-mtp --spec-draft-n-max 1",
+  "mtp2": "--spec-type draft-mtp --spec-draft-n-max 2",
+  "mtp3": "--spec-type draft-mtp --spec-draft-n-max 3"
+ },
+ "prompts": {
+  "free": "Explain, in plain words, why a cluster of slow boards can run a language model that none of them can hold alone, and what limits how fast it answers.",
+  "copy": "Here is a passage. The cluster has four nodes: a ThinkPad T580 laptop, a Raspberry Pi 5, a Raspberry Pi 4 and a Jetson Nano. Each node is metered at the wall by a Shelly power strip. The laptop decodes a block two to six times faster than any board, so the planner puts as many layers on it as its memory allows, and uses the boards only when the model does not fit. Repeat the passage above word for word, then summarise it in one sentence."
+ },
+ "prompt_order": [
+  "free",
+  "copy"
+ ],
+ "reqs": 2,
+ "gen": 128,
+ "scan": [
+  1,
+  2,
+  3,
+  4,
+  6,
+  8
+ ],
+ "scan_reps": 3,
+ "model": {
+  "kappa": 1.0685,
+  "rpc_draft_ms": 10.32,
+  "curves": {
+   "laptop": {
+    "1": 1.0,
+    "2": 1.4398,
+    "3": 1.94,
+    "4": 1.7653,
+    "6": 3.2474,
+    "8": 3.6327,
+    "16": 6.3618,
+    "32": 13.4162,
+    "64": 26.0412
+   },
+   "pi5": {
+    "1": 1.0,
+    "2": 1.079,
+    "3": 1.3553,
+    "4": 1.7059,
+    "6": 2.2931,
+    "8": 3.0237
+   },
+   "pi4": {
+    "1": 1.0,
+    "2": 1.129,
+    "3": 1.5077,
+    "4": 1.8934,
+    "6": 2.7581,
+    "8": 3.5909
+   }
+  },
+  "pooled_offset": 1.0185,
+  "pooled_offset_from": {
+   "P1": 1.0201,
+   "P4": 1.0169
+  },
+  "intercept_ms": 40.0,
+  "intercept_from": "P4's pass residuals [[1, 182.7], [2, 298.4], [3, 454.6]] (sp10c)",
+  "fit_B": {
+   "folder": "testbed/results/explspec_20261103_133920",
+   "config": "B",
+   "decode_ms": 270.0,
+   "draft_ms": 99.28,
+   "intercept_ms": 14.439999999999998,
+   "E": {
+    "mtp1/free": 1.74,
+    "mtp1/copy": 1.924,
+    "mtp2/free": 2.228,
+    "mtp2/copy": 2.702,
+    "mtp3/free": 2.592,
+    "mtp3/copy": 3.202
+   }
+  }
+ },
+ "predictions": {
+  "P5": {
+   "decode_ms": 476.9,
+   "calibration": 0.9868,
+   "R": {
+    "1": 1.0185,
+    "2": 1.2617,
+    "3": 1.6737,
+    "4": 1.8374,
+    "6": 2.9036,
+    "8": 3.5511
+   },
+   "draft_ms": 148.4,
+   "intercept_ms": 40.0,
+   "arms": {
+    "mtp1/free": {
+     "pass_ms": 790.1,
+     "E": 1.74,
+     "ms_per_token": 454.1,
+     "speedup": 1.05
+    },
+    "mtp1/copy": {
+     "pass_ms": 790.1,
+     "E": 1.924,
+     "ms_per_token": 410.7,
+     "speedup": 1.161
+    },
+    "mtp2/free": {
+     "pass_ms": 1135.0,
+     "E": 2.228,
+     "ms_per_token": 509.4,
+     "speedup": 0.936
+    },
+    "mtp2/copy": {
+     "pass_ms": 1135.0,
+     "E": 2.702,
+     "ms_per_token": 420.1,
+     "speedup": 1.135
+    },
+    "mtp3/free": {
+     "pass_ms": 1361.5,
+     "E": 2.592,
+     "ms_per_token": 525.3,
+     "speedup": 0.908
+    },
+    "mtp3/copy": {
+     "pass_ms": 1361.5,
+     "E": 3.202,
+     "ms_per_token": 425.2,
+     "speedup": 1.122
+    }
+   },
+   "terms": {
+    "decode_ms": 483.3307590429618,
+    "xfer_ms": 4.272203621184995,
+    "head_ms": 42.85223265154912,
+    "head_node": "laptop",
+    "last": "pi4",
+    "block_last_ms": 42.00817093358616,
+    "visit_ms": 1.602,
+    "remote": true,
+    "nextn_layers": 1
+   },
+   "busy": {
+    "laptop": 186.0,
+    "pi5": 83.1,
+    "pi4": 210.0
+   },
+   "links_ms": 4.27,
+   "exploration": {
+    "folder": "testbed/results/explspec_20261103_133920",
+    "config": "B"
+   }
+  },
+  "P6": {
+   "decode_ms": 618.6,
+   "calibration": 0.9868,
+   "R": {
+    "1": 1.0185,
+    "2": 1.2036,
+    "3": 1.5903,
+    "4": 1.8552,
+    "6": 2.8002,
+    "8": 3.5267
+   },
+   "draft_ms": 146.4,
+   "intercept_ms": 40.0,
+   "arms": {
+    "mtp1/free": {
+     "pass_ms": 930.9,
+     "E": 1.74,
+     "ms_per_token": 535.0,
+     "speedup": 1.156
+    },
+    "mtp1/copy": {
+     "pass_ms": 930.9,
+     "E": 1.924,
+     "ms_per_token": 483.9,
+     "speedup": 1.278
+    },
+    "mtp2/free": {
+     "pass_ms": 1316.6,
+     "E": 2.228,
+     "ms_per_token": 590.9,
+     "speedup": 1.047
+    },
+    "mtp2/copy": {
+     "pass_ms": 1316.6,
+     "E": 2.702,
+     "ms_per_token": 487.3,
+     "speedup": 1.27
+    },
+    "mtp3/free": {
+     "pass_ms": 1626.8,
+     "E": 2.592,
+     "ms_per_token": 627.6,
+     "speedup": 0.986
+    },
+    "mtp3/copy": {
+     "pass_ms": 1626.8,
+     "E": 3.202,
+     "ms_per_token": 508.1,
+     "speedup": 1.218
+    }
+   },
+   "terms": {
+    "decode_ms": 626.9109908150646,
+    "xfer_ms": 4.272203621184995,
+    "head_ms": 42.85223265154912,
+    "head_node": "laptop",
+    "last": "pi4",
+    "block_last_ms": 40.165575407257926,
+    "visit_ms": 1.602,
+    "remote": true,
+    "nextn_layers": 1
+   },
+   "busy": {
+    "laptop": 129.4,
+    "pi5": 131.8,
+    "pi4": 361.5
+   },
+   "links_ms": 4.27,
+   "exploration": {
+    "folder": "testbed/results/explspec_20261103_133920",
+    "config": "B"
+   }
+  }
+ },
+ "hypotheses": {
+  "SP-CHECK": {
+   "m": [
+    2,
+    3,
+    4
+   ],
+   "tol": 0.1,
+   "claim": "each plan's R(m) = T(m) / its decode step, m 2-4, within 10 % of predicted"
+  },
+  "SP-SPEEDUP": {
+   "tol": 0.07,
+   "claim": "each MTP arm's speedup over the plan's none, per prompt, within 7 % of predicted"
+  },
+  "SP-SIGN": {
+   "margin": 0.05,
+   "claim": "every arm predicted at least 5 % faster or slower than none measures on that side of 1"
+  },
+  "SP-BEST": {
+   "tol": 0.03,
+   "claim": "per plan and prompt, the setting predicted fastest within 3 % of the fastest measured"
+  },
+  "SP-DRAFT": {
+   "tol": 0.2,
+   "claim": "each plan's measured draft cost within 20 % of predicted"
+  }
+ },
+ "inputs_sha256": {
+  "testbed/scripts/sp10_session_20261103.py": "6a8a774052d7dc9db78d3a0aafde9b08c8bd00ffc01e49789c21617fd64c21d4",
+  "testbed/scripts/score_sp10_20261103.py": "4ef3f4fb435204e5d6c7a51c248d15f4634ad6887b91758f1affda0ed11c1275",
+  "testbed/scripts/register_sp10d_20261103.py": "8ee18ab3543a3ac7f9db9807f460a120650c33c7a044bb59b598e386c3d473fc",
+  "testbed/scripts/register_sp10_20261103.py": "139e24d1330b7b5a2b2b1c42ef41bebabffc4a5413b5115f731306518c0ff748",
+  "testbed/scripts/spec_model_20261103.py": "a3fcd3e5557768070859f5dfff61ad7f40688890a22ccd9d95f6ef471f9ae8ae",
+  "testbed/scripts/spec_cost_20261103.py": "d7bf1b02aaa41c6fcef0a68f0c273cab6536123a1ba8e38d8f581aa6a85a14cd",
+  "testbed/scripts/explore_spec_20261102.py": "1b5f152f122da5d4e9b92ebf94d5e4da03b0159d6ae7bb617d32187ebf220f52",
+  "testbed/scripts/serve_pool.sh": "2ae75e19755eaefb4bd0d4d3d8eab0280313ae6d2a22290d4799ef03f7170d96",
+  "testbed/scripts/serve_defaults.sh": "060fc64990a98c54e42963fc686e9a59e21f00b1867a6619e4778c8dc75c584e",
+  "testbed/scripts/serve_plan_20261101.py": "37252b755486a2fea16f77083f817fc54b5c6b1f478dadc2db2a0bc8cd979f92",
+  "testbed/scripts/predict_pool.py": "c440c91a8abc09f66aa3b31a92f5536f227257a2c8c6f110b1bd3e89e1c67782",
+  "testbed/scripts/energy_model.py": "5642934ca5a4083708ad816878c60c39d44aea913e4a7843d006262a7c3f2a6c",
+  "testbed/dataset/model_shapes.json": "c3400b14d42e61f363f2df6e68974a12847d5cb6bd7c785f9b4ace8e3b6f5478",
+  "testbed/dataset/characterisation.csv": "183b4002fb6801f2559872cba7fbc9c7f11df9d858286dc60bf0971ddde1ad2c",
+  "ThinkPad/config/cluster.json": "1f0a3529dd384647ab71a0a08e2c142226ccf2b80aa5160ffc91e5e2e9485943",
+  "testbed/results/explspec_20261103_143210/results.json": "1457d2525ed9fae3f8c79a283b48dc21f40c301238b6e21026a899a9bdf5badf",
+  "testbed/results/explspec_20261103_133920/results.json": "6f7567d6752b48635f0a8871f96959d6d5f35a2dfc53a906c1f9e7bb49f47559",
+  "testbed/results/worker_role_20261103_195154/pi5.log": "ccfb984dc0c5fd0c5fade4efbdba3050b15064a66caccd32f4a6d7ac5af2fcbd",
+  "testbed/results/worker_role_20261103_195154/pi4.log": "b227df7b56e6f3eb8f4d8dfde7f0d1538b7bd084a97edd98d69a64eb3afebf7a",
+  "testbed/results/sp10_20261103_151444/score.json": "5f7d797a15d1be81e02d8a2b60a3595f8482221f6bdd426a658508386b3795c0",
+  "testbed/results/sp10c_20261103_164359/score.json": "929fe4c7eea350961eb5f0c41e265b8d3b656cd16a2a582a428ca07558cc3ee0",
+  "testbed/dataset/memory_snapshot_20261103_203101.json": "d03d3163da3f8b2eb171dfc408462fae4b11c064f8ffcd4cfa14f46cb08db1e4",
+  "testbed/scripts/register_sp10e_20261103.py": "2cf9f9c70a883b107f91fa3d9ce2e728359ab70c2589cd0c42d505a490d7602a",
+  "testbed/dataset/sp10d_predictions_20261103.json": "30968ac062d9eb852886440fa5cb9cb306294bd7f9ae02eee03c9ae00d39e584"
+ },
+ "copied_from": {
+  "registration": "testbed/dataset/sp10d_predictions_20261103.json",
+  "sha256": "30968ac062d9eb852886440fa5cb9cb306294bd7f9ae02eee03c9ae00d39e584",
+  "why": "sp10d lost three requests to the Pi 5's stall (INCOMPLETE); the stall's fix held its check"
+ }
+}

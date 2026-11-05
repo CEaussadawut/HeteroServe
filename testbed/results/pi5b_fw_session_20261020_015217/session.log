@@ -1,0 +1,364 @@
+########## 2026-10-20T01:52:17+07:00 the replacement Pi 5 after its bootloader update -> testbed/results/pi5b_fw_session_20261020_015217
+registration testbed/dataset/pi5b_fw_predictions_20261020.json sha256 68bfc49791ca04d4777044ca0959c9372391c86918e45363937e2c03c9a60c1b
+bootloader: 2026/05/26 16:01:25 (timestamp 1779807685, registered 1779807685)
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+########## 2026-10-20T01:52:19+07:00 STEP 1 memory: python3 testbed/scripts/memory_snapshot.py --reads 10
+pi5 {'mem_total_mib': 8062, 'mem_available_mib': 7618, 'mem_available_range_mib': [7618, 7627], 'reads': 10, 'load': '0.37 0.12 0.04', 'interfaces': 'lo=127.0.0.1/8 eth0=192.168.10.11/24 eth0=192.168.1.122/24'}
+pi4 {'mem_total_mib': 7819, 'mem_available_mib': 7428, 'mem_available_range_mib': [7428, 7430], 'reads': 10, 'load': '0.00 0.00 0.00', 'interfaces': 'lo=127.0.0.1/8 eth0=192.168.10.12/24 eth0=192.168.1.110/24 tailscale0=100.121.93.63/32'}
+jetson {'mem_total_mib': 3963, 'mem_available_mib': 3557, 'mem_available_range_mib': [3557, 3557], 'reads': 10, 'load': '0.00 0.00 0.00', 'interfaces': 'lo=127.0.0.1/8 eth0=192.168.1.114/24 docker0=172.17.0.1/16'}
+wrote testbed/dataset/memory_snapshot_20261020_015219.json
+STEP 1 memory rc=0 dir=testbed/dataset/memory_snapshot_20261020_015219.json 2026-10-20T01:52:52+07:00
+########## 2026-10-20T01:52:52+07:00 STEP 2 host_pp512_tg128: env NODES=pi5 MODELS=tinyllama-1.1b-q4km.gguf tinyllama-1.1b-q8_0.gguf tinyllama-1.1b-q4_0.gguf tinyllama-1.1b-q3km.gguf tinyllama-1.1b-q6_k.gguf qwen3.5-9b-q4_k_m.gguf bash testbed/scripts/run_quant_campaign.sh
+########## 2026-10-20T01:52:52+07:00 quant campaign -> testbed/results/quant_campaign_20261020_015252   pin b23701f77d47dad9de834d59ebfcbe25c9e8b46f   nodes [pi5]   models [tinyllama-1.1b-q4km.gguf tinyllama-1.1b-q8_0.gguf tinyllama-1.1b-q4_0.gguf tinyllama-1.1b-q3km.gguf tinyllama-1.1b-q6_k.gguf qwen3.5-9b-q4_k_m.gguf]
+model   pi5 tinyllama-1.1b-q4km.gguf sha256 OK
+model   pi5 tinyllama-1.1b-q8_0.gguf sha256 OK
+model   pi5 tinyllama-1.1b-q4_0.gguf sha256 OK
+model   pi5 tinyllama-1.1b-q3km.gguf sha256 OK
+model   pi5 tinyllama-1.1b-q6_k.gguf sha256 OK
+model   pi5 qwen3.5-9b-q4_k_m.gguf sha256 OK
+tree    pi5 at pin, clean
+pi5     done 2026-10-20T02:27:00+07:00 (6 runs, 6 exit 0)
+CAMPAIGN DONE 2026-10-20T02:27:00+07:00
+STEP 2 host_pp512_tg128 rc=0 dir=testbed/results/quant_campaign_20261020_015252 2026-10-20T02:27:00+07:00
+########## 2026-10-20T02:27:00+07:00 STEP 3 host_pp64_tg16: env NODES=pi5 MODELS=tinyllama-1.1b-q4km.gguf tinyllama-1.1b-q8_0.gguf tinyllama-1.1b-q4_0.gguf tinyllama-1.1b-q3km.gguf tinyllama-1.1b-q6_k.gguf qwen3.5-9b-q4_k_m.gguf PP=64 TG=16 bash testbed/scripts/run_quant_campaign.sh
+########## 2026-10-20T02:27:00+07:00 quant campaign -> testbed/results/quant_campaign_20261020_022700   pin b23701f77d47dad9de834d59ebfcbe25c9e8b46f   nodes [pi5]   models [tinyllama-1.1b-q4km.gguf tinyllama-1.1b-q8_0.gguf tinyllama-1.1b-q4_0.gguf tinyllama-1.1b-q3km.gguf tinyllama-1.1b-q6_k.gguf qwen3.5-9b-q4_k_m.gguf]
+model   pi5 tinyllama-1.1b-q4km.gguf sha256 OK
+model   pi5 tinyllama-1.1b-q8_0.gguf sha256 OK
+model   pi5 tinyllama-1.1b-q4_0.gguf sha256 OK
+model   pi5 tinyllama-1.1b-q3km.gguf sha256 OK
+model   pi5 tinyllama-1.1b-q6_k.gguf sha256 OK
+model   pi5 qwen3.5-9b-q4_k_m.gguf sha256 OK
+tree    pi5 at pin, clean
+pi5     done 2026-10-20T02:44:20+07:00 (6 runs, 6 exit 0)
+CAMPAIGN DONE 2026-10-20T02:44:20+07:00
+STEP 3 host_pp64_tg16 rc=0 dir=testbed/results/quant_campaign_20261020_022700 2026-10-20T02:44:20+07:00
+########## 2026-10-20T02:44:20+07:00 STEP 4 worker_pp512_tg128: env NODES=pi5 MODELS_PI5=tinyllama-1.1b-q4km.gguf tinyllama-1.1b-q8_0.gguf tinyllama-1.1b-q4_0.gguf tinyllama-1.1b-q3km.gguf tinyllama-1.1b-q6_k.gguf bash testbed/scripts/bench_worker_role.sh
+########## 2026-10-20T02:44:20+07:00 worker-role rows -> testbed/results/worker_role_20261020_024420
+pi5: 5 runs, 5 exit 0; 
+WORKER ROLE DONE 2026-10-20T03:10:27+07:00
+STEP 4 worker_pp512_tg128 rc=0 dir=testbed/results/worker_role_20261020_024420 2026-10-20T03:10:27+07:00
+########## 2026-10-20T03:10:27+07:00 STEP 5 worker_pp64_tg16: env NODES=pi5 MODELS_PI5=tinyllama-1.1b-q4km.gguf tinyllama-1.1b-q8_0.gguf tinyllama-1.1b-q4_0.gguf tinyllama-1.1b-q3km.gguf tinyllama-1.1b-q6_k.gguf qwen3.5-9b-q4_k_m.gguf PP=64 TG=16 bash testbed/scripts/bench_worker_role.sh
+########## 2026-10-20T03:10:27+07:00 worker-role rows -> testbed/results/worker_role_20261020_031027
+pi5: 6 runs, 6 exit 0; 
+WORKER ROLE DONE 2026-10-20T03:24:52+07:00
+STEP 5 worker_pp64_tg16 rc=0 dir=testbed/results/worker_role_20261020_031027 2026-10-20T03:24:52+07:00
+########## 2026-10-20T03:24:52+07:00 STEP 6 worker_pp_sweep: env NODES=pi5 MODELS_PI5=tinyllama-1.1b-q3km.gguf PP=1,4,16,256 TG=0 bash testbed/scripts/bench_worker_role.sh
+########## 2026-10-20T03:24:52+07:00 worker-role rows -> testbed/results/worker_role_20261020_032452
+pi5: 1 runs, 1 exit 0; 
+WORKER ROLE DONE 2026-10-20T03:28:19+07:00
+STEP 6 worker_pp_sweep rc=0 dir=testbed/results/worker_role_20261020_032452 2026-10-20T03:28:19+07:00
+checked testbed/results/quant_campaign_20261020_015252: 6 runs, all exit 0
+checked testbed/results/quant_campaign_20261020_022700: 6 runs, all exit 0
+checked testbed/results/worker_role_20261020_024420: 5 runs, all exit 0
+checked testbed/results/worker_role_20261020_031027: 6 runs, all exit 0
+checked testbed/results/worker_role_20261020_032452: 1 runs, all exit 0
+########## 2026-10-20T03:28:19+07:00 STEP 7 energy_q4km: python3 testbed/scripts/energy_phase_run.py --node pi5 --outlet 2 --outlet-name pi5 --model ~/models/tinyllama-1.1b-q4km.gguf --sha256 9fecc3b3cd76bba89d504f29b616eedf7da85b96540e490ca5824d3f7d2776a0 --pp 512:20 --tg 128:17 --cycles 3 --threads 4 --idle-before 300 --idle-after 300 --settle 30 --gap 10 --out testbed/results/energy_phase_pi5fw_q4km_20261020_032819
+03:28:28 preflight ok
+03:28:28 logger start
+03:28:28 sampler start
+03:28:58 idle-before start
+03:33:58 idle-before end
+03:33:58 bench start pp1
+03:36:13 bench end pp1 exit=0
+03:36:23 bench start tg1
+03:38:31 bench end tg1 exit=0
+03:38:41 bench start pp2
+03:40:56 bench end pp2 exit=0
+03:41:06 bench start tg2
+03:43:13 bench end tg2 exit=0
+03:43:23 bench start pp3
+03:45:38 bench end pp3 exit=0
+03:45:48 bench start tg3
+03:47:56 bench end tg3 exit=0
+03:48:06 idle-after start
+03:53:06 idle-after end
+03:53:11 logger stop
+03:53:12 run end
+STEP 7 energy_q4km rc=0 dir=testbed/results/energy_phase_pi5fw_q4km_20261020_032819 2026-10-20T03:53:12+07:00
+scored testbed/results/energy_phase_pi5fw_q4km_20261020_032819 rc=0
+idle before: 3.018 W apower, 3.134 W counter | idle after: 3.085 W, 3.204 W
+inv       t/s    win s   W trap    W ctr     gap % J/tok net c J/tok net t overhd s  flags
+pp1     80.59    127.1   10.838   11.277     -3.89      0.1010      0.0970     0.00  IDLE_FRESH_BELOW_1HZ
+tg1     17.25    126.2    9.679   10.062     -3.79      0.4017      0.3863     0.00  IDLE_FRESH_BELOW_1HZ
+pp2     80.69    126.9   11.454   11.943     -4.10      0.1092      0.1045     0.00  IDLE_FRESH_BELOW_1HZ
+tg2     17.37    125.3    9.712   10.113     -3.94      0.4019      0.3856     0.00  IDLE_FRESH_BELOW_1HZ
+pp3     80.71    126.9   11.571   12.060     -4.04      0.1106      0.1060     0.00  IDLE_FRESH_BELOW_1HZ
+tg3     17.26    126.0    9.697   10.082     -3.82      0.4025      0.3868    -0.00  IDLE_FRESH_BELOW_1HZ
+pp: t/s 80.67 (spread 0.15 %), W 11.29, net J/token counter 0.1069 (spread 8.93 %) trap 0.1025 (spread 8.73 %), Wh/1000 tok net counter 0.0297
+tg: t/s 17.29 (spread 0.67 %), W 9.70, net J/token counter 0.4020 (spread 0.20 %) trap 0.3862 (spread 0.32 %), Wh/1000 tok net counter 0.1117
+board: throttled ['0x0'], temp 48.3-77.4 C, ARM 1500-2400 MHz, fan states ['1', '2', '3', '4'] (n 295)
+  PASS  pp tokens/s mean in [76.9838, 85.0873]  [80.6669]
+########## 2026-10-20T03:53:16+07:00 STEP 8 energy_q4_0: python3 testbed/scripts/energy_phase_run.py --node pi5 --outlet 2 --outlet-name pi5 --model ~/models/tinyllama-1.1b-q4_0.gguf --sha256 da3087fb14aede55fde6eb81a0e55e886810e43509ec82ecdc7aa5d62a03b556 --pp 512:32 --tg 128:18 --cycles 3 --threads 4 --idle-before 300 --idle-after 120 --settle 30 --gap 10 --out testbed/results/energy_phase_pi5fw_q4_0_20261020_035316
+03:53:25 preflight ok
+03:53:25 logger start
+03:53:25 sampler start
+03:53:55 idle-before start
+03:58:55 idle-before end
+03:58:55 bench start pp1
+04:01:03 bench end pp1 exit=0
+04:01:13 bench start tg1
+04:03:22 bench end tg1 exit=0
+04:03:32 bench start pp2
+04:05:40 bench end pp2 exit=0
+04:05:50 bench start tg2
+04:07:59 bench end tg2 exit=0
+04:08:09 bench start pp3
+04:10:19 bench end pp3 exit=0
+04:10:29 bench start tg3
+04:12:39 bench end tg3 exit=0
+04:12:49 idle-after start
+04:14:49 idle-after end
+04:14:55 logger stop
+04:14:55 run end
+STEP 8 energy_q4_0 rc=0 dir=testbed/results/energy_phase_pi5fw_q4_0_20261020_035316 2026-10-20T04:14:55+07:00
+scored testbed/results/energy_phase_pi5fw_q4_0_20261020_035316 rc=0
+idle before: 2.998 W apower, 3.120 W counter | idle after: 3.117 W, 3.240 W
+inv       t/s    win s   W trap    W ctr     gap % J/tok net c J/tok net t overhd s  flags
+pp1    132.48    123.7   10.511   10.972     -4.22      0.0593      0.0567     0.00  IDLE_FRESH_BELOW_1HZ
+tg1     17.99    128.1    9.152    9.533     -4.02      0.3566      0.3420    -0.00  IDLE_FRESH_BELOW_1HZ
+pp2    132.57    123.6   10.927   11.418     -4.30      0.0626      0.0598     0.00  IDLE_FRESH_BELOW_1HZ
+tg2     17.84    129.2    9.216    9.528     -3.31      0.3592      0.3484     0.00  IDLE_FRESH_BELOW_1HZ
+pp3    131.40    124.7   11.064   11.518     -3.96      0.0639      0.0614     0.00  IDLE_FRESH_BELOW_1HZ
+tg3     17.70    130.1    9.171    9.516     -3.59      0.3613      0.3489    -0.00  IDLE_FRESH_BELOW_1HZ
+pp: t/s 132.15 (spread 0.88 %), W 10.83, net J/token counter 0.0619 (spread 7.51 %) trap 0.0593 (spread 7.90 %), Wh/1000 tok net counter 0.0172
+tg: t/s 17.84 (spread 1.58 %), W 9.18, net J/token counter 0.3590 (spread 1.31 %) trap 0.3464 (spread 1.97 %), Wh/1000 tok net counter 0.0997
+board: throttled ['0x0'], temp 47.2-75.2 C, ARM 1500-2400 MHz, fan states ['1', '2', '3', '4'] (n 257)
+  PASS  pp tokens/s mean in [127.7833, 141.2341]  [132.1461]
+########## 2026-10-20T04:14:59+07:00 STEP 9 energy_q8_0: python3 testbed/scripts/energy_phase_run.py --node pi5 --outlet 2 --outlet-name pi5 --model ~/models/tinyllama-1.1b-q8_0.gguf --sha256 a4c9bb1dbaa372f6381a035fa5c02ef087aaa1ff1f843a56a22328114f03fc59 --pp 512:15 --tg 128:10 --cycles 3 --threads 4 --idle-before 300 --idle-after 120 --settle 30 --gap 10 --out testbed/results/energy_phase_pi5fw_q8_0_20261020_041459
+04:15:14 preflight ok
+04:15:14 logger start
+04:15:14 sampler start
+04:15:44 idle-before start
+04:20:44 idle-before end
+04:20:44 bench start pp1
+04:23:00 bench end pp1 exit=0
+04:23:10 bench start tg1
+04:25:15 bench end tg1 exit=0
+04:25:25 bench start pp2
+04:27:34 bench end pp2 exit=0
+04:27:44 bench start tg2
+04:29:49 bench end tg2 exit=0
+04:29:59 bench start pp3
+04:32:16 bench end pp3 exit=0
+04:32:26 bench start tg3
+04:34:32 bench end tg3 exit=0
+04:34:42 idle-after start
+04:36:42 idle-after end
+04:36:47 logger stop
+04:36:48 run end
+STEP 9 energy_q8_0 rc=0 dir=testbed/results/energy_phase_pi5fw_q8_0_20261020_041459 2026-10-20T04:36:48+07:00
+scored testbed/results/energy_phase_pi5fw_q8_0_20261020_041459 rc=0
+idle before: 3.015 W apower, 3.132 W counter | idle after: 3.168 W, 3.300 W
+inv       t/s    win s   W trap    W ctr     gap % J/tok net c J/tok net t overhd s  flags
+pp1     61.23    125.4    9.729   10.146     -4.13      0.1146      0.1096    -0.00  IDLE_FRESH_BELOW_1HZ
+tg1     10.36    123.5    8.981    9.381     -4.26      0.6029      0.5755     0.00  IDLE_FRESH_BELOW_1HZ
+pp2     64.41    119.2   10.194   10.536     -3.25      0.1150      0.1115     0.00  IDLE_FRESH_BELOW_1HZ
+tg2     10.37    123.4    9.080    9.478     -4.17      0.6120      0.5851    -0.00  IDLE_FRESH_BELOW_1HZ
+pp3     60.39    127.2    9.932   10.305     -3.63      0.1188      0.1145    -0.00  IDLE_FRESH_BELOW_1HZ
+tg3     10.32    124.0    9.100    9.436     -3.53      0.6107      0.5897    -0.00  IDLE_FRESH_BELOW_1HZ
+pp: t/s 62.01 (spread 6.48 %), W 9.95, net J/token counter 0.1161 (spread 3.63 %) trap 0.1119 (spread 4.37 %), Wh/1000 tok net counter 0.0322
+tg: t/s 10.35 (spread 0.45 %), W 9.05, net J/token counter 0.6085 (spread 1.50 %) trap 0.5834 (spread 2.42 %), Wh/1000 tok net counter 0.1690
+board: throttled ['0x0'], temp 48.3-73.6 C, ARM 1500-2400 MHz, fan states ['1', '2', '3'] (n 257)
+  PASS  pp tokens/s mean in [61.1571, 67.5947]  [62.0102]
+########## 2026-10-20T04:36:52+07:00 STEP 10 energy_q3km: python3 testbed/scripts/energy_phase_run.py --node pi5 --outlet 2 --outlet-name pi5 --model ~/models/tinyllama-1.1b-q3km.gguf --sha256 ec461c4d2b60896152bca3978aa49cd70edad7298715e4222e12af1eefea2125 --pp 512:10 --tg 128:21 --cycles 3 --threads 4 --idle-before 300 --idle-after 120 --settle 30 --gap 10 --out testbed/results/energy_phase_pi5fw_q3km_20261020_043652
+04:36:53 preflight ok
+04:36:53 logger start
+04:36:53 sampler start
+04:37:23 idle-before start
+04:42:23 idle-before end
+04:42:23 bench start pp1
+04:44:45 bench end pp1 exit=0
+04:44:55 bench start tg1
+04:47:05 bench end tg1 exit=0
+04:47:15 bench start pp2
+04:49:37 bench end pp2 exit=0
+04:49:47 bench start tg2
+04:51:56 bench end tg2 exit=0
+04:52:06 bench start pp3
+04:54:28 bench end pp3 exit=0
+04:54:38 bench start tg3
+04:56:47 bench end tg3 exit=0
+04:56:57 idle-after start
+04:58:57 idle-after end
+04:59:02 logger stop
+04:59:02 run end
+STEP 10 energy_q3km rc=0 dir=testbed/results/energy_phase_pi5fw_q3km_20261020_043652 2026-10-20T04:59:02+07:00
+scored testbed/results/energy_phase_pi5fw_q3km_20261020_043652 rc=0
+idle before: 3.021 W apower, 3.156 W counter | idle after: 3.105 W, 3.229 W
+inv       t/s    win s   W trap    W ctr     gap % J/tok net c J/tok net t overhd s  flags
+pp1     39.98    128.1   10.800   11.269     -4.16      0.2029      0.1946     0.00  IDLE_FRESH_BELOW_1HZ
+tg1     20.83    129.1   11.291   11.728     -3.70      0.4116      0.3973     0.00  IDLE_FRESH_BELOW_1HZ
+pp2     39.96    128.1   11.424   11.885     -3.89      0.2184      0.2103     0.00  IDLE_FRESH_BELOW_1HZ
+tg2     20.88    128.7   11.359   11.800     -3.69      0.4140      0.3996     0.00  IDLE_FRESH_BELOW_1HZ
+pp3     39.95    128.2   11.412   11.883     -3.96      0.2184      0.2100     0.00  IDLE_FRESH_BELOW_1HZ
+tg3     21.03    127.8   11.452   11.913     -3.88      0.4164      0.4009     0.00  IDLE_FRESH_BELOW_1HZ
+pp: t/s 39.97 (spread 0.08 %), W 11.21, net J/token counter 0.2133 (spread 7.28 %) trap 0.2049 (spread 7.66 %), Wh/1000 tok net counter 0.0592
+tg: t/s 20.91 (spread 0.97 %), W 11.37, net J/token counter 0.4140 (spread 1.17 %) trap 0.3993 (spread 0.91 %), Wh/1000 tok net counter 0.1150
+board: throttled ['0x0'], temp 48.8-76.3 C, ARM 1500-2400 MHz, fan states ['1', '2', '3', '4'] (n 264)
+  PASS  pp tokens/s mean in [38.11, 42.1216]  [39.9662]
+########## 2026-10-20T04:59:06+07:00 STEP 11 energy_q6k: python3 testbed/scripts/energy_phase_run.py --node pi5 --outlet 2 --outlet-name pi5 --model ~/models/tinyllama-1.1b-q6_k.gguf --sha256 9fb2be7c8bbc0ca358ae88cef6d9e6844b81929eaffa5016a543e6f56b22cb6d --pp 512:13 --tg 128:12 --cycles 3 --threads 4 --idle-before 300 --idle-after 120 --settle 30 --gap 10 --out testbed/results/energy_phase_pi5fw_q6k_20261020_045906
+04:59:18 preflight ok
+04:59:18 logger start
+04:59:18 sampler start
+04:59:48 idle-before start
+05:04:48 idle-before end
+05:04:48 bench start pp1
+05:06:31 bench end pp1 exit=0
+05:06:41 bench start tg1
+05:08:41 bench end tg1 exit=0
+05:08:51 bench start pp2
+05:10:36 bench end pp2 exit=0
+05:10:46 bench start tg2
+05:12:46 bench end tg2 exit=0
+05:12:56 bench start pp3
+05:14:40 bench end pp3 exit=0
+05:14:50 bench start tg3
+05:16:50 bench end tg3 exit=0
+05:17:00 idle-after start
+05:19:00 idle-after end
+05:19:05 logger stop
+05:19:05 run end
+STEP 11 energy_q6k rc=0 dir=testbed/results/energy_phase_pi5fw_q6k_20261020_045906 2026-10-20T05:19:05+07:00
+scored testbed/results/energy_phase_pi5fw_q6k_20261020_045906 rc=0
+idle before: 2.993 W apower, 3.120 W counter | idle after: 3.146 W, 3.271 W
+inv       t/s    win s   W trap    W ctr     gap % J/tok net c J/tok net t overhd s  flags
+pp1     71.44     93.2   11.087   11.515     -3.74      0.1175      0.1132     0.00  IDLE_FRESH_BELOW_1HZ
+tg1     13.18    116.5   10.897   11.374     -4.21      0.6262      0.5994     0.00  IDLE_FRESH_BELOW_1HZ
+pp2     70.56     94.3   11.641   12.060     -3.47      0.1267      0.1226     0.00  IDLE_FRESH_BELOW_1HZ
+tg2     13.06    117.7   11.138   11.598     -4.00      0.6494      0.6235    -0.00  IDLE_FRESH_BELOW_1HZ
+pp3     70.56     94.3   11.777   12.326     -4.46      0.1305      0.1245     0.00  IDLE_FRESH_BELOW_1HZ
+tg3     13.12    117.1   11.251   11.655     -3.46      0.6505      0.6294    -0.00  IDLE_FRESH_BELOW_1HZ
+pp: t/s 70.86 (spread 1.25 %), W 11.50, net J/token counter 0.1249 (spread 10.39 %) trap 0.1201 (spread 9.36 %), Wh/1000 tok net counter 0.0347
+tg: t/s 13.12 (spread 0.97 %), W 11.10, net J/token counter 0.6420 (spread 3.79 %) trap 0.6174 (spread 4.85 %), Wh/1000 tok net counter 0.1783
+board: throttled ['0x0'], temp 47.7-76.8 C, ARM 1500-2400 MHz, fan states ['1', '2', '3', '4'] (n 236)
+  PASS  pp tokens/s mean in [35.0, 90.0]  [70.8555]
+replacement Pi 5 (serial b8ed9049ada12a03) against the old board (serial b266e1877252f91e); registered 2026-10-20T01:49:25+07:00
+code changed since registration: none
+
+RB-PP   FAILS      (tol 3 %)  19/19 rows compared, max |diff| 11.95 %, mean |diff| 1.36 %; outside: cpu|qwen3.5-9b-q4_k_m.gguf|pp64, cpu|tinyllama-1.1b-q8_0.gguf|pp512
+RB-TG   FAILS      (tol 3 %)  15/15 rows compared, max |diff| 16.87 %, mean |diff| 3.63 %; outside: cpu-rpc-worker|qwen3.5-9b-q4_k_m.gguf|tg16, cpu|tinyllama-1.1b-q4km.gguf|tg128, cpu|tinyllama-1.1b-q4km.gguf|tg16, cpu|tinyllama-1.1b-q8_0.gguf|tg128
+RB-MEM  HOLDS      (tol 1.5 %)  old 7619 MiB, new 7618, diff -0.01 %
+RB-E    FAILS      (tol 10 %)  pp J/token 0.1025 vs 0.0883 (+16.10 %), t/s -0.45 %; tg J/token 0.3862 vs 0.3385 (+14.09 %), t/s -1.64 %
+
+row (device|model|test)                                    old t/s    new t/s   diff %  flags
+cpu-rpc-worker|qwen3.5-9b-q4_k_m.gguf|pp64                   5.508      5.544    +0.67  
+cpu-rpc-worker|qwen3.5-9b-q4_k_m.gguf|tg16                   1.845      1.757    -4.77  
+cpu-rpc-worker|tinyllama-1.1b-q3km.gguf|pp1                 23.029     22.835    -0.84  
+cpu-rpc-worker|tinyllama-1.1b-q3km.gguf|pp16                36.942     36.917    -0.07  
+cpu-rpc-worker|tinyllama-1.1b-q3km.gguf|pp256               36.666     36.810    +0.39  
+cpu-rpc-worker|tinyllama-1.1b-q3km.gguf|pp4                 33.682     33.717    +0.10  
+cpu-rpc-worker|tinyllama-1.1b-q3km.gguf|pp512               36.198     36.221    +0.07  
+cpu-rpc-worker|tinyllama-1.1b-q3km.gguf|pp64                37.246     37.188    -0.16  
+cpu-rpc-worker|tinyllama-1.1b-q3km.gguf|tg128               22.327     21.840    -2.18  
+cpu-rpc-worker|tinyllama-1.1b-q3km.gguf|tg16                22.712     22.717    +0.02  
+cpu-rpc-worker|tinyllama-1.1b-q4_0.gguf|pp512               52.352     52.228    -0.24  
+cpu-rpc-worker|tinyllama-1.1b-q4_0.gguf|tg128               19.748     19.266    -2.44  
+cpu-rpc-worker|tinyllama-1.1b-q4km.gguf|pp512               46.268     46.228    -0.09  
+cpu-rpc-worker|tinyllama-1.1b-q4km.gguf|pp64                47.916     47.840    -0.16  
+cpu-rpc-worker|tinyllama-1.1b-q4km.gguf|tg128               18.856     18.312    -2.88  
+cpu-rpc-worker|tinyllama-1.1b-q4km.gguf|tg16                19.069     19.059    -0.05  
+cpu-rpc-worker|tinyllama-1.1b-q8_0.gguf|pp512               54.228     53.965    -0.48  
+cpu-rpc-worker|tinyllama-1.1b-q8_0.gguf|tg128               10.094      9.883    -2.09  
+cpu|qwen3.5-9b-q4_k_m.gguf|pp512                             8.826      8.704    -1.38  
+cpu|qwen3.5-9b-q4_k_m.gguf|pp64                              9.425      9.001    -4.49  
+cpu|qwen3.5-9b-q4_k_m.gguf|tg128                             1.881      1.837    -2.30  
+cpu|qwen3.5-9b-q4_k_m.gguf|tg16                              1.853      1.818    -1.87  
+cpu|tinyllama-1.1b-q3km.gguf|pp512                          40.116     40.086    -0.08  
+cpu|tinyllama-1.1b-q3km.gguf|pp64                           41.370     41.353    -0.04  
+cpu|tinyllama-1.1b-q3km.gguf|tg128                          21.861     21.279    -2.66  
+cpu|tinyllama-1.1b-q3km.gguf|tg16                           21.971     21.903    -0.31  
+cpu|tinyllama-1.1b-q4_0.gguf|pp512                         134.509    130.567    -2.93  
+cpu|tinyllama-1.1b-q4_0.gguf|tg128                          18.939     18.841    -0.52  
+cpu|tinyllama-1.1b-q4km.gguf|pp512                          81.260     80.477    -0.96  
+cpu|tinyllama-1.1b-q4km.gguf|pp64                           85.327     84.737    -0.69  
+cpu|tinyllama-1.1b-q4km.gguf|tg128                          18.129     17.235    -4.93  
+cpu|tinyllama-1.1b-q4km.gguf|tg16                           18.374     16.437   -10.54  
+cpu|tinyllama-1.1b-q8_0.gguf|pp512                          64.376     56.681   -11.95  
+cpu|tinyllama-1.1b-q8_0.gguf|tg128                          11.073      9.205   -16.87  
+
+new rows without an old counterpart:
+  cpu-rpc-worker|tinyllama-1.1b-q4_0.gguf|pp64                54.855  
+  cpu-rpc-worker|tinyllama-1.1b-q4_0.gguf|tg16                20.026  
+  cpu-rpc-worker|tinyllama-1.1b-q6_k.gguf|pp512               25.926  
+  cpu-rpc-worker|tinyllama-1.1b-q6_k.gguf|pp64                26.434  
+  cpu-rpc-worker|tinyllama-1.1b-q6_k.gguf|tg128               13.970  
+  cpu-rpc-worker|tinyllama-1.1b-q6_k.gguf|tg16                14.524  
+  cpu-rpc-worker|tinyllama-1.1b-q8_0.gguf|pp64                54.644  
+  cpu-rpc-worker|tinyllama-1.1b-q8_0.gguf|tg16                10.271  
+  cpu|tinyllama-1.1b-q4_0.gguf|pp64                          151.106  
+  cpu|tinyllama-1.1b-q4_0.gguf|tg16                           19.497  
+  cpu|tinyllama-1.1b-q6_k.gguf|pp512                          71.208  
+  cpu|tinyllama-1.1b-q6_k.gguf|pp64                           73.817  
+  cpu|tinyllama-1.1b-q6_k.gguf|tg128                          12.042  
+  cpu|tinyllama-1.1b-q6_k.gguf|tg16                           12.686  
+  cpu|tinyllama-1.1b-q8_0.gguf|pp64                           61.426  
+  cpu|tinyllama-1.1b-q8_0.gguf|tg16                            9.846  
+
+energy per token (net, trapezoid / counter; J):
+  energy_q4km  pp 80.67 t/s 0.1025 / 0.1069 J, 11.29 W   tg 17.29 t/s 0.3862 / 0.4020 J, 9.70 W   failed checks: ['pp mean apower W in [8.5184, 10.4114]', 'pp net J/token (counter) mean in [0.0838, 0.1024]', 'pp net J/token (counter) spread across invocations <= 5 %', 'pp net J/token (trap) mean in [0.0795, 0.0971]', 'pp net J/token (trap) spread across invocations <= 5 %', 'tg mean apower W in [7.4358, 9.0883]', 'tg net J/token (counter) mean in [0.3214, 0.3928]', 'tg net J/token (trap) mean in [0.3047, 0.3724]']
+  energy_q4_0  pp 132.15 t/s 0.0593 / 0.0619 J, 10.83 W   tg 17.84 t/s 0.3464 / 0.3590 J, 9.18 W   failed checks: ['pp net J/token (counter) spread across invocations <= 5 %', 'pp net J/token (trap) spread across invocations <= 5 %', 'tg tokens/s mean in [17.992, 19.8858]']
+  energy_q8_0  pp 62.01 t/s 0.1119 / 0.1161 J, 9.95 W   tg 10.35 t/s 0.5834 / 0.6085 J, 9.05 W   failed checks: ['tg tokens/s mean in [10.5191, 11.6263]']
+  energy_q3km  pp 39.97 t/s 0.2049 / 0.2133 J, 11.21 W   tg 20.91 t/s 0.3993 / 0.4140 J, 11.37 W   failed checks: ['pp net J/token (counter) spread across invocations <= 5 %', 'pp net J/token (trap) spread across invocations <= 5 %', 'tg mean apower W in [6.5, 10.0]', 'tg net J/token (counter) mean in [0.1975, 0.3799]', 'tg net J/token (trap) mean in [0.1917, 0.3518]']
+  energy_q6k   pp 70.86 t/s 0.1201 / 0.1249 J, 11.50 W   tg 13.12 t/s 0.6174 / 0.6420 J, 11.10 W   failed checks: ['pp mean apower W in [7.5, 11.5]', 'pp net J/token (counter) spread across invocations <= 5 %', 'pp net J/token (trap) spread across invocations <= 5 %', 'tg mean apower W in [6.5, 10.0]', 'tg net J/token (counter) mean in [0.3197, 0.6152]', 'tg net J/token (trap) mean in [0.3104, 0.5696]']
+the replacement Pi 5 after its bootloader update, against the old board and against itself as found
+code changed since registration: none
+
+FW-ALL       FAILS      {"RB-PP": "FAILS", "RB-TG": "FAILS"}
+FW-HALF-TG   HOLDS      {"mean_abs_gap_as_found_pct": 8.67, "mean_abs_gap_after_pct": 3.63}
+FW-HALF-PP8  FAILS      {"gap_as_found_pct": -13.3, "gap_after_pct": -11.95}
+FW-NOWORSE   FAILS      {"tol_pct": 3.0, "slower": ["cpu|tinyllama-1.1b-q8_0.gguf|tg128"]}
+
+row                                                      old  as found     after   gap0 %   gap1 %  firmw. %
+cpu-rpc-worker|qwen3.5-9b-q4_k_m.gguf|pp64             5.508     5.449     5.544    -1.06    +0.67     +1.74
+cpu-rpc-worker|qwen3.5-9b-q4_k_m.gguf|tg16             1.845     1.788     1.757    -3.10    -4.77     -1.73
+cpu-rpc-worker|tinyllama-1.1b-q3km.gguf|pp1           23.029    20.514    22.835   -10.92    -0.84    +11.32
+cpu-rpc-worker|tinyllama-1.1b-q3km.gguf|pp16          36.942    36.575    36.917    -1.00    -0.07     +0.94
+cpu-rpc-worker|tinyllama-1.1b-q3km.gguf|pp256         36.666    36.285    36.810    -1.04    +0.39     +1.45
+cpu-rpc-worker|tinyllama-1.1b-q3km.gguf|pp4           33.682    33.291    33.717    -1.16    +0.10     +1.28
+cpu-rpc-worker|tinyllama-1.1b-q3km.gguf|pp512         36.198    35.570    36.221    -1.73    +0.07     +1.83
+cpu-rpc-worker|tinyllama-1.1b-q3km.gguf|pp64          37.246    37.183    37.188    -0.17    -0.16     +0.01
+cpu-rpc-worker|tinyllama-1.1b-q3km.gguf|tg128         22.327    20.048    21.840   -10.21    -2.18     +8.94
+cpu-rpc-worker|tinyllama-1.1b-q3km.gguf|tg16          22.712    20.674    22.717    -8.97    +0.02     +9.88
+cpu-rpc-worker|tinyllama-1.1b-q4_0.gguf|pp512         52.352    51.976    52.228    -0.72    -0.24     +0.49
+cpu-rpc-worker|tinyllama-1.1b-q4_0.gguf|tg128         19.748    16.761    19.266   -15.13    -2.44    +14.95
+cpu-rpc-worker|tinyllama-1.1b-q4km.gguf|pp512         46.268    45.158    46.228    -2.40    -0.09     +2.37
+cpu-rpc-worker|tinyllama-1.1b-q4km.gguf|pp64          47.916    47.518    47.840    -0.83    -0.16     +0.68
+cpu-rpc-worker|tinyllama-1.1b-q4km.gguf|tg128         18.856    16.161    18.312   -14.29    -2.88    +13.31
+cpu-rpc-worker|tinyllama-1.1b-q4km.gguf|tg16          19.069    16.517    19.059   -13.38    -0.05    +15.39
+cpu-rpc-worker|tinyllama-1.1b-q8_0.gguf|pp512         54.228    53.629    53.965    -1.11    -0.48     +0.63
+cpu-rpc-worker|tinyllama-1.1b-q8_0.gguf|tg128         10.094     9.448     9.883    -6.40    -2.09     +4.60
+cpu|qwen3.5-9b-q4_k_m.gguf|pp512                       8.826     8.011     8.704    -9.23    -1.38     +8.65
+cpu|qwen3.5-9b-q4_k_m.gguf|pp64                        9.425     9.110     9.001    -3.33    -4.49     -1.20
+cpu|qwen3.5-9b-q4_k_m.gguf|tg128                       1.881     1.745     1.837    -7.22    -2.30     +5.30
+cpu|qwen3.5-9b-q4_k_m.gguf|tg16                        1.853     1.802     1.818    -2.76    -1.87     +0.91
+cpu|tinyllama-1.1b-q3km.gguf|pp512                    40.116    39.715    40.086    -1.00    -0.08     +0.93
+cpu|tinyllama-1.1b-q3km.gguf|pp64                     41.370    41.284    41.353    -0.21    -0.04     +0.17
+cpu|tinyllama-1.1b-q3km.gguf|tg128                    21.861    20.672    21.279    -5.44    -2.66     +2.94
+cpu|tinyllama-1.1b-q3km.gguf|tg16                     21.971    20.857    21.903    -5.07    -0.31     +5.02
+cpu|tinyllama-1.1b-q4_0.gguf|pp512                   134.509   128.664   130.567    -4.34    -2.93     +1.48
+cpu|tinyllama-1.1b-q4_0.gguf|tg128                    18.939    17.564    18.841    -7.26    -0.52     +7.27
+cpu|tinyllama-1.1b-q4km.gguf|pp512                    81.260    79.104    80.477    -2.65    -0.96     +1.74
+cpu|tinyllama-1.1b-q4km.gguf|pp64                     85.327    82.305    84.737    -3.54    -0.69     +2.95
+cpu|tinyllama-1.1b-q4km.gguf|tg128                    18.129    16.755    17.235    -7.58    -4.93     +2.86
+cpu|tinyllama-1.1b-q4km.gguf|tg16                     18.374    16.638    16.437    -9.45   -10.54     -1.21
+cpu|tinyllama-1.1b-q8_0.gguf|pp512                    64.376    55.814    56.681   -13.30   -11.95     +1.55
+cpu|tinyllama-1.1b-q8_0.gguf|tg128                    11.073     9.541     9.205   -13.83   -16.87     -3.53
+cpu-rpc-worker|tinyllama-1.1b-q4_0.gguf|pp64               -    54.297    54.855      -        -       +1.03
+cpu-rpc-worker|tinyllama-1.1b-q4_0.gguf|tg16               -    17.241    20.026      -        -      +16.15
+cpu-rpc-worker|tinyllama-1.1b-q6_k.gguf|pp512              -    25.693    25.926      -        -       +0.90
+cpu-rpc-worker|tinyllama-1.1b-q6_k.gguf|pp64               -    26.238    26.434      -        -       +0.75
+cpu-rpc-worker|tinyllama-1.1b-q6_k.gguf|tg128              -    11.928    13.970      -        -      +17.13
+cpu-rpc-worker|tinyllama-1.1b-q6_k.gguf|tg16               -    12.385    14.524      -        -      +17.27
+cpu-rpc-worker|tinyllama-1.1b-q8_0.gguf|pp64               -    53.453    54.644      -        -       +2.23
+cpu-rpc-worker|tinyllama-1.1b-q8_0.gguf|tg16               -     9.621    10.271      -        -       +6.76
+cpu|tinyllama-1.1b-q4_0.gguf|pp64                          -   144.872   151.106      -        -       +4.30
+cpu|tinyllama-1.1b-q4_0.gguf|tg16                          -    17.361    19.497      -        -      +12.30
+cpu|tinyllama-1.1b-q6_k.gguf|pp512                         -    69.507    71.208      -        -       +2.45
+cpu|tinyllama-1.1b-q6_k.gguf|pp64                          -    73.225    73.817      -        -       +0.81
+cpu|tinyllama-1.1b-q6_k.gguf|tg128                         -    12.229    12.042      -        -       -1.53
+cpu|tinyllama-1.1b-q6_k.gguf|tg16                          -    12.544    12.686      -        -       +1.13
+cpu|tinyllama-1.1b-q8_0.gguf|pp64                          -    58.571    61.426      -        -       +4.88
+cpu|tinyllama-1.1b-q8_0.gguf|tg16                          -     9.403     9.846      -        -       +4.70
+SESSION DONE 2026-10-20T05:19:09+07:00

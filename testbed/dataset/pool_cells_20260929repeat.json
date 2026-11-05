@@ -1,0 +1,144 @@
+{
+ "_note": "NOT a registration: no prediction is under test. Repeats, today, of two already-scored Qwen3.5-9B splits, copied verbatim (pipeline, bench args, memory gates) under new ids so that compare_pool.py's newest-log rule can never mix them into the registered results. Why (2026-09-29 evening, user: 'dig deep'): moving 4 blocks from the Pi 4 worker to the Pi 5 host, h.q9.p5p4 (2026-09-28) -> r.q9.p5h24_p4 (2026-09-29), should save ~122 ms/token by every row in use; it saved 31. Either something in the split is not priced, or the two sessions differ (the boards were rebooted 2026-09-29 ~11:40 and both Pis now have Wi-Fi up). Run order A-B-A.",
+ "protocol": "llama-bench -t 4 -p 64 -n 16 -r 3 -oe jsonl -v; memprobe.sh v2 (run_pool.sh)",
+ "sources": {
+  "x.q9.p5p4.rep": {
+   "file": "testbed/dataset/pool_predictions_20260928hyb.json",
+   "cell": "h.q9.p5p4",
+   "sha256": "64ec6bbb543d2ea3b05465c5c2d74d0ba5fd55710f9dfc539c7d5b6b5c0335eb"
+  },
+  "x.q9.p5h24_p4.rep": {
+   "file": "testbed/dataset/pool_predictions_20260929recur.json",
+   "cell": "r.q9.p5h24_p4",
+   "sha256": "c2a0249979703fe7348bc2a555764007e304db4293da652f68ad67c40976da1e"
+  }
+ },
+ "configs": {
+  "x.q9.p5p4.rep": {
+   "model": "qwen3.5-9b-q4_k_m",
+   "quant": "Q4_K_M",
+   "why": "repeat of h.q9.p5p4 (pool_predictions_20260928hyb.json, sha256 64ec6bbb543d2ea3b05465c5c2d74d0ba5fd55710f9dfc539c7d5b6b5c0335eb), copied verbatim",
+   "pipeline": [
+    {
+     "node": "pi5",
+     "blocks": 20
+    },
+    {
+     "node": "pi4",
+     "blocks": 13
+    }
+   ],
+   "head_on": "pi4",
+   "bench": {
+    "host": "pi5",
+    "args": "-m ~/models/qwen3.5-9b-q4_k_m.gguf -rpc 192.168.10.12:50052 -ngl 14"
+   },
+   "memory": {
+    "pi5": {
+     "blocks": 20,
+     "need_mib": 3679,
+     "reserve_mib": 0,
+     "available_mib": 7619,
+     "margin_mib": 3940
+    },
+    "pi4": {
+     "blocks": 13,
+     "need_mib": 2833,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 4580
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 966.2,
+    "decode_tok_s": 1.035,
+    "prefill_ms_per_token": 273.5,
+    "prefill_tok_s": 3.66
+   },
+   "predicted_alt": {
+    "v3": {
+     "decode_ms_per_token": 958.0,
+     "prefill_ms_per_token": 261.4
+    }
+   },
+   "cost_sources": {
+    "pi5": {
+     "host": "cpu row x 1.0806 prefill (SIZE2)",
+     "worker": "cpu-rpc-worker row"
+    },
+    "pi4": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    }
+   },
+   "link_pairs": {
+    "pi4": "pi5-pi4"
+   }
+  },
+  "x.q9.p5h24_p4.rep": {
+   "model": "qwen3.5-9b-q4_k_m",
+   "quant": "Q4_K_M",
+   "why": "repeat of r.q9.p5h24_p4 (pool_predictions_20260929recur.json, sha256 c2a0249979703fe7348bc2a555764007e304db4293da652f68ad67c40976da1e), copied verbatim",
+   "pipeline": [
+    {
+     "node": "pi5",
+     "blocks": 24
+    },
+    {
+     "node": "pi4",
+     "blocks": 9
+    }
+   ],
+   "head_on": "pi4",
+   "bench": {
+    "host": "pi5",
+    "args": "-m ~/models/qwen3.5-9b-q4_k_m.gguf -rpc 192.168.10.12:50052 -ngl 10"
+   },
+   "memory": {
+    "pi5": {
+     "blocks": 24,
+     "need_mib": 4195,
+     "reserve_mib": 0,
+     "available_mib": 7619,
+     "margin_mib": 3424
+    },
+    "pi4": {
+     "blocks": 9,
+     "need_mib": 2317,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 5096
+    }
+   },
+   "recurrent_blocks_by_node": {
+    "pi5": 18,
+    "pi4": 6
+   },
+   "predicted": {
+    "decode_ms_per_token": 925.3,
+    "decode_tok_s": 1.081,
+    "prefill_ms_per_token": 235.2,
+    "prefill_tok_s": 4.25
+   },
+   "predicted_alt": {
+    "no_term": {
+     "decode_ms_per_token": 862.0,
+     "prefill_ms_per_token": 214.6
+    }
+   },
+   "cost_sources": {
+    "pi5": {
+     "host": "cpu row x 1.0806 prefill (SIZE2)",
+     "worker": "cpu-rpc-worker row"
+    },
+    "pi4": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    }
+   },
+   "link_pairs": {
+    "pi4": "pi5-pi4"
+   }
+  }
+ }
+}

@@ -1,0 +1,29 @@
+########## 2026-10-21T11:19:20+07:00 serve tinyllama_q3km, ctx 4096, clocks locked, boards pi5 pi4 jetson laptop, planned against testbed/dataset/memory_at_rest.json: laptop 15 + pi5 3 + pi4 4, head on pi4; predicted decode 69.6 ms/token (14.37 tok/s)
+hosts   laptop: fixed: laptop 15 + pi5 3 + pi4 4, head last
+llama-server -m ~/models/tinyllama-1.1b-q3km.gguf --rpc 192.168.10.11:50052,192.168.10.12:50052 -ngl 8 -ts 2.5,5.5  -c 4096 -np 1 -t 4 -lv 4 -lm none --host 192.168.1.108 --port 8080   pin b23701f77d47dad9de834d59ebfcbe25c9e8b46f
+gate    laptop: MemAvailable 26418 MiB, the plan needs 8934 MiB with its reserve (margin at rest 18851 MiB)
+gate    pi5: MemAvailable 7600 MiB, the plan needs 263 MiB with its reserve (margin at rest 7356 MiB)
+gate    pi4: MemAvailable 7376 MiB, the plan needs 307 MiB with its reserve (margin at rest 7106 MiB)
+worker  pi5 listening on 192.168.10.11:50052 (pid 73638)
+worker  pi4 listening on 192.168.10.12:50052 (pid 89118)
+server  starting on laptop (pid 1056322); loading streams the model from the SD card to the workers
+READY   2026-10-21T11:19:28+07:00: http://192.168.1.108:8080/ (web chat) -- health {"status":"ok"}
+0.00.151.114 I load_tensors:          CPU model buffer size =   213.70 MiB
+0.00.151.115 I load_tensors:   CPU_REPACK model buffer size =   117.84 MiB
+0.00.151.116 I load_tensors: RPC0[192.168.10.11:50052] model buffer size =    60.36 MiB
+0.00.151.117 I load_tensors: RPC0[192.168.10.12:50052] model buffer size =   131.76 MiB
+0.02.477.971 I llama_context: n_ctx                 = 4096
+0.02.477.973 I llama_context: flash_attn            = auto
+0.02.478.133 I llama_kv_cache:        CPU KV buffer size =    60.00 MiB
+0.02.514.228 I llama_kv_cache: RPC0[192.168.10.11:50052] KV buffer size =    12.00 MiB
+0.02.515.201 I llama_kv_cache: RPC0[192.168.10.12:50052] KV buffer size =    16.00 MiB
+0.02.515.346 I llama_kv_cache: size =   88.00 MiB (  4096 cells,  22 layers,  1/1 seqs), K (f16):   44.00 MiB, V (f16):   44.00 MiB
+0.02.537.637 I sched_reserve: RPC0[192.168.10.11:50052] compute buffer size =    45.01 MiB
+0.02.537.640 I sched_reserve: RPC0[192.168.10.12:50052] compute buffer size =    45.01 MiB
+0.02.537.641 I sched_reserve:        CPU compute buffer size =    53.01 MiB
+0.02.738.003 I slot   load_model: id  0 | task -1 | new slot, n_ctx = 2048
+split   pi5: llama.cpp 60.36 MiB, planned 60.4 MiB (head on pi4)
+split   pi4: llama.cpp 131.76 MiB, planned 131.8 MiB (head on pi4)
+mem     laptop: MemAvailable 25913 MiB at READY, 26418 at the gate: the serve holds 505 MiB, charged 742 MiB
+mem     pi5: MemAvailable 7491 MiB at READY, 7600 at the gate: the serve holds 109 MiB, charged 263 MiB
+mem     pi4: MemAvailable 7210 MiB at READY, 7376 at the gate: the serve holds 166 MiB, charged 307 MiB

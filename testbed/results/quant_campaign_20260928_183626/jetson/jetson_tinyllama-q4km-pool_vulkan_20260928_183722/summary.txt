@@ -1,0 +1,54 @@
+results : testbed/results/quant_campaign_20260928_183626/jetson/jetson_tinyllama-q4km-pool_vulkan_20260928_183722
+  mode   : vulkan   binaries: /home/jetson/llama.cpp/build/bin
+  commit : b23701f77d47dad9de834d59ebfcbe25c9e8b46f   patched files: 0
+  model  : 9fecc3b3cd76bba89d504f29b616eedf7da85b96540e490ca5824d3f7d2776a0  /home/jetson/models/tinyllama-1.1b-
+  pins   : verified -- model = testbed/models.md's TinyLlama 'SHA-256 (full)'; commit and every record's build_commit = llama.pin_sha (ThinkPad/config/cluster.json); patched files 0
+  backends registered at run time (llama-bench 'backends'; NOT what a case ran on -- see 'ran on'): Vulkan
+  board time zone: UTC+0700 (from run.log ISO stamps)
+  guard log: testbed/results/quant_campaign_20260928_183626/jetson/power-guard.log
+  power mode at '[clocks locked]': pmode:0000 online=0-3 (MAXN)
+  clocks at '[clocks locked]': cpu0 min/max=1479000/1479000 gpu min/max=921600000/921600000 (locked: min == max)
+
+case    test      mean t/s            min-max  rep range  n  ran on
+vulkan  pp64        63.361  [ 63.357- 63.364]      0.01%  3  GPU (Vulkan)  [dev=auto ngl=99 t=4 rev b23701f start pmode:0000 online=0-3 gpu_info="NVIDIA Tegra X1 (nvgpu)"]
+vulkan  tg16        11.528  [ 11.525- 11.531]      0.05%  3  GPU (Vulkan)  [dev=auto ngl=99 t=4 rev b23701f start pmode:0000 online=0-3 gpu_info="NVIDIA Tegra X1 (nvgpu)"]
+  rep range = (max-min)/mean over the n repetitions of ONE llama-bench invocation: a within-run
+    repetition range, NOT the across-run spread the house rule asks for (the same config minutes
+    apart drifts ~2%: testbed/benchmarks.md, "A caution about error bars")
+  gpu_info = GPUs llama-bench enumerated at run time (listed even for -dev none); a GPU label needs it
+
+locked-clock idle floor: first 3 s dropped = 6 samples at the requested 500 ms (IDLE_DROP_S / IDLE_INTERVAL_MS)
+  run mean / peak = the whole llama-bench invocation (start-up, model load, a full-length pp warm-up,
+    every pp and tg repetition): NOT a pp or a tg figure, and NOT comparable across cases whose pp/tg
+    time shares differ -- each case's 'mix' line gives its shares, from the records' samples_ns
+  sample counts: tegrastats writes at most one per requested interval (run 200 ms, idle 500 ms: RUN_INTERVAL_MS / IDLE_INTERVAL_MS), so a file holding more is n/a;
+    a run file's rate against its case's idle capture (timed 15 s: what this board's tegrastats delivers): under 0.85 x is LOW, over 1.2 x HIGH
+    -- small errors pass: a file missing under ~18% of its samples, or holding up to ~15% extra (e.g. a `tegrastats --stop` that
+    failed on the run's last case, its dir collected soon after the run; n/a only past ~1.6 windows) -- the 1.2 margin and these
+    limits rest on one run's two cases (its run files at 1.04 / 1.05 x the idle rate)
+case vulkan: OK (llama-bench exit 0)
+  start    CPU 26C GPU 25C pmode:0000 online=0-3 clocks locked at 2026-09-28T18:38:04+07:00
+  end      CPU 28C GPU 27C pmode:0000 online=0-3 clocks locked at 2026-09-28T18:38:29+07:00; power state unchanged from start
+  window   2026-09-28T18:38:19+07:00 -> 2026-09-28T18:38:29+07:00 (9.9 s)
+  power    locked-clock idle floor  1908 mW (n=21 of 27) | run mean  6830 mW, peak  8159 mW (n=18, achieved 1.83 Hz; idle reference 1.80 Hz)
+  mix      of the 9.9 s window: pp64 reps 31% (3 x 1.01 s), tg16 reps 42% (3 x 1.39 s), warm-ups ~11% (est.: one pp64 run + one token), the rest ~16% (start-up, model load, contexts, exit)
+  guard    input min 4888 mV, guard peak 8081 mW (n=11, covered 10 of 10 s, largest gap 1 s), pmode:0000; trips in window: 0 [guard log has 1 WARNING(s): see below]
+
+power guard log: testbed/results/quant_campaign_20260928_183626/jetson/power-guard.log
+  dated span 2026-09-25T10:25:03+07:00 -> 2026-09-28T18:40:45+07:00, 175911 samples
+  sample lines carry the time of day only; any clock step in the guard session covering a case withholds that case's guard figures; a whole-day step of at most GUARD_STALL_S, or a clock that was already wrong when the guard started, cannot be detected -- the procedure syncs the clock before the guard starts.
+  'guard start' lines: 6
+    2026-09-25T10:25:03+07:00 guard start: min 4750 mV, baseline alarms 0, pmode:0000 fmode:fanNull
+    2026-09-25T22:44:24+07:00 guard start: min 4750 mV, baseline alarms 0, pmode:0000 fmode:fanNull
+    2026-09-26T13:38:12+07:00 guard start: min 4750 mV, baseline alarms 0, pmode:0000 fmode:fanNull
+    2026-09-26T16:39:34+07:00 guard start: min 4750 mV, baseline alarms 0, pmode:0000 fmode:fanNull
+    2026-09-28T10:17:42+07:00 guard start: min 4750 mV, baseline alarms 0, pmode:0000 fmode:fanNull
+    2026-09-28T15:40:28+07:00 guard start: min 4750 mV, baseline alarms 0, pmode:0000 fmode:fanNull
+  WARNING line 165843: 'guard start' starts mid-line, after '<1449 NUL>' -- the line before it was cut off (power lost mid-write?); dated from the stamp on this line
+  trips in whole log: 0
+
+state log:
+  [clocks locked] 2026-09-28T18:37:34+07:00 pmode:0000 online=0-3 cpu0 min/max=1479000/1479000 gpu min/max=921600000/921600000 swap_used_kB=0 alarms=0 CPU-therm=25C GPU-therm=25C 
+  [before vulkan] 2026-09-28T18:38:04+07:00 pmode:0000 online=0-3 cpu0 min/max=1479000/1479000 gpu min/max=921600000/921600000 swap_used_kB=0 alarms=0 CPU-therm=26C GPU-therm=25C 
+  [after vulkan] 2026-09-28T18:38:29+07:00 pmode:0000 online=0-3 cpu0 min/max=1479000/1479000 gpu min/max=921600000/921600000 swap_used_kB=0 alarms=0 CPU-therm=28C GPU-therm=27C 
+  [clocks restored] 2026-09-28T18:38:32+07:00 pmode:0000 online=0-3 cpu0 min/max=102000/1479000 gpu min/max=76800000/921600000 swap_used_kB=0 alarms=0 CPU-therm=26C GPU-therm=26C 

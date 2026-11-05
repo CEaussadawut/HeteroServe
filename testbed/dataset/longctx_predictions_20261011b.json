@@ -1,0 +1,276 @@
+{
+ "registered": "2026-10-11T00:37:03+07:00",
+ "script": "testbed/scripts/register_longctx_20261011b.py",
+ "question": "the planner with the measured context-length cost, and the laptop as a worker: its long-context plan",
+ "model": "qwen3_14b",
+ "host": "pi4",
+ "boards": [
+  "pi4",
+  "laptop",
+  "jetson"
+ ],
+ "rtt_trips": 1,
+ "load_mode": "none",
+ "attn_ms_per_block_per_depth_token": {
+  "pi4": 0.009697023999999999,
+  "jetson": 0.00028774809599999994,
+  "laptop": 0.0027996671999999997
+ },
+ "laptop_costs": {
+  "host": [
+   5.629034434895783e-08,
+   1.1840354871896216e-08
+  ],
+  "worker": [
+   5.826110143652387e-08,
+   1.9380286249397632e-08
+  ]
+ },
+ "extra_pairs": {
+  "pi4-laptop": {
+   "mbps": 933.9,
+   "rtt_ms": 0.846
+  }
+ },
+ "laptop_mem_available_mib_at_registration": 22627,
+ "laptop_reserve_mib": 8192,
+ "planner_picks_by_depth": {
+  "0": {
+   "assign": [
+    [
+     "pi4",
+     1
+    ],
+    [
+     "laptop",
+     39
+    ]
+   ],
+   "head": "last",
+   "decode_ms": 551.07
+  },
+  "1024": {
+   "assign": [
+    [
+     "pi4",
+     1
+    ],
+    [
+     "laptop",
+     39
+    ]
+   ],
+   "head": "last",
+   "decode_ms": 672.81
+  },
+  "2048": {
+   "assign": [
+    [
+     "pi4",
+     1
+    ],
+    [
+     "laptop",
+     39
+    ]
+   ],
+   "head": "last",
+   "decode_ms": 794.55
+  },
+  "4096": {
+   "assign": [
+    [
+     "pi4",
+     1
+    ],
+    [
+     "laptop",
+     39
+    ]
+   ],
+   "head": "last",
+   "decode_ms": 1038.02
+  }
+ },
+ "plan_depth": 4096,
+ "plan": {
+  "assign": [
+   [
+    "pi4",
+    1
+   ],
+   [
+    "laptop",
+    39
+   ]
+  ],
+  "head": "last",
+  "memory": {
+   "pi4": {
+    "blocks": 1,
+    "need_mib": 771,
+    "reserve_mib": 0,
+    "available_mib": 7413,
+    "margin_mib": 6642
+   },
+   "laptop": {
+    "blocks": 39,
+    "need_mib": 8938,
+    "reserve_mib": 0,
+    "available_mib": 14435,
+    "margin_mib": 5497
+   }
+  }
+ },
+ "cell": "lc.q3_14b.d4096",
+ "bench": {
+  "host": "pi4",
+  "args": "-m ~/models/qwen3-14b-q4_k_m.gguf -rpc 192.168.1.108:50053 -ngl 40 -lm none",
+  "protocol": "-t 4 -p 0 -n 16 -d 4096,0 -r 3 -oe jsonl",
+  "workers": {
+   "jetson": "ggml-rpc-server -H 192.168.1.114 -p 50052 -d Vulkan0 (serve_pool.sh's)",
+   "laptop": "ggml-rpc-server -H 192.168.1.108 -p 50053 -t 4 (the characterised worker)"
+  }
+ },
+ "runs": 3,
+ "predictions_ms": {
+  "0": 551.0720136225036,
+  "4096": 1038.0210611233035
+ },
+ "predictions_without_the_term_ms": {
+  "0": 551.0720136225036,
+  "4096": 551.0720136225036
+ },
+ "served_plan_predicted_ms": {
+  "0": 2025.7298088413886,
+  "4096": 3113.4650976651965
+ },
+ "served_plan_measured_d0_ms_kv14b": 1991.08,
+ "predicted_gain_d0": 3.6131,
+ "tolerance_pct": 15.0,
+ "tolerance_slope_pct": 25.0,
+ "hypotheses": {
+  "LC-0": "measured ms per token at d = 0 (mean of the runs) within 15 % of predictions_ms.0",
+  "LC-4096": "the same at d = 4,096 against predictions_ms.4096",
+  "LC-SLOPE": "the measured rise (4,096 - 0) within 25 % of the predicted rise",
+  "LC-GAIN": "served_plan_measured_d0_ms_kv14b / measured d = 0 within 15 % of predicted_gain_d0",
+  "LC-JET": "the forced plan's measured ms per token at d = 0 (mean of three runs) within 15 % of cells[1].prediction_ms.0",
+  "LC-RANK": "the planner's pick measures faster than the forced plan at d = 0 (predicted ratio cells[1] / pick)"
+ },
+ "inputs_sha256": {
+  "testbed/scripts/predict_pool.py": "4246a4b254a078dbb785b00140a18990fe7388c00780e3067a7a18492ce9ced5",
+  "ThinkPad/control/placement.py": "c6aaec6d5cb62c979ec8aca7d4d36841cbeb9b456082edf4ae1c7a2cbb8f2051",
+  "testbed/scripts/longctx_20261011.py": "a26480f2faacde86cc7872aab3b6eb9674cb97c386e4b1208e536bc5c7752c9c",
+  "testbed/dataset/attention_cost_20261011.json": "d6bafda58102ec5b9dc11bc722129e712bf5963f11b518bb49935c186fa54285",
+  "testbed/dataset/laptop_worker_20261011.json": "e45eb675a368ed172e18ca818dac688e6fed79e436d7d1cef26c889a14297ff4",
+  "testbed/dataset/characterisation.csv": "ef94c22318ccb0ce9ab913a08174d110095d9d4e0cad65aeeb052304dbc13d6a",
+  "testbed/dataset/model_shapes.json": "c92bbc0278b030d5218d7740b3fac99f146b5bdeffe684404d94a012f7232c38",
+  "testbed/dataset/link.json": "f961e94b8781e34081e0f11b3fb6339a150ae229fe43eb4566ca44094384568c",
+  "testbed/dataset/memory_at_rest.json": "1ec5a19725d7c565b9b97449beb0130b179da895e2e93fdb5e36e9ea4f141589",
+  "testbed/results/spec_shape_20261010_125542/link_s0.log": "7c578cfc16b384fa174eca4bfffc97b0908d602c7b47706a5c34e206381e2be3",
+  "testbed/results/kv14_20261010_213514/score.json": "ba70682123cb48015cd089170c4dc704220d6e1167eae084a52c83b2c0bf808b",
+  "testbed/scripts/jetson_power_guard.sh": "6dafb56fef33f2bc0e070b2552dcb871053d3c0681358bd27436552f905d90de",
+  "testbed/scripts/throttle_poll.sh": "15d5d305766d849820fbd23c73ddaee56d17d4fa055c0b279d515a7ca2df9184",
+  "testbed/dataset/attention_cost_20261011b.json": "9252ec7022778e9a4392acd0311bdd48e6c73f861a162cbab2726d7530e8d36f",
+  "testbed/dataset/laptop_worker_20261011b.json": "c04ffe316e7b7ba5a4f0e15a396467b53d94ef6758638a491cd08497390ee55f",
+  "testbed/scripts/register_longctx_20261011b.py": "cd27479740f4c7644fc3f22df6150aa5fe4e9d1ae299636b5c3bcb80fd3209d1",
+  "testbed/scripts/laptop_worker_remote_20261011.py": "041c32ac740d92afce71009a79a3b8103ade534b3fbc6a73d650e90f6d6378ca"
+ },
+ "cells": [
+  {
+   "name": "pick",
+   "args": "-m ~/models/qwen3-14b-q4_k_m.gguf -rpc 192.168.1.108:50053 -ngl 40 -lm none",
+   "protocol": "-t 4 -p 0 -n 16 -d 4096,0 -r 3 -oe jsonl",
+   "runs": 3,
+   "memory": {
+    "pi4": {
+     "blocks": 1,
+     "need_mib": 771,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 6642
+    },
+    "laptop": {
+     "blocks": 39,
+     "need_mib": 8938,
+     "reserve_mib": 0,
+     "available_mib": 14435,
+     "margin_mib": 5497
+    }
+   }
+  },
+  {
+   "name": "jetson_forced",
+   "assign": [
+    [
+     "pi4",
+     1
+    ],
+    [
+     "jetson",
+     13
+    ],
+    [
+     "laptop",
+     26
+    ]
+   ],
+   "head": "last",
+   "args": "-m ~/models/qwen3-14b-q4_k_m.gguf -rpc 192.168.1.114:50052,192.168.1.108:50053 -ngl 40 -ts 12.5/27.5 -lm none",
+   "protocol": "-t 4 -p 0 -n 16 -d 0 -r 3 -oe jsonl",
+   "runs": 3,
+   "memory": {
+    "pi4": {
+     "blocks": 1,
+     "need_mib": 755,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 6658
+    },
+    "jetson": {
+     "blocks": 13,
+     "need_mib": 2581,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 514,
+     "weights_mib": 2466.4,
+     "weights_cap_mib": 2845,
+     "weights_margin_mib": 379
+    },
+    "laptop": {
+     "blocks": 26,
+     "need_mib": 5847,
+     "reserve_mib": 0,
+     "available_mib": 14435,
+     "margin_mib": 8588
+    }
+   },
+   "prediction_ms": {
+    "0": 767.7676513695278
+   }
+  }
+ ],
+ "supersedes": {
+  "file": "testbed/dataset/longctx_predictions_20261011.json",
+  "sha256": "1b6281c48ccd26d0a53f240071d40fcdfc6f8c037cb2054878bc4334b6de5960",
+  "why": "a's laptop row was measured with the host's polling threads on the laptop's cores; b re-measured it with the Pi 4 as a remote host"
+ },
+ "a_predictions_ms": {
+  "0": 891.7701166190063,
+  "4096": 1336.1318874140143
+ },
+ "a_plan": [
+  [
+   "pi4",
+   1
+  ],
+  [
+   "jetson",
+   13
+  ],
+  [
+   "laptop",
+   26
+  ]
+ ]
+}

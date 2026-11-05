@@ -1,0 +1,54 @@
+# Continuous power/thermal logging, independent of any benchmark run.
+# Useful for the long unattended experiments and for catching the thermal
+# behaviour of the box between runs.
+#
+# Install:  make install-units      (see the Makefile target)
+#
+# Paths come from /etc/default/heteroserve and a generated drop-in; see the
+# comments in heteroserve-rpc.service for why User=/WorkingDirectory= cannot be
+# ${VAR} and live in 10-local.conf instead.
+#
+# Note: bench/run_matrix.py starts its OWN logger for the duration of a sweep.
+# Two loggers means two tegrastats readers and duplicated rows -- stop this unit
+# before a sweep:  sudo systemctl stop heteroserve-telemetry
+#
+# This CSV carries NO phase markers, by design: nothing here knows when a
+# prefill or decode window starts. It answers "what was the board doing between
+# runs" (idle floor, thermal soak, drift). Per-phase energy attribution comes
+# from the sweep's own marked logger, never from this file.
+
+[Unit]
+Description=HeteroServe tegrastats power logger
+After=network.target
+ConditionPathExists=/etc/default/heteroserve
+ConditionPathExists=/etc/systemd/system/heteroserve-telemetry.service.d/10-local.conf
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/default/heteroserve
+# User= and WorkingDirectory= are supplied by 10-local.conf.
+
+# One file per start, stamped at boot. The previous version wrote a single fixed
+# filename, so every restart -- including every Restart=on-failure -- silently
+# truncated the record of the unattended run you were trying to capture.
+#
+# The percents MUST be doubled. systemd expands %-specifiers in Exec* lines before
+# handing the string to /bin/sh, and it does not respect shell quoting. Every letter
+# in %Y%m%dT%H%M%SZ is a valid specifier (%Y unit-file dir, %m machine ID, %d
+# credentials dir, %H host name, %S state dir root), so an undoubled format never
+# reaches date(1) -- it expands to a host-constant string containing slashes. That
+# reinstates the exact fixed-filename truncation this comment claims to have fixed,
+# and buries the CSV several directories deep where 90_collect_results.sh
+# (find -maxdepth 1) will never tarball it. systemd-analyze verify exits 0 either
+# way, so nothing catches it. See docs/40_audit_findings.md:634.
+ExecStart=/bin/sh -c 'exec /usr/bin/python3 "${HS_REPO}/telemetry/tegrastats_logger.py" --out "${HS_RESULTS}/continuous_power_$(date -u +%%Y%%m%%dT%%H%%M%%SZ).csv" --hz 1'
+Restart=on-failure
+RestartSec=10
+Nice=5
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=hs-telemetry
+
+[Install]
+WantedBy=multi-user.target

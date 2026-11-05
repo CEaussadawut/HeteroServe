@@ -1,0 +1,14 @@
+########## 2026-10-21T11:37:52+07:00 serve tinyllama_q3km, ctx 4096, clocks locked, boards pi5 pi4 jetson laptop, planned against testbed/dataset/memory_at_rest.json: pi4 22, head on pi4; predicted decode 149.2 ms/token (6.70 tok/s)
+hosts   pi4: fixed: pi4 22, head last
+llama-server -m ~/models/tinyllama-1.1b-q3km.gguf -ngl 0  -c 4096 -np 1 -t 4 -lv 4 -lm none --host 192.168.1.110 --port 8080   pin b23701f77d47dad9de834d59ebfcbe25c9e8b46f
+gate    pi4: MemAvailable 7359 MiB, the plan needs 749 MiB with its reserve (margin at rest 6664 MiB)
+server  starting on pi4 (pid 91493); loading streams the model from the SD card to the workers
+READY   2026-10-21T11:37:59+07:00: http://192.168.1.110:8080/ (web chat) -- health {"status":"ok"}
+0.00.382.204 I load_tensors:          CPU model buffer size =   523.67 MiB
+0.01.184.501 I llama_context: n_ctx                 = 4096
+0.01.184.506 I llama_context: flash_attn            = auto
+0.01.184.888 I llama_kv_cache:        CPU KV buffer size =    88.00 MiB
+0.01.281.068 I llama_kv_cache: size =   88.00 MiB (  4096 cells,  22 layers,  1/1 seqs), K (f16):   44.00 MiB, V (f16):   44.00 MiB
+0.01.289.424 I sched_reserve:        CPU compute buffer size =    53.01 MiB
+0.01.819.444 I slot   load_model: id  0 | task -1 | new slot, n_ctx = 2048
+mem     pi4: MemAvailable 6725 MiB at READY, 7359 at the gate: the serve holds 634 MiB, charged 749 MiB

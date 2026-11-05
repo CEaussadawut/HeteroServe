@@ -1,0 +1,18 @@
+the engine (A) against prima.cpp + Halda (B), Qwen3-32B Q8_0 on laptop + Pi 5 + Pi 4 + Jetson, ctx 2048; code changed since registration: none
+
+P4-ALL      HOLDS      {}
+P4-TPOT     HOLDS      {'predicted_lower': 'B', 'A_p50': 3564.44, 'B_p50': 3131.0, 'B_over_A': 0.8784}
+P4-ENERGY   HOLDS      {'predicted_lower': 'B', 'A_j': 114.1708, 'B_j': 107.4683, 'B_over_A': 0.9413}
+P4-FOLLOW   FAILS      {'tpot_ratio': 0.8784, 'energy_ratio': 0.9413}
+P4-ACC      HOLDS      {'A_server_mean': 3563.47, 'A_predicted': 3624.2, 'err_pct': -1.7}
+P4-CORRECT  HOLDS      {'on': 'request 0 (the others recorded)', 'match_by_request': {'0': True, '1': True, '2': True, '3': True, '4': True}}
+B run 1 windows: {'laptop': 39, 'pi5': 11, 'pi4': 11, 'jetson': 3}
+B run 3 windows: {'laptop': 39, 'pi5': 11, 'pi4': 11, 'jetson': 3}
+
+run 1 B rc 0: 5 requests, client TPOT P50 3128.85 ms, server mean None, TTFT P50 165010.3 ms, J/token all 106.908 {'pi4': 13.0528, 'jetson': 11.6265, 'pi5': 14.0426, 'laptop': 68.1861}
+        laptop battery over its requests: {'samples': 180, 'status': {'Full': 180}, 'ac_off': 0, 'energy_change_wh': 0.0}
+run 2 A rc 0: 5 requests, client TPOT P50 3564.44 ms, server mean 3563.47, TTFT P50 131104.5 ms, J/token all 114.1708 {'pi4': 15.0359, 'jetson': 13.5956, 'pi5': 16.3973, 'laptop': 69.1419}
+        laptop battery over its requests: {'samples': 177, 'status': {'Full': 177}, 'ac_off': 0, 'energy_change_wh': 0.0}
+run 3 B rc 0: 5 requests, client TPOT P50 3134.41 ms, server mean None, TTFT P50 165141.1 ms, J/token all 108.0286 {'pi4': 13.1748, 'jetson': 11.5964, 'pi5': 14.1232, 'laptop': 69.1343}
+        laptop battery over its requests: {'samples': 181, 'status': {'Full': 181}, 'ac_off': 0, 'energy_change_wh': 0.0}
+session: DEADLINE arm-run 4 (A, allowed 55 min) could not end by 07:35:00: not started; the session ends here

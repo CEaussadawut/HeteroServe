@@ -1,0 +1,15 @@
+def2: the multipliers on the blocks only against measured on qwen36moe_q6k, three new head-last placements; code changed since registration: none
+
+D2-BLOCKS  HOLDS      {'err_blocks_pct': {'L1': 1.19, 'L2': 1.98, 'L3': -1.16}}
+D2-BETTER  HOLDS      {'abs_err_pct': {'L1': [1.19, 2.83], 'L2': [1.98, 2.71], 'L3': [1.16, 5.91]}}
+D2-REPEAT  HOLDS      {'run_spread_pct': {'L1': 0.17, 'L2': 0.28, 'L3': 0.06}}
+
+arm L1 laptop:25,jetson:3,pi4:4,pi5:9 head last: predicted measured 301.9 / blocks 289.9 / shipped 247.3 ms; measured {'complete': True, 'server_mean_ms': 293.36, 'client_p50_ms': 291.85, 'ttft_ms_p50': 12123.3, 'j_per_token_all': 10.4694, 'err_blocks_pct': 1.19, 'err_measured_pct': -2.83, 'err_shipped_pct': 18.63, 'run_means': [293.11, 293.62]}
+arm L2 laptop:25,pi5:10,pi4:4,jetson:2 head last: predicted measured 317.7 / blocks 303.1 / shipped 261.2 ms; measured {'complete': True, 'server_mean_ms': 309.1, 'client_p50_ms': 307.96, 'ttft_ms_p50': 10573.2, 'j_per_token_all': 10.8806, 'err_blocks_pct': 1.98, 'err_measured_pct': -2.71, 'err_shipped_pct': 18.34, 'run_means': [308.67, 309.53]}
+arm L3 laptop:25,pi5:10,jetson:3,pi4:3 head last: predicted measured 364.6 / blocks 347.1 / shipped 306.0 ms; measured {'complete': True, 'server_mean_ms': 343.07, 'client_p50_ms': 342.0, 'ttft_ms_p50': 11275.9, 'j_per_token_all': 11.8328, 'err_blocks_pct': -1.16, 'err_measured_pct': -5.91, 'err_shipped_pct': 12.11, 'run_means': [342.97, 343.18]}
+run 1 L1 rc 0: 5 requests, server mean 293.11 ms, client P50 291.55 ms, battery None
+run 2 L2 rc 0: 5 requests, server mean 308.67 ms, client P50 307.57 ms, battery None
+run 3 L3 rc 0: 5 requests, server mean 342.97 ms, client P50 341.86 ms, battery None
+run 4 L3 rc 0: 5 requests, server mean 343.18 ms, client P50 342.18 ms, battery None
+run 5 L2 rc 0: 5 requests, server mean 309.53 ms, client P50 308.23 ms, battery None
+run 6 L1 rc 0: 5 requests, server mean 293.62 ms, client P50 292.55 ms, battery None

@@ -1,0 +1,13 @@
+[Unit]
+Description=HeteroServe Pi5 -- re-apply measurement pins (governor, fan, swap) at boot
+After=multi-user.target
+Before=heteroserve-rpc.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+EnvironmentFile=/etc/heteroserve/node.env
+ExecStart=/opt/heteroserve/Pi5/scripts/00_prepare_os.sh
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,839 @@
+{
+ "registered_at": "2026-10-20T01:49:25+07:00",
+ "script": "testbed/scripts/register_pi5b_fw_20261020.py",
+ "question": "how much of the replacement Pi 5's gap to the old board is its bootloader? After the official update, are its rows the old board's, within the first registration's tolerances?",
+ "user_decision": "2026-10-20 ~00:20, \"Yes, update it (Recommended)\": install the official update on the card (rpi-eeprom-update -a, the project's own setup step), reboot, re-take the rows; keep the as-found rows",
+ "first_registration": {
+  "path": "testbed/dataset/pi5b_predictions_20261019.json",
+  "sha256": "53f12a70f54a4699d240449a86d22a54d843a1e446aa947742b7ee831a29b74a"
+ },
+ "old_board": {
+  "serial": "b266e1877252f91e",
+  "revision": "d04171 (Rev 1.1, 8 GB)",
+  "eth0_mac": "88:a2:9e:f0:e7:8a",
+  "bootloader_firmware": "2026/01/21 13:38:47, version ab8a9dde (pi5_final_collect_20261005 snapshot)",
+  "eeprom_config": "BOOT_UART=1 BOOT_ORDER=0xf461 NET_INSTALL_AT_POWER_ON=1",
+  "measured": "2026-09-19 .. 2026-10-05; returned 2026-10-05"
+ },
+ "new_board": {
+  "serial": "b8ed9049ada12a03",
+  "revision": "d04171 (Rev 1.1, 8 GB)",
+  "eth0_mac": "2c:cf:67:b2:af:52",
+  "bootloader_firmware": "2024/09/23 14:02:56, version 26826259 (rpi-eeprom-update: update available, 2026-05-26 on the card; not applied)",
+  "eeprom_config": "BOOT_UART=1 POWER_OFF_ON_HALT=0 BOOT_ORDER=0xf461",
+  "cooling": "Active Cooler present and spinning (2,800-4,800 rpm in a 24 s 4-core load, 2026-10-19 23:45); idle 48 C, just under the fan's 50 C trip",
+  "same_sd_card": "hostname hs-pi5, the host keys known since 2026-09-19, kernel 6.18.50+rpt-rpi-2712, llama.cpp b23701f7 clean (build and build-nodotprod), governor ondemand, cmdline numa=fake=8 numa_policy=interleave, zram off, the models (sha256 log in inputs)",
+  "network": "eth0 192.168.1.122 (DHCP) + overlay 192.168.10.11; Wi-Fi off since 2026-10-19 23:3x"
+ },
+ "bootloader_before": {
+  "timestamp": "1727096576",
+  "date": "2024-09-23 13:02:56 UTC",
+  "version": "26826259"
+ },
+ "bootloader_after": {
+  "timestamp": "1779807685",
+  "date": "2026-05-26 15:01:25 UTC",
+  "release": "default",
+  "source": "rpi-eeprom 28.31-1 on the card (/usr/lib/firmware/raspberrypi/bootloader-2712/default), as rpi-eeprom-update reported it on 2026-10-19"
+ },
+ "as_found": {
+  "session": "testbed/results/pi5b_session_20261020_000050",
+  "score_sha256": "faabcbca6814d5b38904aa236b7c7d7c081bfcc126689275cd8d174c194faad1",
+  "verdicts": {
+   "RB-PP": "FAILS",
+   "RB-TG": "FAILS",
+   "RB-MEM": "HOLDS",
+   "RB-E": "FAILS"
+  }
+ },
+ "as_found_rows": {
+  "cpu|qwen3.5-9b-q4_k_m.gguf|pp512": {
+   "phase": "pp",
+   "mean_ts": 8.0114,
+   "flags": "",
+   "source": "testbed/results/quant_campaign_20261020_000124/pi5.log"
+  },
+  "cpu|qwen3.5-9b-q4_k_m.gguf|pp64": {
+   "phase": "pp",
+   "mean_ts": 9.1103,
+   "flags": "",
+   "source": "testbed/results/quant_campaign_20261020_003008/pi5.log"
+  },
+  "cpu|qwen3.5-9b-q4_k_m.gguf|tg128": {
+   "phase": "tg",
+   "mean_ts": 1.7448,
+   "flags": "",
+   "source": "testbed/results/quant_campaign_20261020_000124/pi5.log"
+  },
+  "cpu|qwen3.5-9b-q4_k_m.gguf|tg16": {
+   "phase": "tg",
+   "mean_ts": 1.8018,
+   "flags": "",
+   "source": "testbed/results/quant_campaign_20261020_003008/pi5.log"
+  },
+  "cpu|tinyllama-1.1b-q3km.gguf|pp512": {
+   "phase": "pp",
+   "mean_ts": 39.715,
+   "flags": "",
+   "source": "testbed/results/quant_campaign_20261020_000124/pi5.log"
+  },
+  "cpu|tinyllama-1.1b-q3km.gguf|pp64": {
+   "phase": "pp",
+   "mean_ts": 41.2837,
+   "flags": "",
+   "source": "testbed/results/quant_campaign_20261020_003008/pi5.log"
+  },
+  "cpu|tinyllama-1.1b-q3km.gguf|tg128": {
+   "phase": "tg",
+   "mean_ts": 20.6715,
+   "flags": "",
+   "source": "testbed/results/quant_campaign_20261020_000124/pi5.log"
+  },
+  "cpu|tinyllama-1.1b-q3km.gguf|tg16": {
+   "phase": "tg",
+   "mean_ts": 20.8566,
+   "flags": "",
+   "source": "testbed/results/quant_campaign_20261020_003008/pi5.log"
+  },
+  "cpu|tinyllama-1.1b-q4_0.gguf|pp512": {
+   "phase": "pp",
+   "mean_ts": 128.6643,
+   "flags": "",
+   "source": "testbed/results/quant_campaign_20261020_000124/pi5.log"
+  },
+  "cpu|tinyllama-1.1b-q4_0.gguf|pp64": {
+   "phase": "pp",
+   "mean_ts": 144.872,
+   "flags": "",
+   "source": "testbed/results/quant_campaign_20261020_003008/pi5.log"
+  },
+  "cpu|tinyllama-1.1b-q4_0.gguf|tg128": {
+   "phase": "tg",
+   "mean_ts": 17.5641,
+   "flags": "",
+   "source": "testbed/results/quant_campaign_20261020_000124/pi5.log"
+  },
+  "cpu|tinyllama-1.1b-q4_0.gguf|tg16": {
+   "phase": "tg",
+   "mean_ts": 17.3613,
+   "flags": "",
+   "source": "testbed/results/quant_campaign_20261020_003008/pi5.log"
+  },
+  "cpu|tinyllama-1.1b-q4km.gguf|pp512": {
+   "phase": "pp",
+   "mean_ts": 79.1038,
+   "flags": "",
+   "source": "testbed/results/quant_campaign_20261020_000124/pi5.log"
+  },
+  "cpu|tinyllama-1.1b-q4km.gguf|pp64": {
+   "phase": "pp",
+   "mean_ts": 82.3049,
+   "flags": "",
+   "source": "testbed/results/quant_campaign_20261020_003008/pi5.log"
+  },
+  "cpu|tinyllama-1.1b-q4km.gguf|tg128": {
+   "phase": "tg",
+   "mean_ts": 16.755,
+   "flags": "",
+   "source": "testbed/results/quant_campaign_20261020_000124/pi5.log"
+  },
+  "cpu|tinyllama-1.1b-q4km.gguf|tg16": {
+   "phase": "tg",
+   "mean_ts": 16.6379,
+   "flags": "",
+   "source": "testbed/results/quant_campaign_20261020_003008/pi5.log"
+  },
+  "cpu|tinyllama-1.1b-q6_k.gguf|pp512": {
+   "phase": "pp",
+   "mean_ts": 69.5068,
+   "flags": "",
+   "source": "testbed/results/quant_campaign_20261020_000124/pi5.log"
+  },
+  "cpu|tinyllama-1.1b-q6_k.gguf|pp64": {
+   "phase": "pp",
+   "mean_ts": 73.225,
+   "flags": "",
+   "source": "testbed/results/quant_campaign_20261020_003008/pi5.log"
+  },
+  "cpu|tinyllama-1.1b-q6_k.gguf|tg128": {
+   "phase": "tg",
+   "mean_ts": 12.2293,
+   "flags": "",
+   "source": "testbed/results/quant_campaign_20261020_000124/pi5.log"
+  },
+  "cpu|tinyllama-1.1b-q6_k.gguf|tg16": {
+   "phase": "tg",
+   "mean_ts": 12.5438,
+   "flags": "",
+   "source": "testbed/results/quant_campaign_20261020_003008/pi5.log"
+  },
+  "cpu|tinyllama-1.1b-q8_0.gguf|pp512": {
+   "phase": "pp",
+   "mean_ts": 55.8137,
+   "flags": "",
+   "source": "testbed/results/quant_campaign_20261020_000124/pi5.log"
+  },
+  "cpu|tinyllama-1.1b-q8_0.gguf|pp64": {
+   "phase": "pp",
+   "mean_ts": 58.5707,
+   "flags": "",
+   "source": "testbed/results/quant_campaign_20261020_003008/pi5.log"
+  },
+  "cpu|tinyllama-1.1b-q8_0.gguf|tg128": {
+   "phase": "tg",
+   "mean_ts": 9.5413,
+   "flags": "",
+   "source": "testbed/results/quant_campaign_20261020_000124/pi5.log"
+  },
+  "cpu|tinyllama-1.1b-q8_0.gguf|tg16": {
+   "phase": "tg",
+   "mean_ts": 9.4035,
+   "flags": "",
+   "source": "testbed/results/quant_campaign_20261020_003008/pi5.log"
+  },
+  "cpu-rpc-worker|qwen3.5-9b-q4_k_m.gguf|pp64": {
+   "phase": "pp",
+   "mean_ts": 5.4494,
+   "flags": "",
+   "source": "testbed/results/worker_role_20261020_010345/pi5.log"
+  },
+  "cpu-rpc-worker|qwen3.5-9b-q4_k_m.gguf|tg16": {
+   "phase": "tg",
+   "mean_ts": 1.7878,
+   "flags": "",
+   "source": "testbed/results/worker_role_20261020_010345/pi5.log"
+  },
+  "cpu-rpc-worker|tinyllama-1.1b-q3km.gguf|pp1": {
+   "phase": "pp",
+   "mean_ts": 20.514,
+   "flags": "",
+   "source": "testbed/results/worker_role_20261020_011758/pi5.log"
+  },
+  "cpu-rpc-worker|tinyllama-1.1b-q3km.gguf|pp16": {
+   "phase": "pp",
+   "mean_ts": 36.5747,
+   "flags": "",
+   "source": "testbed/results/worker_role_20261020_011758/pi5.log"
+  },
+  "cpu-rpc-worker|tinyllama-1.1b-q3km.gguf|pp256": {
+   "phase": "pp",
+   "mean_ts": 36.2852,
+   "flags": "",
+   "source": "testbed/results/worker_role_20261020_011758/pi5.log"
+  },
+  "cpu-rpc-worker|tinyllama-1.1b-q3km.gguf|pp4": {
+   "phase": "pp",
+   "mean_ts": 33.2914,
+   "flags": "",
+   "source": "testbed/results/worker_role_20261020_011758/pi5.log"
+  },
+  "cpu-rpc-worker|tinyllama-1.1b-q3km.gguf|pp512": {
+   "phase": "pp",
+   "mean_ts": 35.5702,
+   "flags": "",
+   "source": "testbed/results/worker_role_20261020_004250/pi5.log"
+  },
+  "cpu-rpc-worker|tinyllama-1.1b-q3km.gguf|pp64": {
+   "phase": "pp",
+   "mean_ts": 37.1831,
+   "flags": "",
+   "source": "testbed/results/worker_role_20261020_010345/pi5.log"
+  },
+  "cpu-rpc-worker|tinyllama-1.1b-q3km.gguf|tg128": {
+   "phase": "tg",
+   "mean_ts": 20.0482,
+   "flags": "",
+   "source": "testbed/results/worker_role_20261020_004250/pi5.log"
+  },
+  "cpu-rpc-worker|tinyllama-1.1b-q3km.gguf|tg16": {
+   "phase": "tg",
+   "mean_ts": 20.6744,
+   "flags": "",
+   "source": "testbed/results/worker_role_20261020_010345/pi5.log"
+  },
+  "cpu-rpc-worker|tinyllama-1.1b-q4_0.gguf|pp512": {
+   "phase": "pp",
+   "mean_ts": 51.9757,
+   "flags": "",
+   "source": "testbed/results/worker_role_20261020_004250/pi5.log"
+  },
+  "cpu-rpc-worker|tinyllama-1.1b-q4_0.gguf|pp64": {
+   "phase": "pp",
+   "mean_ts": 54.2973,
+   "flags": "",
+   "source": "testbed/results/worker_role_20261020_010345/pi5.log"
+  },
+  "cpu-rpc-worker|tinyllama-1.1b-q4_0.gguf|tg128": {
+   "phase": "tg",
+   "mean_ts": 16.7607,
+   "flags": "",
+   "source": "testbed/results/worker_role_20261020_004250/pi5.log"
+  },
+  "cpu-rpc-worker|tinyllama-1.1b-q4_0.gguf|tg16": {
+   "phase": "tg",
+   "mean_ts": 17.241,
+   "flags": "",
+   "source": "testbed/results/worker_role_20261020_010345/pi5.log"
+  },
+  "cpu-rpc-worker|tinyllama-1.1b-q4km.gguf|pp512": {
+   "phase": "pp",
+   "mean_ts": 45.1579,
+   "flags": "",
+   "source": "testbed/results/worker_role_20261020_004250/pi5.log"
+  },
+  "cpu-rpc-worker|tinyllama-1.1b-q4km.gguf|pp64": {
+   "phase": "pp",
+   "mean_ts": 47.5178,
+   "flags": "",
+   "source": "testbed/results/worker_role_20261020_010345/pi5.log"
+  },
+  "cpu-rpc-worker|tinyllama-1.1b-q4km.gguf|tg128": {
+   "phase": "tg",
+   "mean_ts": 16.161,
+   "flags": "",
+   "source": "testbed/results/worker_role_20261020_004250/pi5.log"
+  },
+  "cpu-rpc-worker|tinyllama-1.1b-q4km.gguf|tg16": {
+   "phase": "tg",
+   "mean_ts": 16.5171,
+   "flags": "",
+   "source": "testbed/results/worker_role_20261020_010345/pi5.log"
+  },
+  "cpu-rpc-worker|tinyllama-1.1b-q6_k.gguf|pp512": {
+   "phase": "pp",
+   "mean_ts": 25.6934,
+   "flags": "",
+   "source": "testbed/results/worker_role_20261020_004250/pi5.log"
+  },
+  "cpu-rpc-worker|tinyllama-1.1b-q6_k.gguf|pp64": {
+   "phase": "pp",
+   "mean_ts": 26.2384,
+   "flags": "",
+   "source": "testbed/results/worker_role_20261020_010345/pi5.log"
+  },
+  "cpu-rpc-worker|tinyllama-1.1b-q6_k.gguf|tg128": {
+   "phase": "tg",
+   "mean_ts": 11.9275,
+   "flags": "",
+   "source": "testbed/results/worker_role_20261020_004250/pi5.log"
+  },
+  "cpu-rpc-worker|tinyllama-1.1b-q6_k.gguf|tg16": {
+   "phase": "tg",
+   "mean_ts": 12.3851,
+   "flags": "",
+   "source": "testbed/results/worker_role_20261020_010345/pi5.log"
+  },
+  "cpu-rpc-worker|tinyllama-1.1b-q8_0.gguf|pp512": {
+   "phase": "pp",
+   "mean_ts": 53.6286,
+   "flags": "",
+   "source": "testbed/results/worker_role_20261020_004250/pi5.log"
+  },
+  "cpu-rpc-worker|tinyllama-1.1b-q8_0.gguf|pp64": {
+   "phase": "pp",
+   "mean_ts": 53.453,
+   "flags": "",
+   "source": "testbed/results/worker_role_20261020_010345/pi5.log"
+  },
+  "cpu-rpc-worker|tinyllama-1.1b-q8_0.gguf|tg128": {
+   "phase": "tg",
+   "mean_ts": 9.4478,
+   "flags": "",
+   "source": "testbed/results/worker_role_20261020_004250/pi5.log"
+  },
+  "cpu-rpc-worker|tinyllama-1.1b-q8_0.gguf|tg16": {
+   "phase": "tg",
+   "mean_ts": 9.6208,
+   "flags": "",
+   "source": "testbed/results/worker_role_20261020_010345/pi5.log"
+  }
+ },
+ "old_rows": {
+  "cpu|qwen3.5-9b-q4_k_m.gguf|pp512": {
+   "phase": "pp",
+   "quant": "Q4_K_M",
+   "mean_ts": 8.8258,
+   "rep_range_pct": 0.81,
+   "start_temp_c": "37",
+   "flags": "",
+   "date": "2026-09-29T16:21:01+07:00",
+   "source": "testbed/results/quant_campaign_20260929_161727/pi5.log"
+  },
+  "cpu|qwen3.5-9b-q4_k_m.gguf|pp64": {
+   "phase": "pp",
+   "quant": "Q4_K_M",
+   "mean_ts": 9.4245,
+   "rep_range_pct": 1.07,
+   "start_temp_c": "37",
+   "flags": "",
+   "date": "2026-09-29T16:54:07+07:00",
+   "source": "testbed/results/quant_campaign_20260929_165219/pi5.log"
+  },
+  "cpu|qwen3.5-9b-q4_k_m.gguf|tg128": {
+   "phase": "tg",
+   "quant": "Q4_K_M",
+   "mean_ts": 1.8806,
+   "rep_range_pct": 0.2,
+   "start_temp_c": "37",
+   "flags": "",
+   "date": "2026-09-29T16:21:01+07:00",
+   "source": "testbed/results/quant_campaign_20260929_161727/pi5.log"
+  },
+  "cpu|qwen3.5-9b-q4_k_m.gguf|tg16": {
+   "phase": "tg",
+   "quant": "Q4_K_M",
+   "mean_ts": 1.8529,
+   "rep_range_pct": 0.7,
+   "start_temp_c": "37",
+   "flags": "",
+   "date": "2026-09-29T16:54:07+07:00",
+   "source": "testbed/results/quant_campaign_20260929_165219/pi5.log"
+  },
+  "cpu|tinyllama-1.1b-q3km.gguf|pp512": {
+   "phase": "pp",
+   "quant": "Q3_K_M",
+   "mean_ts": 40.1158,
+   "rep_range_pct": 0.13,
+   "start_temp_c": "35",
+   "flags": "",
+   "date": "2026-09-28T15:27:26+07:00",
+   "source": "testbed/results/quant_campaign_20260928_152707/pi5.log"
+  },
+  "cpu|tinyllama-1.1b-q3km.gguf|pp64": {
+   "phase": "pp",
+   "quant": "Q3_K_M",
+   "mean_ts": 41.3696,
+   "rep_range_pct": 0.01,
+   "start_temp_c": "38",
+   "flags": "",
+   "date": "2026-09-28T19:00:00+07:00",
+   "source": "testbed/results/quant_campaign_20260928_185947/pi5.log"
+  },
+  "cpu|tinyllama-1.1b-q3km.gguf|tg128": {
+   "phase": "tg",
+   "quant": "Q3_K_M",
+   "mean_ts": 21.861,
+   "rep_range_pct": 0.54,
+   "start_temp_c": "35",
+   "flags": "",
+   "date": "2026-09-28T15:27:26+07:00",
+   "source": "testbed/results/quant_campaign_20260928_152707/pi5.log"
+  },
+  "cpu|tinyllama-1.1b-q3km.gguf|tg16": {
+   "phase": "tg",
+   "quant": "Q3_K_M",
+   "mean_ts": 21.9712,
+   "rep_range_pct": 0.14,
+   "start_temp_c": "38",
+   "flags": "",
+   "date": "2026-09-28T19:00:00+07:00",
+   "source": "testbed/results/quant_campaign_20260928_185947/pi5.log"
+  },
+  "cpu|tinyllama-1.1b-q4_0.gguf|pp512": {
+   "phase": "pp",
+   "quant": "Q4_0",
+   "mean_ts": 134.5087,
+   "rep_range_pct": 0.12,
+   "start_temp_c": "49",
+   "flags": "",
+   "date": "2026-09-27T19:20:41+07:00",
+   "source": "testbed/results/quant_campaign_20260927_191550/pi5.log"
+  },
+  "cpu|tinyllama-1.1b-q4_0.gguf|tg128": {
+   "phase": "tg",
+   "quant": "Q4_0",
+   "mean_ts": 18.9389,
+   "rep_range_pct": 0.02,
+   "start_temp_c": "49",
+   "flags": "",
+   "date": "2026-09-27T19:20:41+07:00",
+   "source": "testbed/results/quant_campaign_20260927_191550/pi5.log"
+  },
+  "cpu|tinyllama-1.1b-q4km.gguf|pp512": {
+   "phase": "pp",
+   "quant": "Q4_K_M",
+   "mean_ts": 81.2604,
+   "rep_range_pct": 0.1,
+   "start_temp_c": "35",
+   "flags": "",
+   "date": "2026-09-27T19:18:43+07:00",
+   "source": "testbed/results/quant_campaign_20260927_191550/pi5.log"
+  },
+  "cpu|tinyllama-1.1b-q4km.gguf|pp64": {
+   "phase": "pp",
+   "quant": "Q4_K_M",
+   "mean_ts": 85.3271,
+   "rep_range_pct": 0.19,
+   "start_temp_c": "34",
+   "flags": "",
+   "date": "2026-09-28T18:59:51+07:00",
+   "source": "testbed/results/quant_campaign_20260928_185947/pi5.log"
+  },
+  "cpu|tinyllama-1.1b-q4km.gguf|tg128": {
+   "phase": "tg",
+   "quant": "Q4_K_M",
+   "mean_ts": 18.1291,
+   "rep_range_pct": 0.05,
+   "start_temp_c": "35",
+   "flags": "",
+   "date": "2026-09-27T19:18:43+07:00",
+   "source": "testbed/results/quant_campaign_20260927_191550/pi5.log"
+  },
+  "cpu|tinyllama-1.1b-q4km.gguf|tg16": {
+   "phase": "tg",
+   "quant": "Q4_K_M",
+   "mean_ts": 18.3744,
+   "rep_range_pct": 0.06,
+   "start_temp_c": "34",
+   "flags": "",
+   "date": "2026-09-28T18:59:51+07:00",
+   "source": "testbed/results/quant_campaign_20260928_185947/pi5.log"
+  },
+  "cpu|tinyllama-1.1b-q8_0.gguf|pp512": {
+   "phase": "pp",
+   "quant": "Q8_0",
+   "mean_ts": 64.3759,
+   "rep_range_pct": 0.25,
+   "start_temp_c": "46",
+   "flags": "",
+   "date": "2026-09-27T19:19:32+07:00",
+   "source": "testbed/results/quant_campaign_20260927_191550/pi5.log"
+  },
+  "cpu|tinyllama-1.1b-q8_0.gguf|tg128": {
+   "phase": "tg",
+   "quant": "Q8_0",
+   "mean_ts": 11.0727,
+   "rep_range_pct": 0.25,
+   "start_temp_c": "46",
+   "flags": "",
+   "date": "2026-09-27T19:19:32+07:00",
+   "source": "testbed/results/quant_campaign_20260927_191550/pi5.log"
+  },
+  "cpu-rpc-worker|qwen3.5-9b-q4_k_m.gguf|pp64": {
+   "phase": "pp",
+   "quant": "Q4_K_M",
+   "mean_ts": 5.5076,
+   "rep_range_pct": 0.44,
+   "start_temp_c": "36",
+   "flags": "",
+   "date": "2026-09-29T19:07:52+07:00",
+   "source": "testbed/results/worker_role_20260929_190749/pi5.log"
+  },
+  "cpu-rpc-worker|qwen3.5-9b-q4_k_m.gguf|tg16": {
+   "phase": "tg",
+   "quant": "Q4_K_M",
+   "mean_ts": 1.8449,
+   "rep_range_pct": 0.06,
+   "start_temp_c": "36",
+   "flags": "",
+   "date": "2026-09-29T19:07:52+07:00",
+   "source": "testbed/results/worker_role_20260929_190749/pi5.log"
+  },
+  "cpu-rpc-worker|tinyllama-1.1b-q3km.gguf|pp1": {
+   "phase": "pp",
+   "quant": "Q3_K_M",
+   "mean_ts": 23.0287,
+   "rep_range_pct": 0.43,
+   "start_temp_c": "32",
+   "flags": "",
+   "date": "2026-09-28T22:03:23+07:00",
+   "source": "testbed/results/worker_role_20260928_220322/pi5.log"
+  },
+  "cpu-rpc-worker|tinyllama-1.1b-q3km.gguf|pp16": {
+   "phase": "pp",
+   "quant": "Q3_K_M",
+   "mean_ts": 36.9424,
+   "rep_range_pct": 0.08,
+   "start_temp_c": "32",
+   "flags": "",
+   "date": "2026-09-28T22:03:23+07:00",
+   "source": "testbed/results/worker_role_20260928_220322/pi5.log"
+  },
+  "cpu-rpc-worker|tinyllama-1.1b-q3km.gguf|pp256": {
+   "phase": "pp",
+   "quant": "Q3_K_M",
+   "mean_ts": 36.6665,
+   "rep_range_pct": 0.73,
+   "start_temp_c": "32",
+   "flags": "",
+   "date": "2026-09-28T22:03:23+07:00",
+   "source": "testbed/results/worker_role_20260928_220322/pi5.log"
+  },
+  "cpu-rpc-worker|tinyllama-1.1b-q3km.gguf|pp4": {
+   "phase": "pp",
+   "quant": "Q3_K_M",
+   "mean_ts": 33.6822,
+   "rep_range_pct": 0.22,
+   "start_temp_c": "32",
+   "flags": "",
+   "date": "2026-09-28T22:03:23+07:00",
+   "source": "testbed/results/worker_role_20260928_220322/pi5.log"
+  },
+  "cpu-rpc-worker|tinyllama-1.1b-q3km.gguf|pp512": {
+   "phase": "pp",
+   "quant": "Q3_K_M",
+   "mean_ts": 36.1977,
+   "rep_range_pct": 0.03,
+   "start_temp_c": "37",
+   "flags": "",
+   "date": "2026-09-28T15:29:44+07:00",
+   "source": "testbed/results/worker_role_20260928_152942/pi5.log"
+  },
+  "cpu-rpc-worker|tinyllama-1.1b-q3km.gguf|pp64": {
+   "phase": "pp",
+   "quant": "Q3_K_M",
+   "mean_ts": 37.2462,
+   "rep_range_pct": 0.01,
+   "start_temp_c": "41",
+   "flags": "",
+   "date": "2026-09-28T19:00:22+07:00",
+   "source": "testbed/results/worker_role_20260928_190009/pi5.log"
+  },
+  "cpu-rpc-worker|tinyllama-1.1b-q3km.gguf|tg128": {
+   "phase": "tg",
+   "quant": "Q3_K_M",
+   "mean_ts": 22.327,
+   "rep_range_pct": 0.26,
+   "start_temp_c": "37",
+   "flags": "",
+   "date": "2026-09-28T15:29:44+07:00",
+   "source": "testbed/results/worker_role_20260928_152942/pi5.log"
+  },
+  "cpu-rpc-worker|tinyllama-1.1b-q3km.gguf|tg16": {
+   "phase": "tg",
+   "quant": "Q3_K_M",
+   "mean_ts": 22.712,
+   "rep_range_pct": 0.12,
+   "start_temp_c": "41",
+   "flags": "",
+   "date": "2026-09-28T19:00:22+07:00",
+   "source": "testbed/results/worker_role_20260928_190009/pi5.log"
+  },
+  "cpu-rpc-worker|tinyllama-1.1b-q4_0.gguf|pp512": {
+   "phase": "pp",
+   "quant": "Q4_0",
+   "mean_ts": 52.3516,
+   "rep_range_pct": 0.03,
+   "start_temp_c": "49",
+   "flags": "",
+   "date": "2026-09-27T20:44:00+07:00",
+   "source": "testbed/results/worker_role_20260927_204128/pi5.log"
+  },
+  "cpu-rpc-worker|tinyllama-1.1b-q4_0.gguf|tg128": {
+   "phase": "tg",
+   "quant": "Q4_0",
+   "mean_ts": 19.7477,
+   "rep_range_pct": 0.43,
+   "start_temp_c": "49",
+   "flags": "",
+   "date": "2026-09-27T20:44:00+07:00",
+   "source": "testbed/results/worker_role_20260927_204128/pi5.log"
+  },
+  "cpu-rpc-worker|tinyllama-1.1b-q4km.gguf|pp512": {
+   "phase": "pp",
+   "quant": "Q4_K_M",
+   "mean_ts": 46.2683,
+   "rep_range_pct": 0.07,
+   "start_temp_c": "33",
+   "flags": "",
+   "date": "2026-09-27T20:41:30+07:00",
+   "source": "testbed/results/worker_role_20260927_204128/pi5.log"
+  },
+  "cpu-rpc-worker|tinyllama-1.1b-q4km.gguf|pp64": {
+   "phase": "pp",
+   "quant": "Q4_K_M",
+   "mean_ts": 47.916,
+   "rep_range_pct": 0.02,
+   "start_temp_c": "41",
+   "flags": "",
+   "date": "2026-09-28T19:00:11+07:00",
+   "source": "testbed/results/worker_role_20260928_190009/pi5.log"
+  },
+  "cpu-rpc-worker|tinyllama-1.1b-q4km.gguf|tg128": {
+   "phase": "tg",
+   "quant": "Q4_K_M",
+   "mean_ts": 18.8556,
+   "rep_range_pct": 0.02,
+   "start_temp_c": "33",
+   "flags": "",
+   "date": "2026-09-27T20:41:30+07:00",
+   "source": "testbed/results/worker_role_20260927_204128/pi5.log"
+  },
+  "cpu-rpc-worker|tinyllama-1.1b-q4km.gguf|tg16": {
+   "phase": "tg",
+   "quant": "Q4_K_M",
+   "mean_ts": 19.0688,
+   "rep_range_pct": 0.19,
+   "start_temp_c": "41",
+   "flags": "",
+   "date": "2026-09-28T19:00:11+07:00",
+   "source": "testbed/results/worker_role_20260928_190009/pi5.log"
+  },
+  "cpu-rpc-worker|tinyllama-1.1b-q8_0.gguf|pp512": {
+   "phase": "pp",
+   "quant": "Q8_0",
+   "mean_ts": 54.2281,
+   "rep_range_pct": 0.04,
+   "start_temp_c": "47",
+   "flags": "",
+   "date": "2026-09-27T20:42:38+07:00",
+   "source": "testbed/results/worker_role_20260927_204128/pi5.log"
+  },
+  "cpu-rpc-worker|tinyllama-1.1b-q8_0.gguf|tg128": {
+   "phase": "tg",
+   "quant": "Q8_0",
+   "mean_ts": 10.0937,
+   "rep_range_pct": 0.49,
+   "start_temp_c": "47",
+   "flags": "",
+   "date": "2026-09-27T20:42:38+07:00",
+   "source": "testbed/results/worker_role_20260927_204128/pi5.log"
+  }
+ },
+ "old_memory": {
+  "mem_total_mib": 8062,
+  "mem_available_mib": 7619,
+  "source": "testbed/dataset/memory_at_rest.json (2026-09-27 ~19:05)"
+ },
+ "old_energy": {
+  "run": "testbed/results/energy_phase_pi5_20261005_145817",
+  "protocol": "--pp 512:20 --tg 128:17 --cycles 3 --idle-before 300 --idle-after 300 --settle 30 --gap 10, outlet 1 (2026-10-05)",
+  "idle_before_w": 2.3096321070234116,
+  "phases": {
+   "pp": {
+    "tps": 81.03553466666666,
+    "mean_w": 9.464891986082828,
+    "j_per_token_net_trap": 0.08829606340560091,
+    "j_per_token_net_counter": 0.0931077760070455
+   },
+   "tg": {
+    "tps": 17.58201933333333,
+    "mean_w": 8.26205030239452,
+    "j_per_token_net_trap": 0.33853686329466987,
+    "j_per_token_net_counter": 0.35706710533574326
+   }
+  }
+ },
+ "hypotheses": {
+  "RB-PP": {
+   "tol_pct": 3.0,
+   "claim": "every matched prefill row (host and worker, both protocols, the sweep) is within 3 % of the old board's tokens/s: the same Cortex-A76 cores at 2.4 GHz, the same build"
+  },
+  "RB-TG": {
+   "tol_pct": 3.0,
+   "claim": "every matched decode row is within 3 % of the old board's: the same LPDDR4X configuration (the house drift is ~2 %)"
+  },
+  "RB-MEM": {
+   "tol_pct": 1.5,
+   "claim": "MemAvailable at rest (the lowest of 10 reads) within 1.5 % of the old board's 7,619 MiB (the firmware's reservations differ: MemTotal reads 8,050 MiB against 8,062)"
+  },
+  "RB-E": {
+   "tol_pct": 10.0,
+   "claim": "TinyLlama Q4_K_M at the 2026-10-05 energy protocol: net J/token (trapezoid) per phase within 10 % of the old board's 0.0883 / 0.3385, and its tokens/s within 3 %; get_throttled 0x0 throughout"
+  },
+  "verdicts": "HOLDS / FAILS / INCOMPLETE: FAILS if any valid compared figure is outside its tolerance; else INCOMPLETE if a registered figure is missing or its row is flagged throttled, exit-N or n<3; else HOLDS. warm-start is reported, not voiding"
+ },
+ "fw_hypotheses": {
+  "FW-ALL": {
+   "claim": "after the update every matched row is within the first registration's tolerances of the old board's (RB-PP and RB-TG hold): the bootloader was the whole gap"
+  },
+  "FW-HALF-TG": {
+   "claim": "the decode rows' mean |gap to the old board| after the update is at most half its as-found value: the bootloader is most of the decode gap"
+  },
+  "FW-HALF-PP8": {
+   "claim": "the same for the host Q8_0 pp512 row, the prefill row with the largest as-found gap"
+  },
+  "FW-NOWORSE": {
+   "tol_pct": 3.0,
+   "claim": "no matched row is slower after the update than as found by more than 3 %"
+  },
+  "verdicts": "HOLDS / FAILS / INCOMPLETE, as in the first registration"
+ },
+ "plan": {
+  "runner": "testbed/scripts/pi5b_fw_20261020.sh: steps 1-11 of the first session (memory; host and worker rows at both protocols; the worker sweep; the five energy runs), refused unless the board reports the registered bootloader timestamp",
+  "before_it": "sudo rpi-eeprom-update -a, then sudo reboot; on the way back: the clock synchronized, Wi-Fi still off, the serial the registered board's"
+ },
+ "merge_rule": {
+  "amended": "the follow-up's run dirs go into the dataset's Rebuild line AFTER the as-found ones, so the planner prices the board with its post-update rows (the board as it runs from now on); the as-found rows stay in the dataset, dated, and are reported",
+  "first": {
+   "always": "the session's run dirs are appended to the dataset's Rebuild line (testbed/dataset/README.md) after scoring, node_id pi5, so the planner, which keeps the last row per key, prices the board on the bench; the rows before 2026-10-06 are the old board's (serial b266e187...), from 2026-10-19 the new board's",
+   "if_RB-PP_and_RB-TG_hold": "every earlier Pi 5 result stands for the Pi 5 (two units, one population; the differences are reported as unit-to-unit repeatability)",
+   "otherwise": "the earlier Pi 5 results are reported as the old board's, and any comparison across 2026-10-05 names the unit and the measured difference"
+  }
+ },
+ "energy": {
+  "outlet": 2,
+  "outlet_name": "pi5",
+  "runs": {
+   "q4km": {
+    "file": "tinyllama-1.1b-q4km.gguf",
+    "sha256": "9fecc3b3cd76bba89d504f29b616eedf7da85b96540e490ca5824d3f7d2776a0",
+    "reps_pp": 20,
+    "reps_tg": 17,
+    "idle_after_s": 300,
+    "command": "python3 testbed/scripts/energy_phase_run.py --node pi5 --outlet 2 --outlet-name pi5 --model '~/models/tinyllama-1.1b-q4km.gguf' --sha256 9fecc3b3cd76bba89d504f29b616eedf7da85b96540e490ca5824d3f7d2776a0 --pp 512:20 --tg 128:17 --cycles 3 --threads 4 --idle-before 300 --idle-after 300 --settle 30 --gap 10",
+    "registration": "testbed/dataset/energy_predictions_20261020_pi5fw_q4km.json",
+    "registration_sha256": "7444d7fadcaddc11104a0653c9c8461025e75e11193ddd802bcfa42c2326324b"
+   },
+   "q4_0": {
+    "file": "tinyllama-1.1b-q4_0.gguf",
+    "sha256": "da3087fb14aede55fde6eb81a0e55e886810e43509ec82ecdc7aa5d62a03b556",
+    "reps_pp": 32,
+    "reps_tg": 18,
+    "idle_after_s": 120,
+    "command": "python3 testbed/scripts/energy_phase_run.py --node pi5 --outlet 2 --outlet-name pi5 --model '~/models/tinyllama-1.1b-q4_0.gguf' --sha256 da3087fb14aede55fde6eb81a0e55e886810e43509ec82ecdc7aa5d62a03b556 --pp 512:32 --tg 128:18 --cycles 3 --threads 4 --idle-before 300 --idle-after 120 --settle 30 --gap 10",
+    "registration": "testbed/dataset/energy_predictions_20261020_pi5fw_q4_0.json",
+    "registration_sha256": "8971c82876d35926e89a58de649cfa1516bee9d6d13b72a84981f11661c1cdbd"
+   },
+   "q8_0": {
+    "file": "tinyllama-1.1b-q8_0.gguf",
+    "sha256": "a4c9bb1dbaa372f6381a035fa5c02ef087aaa1ff1f843a56a22328114f03fc59",
+    "reps_pp": 15,
+    "reps_tg": 10,
+    "idle_after_s": 120,
+    "command": "python3 testbed/scripts/energy_phase_run.py --node pi5 --outlet 2 --outlet-name pi5 --model '~/models/tinyllama-1.1b-q8_0.gguf' --sha256 a4c9bb1dbaa372f6381a035fa5c02ef087aaa1ff1f843a56a22328114f03fc59 --pp 512:15 --tg 128:10 --cycles 3 --threads 4 --idle-before 300 --idle-after 120 --settle 30 --gap 10",
+    "registration": "testbed/dataset/energy_predictions_20261020_pi5fw_q8_0.json",
+    "registration_sha256": "2e8a75b554a480e4383d84f2000809ef3a9334df041299c543f2f9d6f3639fa8"
+   },
+   "q3km": {
+    "file": "tinyllama-1.1b-q3km.gguf",
+    "sha256": "ec461c4d2b60896152bca3978aa49cd70edad7298715e4222e12af1eefea2125",
+    "reps_pp": 10,
+    "reps_tg": 21,
+    "idle_after_s": 120,
+    "command": "python3 testbed/scripts/energy_phase_run.py --node pi5 --outlet 2 --outlet-name pi5 --model '~/models/tinyllama-1.1b-q3km.gguf' --sha256 ec461c4d2b60896152bca3978aa49cd70edad7298715e4222e12af1eefea2125 --pp 512:10 --tg 128:21 --cycles 3 --threads 4 --idle-before 300 --idle-after 120 --settle 30 --gap 10",
+    "registration": "testbed/dataset/energy_predictions_20261020_pi5fw_q3km.json",
+    "registration_sha256": "79ade73c1598547161173fcde3f851b971dba9e3f4b395aa8274aa9ff34a4c58"
+   },
+   "q6k": {
+    "file": "tinyllama-1.1b-q6_k.gguf",
+    "sha256": "9fb2be7c8bbc0ca358ae88cef6d9e6844b81929eaffa5016a543e6f56b22cb6d",
+    "reps_pp": 13,
+    "reps_tg": 12,
+    "idle_after_s": 120,
+    "command": "python3 testbed/scripts/energy_phase_run.py --node pi5 --outlet 2 --outlet-name pi5 --model '~/models/tinyllama-1.1b-q6_k.gguf' --sha256 9fb2be7c8bbc0ca358ae88cef6d9e6844b81929eaffa5016a543e6f56b22cb6d --pp 512:13 --tg 128:12 --cycles 3 --threads 4 --idle-before 300 --idle-after 120 --settle 30 --gap 10",
+    "registration": "testbed/dataset/energy_predictions_20261020_pi5fw_q6k.json",
+    "registration_sha256": "fbc16cf574c3cf720fcf05b3d9af02d083d9cc2fcaab44ade665be79b98403dc"
+   }
+  },
+  "as_found_stopped": "the as-found session was stopped after its step 7 (the Q4_K_M energy run, RB-E's): the user's yes to the update came after its registration, and its other four energy runs (sanity bands only, no hypothesis) would have described a firmware state the update ends; they run here instead"
+ },
+ "inputs_sha256": {
+  "testbed/scripts/pi5b_fw_20261020.sh": "a0c30a1be50474cbc93fac1205ff2eb3c3daae68ee57bc7402d877785830ef4d",
+  "testbed/scripts/score_pi5b_20261019.py": "695908cec796a7a9609f3ad5376796d06c14bd880c497aef598892447155f022",
+  "testbed/scripts/score_pi5b_fw_20261020.py": "00fc4ebae8707d55ac11142e4c854c08314a4c8efa94cf68642d2445b3559e49",
+  "testbed/scripts/register_pi5b_fw_20261020.py": "0554c9122e4cec80eac8b56c6ce333ad081abb1d66cb4c608ac1d724b6b0be2b",
+  "testbed/scripts/run_quant_campaign.sh": "e4c4fe86441a5fe53378fb5ed2621fedc56707a4e9908dca9fa0fbdd96a081a7",
+  "testbed/scripts/bench_worker_role.sh": "0bbff9e948fcdd1fa270dc7f19b251df640c6795086f4cf8b1af94c308c2215e",
+  "testbed/scripts/build_dataset.py": "d89f7b36aa6a06181c55adadec729000870c4a4123c8cdc643d1e8868e1cadf4",
+  "testbed/scripts/memory_snapshot.py": "5f2debba799c33373299e433aa33f2ba293c997660773eaf56aab186894b6822",
+  "testbed/scripts/energy_phase_run.py": "f0cc72e52bec5408205c63a4db5049f7c0c59be51ed18393a5116dfcea668734",
+  "testbed/scripts/score_energy_phase_run.py": "5172f01ec55c6387c59297dd447e453e47a9a40dff87eb23bf52d64f146285fd",
+  "testbed/scripts/shelly_strip.py": "b7aaa7ceb2f1e94aa3f1f46100c06ca9d6c0c3fa8764a6372239747ffc0fe5a8",
+  "testbed/dataset/pi5b_predictions_20261019.json": "53f12a70f54a4699d240449a86d22a54d843a1e446aa947742b7ee831a29b74a",
+  "testbed/results/pi5b_session_20261020_000050/score.json": "faabcbca6814d5b38904aa236b7c7d7c081bfcc126689275cd8d174c194faad1",
+  "testbed/results/pi5b_session_20261020_000050/steps.tsv": "4b93ad9084c4759b826cad1dc7b5e39bba19944e7e79a6c7a0f0ca7edea2deee",
+  "testbed/results/pi5b_session_20261020_000050/rows/characterisation.csv": "cc1b4eeded2f125b16562ddb483b7b810861a12b8aa8320314591d74f8e0ffaa",
+  "testbed/dataset/characterisation.csv": "ef94c22318ccb0ce9ab913a08174d110095d9d4e0cad65aeeb052304dbc13d6a"
+ }
+}

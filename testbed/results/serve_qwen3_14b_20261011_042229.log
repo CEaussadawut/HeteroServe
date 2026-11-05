@@ -1,0 +1,21 @@
+########## 2026-10-11T04:22:29+07:00 serve qwen3_14b, ctx 4096, clocks asfound, boards pi4 laptop, planned against /tmp/claude-1000/-mnt-data-KMITL-Final-HeteroServe/a8d5254a-2d7a-4b7a-a330-39fe8f7ced15/scratchpad/mem_smoke.json: pi4 1 + laptop 39, head on laptop; predicted decode 551.8 ms/token (1.81 tok/s)
+hosts   pi4: fixed: pi4 1 + laptop 39, head last
+llama-server -m ~/models/qwen3-14b-q4_k_m.gguf --rpc 192.168.1.108:50053 -ngl 40  -c 4096 -np 1 -t 4 -lv 4 -lm none --host 192.168.1.110 --port 8080   pin b23701f77d47dad9de834d59ebfcbe25c9e8b46f
+gate    pi4: MemAvailable 7354 MiB, the plan needs 771 MiB with its reserve (margin at rest 6642 MiB)
+gate    laptop: MemAvailable 17293 MiB, the plan needs 17127 MiB with its reserve (margin at rest -127 MiB)
+worker  laptop listening on 192.168.1.108:50053 (pid 379071)
+server  starting on pi4 (pid 146883); loading streams the model from the SD card to the workers
+READY   2026-10-11T04:28:09+07:00: http://192.168.1.110:8080/ (web chat) -- health {"status":"ok"}
+0.02.083.185 I load_tensors:          CPU model buffer size =   617.74 MiB
+0.02.083.187 I load_tensors: RPC0[192.168.1.108:50053] model buffer size =  7961.32 MiB
+5.34.157.606 I llama_context: n_ctx                 = 4096
+5.34.157.613 I llama_context: flash_attn            = auto
+5.34.158.482 I llama_kv_cache:        CPU KV buffer size =    16.00 MiB
+5.34.182.206 I llama_kv_cache: RPC0[192.168.1.108:50053] KV buffer size =   624.00 MiB
+5.34.182.329 I llama_kv_cache: size =  640.00 MiB (  4096 cells,  40 layers,  1/1 seqs), K (f16):  320.00 MiB, V (f16):  320.00 MiB
+5.34.661.090 I sched_reserve: RPC0[192.168.1.108:50053] compute buffer size =   126.01 MiB
+5.34.661.122 I sched_reserve:        CPU compute buffer size =   146.01 MiB
+5.35.990.974 I slot   load_model: id  0 | task -1 | new slot, n_ctx = 4096
+split   laptop: llama.cpp 7961.32 MiB, planned 7961.3 MiB (head on laptop)
+mem     pi4: MemAvailable 6632 MiB at READY, 7354 at the gate: the serve holds 722 MiB, charged 771 MiB
+mem     laptop: MemAvailable 9014 MiB at READY, 17293 at the gate: the serve holds 8279 MiB, charged 8935 MiB

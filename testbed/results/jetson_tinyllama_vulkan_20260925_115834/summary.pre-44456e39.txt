@@ -1,0 +1,43 @@
+results : testbed/results/jetson_tinyllama_vulkan_20260925_115834
+  mode   : vulkan   binaries: /home/jetson/llama.cpp/build/bin
+  commit : b23701f77d47dad9de834d59ebfcbe25c9e8b46f   patched files: 0
+  model  : 9fecc3b3cd76bba89d504f29b616eedf7da85b96540e490ca5824d3f7d2776a0  /home/jetson/models/tinyllama-1.1b-
+  build backends (compiled in; NOT what a case ran on -- see 'ran on'): Vulkan
+  board time zone: UTC+0700 (from run.log ISO stamps)
+  guard log: testbed/results/jetson_tinyllama_vulkan_20260925_115834/power-guard.log
+
+case    test      mean t/s            min-max  spread  n  ran on
+vulkan  pp512       73.016  [ 72.855- 73.093]   0.33%  5  GPU (Vulkan)  [dev=auto ngl=99 t=4 gpu_info="NVIDIA Tegra X1 (nvgpu)"]
+vulkan  tg128       11.460  [ 11.453- 11.466]   0.12%  5  GPU (Vulkan)  [dev=auto ngl=99 t=4 gpu_info="NVIDIA Tegra X1 (nvgpu)"]
+cpu     pp512        8.432  [  8.305-  8.638]   3.95%  5  CPU only  [dev=none ngl=0 t=4 gpu_info="NVIDIA Tegra X1 (nvgpu)"]  <- STARTED WARM (CPU 46C; protocol wants < 40C)
+cpu     tg128        6.327  [  6.280-  6.423]   2.26%  5  CPU only  [dev=none ngl=0 t=4 gpu_info="NVIDIA Tegra X1 (nvgpu)"]  <- STARTED WARM (CPU 46C; protocol wants < 40C)
+  spread = (max-min)/mean across the n repetitions; llama-bench's within-run ± is not it
+  gpu_info = GPUs llama-bench enumerated at run time (listed even for -dev none); a GPU label needs it
+
+locked-clock idle floor: first 3 s dropped = 6 samples at the requested 500 ms (IDLE_DROP_S / IDLE_INTERVAL_MS)
+case vulkan: OK (llama-bench exit 0)
+  start    CPU 39C GPU 39C pmode:0000 online=0-3 at 2026-09-25T11:59:40+07:00
+  end      CPU 49C GPU 49C pmode:0000 online=0-3 at 2026-09-25T12:01:42+07:00; power state unchanged from start
+  window   2026-09-25T11:59:55+07:00 -> 2026-09-25T12:01:42+07:00 (106.4 s)
+  power    locked-clock idle floor  2178 mW (n=22 of 28) | run mean  7167 mW, peak  9331 mW (n=206, achieved 1.94 Hz)
+  guard    input min 4808 mV, guard peak 9192 mW (n=105, covered 106 of 106 s, largest gap 2 s), pmode:0000; trips in window: 0
+case cpu: OK (llama-bench exit 0)  <- STARTED WARM (CPU 46C; protocol wants < 40C)
+  start    CPU 46C GPU 46C pmode:0000 online=0-3 at 2026-09-25T12:02:12+07:00  <- STARTED WARM: CPU not below 40 C (protocol)
+  end      CPU 59C GPU 57C pmode:0000 online=0-3 at 2026-09-25T12:10:13+07:00; power state unchanged from start
+  window   2026-09-25T12:02:27+07:00 -> 2026-09-25T12:10:13+07:00 (465.7 s)
+  power    locked-clock idle floor  2283 mW (n=22 of 28) | run mean  6229 mW, peak  6791 mW (n=909, achieved 1.95 Hz)
+  guard    input min 4944 mV, guard peak 6615 mW (n=403, covered 466 of 466 s, largest gap 2 s), pmode:0000; trips in window: 0
+
+power guard log: testbed/results/jetson_tinyllama_vulkan_20260925_115834/power-guard.log
+  dated span 2026-09-25T10:25:03+07:00 -> 2026-09-25T12:12:06+07:00, 5943 samples
+  'guard start' lines: 1
+    2026-09-25T10:25:03+07:00 guard start: min 4750 mV, baseline alarms 0, pmode:0000 fmode:fanNull
+  trips in whole log: 0
+
+state log:
+  [clocks locked] 2026-09-25T11:59:10+07:00 pmode:0000 online=0-3 cpu0 min/max=1479000/1479000 gpu min/max=921600000/921600000 swap_used_kB=0 alarms=0 CPU-therm=40C GPU-therm=40C 
+  [before vulkan] 2026-09-25T11:59:40+07:00 pmode:0000 online=0-3 cpu0 min/max=1479000/1479000 gpu min/max=921600000/921600000 swap_used_kB=0 alarms=0 CPU-therm=39C GPU-therm=39C 
+  [after vulkan] 2026-09-25T12:01:42+07:00 pmode:0000 online=0-3 cpu0 min/max=1479000/1479000 gpu min/max=921600000/921600000 swap_used_kB=0 alarms=0 CPU-therm=49C GPU-therm=49C 
+  [before cpu] 2026-09-25T12:02:12+07:00 pmode:0000 online=0-3 cpu0 min/max=1479000/1479000 gpu min/max=921600000/921600000 swap_used_kB=0 alarms=0 CPU-therm=46C GPU-therm=46C 
+  [after cpu] 2026-09-25T12:10:13+07:00 pmode:0000 online=0-3 cpu0 min/max=1479000/1479000 gpu min/max=921600000/921600000 swap_used_kB=0 alarms=0 CPU-therm=59C GPU-therm=57C 
+  [clocks restored] 2026-09-25T12:10:16+07:00 pmode:0000 online=0-3 cpu0 min/max=102000/1479000 gpu min/max=76800000/921600000 swap_used_kB=0 alarms=0 CPU-therm=56C GPU-therm=56C 

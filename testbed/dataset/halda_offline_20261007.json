@@ -1,0 +1,4705 @@
+{
+ "n_ctx": 4096,
+ "workloads": {
+  "chat": {
+   "prefill": 128,
+   "decode": 128
+  },
+  "long_prompt": {
+   "prefill": 1024,
+   "decode": 128
+  },
+  "long_answer": {
+   "prefill": 128,
+   "decode": 512
+  }
+ },
+ "check_20260930": {
+  "feasible": true,
+  "ring": [
+   "pi5",
+   "pi4"
+  ],
+  "layers": {
+   "pi5": 24,
+   "pi4": 16
+  },
+  "removed": [],
+  "k": 1,
+  "objective_ms": 681.952
+ },
+ "configs": [
+  {
+   "model": "qwen14b",
+   "arch": "qwen2",
+   "prima_can_run": true,
+   "boards": [
+    "pi5",
+    "pi4",
+    "jetson"
+   ],
+   "host": "pi5",
+   "engine": {
+    "pipeline": "pi5 38 + jetson 10",
+    "head_on": "pi5",
+    "decode_ms": 841.4,
+    "prefill_ms": 172.7,
+    "request_ms": {
+     "chat": 129800.0,
+     "long_prompt": 284507.0,
+     "long_answer": 452896.0
+    },
+    "min_margin_mib": 214,
+    "fits_engine_accounting": true
+   },
+   "engine_head_last": {
+    "pipeline": "pi5 39 + jetson 9",
+    "head_on": "jetson",
+    "decode_ms": 871.8,
+    "prefill_ms": 172.2,
+    "request_ms": {
+     "chat": 133627.0,
+     "long_prompt": 287876.0,
+     "long_answer": 468403.0
+    },
+    "min_margin_mib": 87,
+    "fits_engine_accounting": true
+   },
+   "engine_exact": {
+    "pipeline": "pi5 39 + jetson 9",
+    "head_on": "pi5",
+    "decode_ms": 832.0,
+    "prefill_ms": 172.2,
+    "request_ms": {
+     "chat": 128539.0,
+     "long_prompt": 282860.0,
+     "long_answer": 448019.0
+    },
+    "min_margin_mib": 32,
+    "fits_engine_accounting": true
+   },
+   "engine_default": {
+    "pipeline": "pi5 37 + jetson 11",
+    "head_on": "pi5",
+    "decode_ms": 849.8,
+    "prefill_ms": 173.1,
+    "request_ms": {
+     "chat": 130925.0,
+     "long_prompt": 286019.0,
+     "long_answer": 457232.0
+    },
+    "min_margin_mib": 378,
+    "fits_engine_accounting": true
+   },
+   "engine_request": {
+    "chat": {
+     "pipeline": "pi5 38 + jetson 10",
+     "head_on": "pi5",
+     "decode_ms": 841.4,
+     "prefill_ms": 172.7,
+     "request_ms": {
+      "chat": 129800.0,
+      "long_prompt": 284507.0,
+      "long_answer": 452896.0
+     },
+     "min_margin_mib": 214,
+     "fits_engine_accounting": true
+    },
+    "long_prompt": {
+     "pipeline": "pi5 38 + jetson 10",
+     "head_on": "pi5",
+     "decode_ms": 841.4,
+     "prefill_ms": 172.7,
+     "request_ms": {
+      "chat": 129800.0,
+      "long_prompt": 284507.0,
+      "long_answer": 452896.0
+     },
+     "min_margin_mib": 214,
+     "fits_engine_accounting": true
+    },
+    "long_answer": {
+     "pipeline": "pi5 38 + jetson 10",
+     "head_on": "pi5",
+     "decode_ms": 841.4,
+     "prefill_ms": 172.7,
+     "request_ms": {
+      "chat": 129800.0,
+      "long_prompt": 284507.0,
+      "long_answer": 452896.0
+     },
+     "min_margin_mib": 214,
+     "fits_engine_accounting": true
+    }
+   },
+   "halda": [
+    {
+     "ring": [
+      "pi5",
+      "pi4",
+      "jetson"
+     ],
+     "halda_caps": {
+      "pi5": 38,
+      "pi4": 40,
+      "jetson": 18
+     },
+     "removed": [
+      "pi4"
+     ],
+     "pipeline": "pi5 38 + jetson 10",
+     "head_on": "pi5",
+     "decode_ms": 841.4,
+     "prefill_ms": 172.7,
+     "request_ms": {
+      "chat": 129800.0,
+      "long_prompt": 284507.0,
+      "long_answer": 452896.0
+     },
+     "min_margin_mib": 214,
+     "fits_engine_accounting": true
+    },
+    {
+     "ring": [
+      "pi5",
+      "jetson",
+      "pi4"
+     ],
+     "halda_caps": {
+      "pi5": 38,
+      "jetson": 18,
+      "pi4": 40
+     },
+     "removed": [
+      "pi4"
+     ],
+     "pipeline": "pi5 38 + jetson 10",
+     "head_on": "pi5",
+     "decode_ms": 841.4,
+     "prefill_ms": 172.7,
+     "request_ms": {
+      "chat": 129800.0,
+      "long_prompt": 284507.0,
+      "long_answer": 452896.0
+     },
+     "min_margin_mib": 214,
+     "fits_engine_accounting": true
+    }
+   ],
+   "headroom": {
+    "0": {
+     "engine_decode_ms": 841.4,
+     "engine_exact_decode_ms": 832.0,
+     "engine_exact_pipeline": "pi5 39 + jetson 9",
+     "engine_exact_min_margin_mib": 32,
+     "halda_best_decode_ms": 841.4
+    },
+    "1024": {
+     "engine_decode_ms": 1007.7,
+     "engine_exact_decode_ms": 974.0,
+     "engine_exact_pipeline": "pi5 33 + pi4 4 + jetson 11",
+     "engine_exact_min_margin_mib": 21,
+     "halda_best_decode_ms": null
+    },
+    "2048": {
+     "engine_decode_ms": 1298.6,
+     "engine_exact_decode_ms": 1298.6,
+     "engine_exact_pipeline": "pi5 27 + pi4 16 + jetson 5",
+     "engine_exact_min_margin_mib": 23,
+     "halda_best_decode_ms": null
+    }
+   }
+  },
+  {
+   "model": "qwen14b",
+   "arch": "qwen2",
+   "prima_can_run": true,
+   "boards": [
+    "pi5",
+    "pi4"
+   ],
+   "host": "pi5",
+   "engine": {
+    "pipeline": "pi5 38 + pi4 10",
+    "head_on": "pi5",
+    "decode_ms": 1078.1,
+    "prefill_ms": 357.8,
+    "request_ms": {
+     "chat": 183790.0,
+     "long_prompt": 504349.0,
+     "long_answer": 597776.0
+    },
+    "min_margin_mib": 214,
+    "fits_engine_accounting": true
+   },
+   "engine_head_last": {
+    "pipeline": "pi5 39 + pi4 9",
+    "head_on": "pi4",
+    "decode_ms": 1172.8,
+    "prefill_ms": 339.6,
+    "request_ms": {
+     "chat": 193576.0,
+     "long_prompt": 497827.0,
+     "long_answer": 643913.0
+    },
+    "min_margin_mib": 87,
+    "fits_engine_accounting": true
+   },
+   "engine_exact": {
+    "pipeline": "pi5 39 + pi4 9",
+    "head_on": "pi5",
+    "decode_ms": 1044.4,
+    "prefill_ms": 338.8,
+    "request_ms": {
+     "chat": 177051.0,
+     "long_prompt": 480635.0,
+     "long_answer": 578096.0
+    },
+    "min_margin_mib": 32,
+    "fits_engine_accounting": true
+   },
+   "engine_default": {
+    "pipeline": "pi5 37 + pi4 11",
+    "head_on": "pi5",
+    "decode_ms": 1108.0,
+    "prefill_ms": 376.7,
+    "request_ms": {
+     "chat": 190044.0,
+     "long_prompt": 527578.0,
+     "long_answer": 615517.0
+    },
+    "min_margin_mib": 378,
+    "fits_engine_accounting": true
+   },
+   "engine_request": {
+    "chat": {
+     "pipeline": "pi5 38 + pi4 10",
+     "head_on": "pi5",
+     "decode_ms": 1078.1,
+     "prefill_ms": 357.8,
+     "request_ms": {
+      "chat": 183790.0,
+      "long_prompt": 504349.0,
+      "long_answer": 597776.0
+     },
+     "min_margin_mib": 214,
+     "fits_engine_accounting": true
+    },
+    "long_prompt": {
+     "pipeline": "pi5 39 + pi4 9",
+     "head_on": "pi4",
+     "decode_ms": 1172.8,
+     "prefill_ms": 339.6,
+     "request_ms": {
+      "chat": 193576.0,
+      "long_prompt": 497827.0,
+      "long_answer": 643913.0
+     },
+     "min_margin_mib": 87,
+     "fits_engine_accounting": true
+    },
+    "long_answer": {
+     "pipeline": "pi5 38 + pi4 10",
+     "head_on": "pi5",
+     "decode_ms": 1078.1,
+     "prefill_ms": 357.8,
+     "request_ms": {
+      "chat": 183790.0,
+      "long_prompt": 504349.0,
+      "long_answer": 597776.0
+     },
+     "min_margin_mib": 214,
+     "fits_engine_accounting": true
+    }
+   },
+   "halda": [
+    {
+     "ring": [
+      "pi5",
+      "pi4"
+     ],
+     "halda_caps": {
+      "pi5": 38,
+      "pi4": 40
+     },
+     "removed": [],
+     "pipeline": "pi5 38 + pi4 10",
+     "head_on": "pi5",
+     "decode_ms": 1078.1,
+     "prefill_ms": 357.8,
+     "request_ms": {
+      "chat": 183790.0,
+      "long_prompt": 504349.0,
+      "long_answer": 597776.0
+     },
+     "min_margin_mib": 214,
+     "fits_engine_accounting": true
+    }
+   ],
+   "headroom": {
+    "0": {
+     "engine_decode_ms": 1078.1,
+     "engine_exact_decode_ms": 1044.4,
+     "engine_exact_pipeline": "pi5 39 + pi4 9",
+     "engine_exact_min_margin_mib": 32,
+     "halda_best_decode_ms": 1078.1
+    },
+    "1024": {
+     "engine_decode_ms": 1265.2,
+     "engine_exact_decode_ms": 1231.5,
+     "engine_exact_pipeline": "pi5 33 + pi4 15",
+     "engine_exact_min_margin_mib": 27,
+     "halda_best_decode_ms": 1265.2
+    },
+    "2048": {
+     "engine_decode_ms": 1418.5,
+     "engine_exact_decode_ms": 1418.5,
+     "engine_exact_pipeline": "pi5 27 + pi4 21",
+     "engine_exact_min_margin_mib": 23,
+     "halda_best_decode_ms": 1452.2
+    }
+   }
+  },
+  {
+   "model": "qwen14b",
+   "arch": "qwen2",
+   "prima_can_run": true,
+   "boards": [
+    "pi5",
+    "jetson"
+   ],
+   "host": "pi5",
+   "engine": {
+    "pipeline": "pi5 38 + jetson 10",
+    "head_on": "pi5",
+    "decode_ms": 841.4,
+    "prefill_ms": 172.7,
+    "request_ms": {
+     "chat": 129800.0,
+     "long_prompt": 284507.0,
+     "long_answer": 452896.0
+    },
+    "min_margin_mib": 214,
+    "fits_engine_accounting": true
+   },
+   "engine_head_last": {
+    "pipeline": "pi5 39 + jetson 9",
+    "head_on": "jetson",
+    "decode_ms": 871.8,
+    "prefill_ms": 172.2,
+    "request_ms": {
+     "chat": 133627.0,
+     "long_prompt": 287876.0,
+     "long_answer": 468403.0
+    },
+    "min_margin_mib": 87,
+    "fits_engine_accounting": true
+   },
+   "engine_exact": {
+    "pipeline": "pi5 39 + jetson 9",
+    "head_on": "pi5",
+    "decode_ms": 832.0,
+    "prefill_ms": 172.2,
+    "request_ms": {
+     "chat": 128539.0,
+     "long_prompt": 282860.0,
+     "long_answer": 448019.0
+    },
+    "min_margin_mib": 32,
+    "fits_engine_accounting": true
+   },
+   "engine_default": {
+    "pipeline": "pi5 37 + jetson 11",
+    "head_on": "pi5",
+    "decode_ms": 849.8,
+    "prefill_ms": 173.1,
+    "request_ms": {
+     "chat": 130925.0,
+     "long_prompt": 286019.0,
+     "long_answer": 457232.0
+    },
+    "min_margin_mib": 378,
+    "fits_engine_accounting": true
+   },
+   "engine_request": {
+    "chat": {
+     "pipeline": "pi5 38 + jetson 10",
+     "head_on": "pi5",
+     "decode_ms": 841.4,
+     "prefill_ms": 172.7,
+     "request_ms": {
+      "chat": 129800.0,
+      "long_prompt": 284507.0,
+      "long_answer": 452896.0
+     },
+     "min_margin_mib": 214,
+     "fits_engine_accounting": true
+    },
+    "long_prompt": {
+     "pipeline": "pi5 38 + jetson 10",
+     "head_on": "pi5",
+     "decode_ms": 841.4,
+     "prefill_ms": 172.7,
+     "request_ms": {
+      "chat": 129800.0,
+      "long_prompt": 284507.0,
+      "long_answer": 452896.0
+     },
+     "min_margin_mib": 214,
+     "fits_engine_accounting": true
+    },
+    "long_answer": {
+     "pipeline": "pi5 38 + jetson 10",
+     "head_on": "pi5",
+     "decode_ms": 841.4,
+     "prefill_ms": 172.7,
+     "request_ms": {
+      "chat": 129800.0,
+      "long_prompt": 284507.0,
+      "long_answer": 452896.0
+     },
+     "min_margin_mib": 214,
+     "fits_engine_accounting": true
+    }
+   },
+   "halda": [
+    {
+     "ring": [
+      "pi5",
+      "jetson"
+     ],
+     "halda_caps": {
+      "pi5": 38,
+      "jetson": 18
+     },
+     "removed": [],
+     "pipeline": "pi5 38 + jetson 10",
+     "head_on": "pi5",
+     "decode_ms": 841.4,
+     "prefill_ms": 172.7,
+     "request_ms": {
+      "chat": 129800.0,
+      "long_prompt": 284507.0,
+      "long_answer": 452896.0
+     },
+     "min_margin_mib": 214,
+     "fits_engine_accounting": true
+    }
+   ],
+   "headroom": {
+    "0": {
+     "engine_decode_ms": 841.4,
+     "engine_exact_decode_ms": 832.0,
+     "engine_exact_pipeline": "pi5 39 + jetson 9",
+     "engine_exact_min_margin_mib": 32,
+     "halda_best_decode_ms": 841.4
+    },
+    "1024": {
+     "engine_decode_ms": null,
+     "engine_exact_decode_ms": null,
+     "engine_exact_pipeline": null,
+     "engine_exact_min_margin_mib": null,
+     "halda_best_decode_ms": null
+    },
+    "2048": {
+     "engine_decode_ms": null,
+     "engine_exact_decode_ms": null,
+     "engine_exact_pipeline": null,
+     "engine_exact_min_margin_mib": null,
+     "halda_best_decode_ms": null
+    }
+   }
+  },
+  {
+   "model": "qwen14b",
+   "arch": "qwen2",
+   "prima_can_run": true,
+   "boards": [
+    "pi4",
+    "jetson"
+   ],
+   "host": "pi4",
+   "engine": {
+    "pipeline": "pi4 31 + jetson 17",
+    "head_on": "pi4",
+    "decode_ms": 1992.1,
+    "prefill_ms": 769.8,
+    "request_ms": {
+     "chat": 353518.0,
+     "long_prompt": 1043256.0,
+     "long_answer": 1118468.0
+    },
+    "min_margin_mib": 25,
+    "fits_engine_accounting": true
+   },
+   "engine_head_last": {
+    "pipeline": "pi4 38 + jetson 10",
+    "head_on": "jetson",
+    "decode_ms": 2063.4,
+    "prefill_ms": 899.8,
+    "request_ms": {
+     "chat": 379288.0,
+     "long_prompt": 1185531.0,
+     "long_answer": 1171621.0
+    },
+    "min_margin_mib": 46,
+    "fits_engine_accounting": true
+   },
+   "engine_exact": {
+    "pipeline": "pi4 31 + jetson 17",
+    "head_on": "pi4",
+    "decode_ms": 1992.1,
+    "prefill_ms": 769.8,
+    "request_ms": {
+     "chat": 353518.0,
+     "long_prompt": 1043256.0,
+     "long_answer": 1118468.0
+    },
+    "min_margin_mib": 25,
+    "fits_engine_accounting": true
+   },
+   "engine_default": {
+    "pipeline": "pi4 33 + jetson 15",
+    "head_on": "pi4",
+    "decode_ms": 2037.1,
+    "prefill_ms": 807.2,
+    "request_ms": {
+     "chat": 364072.0,
+     "long_prompt": 1087333.0,
+     "long_answer": 1146320.0
+    },
+    "min_margin_mib": 372,
+    "fits_engine_accounting": true
+   },
+   "engine_request": {
+    "chat": {
+     "pipeline": "pi4 31 + jetson 17",
+     "head_on": "pi4",
+     "decode_ms": 1992.1,
+     "prefill_ms": 769.8,
+     "request_ms": {
+      "chat": 353518.0,
+      "long_prompt": 1043256.0,
+      "long_answer": 1118468.0
+     },
+     "min_margin_mib": 25,
+     "fits_engine_accounting": true
+    },
+    "long_prompt": {
+     "pipeline": "pi4 31 + jetson 17",
+     "head_on": "pi4",
+     "decode_ms": 1992.1,
+     "prefill_ms": 769.8,
+     "request_ms": {
+      "chat": 353518.0,
+      "long_prompt": 1043256.0,
+      "long_answer": 1118468.0
+     },
+     "min_margin_mib": 25,
+     "fits_engine_accounting": true
+    },
+    "long_answer": {
+     "pipeline": "pi4 31 + jetson 17",
+     "head_on": "pi4",
+     "decode_ms": 1992.1,
+     "prefill_ms": 769.8,
+     "request_ms": {
+      "chat": 353518.0,
+      "long_prompt": 1043256.0,
+      "long_answer": 1118468.0
+     },
+     "min_margin_mib": 25,
+     "fits_engine_accounting": true
+    }
+   },
+   "halda": [
+    {
+     "ring": [
+      "pi4",
+      "jetson"
+     ],
+     "halda_caps": {
+      "pi4": 37,
+      "jetson": 18
+     },
+     "removed": [],
+     "pipeline": "pi4 30 + jetson 18",
+     "head_on": "pi4",
+     "decode_ms": 1970.9,
+     "prefill_ms": 751.1,
+     "request_ms": {
+      "chat": 348412.0,
+      "long_prompt": 1021389.0,
+      "long_answer": 1105229.0
+     },
+     "min_margin_mib": -138,
+     "fits_engine_accounting": false
+    }
+   ],
+   "headroom": {
+    "0": {
+     "engine_decode_ms": 1992.1,
+     "engine_exact_decode_ms": 1992.1,
+     "engine_exact_pipeline": "pi4 31 + jetson 17",
+     "engine_exact_min_margin_mib": 25,
+     "halda_best_decode_ms": null
+    },
+    "1024": {
+     "engine_decode_ms": null,
+     "engine_exact_decode_ms": null,
+     "engine_exact_pipeline": null,
+     "engine_exact_min_margin_mib": null,
+     "halda_best_decode_ms": null
+    },
+    "2048": {
+     "engine_decode_ms": null,
+     "engine_exact_decode_ms": null,
+     "engine_exact_pipeline": null,
+     "engine_exact_min_margin_mib": null,
+     "halda_best_decode_ms": null
+    }
+   }
+  },
+  {
+   "model": "tinyllama",
+   "arch": "llama",
+   "prima_can_run": true,
+   "boards": [
+    "pi5",
+    "pi4",
+    "jetson"
+   ],
+   "host": "pi5",
+   "engine": {
+    "pipeline": "pi5 22",
+    "head_on": "pi5",
+    "decode_ms": 55.2,
+    "prefill_ms": 12.3,
+    "request_ms": {
+     "chat": 8637.0,
+     "long_prompt": 19675.0,
+     "long_answer": 29819.0
+    },
+    "min_margin_mib": 6710,
+    "fits_engine_accounting": true
+   },
+   "engine_head_last": {
+    "pipeline": "pi5 22",
+    "head_on": "pi5",
+    "decode_ms": 55.2,
+    "prefill_ms": 12.3,
+    "request_ms": {
+     "chat": 8637.0,
+     "long_prompt": 19675.0,
+     "long_answer": 29819.0
+    },
+    "min_margin_mib": 6710,
+    "fits_engine_accounting": true
+   },
+   "engine_exact": {
+    "pipeline": "pi5 22",
+    "head_on": "pi5",
+    "decode_ms": 55.2,
+    "prefill_ms": 12.3,
+    "request_ms": {
+     "chat": 8637.0,
+     "long_prompt": 19675.0,
+     "long_answer": 29819.0
+    },
+    "min_margin_mib": 6710,
+    "fits_engine_accounting": true
+   },
+   "engine_default": {
+    "pipeline": "pi5 22",
+    "head_on": "pi5",
+    "decode_ms": 55.2,
+    "prefill_ms": 12.3,
+    "request_ms": {
+     "chat": 8637.0,
+     "long_prompt": 19675.0,
+     "long_answer": 29819.0
+    },
+    "min_margin_mib": 6710,
+    "fits_engine_accounting": true
+   },
+   "engine_request": {
+    "chat": {
+     "pipeline": "pi5 22",
+     "head_on": "pi5",
+     "decode_ms": 55.2,
+     "prefill_ms": 12.3,
+     "request_ms": {
+      "chat": 8637.0,
+      "long_prompt": 19675.0,
+      "long_answer": 29819.0
+     },
+     "min_margin_mib": 6710,
+     "fits_engine_accounting": true
+    },
+    "long_prompt": {
+     "pipeline": "pi5 22",
+     "head_on": "pi5",
+     "decode_ms": 55.2,
+     "prefill_ms": 12.3,
+     "request_ms": {
+      "chat": 8637.0,
+      "long_prompt": 19675.0,
+      "long_answer": 29819.0
+     },
+     "min_margin_mib": 6710,
+     "fits_engine_accounting": true
+    },
+    "long_answer": {
+     "pipeline": "pi5 22",
+     "head_on": "pi5",
+     "decode_ms": 55.2,
+     "prefill_ms": 12.3,
+     "request_ms": {
+      "chat": 8637.0,
+      "long_prompt": 19675.0,
+      "long_answer": 29819.0
+     },
+     "min_margin_mib": 6710,
+     "fits_engine_accounting": true
+    }
+   },
+   "halda": [
+    {
+     "ring": [
+      "pi5",
+      "pi4",
+      "jetson"
+     ],
+     "halda_caps": {
+      "pi5": 251,
+      "pi4": 246,
+      "jetson": 112
+     },
+     "removed": [
+      "pi4",
+      "jetson"
+     ],
+     "pipeline": "pi5 22",
+     "head_on": "pi5",
+     "decode_ms": 55.2,
+     "prefill_ms": 12.3,
+     "request_ms": {
+      "chat": 8637.0,
+      "long_prompt": 19675.0,
+      "long_answer": 29819.0
+     },
+     "min_margin_mib": 6710,
+     "fits_engine_accounting": true
+    },
+    {
+     "ring": [
+      "pi5",
+      "jetson",
+      "pi4"
+     ],
+     "halda_caps": {
+      "pi5": 251,
+      "jetson": 112,
+      "pi4": 246
+     },
+     "removed": [
+      "jetson",
+      "pi4"
+     ],
+     "pipeline": "pi5 22",
+     "head_on": "pi5",
+     "decode_ms": 55.2,
+     "prefill_ms": 12.3,
+     "request_ms": {
+      "chat": 8637.0,
+      "long_prompt": 19675.0,
+      "long_answer": 29819.0
+     },
+     "min_margin_mib": 6710,
+     "fits_engine_accounting": true
+    }
+   ],
+   "headroom": {
+    "0": {
+     "engine_decode_ms": 55.2,
+     "engine_exact_decode_ms": 55.2,
+     "engine_exact_pipeline": "pi5 22",
+     "engine_exact_min_margin_mib": 6710,
+     "halda_best_decode_ms": 55.2
+    },
+    "1024": {
+     "engine_decode_ms": 55.2,
+     "engine_exact_decode_ms": 55.2,
+     "engine_exact_pipeline": "pi5 22",
+     "engine_exact_min_margin_mib": 5686,
+     "halda_best_decode_ms": 55.2
+    },
+    "2048": {
+     "engine_decode_ms": 55.2,
+     "engine_exact_decode_ms": 55.2,
+     "engine_exact_pipeline": "pi5 22",
+     "engine_exact_min_margin_mib": 4662,
+     "halda_best_decode_ms": 55.2
+    }
+   }
+  },
+  {
+   "model": "tinyllama",
+   "arch": "llama",
+   "prima_can_run": true,
+   "boards": [
+    "pi5",
+    "pi4"
+   ],
+   "host": "pi5",
+   "engine": {
+    "pipeline": "pi5 22",
+    "head_on": "pi5",
+    "decode_ms": 55.2,
+    "prefill_ms": 12.3,
+    "request_ms": {
+     "chat": 8637.0,
+     "long_prompt": 19675.0,
+     "long_answer": 29819.0
+    },
+    "min_margin_mib": 6710,
+    "fits_engine_accounting": true
+   },
+   "engine_head_last": {
+    "pipeline": "pi5 22",
+    "head_on": "pi5",
+    "decode_ms": 55.2,
+    "prefill_ms": 12.3,
+    "request_ms": {
+     "chat": 8637.0,
+     "long_prompt": 19675.0,
+     "long_answer": 29819.0
+    },
+    "min_margin_mib": 6710,
+    "fits_engine_accounting": true
+   },
+   "engine_exact": {
+    "pipeline": "pi5 22",
+    "head_on": "pi5",
+    "decode_ms": 55.2,
+    "prefill_ms": 12.3,
+    "request_ms": {
+     "chat": 8637.0,
+     "long_prompt": 19675.0,
+     "long_answer": 29819.0
+    },
+    "min_margin_mib": 6710,
+    "fits_engine_accounting": true
+   },
+   "engine_default": {
+    "pipeline": "pi5 22",
+    "head_on": "pi5",
+    "decode_ms": 55.2,
+    "prefill_ms": 12.3,
+    "request_ms": {
+     "chat": 8637.0,
+     "long_prompt": 19675.0,
+     "long_answer": 29819.0
+    },
+    "min_margin_mib": 6710,
+    "fits_engine_accounting": true
+   },
+   "engine_request": {
+    "chat": {
+     "pipeline": "pi5 22",
+     "head_on": "pi5",
+     "decode_ms": 55.2,
+     "prefill_ms": 12.3,
+     "request_ms": {
+      "chat": 8637.0,
+      "long_prompt": 19675.0,
+      "long_answer": 29819.0
+     },
+     "min_margin_mib": 6710,
+     "fits_engine_accounting": true
+    },
+    "long_prompt": {
+     "pipeline": "pi5 22",
+     "head_on": "pi5",
+     "decode_ms": 55.2,
+     "prefill_ms": 12.3,
+     "request_ms": {
+      "chat": 8637.0,
+      "long_prompt": 19675.0,
+      "long_answer": 29819.0
+     },
+     "min_margin_mib": 6710,
+     "fits_engine_accounting": true
+    },
+    "long_answer": {
+     "pipeline": "pi5 22",
+     "head_on": "pi5",
+     "decode_ms": 55.2,
+     "prefill_ms": 12.3,
+     "request_ms": {
+      "chat": 8637.0,
+      "long_prompt": 19675.0,
+      "long_answer": 29819.0
+     },
+     "min_margin_mib": 6710,
+     "fits_engine_accounting": true
+    }
+   },
+   "halda": [
+    {
+     "ring": [
+      "pi5",
+      "pi4"
+     ],
+     "halda_caps": {
+      "pi5": 251,
+      "pi4": 246
+     },
+     "removed": [
+      "pi4"
+     ],
+     "pipeline": "pi5 22",
+     "head_on": "pi5",
+     "decode_ms": 55.2,
+     "prefill_ms": 12.3,
+     "request_ms": {
+      "chat": 8637.0,
+      "long_prompt": 19675.0,
+      "long_answer": 29819.0
+     },
+     "min_margin_mib": 6710,
+     "fits_engine_accounting": true
+    }
+   ],
+   "headroom": {
+    "0": {
+     "engine_decode_ms": 55.2,
+     "engine_exact_decode_ms": 55.2,
+     "engine_exact_pipeline": "pi5 22",
+     "engine_exact_min_margin_mib": 6710,
+     "halda_best_decode_ms": 55.2
+    },
+    "1024": {
+     "engine_decode_ms": 55.2,
+     "engine_exact_decode_ms": 55.2,
+     "engine_exact_pipeline": "pi5 22",
+     "engine_exact_min_margin_mib": 5686,
+     "halda_best_decode_ms": 55.2
+    },
+    "2048": {
+     "engine_decode_ms": 55.2,
+     "engine_exact_decode_ms": 55.2,
+     "engine_exact_pipeline": "pi5 22",
+     "engine_exact_min_margin_mib": 4662,
+     "halda_best_decode_ms": 55.2
+    }
+   }
+  },
+  {
+   "model": "tinyllama",
+   "arch": "llama",
+   "prima_can_run": true,
+   "boards": [
+    "pi5",
+    "jetson"
+   ],
+   "host": "pi5",
+   "engine": {
+    "pipeline": "pi5 22",
+    "head_on": "pi5",
+    "decode_ms": 55.2,
+    "prefill_ms": 12.3,
+    "request_ms": {
+     "chat": 8637.0,
+     "long_prompt": 19675.0,
+     "long_answer": 29819.0
+    },
+    "min_margin_mib": 6710,
+    "fits_engine_accounting": true
+   },
+   "engine_head_last": {
+    "pipeline": "pi5 22",
+    "head_on": "pi5",
+    "decode_ms": 55.2,
+    "prefill_ms": 12.3,
+    "request_ms": {
+     "chat": 8637.0,
+     "long_prompt": 19675.0,
+     "long_answer": 29819.0
+    },
+    "min_margin_mib": 6710,
+    "fits_engine_accounting": true
+   },
+   "engine_exact": {
+    "pipeline": "pi5 22",
+    "head_on": "pi5",
+    "decode_ms": 55.2,
+    "prefill_ms": 12.3,
+    "request_ms": {
+     "chat": 8637.0,
+     "long_prompt": 19675.0,
+     "long_answer": 29819.0
+    },
+    "min_margin_mib": 6710,
+    "fits_engine_accounting": true
+   },
+   "engine_default": {
+    "pipeline": "pi5 22",
+    "head_on": "pi5",
+    "decode_ms": 55.2,
+    "prefill_ms": 12.3,
+    "request_ms": {
+     "chat": 8637.0,
+     "long_prompt": 19675.0,
+     "long_answer": 29819.0
+    },
+    "min_margin_mib": 6710,
+    "fits_engine_accounting": true
+   },
+   "engine_request": {
+    "chat": {
+     "pipeline": "pi5 22",
+     "head_on": "pi5",
+     "decode_ms": 55.2,
+     "prefill_ms": 12.3,
+     "request_ms": {
+      "chat": 8637.0,
+      "long_prompt": 19675.0,
+      "long_answer": 29819.0
+     },
+     "min_margin_mib": 6710,
+     "fits_engine_accounting": true
+    },
+    "long_prompt": {
+     "pipeline": "pi5 22",
+     "head_on": "pi5",
+     "decode_ms": 55.2,
+     "prefill_ms": 12.3,
+     "request_ms": {
+      "chat": 8637.0,
+      "long_prompt": 19675.0,
+      "long_answer": 29819.0
+     },
+     "min_margin_mib": 6710,
+     "fits_engine_accounting": true
+    },
+    "long_answer": {
+     "pipeline": "pi5 22",
+     "head_on": "pi5",
+     "decode_ms": 55.2,
+     "prefill_ms": 12.3,
+     "request_ms": {
+      "chat": 8637.0,
+      "long_prompt": 19675.0,
+      "long_answer": 29819.0
+     },
+     "min_margin_mib": 6710,
+     "fits_engine_accounting": true
+    }
+   },
+   "halda": [
+    {
+     "ring": [
+      "pi5",
+      "jetson"
+     ],
+     "halda_caps": {
+      "pi5": 251,
+      "jetson": 112
+     },
+     "removed": [
+      "jetson"
+     ],
+     "pipeline": "pi5 22",
+     "head_on": "pi5",
+     "decode_ms": 55.2,
+     "prefill_ms": 12.3,
+     "request_ms": {
+      "chat": 8637.0,
+      "long_prompt": 19675.0,
+      "long_answer": 29819.0
+     },
+     "min_margin_mib": 6710,
+     "fits_engine_accounting": true
+    }
+   ],
+   "headroom": {
+    "0": {
+     "engine_decode_ms": 55.2,
+     "engine_exact_decode_ms": 55.2,
+     "engine_exact_pipeline": "pi5 22",
+     "engine_exact_min_margin_mib": 6710,
+     "halda_best_decode_ms": 55.2
+    },
+    "1024": {
+     "engine_decode_ms": 55.2,
+     "engine_exact_decode_ms": 55.2,
+     "engine_exact_pipeline": "pi5 22",
+     "engine_exact_min_margin_mib": 5686,
+     "halda_best_decode_ms": 55.2
+    },
+    "2048": {
+     "engine_decode_ms": 55.2,
+     "engine_exact_decode_ms": 55.2,
+     "engine_exact_pipeline": "pi5 22",
+     "engine_exact_min_margin_mib": 4662,
+     "halda_best_decode_ms": 55.2
+    }
+   }
+  },
+  {
+   "model": "tinyllama",
+   "arch": "llama",
+   "prima_can_run": true,
+   "boards": [
+    "pi4",
+    "jetson"
+   ],
+   "host": "pi4",
+   "engine": {
+    "pipeline": "pi4 1 + jetson 21",
+    "head_on": "jetson",
+    "decode_ms": 95.4,
+    "prefill_ms": 16.9,
+    "request_ms": {
+     "chat": 14376.0,
+     "long_prompt": 29553.0,
+     "long_answer": 51000.0
+    },
+    "min_margin_mib": 2271,
+    "fits_engine_accounting": true
+   },
+   "engine_head_last": {
+    "pipeline": "pi4 1 + jetson 21",
+    "head_on": "jetson",
+    "decode_ms": 95.4,
+    "prefill_ms": 16.9,
+    "request_ms": {
+     "chat": 14376.0,
+     "long_prompt": 29553.0,
+     "long_answer": 51000.0
+    },
+    "min_margin_mib": 2271,
+    "fits_engine_accounting": true
+   },
+   "engine_exact": {
+    "pipeline": "pi4 1 + jetson 21",
+    "head_on": "jetson",
+    "decode_ms": 95.4,
+    "prefill_ms": 16.9,
+    "request_ms": {
+     "chat": 14376.0,
+     "long_prompt": 29553.0,
+     "long_answer": 51000.0
+    },
+    "min_margin_mib": 2271,
+    "fits_engine_accounting": true
+   },
+   "engine_default": {
+    "pipeline": "pi4 1 + jetson 21",
+    "head_on": "jetson",
+    "decode_ms": 95.4,
+    "prefill_ms": 16.9,
+    "request_ms": {
+     "chat": 14376.0,
+     "long_prompt": 29553.0,
+     "long_answer": 51000.0
+    },
+    "min_margin_mib": 2271,
+    "fits_engine_accounting": true
+   },
+   "engine_request": {
+    "chat": {
+     "pipeline": "pi4 1 + jetson 21",
+     "head_on": "jetson",
+     "decode_ms": 95.4,
+     "prefill_ms": 16.9,
+     "request_ms": {
+      "chat": 14376.0,
+      "long_prompt": 29553.0,
+      "long_answer": 51000.0
+     },
+     "min_margin_mib": 2271,
+     "fits_engine_accounting": true
+    },
+    "long_prompt": {
+     "pipeline": "pi4 1 + jetson 21",
+     "head_on": "jetson",
+     "decode_ms": 95.4,
+     "prefill_ms": 16.9,
+     "request_ms": {
+      "chat": 14376.0,
+      "long_prompt": 29553.0,
+      "long_answer": 51000.0
+     },
+     "min_margin_mib": 2271,
+     "fits_engine_accounting": true
+    },
+    "long_answer": {
+     "pipeline": "pi4 1 + jetson 21",
+     "head_on": "jetson",
+     "decode_ms": 95.4,
+     "prefill_ms": 16.9,
+     "request_ms": {
+      "chat": 14376.0,
+      "long_prompt": 29553.0,
+      "long_answer": 51000.0
+     },
+     "min_margin_mib": 2271,
+     "fits_engine_accounting": true
+    }
+   },
+   "halda": [
+    {
+     "ring": [
+      "pi4",
+      "jetson"
+     ],
+     "halda_caps": {
+      "pi4": 244,
+      "jetson": 112
+     },
+     "removed": [],
+     "pipeline": "pi4 1 + jetson 21",
+     "head_on": "pi4",
+     "decode_ms": 101.7,
+     "prefill_ms": 17.1,
+     "request_ms": {
+      "chat": 15202.0,
+      "long_prompt": 30489.0,
+      "long_answer": 54257.0
+     },
+     "min_margin_mib": 2322,
+     "fits_engine_accounting": true
+    }
+   ],
+   "headroom": {
+    "0": {
+     "engine_decode_ms": 95.4,
+     "engine_exact_decode_ms": 95.4,
+     "engine_exact_pipeline": "pi4 1 + jetson 21",
+     "engine_exact_min_margin_mib": 2271,
+     "halda_best_decode_ms": 101.7
+    },
+    "1024": {
+     "engine_decode_ms": 95.4,
+     "engine_exact_decode_ms": 95.4,
+     "engine_exact_pipeline": "pi4 1 + jetson 21",
+     "engine_exact_min_margin_mib": 1317,
+     "halda_best_decode_ms": 101.7
+    },
+    "2048": {
+     "engine_decode_ms": 95.4,
+     "engine_exact_decode_ms": 95.4,
+     "engine_exact_pipeline": "pi4 1 + jetson 21",
+     "engine_exact_min_margin_mib": 293,
+     "halda_best_decode_ms": 101.7
+    }
+   }
+  },
+  {
+   "model": "mistral7b",
+   "arch": "llama",
+   "prima_can_run": true,
+   "boards": [
+    "pi5",
+    "pi4",
+    "jetson"
+   ],
+   "host": "pi5",
+   "engine": {
+    "pipeline": "pi5 30 + jetson 2",
+    "head_on": "pi5",
+    "decode_ms": 647.6,
+    "prefill_ms": 111.0,
+    "request_ms": {
+     "chat": 97107.0,
+     "long_prompt": 196565.0,
+     "long_answer": 345803.0
+    },
+    "min_margin_mib": 96,
+    "fits_engine_accounting": true
+   },
+   "engine_head_last": {
+    "pipeline": "pi5 30 + jetson 2",
+    "head_on": "jetson",
+    "decode_ms": 656.3,
+    "prefill_ms": 110.9,
+    "request_ms": {
+     "chat": 98203.0,
+     "long_prompt": 197538.0,
+     "long_answer": 350239.0
+    },
+    "min_margin_mib": 155,
+    "fits_engine_accounting": true
+   },
+   "engine_exact": {
+    "pipeline": "pi5 30 + jetson 2",
+    "head_on": "pi5",
+    "decode_ms": 647.6,
+    "prefill_ms": 111.0,
+    "request_ms": {
+     "chat": 97107.0,
+     "long_prompt": 196565.0,
+     "long_answer": 345803.0
+    },
+    "min_margin_mib": 96,
+    "fits_engine_accounting": true
+   },
+   "engine_default": {
+    "pipeline": "pi5 29 + jetson 3",
+    "head_on": "pi5",
+    "decode_ms": 660.4,
+    "prefill_ms": 110.4,
+    "request_ms": {
+     "chat": 98663.0,
+     "long_prompt": 197567.0,
+     "long_answer": 352267.0
+    },
+    "min_margin_mib": 333,
+    "fits_engine_accounting": true
+   },
+   "engine_request": {
+    "chat": {
+     "pipeline": "pi5 30 + jetson 2",
+     "head_on": "pi5",
+     "decode_ms": 647.6,
+     "prefill_ms": 111.0,
+     "request_ms": {
+      "chat": 97107.0,
+      "long_prompt": 196565.0,
+      "long_answer": 345803.0
+     },
+     "min_margin_mib": 96,
+     "fits_engine_accounting": true
+    },
+    "long_prompt": {
+     "pipeline": "pi5 30 + jetson 2",
+     "head_on": "pi5",
+     "decode_ms": 647.6,
+     "prefill_ms": 111.0,
+     "request_ms": {
+      "chat": 97107.0,
+      "long_prompt": 196565.0,
+      "long_answer": 345803.0
+     },
+     "min_margin_mib": 96,
+     "fits_engine_accounting": true
+    },
+    "long_answer": {
+     "pipeline": "pi5 30 + jetson 2",
+     "head_on": "pi5",
+     "decode_ms": 647.6,
+     "prefill_ms": 111.0,
+     "request_ms": {
+      "chat": 97107.0,
+      "long_prompt": 196565.0,
+      "long_answer": 345803.0
+     },
+     "min_margin_mib": 96,
+     "fits_engine_accounting": true
+    }
+   },
+   "halda": [
+    {
+     "ring": [
+      "pi5",
+      "pi4",
+      "jetson"
+     ],
+     "halda_caps": {
+      "pi5": 30,
+      "pi4": 30,
+      "jetson": 13
+     },
+     "removed": [
+      "pi4",
+      "jetson"
+     ],
+     "infeasible": "the shares cannot fit in memory (pi5 cap 30): Halda would move devices into its disk-offload sets M1-M3, which need prima.cpp's prefetching runtime, outside this port"
+    },
+    {
+     "ring": [
+      "pi5",
+      "jetson",
+      "pi4"
+     ],
+     "halda_caps": {
+      "pi5": 30,
+      "jetson": 13,
+      "pi4": 30
+     },
+     "removed": [
+      "jetson",
+      "pi4"
+     ],
+     "infeasible": "the shares cannot fit in memory (pi5 cap 30): Halda would move devices into its disk-offload sets M1-M3, which need prima.cpp's prefetching runtime, outside this port"
+    }
+   ],
+   "headroom": {
+    "0": {
+     "engine_decode_ms": 647.6,
+     "engine_exact_decode_ms": 647.6,
+     "engine_exact_pipeline": "pi5 30 + jetson 2",
+     "engine_exact_min_margin_mib": 96,
+     "halda_best_decode_ms": null
+    },
+    "1024": {
+     "engine_decode_ms": 698.8,
+     "engine_exact_decode_ms": 698.8,
+     "engine_exact_pipeline": "pi5 26 + jetson 6",
+     "engine_exact_min_margin_mib": 20,
+     "halda_best_decode_ms": 698.8
+    },
+    "2048": {
+     "engine_decode_ms": 979.2,
+     "engine_exact_decode_ms": 979.2,
+     "engine_exact_pipeline": "pi5 22 + pi4 7 + jetson 3",
+     "engine_exact_min_margin_mib": 3,
+     "halda_best_decode_ms": null
+    }
+   }
+  },
+  {
+   "model": "mistral7b",
+   "arch": "llama",
+   "prima_can_run": true,
+   "boards": [
+    "pi5",
+    "pi4"
+   ],
+   "host": "pi5",
+   "engine": {
+    "pipeline": "pi5 30 + pi4 2",
+    "head_on": "pi5",
+    "decode_ms": 709.8,
+    "prefill_ms": 141.8,
+    "request_ms": {
+     "chat": 109000.0,
+     "long_prompt": 236013.0,
+     "long_answer": 381565.0
+    },
+    "min_margin_mib": 96,
+    "fits_engine_accounting": true
+   },
+   "engine_head_last": {
+    "pipeline": "pi5 30 + pi4 2",
+    "head_on": "pi4",
+    "decode_ms": 737.3,
+    "prefill_ms": 141.8,
+    "request_ms": {
+     "chat": 112523.0,
+     "long_prompt": 239551.0,
+     "long_answer": 395653.0
+    },
+    "min_margin_mib": 155,
+    "fits_engine_accounting": true
+   },
+   "engine_exact": {
+    "pipeline": "pi5 30 + pi4 2",
+    "head_on": "pi5",
+    "decode_ms": 709.8,
+    "prefill_ms": 141.8,
+    "request_ms": {
+     "chat": 109000.0,
+     "long_prompt": 236013.0,
+     "long_answer": 381565.0
+    },
+    "min_margin_mib": 96,
+    "fits_engine_accounting": true
+   },
+   "engine_default": {
+    "pipeline": "pi5 29 + pi4 3",
+    "head_on": "pi5",
+    "decode_ms": 754.0,
+    "prefill_ms": 156.5,
+    "request_ms": {
+     "chat": 116548.0,
+     "long_prompt": 256797.0,
+     "long_answer": 406084.0
+    },
+    "min_margin_mib": 333,
+    "fits_engine_accounting": true
+   },
+   "engine_request": {
+    "chat": {
+     "pipeline": "pi5 30 + pi4 2",
+     "head_on": "pi5",
+     "decode_ms": 709.8,
+     "prefill_ms": 141.8,
+     "request_ms": {
+      "chat": 109000.0,
+      "long_prompt": 236013.0,
+      "long_answer": 381565.0
+     },
+     "min_margin_mib": 96,
+     "fits_engine_accounting": true
+    },
+    "long_prompt": {
+     "pipeline": "pi5 30 + pi4 2",
+     "head_on": "pi5",
+     "decode_ms": 709.8,
+     "prefill_ms": 141.8,
+     "request_ms": {
+      "chat": 109000.0,
+      "long_prompt": 236013.0,
+      "long_answer": 381565.0
+     },
+     "min_margin_mib": 96,
+     "fits_engine_accounting": true
+    },
+    "long_answer": {
+     "pipeline": "pi5 30 + pi4 2",
+     "head_on": "pi5",
+     "decode_ms": 709.8,
+     "prefill_ms": 141.8,
+     "request_ms": {
+      "chat": 109000.0,
+      "long_prompt": 236013.0,
+      "long_answer": 381565.0
+     },
+     "min_margin_mib": 96,
+     "fits_engine_accounting": true
+    }
+   },
+   "halda": [
+    {
+     "ring": [
+      "pi5",
+      "pi4"
+     ],
+     "halda_caps": {
+      "pi5": 30,
+      "pi4": 30
+     },
+     "removed": [],
+     "pipeline": "pi5 30 + pi4 2",
+     "head_on": "pi5",
+     "decode_ms": 709.8,
+     "prefill_ms": 141.8,
+     "request_ms": {
+      "chat": 109000.0,
+      "long_prompt": 236013.0,
+      "long_answer": 381565.0
+     },
+     "min_margin_mib": 96,
+     "fits_engine_accounting": true
+    }
+   ],
+   "headroom": {
+    "0": {
+     "engine_decode_ms": 709.8,
+     "engine_exact_decode_ms": 709.8,
+     "engine_exact_pipeline": "pi5 30 + pi4 2",
+     "engine_exact_min_margin_mib": 96,
+     "halda_best_decode_ms": 709.8
+    },
+    "1024": {
+     "engine_decode_ms": 886.6,
+     "engine_exact_decode_ms": 886.6,
+     "engine_exact_pipeline": "pi5 26 + pi4 6",
+     "engine_exact_min_margin_mib": 20,
+     "halda_best_decode_ms": 886.6
+    },
+    "2048": {
+     "engine_decode_ms": 1090.9,
+     "engine_exact_decode_ms": 1090.9,
+     "engine_exact_pipeline": "pi5 22 + pi4 10",
+     "engine_exact_min_margin_mib": 3,
+     "halda_best_decode_ms": 1107.6
+    }
+   }
+  },
+  {
+   "model": "mistral7b",
+   "arch": "llama",
+   "prima_can_run": true,
+   "boards": [
+    "pi5",
+    "jetson"
+   ],
+   "host": "pi5",
+   "engine": {
+    "pipeline": "pi5 30 + jetson 2",
+    "head_on": "pi5",
+    "decode_ms": 647.6,
+    "prefill_ms": 111.0,
+    "request_ms": {
+     "chat": 97107.0,
+     "long_prompt": 196565.0,
+     "long_answer": 345803.0
+    },
+    "min_margin_mib": 96,
+    "fits_engine_accounting": true
+   },
+   "engine_head_last": {
+    "pipeline": "pi5 30 + jetson 2",
+    "head_on": "jetson",
+    "decode_ms": 656.3,
+    "prefill_ms": 110.9,
+    "request_ms": {
+     "chat": 98203.0,
+     "long_prompt": 197538.0,
+     "long_answer": 350239.0
+    },
+    "min_margin_mib": 155,
+    "fits_engine_accounting": true
+   },
+   "engine_exact": {
+    "pipeline": "pi5 30 + jetson 2",
+    "head_on": "pi5",
+    "decode_ms": 647.6,
+    "prefill_ms": 111.0,
+    "request_ms": {
+     "chat": 97107.0,
+     "long_prompt": 196565.0,
+     "long_answer": 345803.0
+    },
+    "min_margin_mib": 96,
+    "fits_engine_accounting": true
+   },
+   "engine_default": {
+    "pipeline": "pi5 29 + jetson 3",
+    "head_on": "pi5",
+    "decode_ms": 660.4,
+    "prefill_ms": 110.4,
+    "request_ms": {
+     "chat": 98663.0,
+     "long_prompt": 197567.0,
+     "long_answer": 352267.0
+    },
+    "min_margin_mib": 333,
+    "fits_engine_accounting": true
+   },
+   "engine_request": {
+    "chat": {
+     "pipeline": "pi5 30 + jetson 2",
+     "head_on": "pi5",
+     "decode_ms": 647.6,
+     "prefill_ms": 111.0,
+     "request_ms": {
+      "chat": 97107.0,
+      "long_prompt": 196565.0,
+      "long_answer": 345803.0
+     },
+     "min_margin_mib": 96,
+     "fits_engine_accounting": true
+    },
+    "long_prompt": {
+     "pipeline": "pi5 30 + jetson 2",
+     "head_on": "pi5",
+     "decode_ms": 647.6,
+     "prefill_ms": 111.0,
+     "request_ms": {
+      "chat": 97107.0,
+      "long_prompt": 196565.0,
+      "long_answer": 345803.0
+     },
+     "min_margin_mib": 96,
+     "fits_engine_accounting": true
+    },
+    "long_answer": {
+     "pipeline": "pi5 30 + jetson 2",
+     "head_on": "pi5",
+     "decode_ms": 647.6,
+     "prefill_ms": 111.0,
+     "request_ms": {
+      "chat": 97107.0,
+      "long_prompt": 196565.0,
+      "long_answer": 345803.0
+     },
+     "min_margin_mib": 96,
+     "fits_engine_accounting": true
+    }
+   },
+   "halda": [
+    {
+     "ring": [
+      "pi5",
+      "jetson"
+     ],
+     "halda_caps": {
+      "pi5": 30,
+      "jetson": 13
+     },
+     "removed": [],
+     "pipeline": "pi5 30 + jetson 2",
+     "head_on": "pi5",
+     "decode_ms": 647.6,
+     "prefill_ms": 111.0,
+     "request_ms": {
+      "chat": 97107.0,
+      "long_prompt": 196565.0,
+      "long_answer": 345803.0
+     },
+     "min_margin_mib": 96,
+     "fits_engine_accounting": true
+    }
+   ],
+   "headroom": {
+    "0": {
+     "engine_decode_ms": 647.6,
+     "engine_exact_decode_ms": 647.6,
+     "engine_exact_pipeline": "pi5 30 + jetson 2",
+     "engine_exact_min_margin_mib": 96,
+     "halda_best_decode_ms": 647.6
+    },
+    "1024": {
+     "engine_decode_ms": 698.8,
+     "engine_exact_decode_ms": 698.8,
+     "engine_exact_pipeline": "pi5 26 + jetson 6",
+     "engine_exact_min_margin_mib": 20,
+     "halda_best_decode_ms": 698.8
+    },
+    "2048": {
+     "engine_decode_ms": null,
+     "engine_exact_decode_ms": null,
+     "engine_exact_pipeline": null,
+     "engine_exact_min_margin_mib": null,
+     "halda_best_decode_ms": null
+    }
+   }
+  },
+  {
+   "model": "mistral7b",
+   "arch": "llama",
+   "prima_can_run": true,
+   "boards": [
+    "pi4",
+    "jetson"
+   ],
+   "host": "pi4",
+   "engine": {
+    "pipeline": "pi4 20 + jetson 12",
+    "head_on": "pi4",
+    "decode_ms": 1686.0,
+    "prefill_ms": 400.4,
+    "request_ms": {
+     "chat": 267058.0,
+     "long_prompt": 625790.0,
+     "long_answer": 914489.0
+    },
+    "min_margin_mib": 147,
+    "fits_engine_accounting": true
+   },
+   "engine_head_last": {
+    "pipeline": "pi4 21 + jetson 11",
+    "head_on": "jetson",
+    "decode_ms": 1699.5,
+    "prefill_ms": 415.5,
+    "request_ms": {
+     "chat": 270720.0,
+     "long_prompt": 643004.0,
+     "long_answer": 923331.0
+    },
+    "min_margin_mib": 178,
+    "fits_engine_accounting": true
+   },
+   "engine_exact": {
+    "pipeline": "pi4 20 + jetson 12",
+    "head_on": "pi4",
+    "decode_ms": 1686.0,
+    "prefill_ms": 400.4,
+    "request_ms": {
+     "chat": 267058.0,
+     "long_prompt": 625790.0,
+     "long_answer": 914489.0
+    },
+    "min_margin_mib": 147,
+    "fits_engine_accounting": true
+   },
+   "engine_default": {
+    "pipeline": "pi4 21 + jetson 11",
+    "head_on": "pi4",
+    "decode_ms": 1717.4,
+    "prefill_ms": 415.8,
+    "request_ms": {
+     "chat": 273049.0,
+     "long_prompt": 645572.0,
+     "long_answer": 932545.0
+    },
+    "min_margin_mib": 384,
+    "fits_engine_accounting": true
+   },
+   "engine_request": {
+    "chat": {
+     "pipeline": "pi4 20 + jetson 12",
+     "head_on": "pi4",
+     "decode_ms": 1686.0,
+     "prefill_ms": 400.4,
+     "request_ms": {
+      "chat": 267058.0,
+      "long_prompt": 625790.0,
+      "long_answer": 914489.0
+     },
+     "min_margin_mib": 147,
+     "fits_engine_accounting": true
+    },
+    "long_prompt": {
+     "pipeline": "pi4 20 + jetson 12",
+     "head_on": "pi4",
+     "decode_ms": 1686.0,
+     "prefill_ms": 400.4,
+     "request_ms": {
+      "chat": 267058.0,
+      "long_prompt": 625790.0,
+      "long_answer": 914489.0
+     },
+     "min_margin_mib": 147,
+     "fits_engine_accounting": true
+    },
+    "long_answer": {
+     "pipeline": "pi4 20 + jetson 12",
+     "head_on": "pi4",
+     "decode_ms": 1686.0,
+     "prefill_ms": 400.4,
+     "request_ms": {
+      "chat": 267058.0,
+      "long_prompt": 625790.0,
+      "long_answer": 914489.0
+     },
+     "min_margin_mib": 147,
+     "fits_engine_accounting": true
+    }
+   },
+   "halda": [
+    {
+     "ring": [
+      "pi4",
+      "jetson"
+     ],
+     "halda_caps": {
+      "pi4": 29,
+      "jetson": 13
+     },
+     "removed": [],
+     "pipeline": "pi4 19 + jetson 13",
+     "head_on": "pi4",
+     "decode_ms": 1654.6,
+     "prefill_ms": 385.0,
+     "request_ms": {
+      "chat": 261066.0,
+      "long_prompt": 606007.0,
+      "long_answer": 896433.0
+     },
+     "min_margin_mib": -90,
+     "fits_engine_accounting": false
+    }
+   ],
+   "headroom": {
+    "0": {
+     "engine_decode_ms": 1686.0,
+     "engine_exact_decode_ms": 1686.0,
+     "engine_exact_pipeline": "pi4 20 + jetson 12",
+     "engine_exact_min_margin_mib": 147,
+     "halda_best_decode_ms": null
+    },
+    "1024": {
+     "engine_decode_ms": 1811.7,
+     "engine_exact_decode_ms": 1811.7,
+     "engine_exact_pipeline": "pi4 24 + jetson 8",
+     "engine_exact_min_margin_mib": 71,
+     "halda_best_decode_ms": null
+    },
+    "2048": {
+     "engine_decode_ms": null,
+     "engine_exact_decode_ms": null,
+     "engine_exact_pipeline": null,
+     "engine_exact_min_margin_mib": null,
+     "halda_best_decode_ms": null
+    }
+   }
+  },
+  {
+   "model": "nemo12b",
+   "arch": "llama",
+   "prima_can_run": true,
+   "boards": [
+    "pi5",
+    "pi4",
+    "jetson"
+   ],
+   "host": "pi5",
+   "engine": {
+    "pipeline": "pi5 39 + jetson 1",
+    "head_on": "pi5",
+    "decode_ms": 631.6,
+    "prefill_ms": 139.5,
+    "request_ms": {
+     "chat": 98693.0,
+     "long_prompt": 223643.0,
+     "long_answer": 341223.0
+    },
+    "min_margin_mib": 120,
+    "fits_engine_accounting": true
+   },
+   "engine_head_last": {
+    "pipeline": "pi5 39 + jetson 1",
+    "head_on": "jetson",
+    "decode_ms": 665.9,
+    "prefill_ms": 139.4,
+    "request_ms": {
+     "chat": 103072.0,
+     "long_prompt": 227936.0,
+     "long_answer": 358776.0
+    },
+    "min_margin_mib": 177,
+    "fits_engine_accounting": true
+   },
+   "engine_exact": {
+    "pipeline": "pi5 39 + jetson 1",
+    "head_on": "pi5",
+    "decode_ms": 631.6,
+    "prefill_ms": 139.5,
+    "request_ms": {
+     "chat": 98693.0,
+     "long_prompt": 223643.0,
+     "long_answer": 341223.0
+    },
+    "min_margin_mib": 120,
+    "fits_engine_accounting": true
+   },
+   "engine_default": {
+    "pipeline": "pi5 38 + jetson 2",
+    "head_on": "pi5",
+    "decode_ms": 641.0,
+    "prefill_ms": 139.9,
+    "request_ms": {
+     "chat": 99948.0,
+     "long_prompt": 225280.0,
+     "long_answer": 346076.0
+    },
+    "min_margin_mib": 302,
+    "fits_engine_accounting": true
+   },
+   "engine_request": {
+    "chat": {
+     "pipeline": "pi5 39 + jetson 1",
+     "head_on": "pi5",
+     "decode_ms": 631.6,
+     "prefill_ms": 139.5,
+     "request_ms": {
+      "chat": 98693.0,
+      "long_prompt": 223643.0,
+      "long_answer": 341223.0
+     },
+     "min_margin_mib": 120,
+     "fits_engine_accounting": true
+    },
+    "long_prompt": {
+     "pipeline": "pi5 39 + jetson 1",
+     "head_on": "pi5",
+     "decode_ms": 631.6,
+     "prefill_ms": 139.5,
+     "request_ms": {
+      "chat": 98693.0,
+      "long_prompt": 223643.0,
+      "long_answer": 341223.0
+     },
+     "min_margin_mib": 120,
+     "fits_engine_accounting": true
+    },
+    "long_answer": {
+     "pipeline": "pi5 39 + jetson 1",
+     "head_on": "pi5",
+     "decode_ms": 631.6,
+     "prefill_ms": 139.5,
+     "request_ms": {
+      "chat": 98693.0,
+      "long_prompt": 223643.0,
+      "long_answer": 341223.0
+     },
+     "min_margin_mib": 120,
+     "fits_engine_accounting": true
+    }
+   },
+   "halda": [
+    {
+     "ring": [
+      "pi5",
+      "pi4",
+      "jetson"
+     ],
+     "halda_caps": {
+      "pi5": 39,
+      "pi4": 41,
+      "jetson": 18
+     },
+     "removed": [
+      "pi4",
+      "jetson"
+     ],
+     "infeasible": "the shares cannot fit in memory (pi5 cap 39): Halda would move devices into its disk-offload sets M1-M3, which need prima.cpp's prefetching runtime, outside this port"
+    },
+    {
+     "ring": [
+      "pi5",
+      "jetson",
+      "pi4"
+     ],
+     "halda_caps": {
+      "pi5": 39,
+      "jetson": 18,
+      "pi4": 41
+     },
+     "removed": [
+      "jetson",
+      "pi4"
+     ],
+     "infeasible": "the shares cannot fit in memory (pi5 cap 39): Halda would move devices into its disk-offload sets M1-M3, which need prima.cpp's prefetching runtime, outside this port"
+    }
+   ],
+   "headroom": {
+    "0": {
+     "engine_decode_ms": 631.6,
+     "engine_exact_decode_ms": 631.6,
+     "engine_exact_pipeline": "pi5 39 + jetson 1",
+     "engine_exact_min_margin_mib": 120,
+     "halda_best_decode_ms": null
+    },
+    "1024": {
+     "engine_decode_ms": 686.7,
+     "engine_exact_decode_ms": 678.5,
+     "engine_exact_pipeline": "pi5 34 + jetson 6",
+     "engine_exact_min_margin_mib": 4,
+     "halda_best_decode_ms": 686.7
+    },
+    "2048": {
+     "engine_decode_ms": 918.6,
+     "engine_exact_decode_ms": 918.6,
+     "engine_exact_pipeline": "pi5 27 + pi4 8 + jetson 5",
+     "engine_exact_min_margin_mib": 37,
+     "halda_best_decode_ms": null
+    }
+   }
+  },
+  {
+   "model": "nemo12b",
+   "arch": "llama",
+   "prima_can_run": true,
+   "boards": [
+    "pi5",
+    "pi4"
+   ],
+   "host": "pi5",
+   "engine": {
+    "pipeline": "pi5 39 + pi4 1",
+    "head_on": "pi5",
+    "decode_ms": 655.1,
+    "prefill_ms": 157.8,
+    "request_ms": {
+     "chat": 104042.0,
+     "long_prompt": 245391.0,
+     "long_answer": 355591.0
+    },
+    "min_margin_mib": 120,
+    "fits_engine_accounting": true
+   },
+   "engine_head_last": {
+    "pipeline": "pi5 39 + pi4 1",
+    "head_on": "pi4",
+    "decode_ms": 765.7,
+    "prefill_ms": 158.4,
+    "request_ms": {
+     "chat": 118280.0,
+     "long_prompt": 260182.0,
+     "long_answer": 412307.0
+    },
+    "min_margin_mib": 177,
+    "fits_engine_accounting": true
+   },
+   "engine_exact": {
+    "pipeline": "pi5 39 + pi4 1",
+    "head_on": "pi5",
+    "decode_ms": 655.1,
+    "prefill_ms": 157.8,
+    "request_ms": {
+     "chat": 104042.0,
+     "long_prompt": 245391.0,
+     "long_answer": 355591.0
+    },
+    "min_margin_mib": 120,
+    "fits_engine_accounting": true
+   },
+   "engine_default": {
+    "pipeline": "pi5 38 + pi4 2",
+    "head_on": "pi5",
+    "decode_ms": 688.6,
+    "prefill_ms": 176.5,
+    "request_ms": {
+     "chat": 110737.0,
+     "long_prompt": 268899.0,
+     "long_answer": 375165.0
+    },
+    "min_margin_mib": 302,
+    "fits_engine_accounting": true
+   },
+   "engine_request": {
+    "chat": {
+     "pipeline": "pi5 39 + pi4 1",
+     "head_on": "pi5",
+     "decode_ms": 655.1,
+     "prefill_ms": 157.8,
+     "request_ms": {
+      "chat": 104042.0,
+      "long_prompt": 245391.0,
+      "long_answer": 355591.0
+     },
+     "min_margin_mib": 120,
+     "fits_engine_accounting": true
+    },
+    "long_prompt": {
+     "pipeline": "pi5 39 + pi4 1",
+     "head_on": "pi5",
+     "decode_ms": 655.1,
+     "prefill_ms": 157.8,
+     "request_ms": {
+      "chat": 104042.0,
+      "long_prompt": 245391.0,
+      "long_answer": 355591.0
+     },
+     "min_margin_mib": 120,
+     "fits_engine_accounting": true
+    },
+    "long_answer": {
+     "pipeline": "pi5 39 + pi4 1",
+     "head_on": "pi5",
+     "decode_ms": 655.1,
+     "prefill_ms": 157.8,
+     "request_ms": {
+      "chat": 104042.0,
+      "long_prompt": 245391.0,
+      "long_answer": 355591.0
+     },
+     "min_margin_mib": 120,
+     "fits_engine_accounting": true
+    }
+   },
+   "halda": [
+    {
+     "ring": [
+      "pi5",
+      "pi4"
+     ],
+     "halda_caps": {
+      "pi5": 39,
+      "pi4": 41
+     },
+     "removed": [
+      "pi4"
+     ],
+     "infeasible": "the shares cannot fit in memory (pi5 cap 39): Halda would move devices into its disk-offload sets M1-M3, which need prima.cpp's prefetching runtime, outside this port"
+    }
+   ],
+   "headroom": {
+    "0": {
+     "engine_decode_ms": 655.1,
+     "engine_exact_decode_ms": 655.1,
+     "engine_exact_pipeline": "pi5 39 + pi4 1",
+     "engine_exact_min_margin_mib": 120,
+     "halda_best_decode_ms": null
+    },
+    "1024": {
+     "engine_decode_ms": 852.4,
+     "engine_exact_decode_ms": 822.8,
+     "engine_exact_pipeline": "pi5 34 + pi4 6",
+     "engine_exact_min_margin_mib": 4,
+     "halda_best_decode_ms": 852.4
+    },
+    "2048": {
+     "engine_decode_ms": 1038.0,
+     "engine_exact_decode_ms": 1038.0,
+     "engine_exact_pipeline": "pi5 27 + pi4 13",
+     "engine_exact_min_margin_mib": 155,
+     "halda_best_decode_ms": 1038.0
+    }
+   }
+  },
+  {
+   "model": "nemo12b",
+   "arch": "llama",
+   "prima_can_run": true,
+   "boards": [
+    "pi5",
+    "jetson"
+   ],
+   "host": "pi5",
+   "engine": {
+    "pipeline": "pi5 39 + jetson 1",
+    "head_on": "pi5",
+    "decode_ms": 631.6,
+    "prefill_ms": 139.5,
+    "request_ms": {
+     "chat": 98693.0,
+     "long_prompt": 223643.0,
+     "long_answer": 341223.0
+    },
+    "min_margin_mib": 120,
+    "fits_engine_accounting": true
+   },
+   "engine_head_last": {
+    "pipeline": "pi5 39 + jetson 1",
+    "head_on": "jetson",
+    "decode_ms": 665.9,
+    "prefill_ms": 139.4,
+    "request_ms": {
+     "chat": 103072.0,
+     "long_prompt": 227936.0,
+     "long_answer": 358776.0
+    },
+    "min_margin_mib": 177,
+    "fits_engine_accounting": true
+   },
+   "engine_exact": {
+    "pipeline": "pi5 39 + jetson 1",
+    "head_on": "pi5",
+    "decode_ms": 631.6,
+    "prefill_ms": 139.5,
+    "request_ms": {
+     "chat": 98693.0,
+     "long_prompt": 223643.0,
+     "long_answer": 341223.0
+    },
+    "min_margin_mib": 120,
+    "fits_engine_accounting": true
+   },
+   "engine_default": {
+    "pipeline": "pi5 38 + jetson 2",
+    "head_on": "pi5",
+    "decode_ms": 641.0,
+    "prefill_ms": 139.9,
+    "request_ms": {
+     "chat": 99948.0,
+     "long_prompt": 225280.0,
+     "long_answer": 346076.0
+    },
+    "min_margin_mib": 302,
+    "fits_engine_accounting": true
+   },
+   "engine_request": {
+    "chat": {
+     "pipeline": "pi5 39 + jetson 1",
+     "head_on": "pi5",
+     "decode_ms": 631.6,
+     "prefill_ms": 139.5,
+     "request_ms": {
+      "chat": 98693.0,
+      "long_prompt": 223643.0,
+      "long_answer": 341223.0
+     },
+     "min_margin_mib": 120,
+     "fits_engine_accounting": true
+    },
+    "long_prompt": {
+     "pipeline": "pi5 39 + jetson 1",
+     "head_on": "pi5",
+     "decode_ms": 631.6,
+     "prefill_ms": 139.5,
+     "request_ms": {
+      "chat": 98693.0,
+      "long_prompt": 223643.0,
+      "long_answer": 341223.0
+     },
+     "min_margin_mib": 120,
+     "fits_engine_accounting": true
+    },
+    "long_answer": {
+     "pipeline": "pi5 39 + jetson 1",
+     "head_on": "pi5",
+     "decode_ms": 631.6,
+     "prefill_ms": 139.5,
+     "request_ms": {
+      "chat": 98693.0,
+      "long_prompt": 223643.0,
+      "long_answer": 341223.0
+     },
+     "min_margin_mib": 120,
+     "fits_engine_accounting": true
+    }
+   },
+   "halda": [
+    {
+     "ring": [
+      "pi5",
+      "jetson"
+     ],
+     "halda_caps": {
+      "pi5": 39,
+      "jetson": 18
+     },
+     "removed": [
+      "jetson"
+     ],
+     "infeasible": "the shares cannot fit in memory (pi5 cap 39): Halda would move devices into its disk-offload sets M1-M3, which need prima.cpp's prefetching runtime, outside this port"
+    }
+   ],
+   "headroom": {
+    "0": {
+     "engine_decode_ms": 631.6,
+     "engine_exact_decode_ms": 631.6,
+     "engine_exact_pipeline": "pi5 39 + jetson 1",
+     "engine_exact_min_margin_mib": 120,
+     "halda_best_decode_ms": null
+    },
+    "1024": {
+     "engine_decode_ms": 686.7,
+     "engine_exact_decode_ms": 678.5,
+     "engine_exact_pipeline": "pi5 34 + jetson 6",
+     "engine_exact_min_margin_mib": 4,
+     "halda_best_decode_ms": 686.7
+    },
+    "2048": {
+     "engine_decode_ms": null,
+     "engine_exact_decode_ms": null,
+     "engine_exact_pipeline": null,
+     "engine_exact_min_margin_mib": null,
+     "halda_best_decode_ms": null
+    }
+   }
+  },
+  {
+   "model": "nemo12b",
+   "arch": "llama",
+   "prima_can_run": true,
+   "boards": [
+    "pi4",
+    "jetson"
+   ],
+   "host": "pi4",
+   "engine": {
+    "pipeline": "pi4 23 + jetson 17",
+    "head_on": "pi4",
+    "decode_ms": 1593.3,
+    "prefill_ms": 583.0,
+    "request_ms": {
+     "chat": 278562.0,
+     "long_prompt": 800909.0,
+     "long_answer": 890385.0
+    },
+    "min_margin_mib": 61,
+    "fits_engine_accounting": true
+   },
+   "engine_head_last": {
+    "pipeline": "pi4 29 + jetson 11",
+    "head_on": "jetson",
+    "decode_ms": 1653.7,
+    "prefill_ms": 693.3,
+    "request_ms": {
+     "chat": 300420.0,
+     "long_prompt": 921642.0,
+     "long_answer": 935444.0
+    },
+    "min_margin_mib": 80,
+    "fits_engine_accounting": true
+   },
+   "engine_exact": {
+    "pipeline": "pi4 23 + jetson 17",
+    "head_on": "pi4",
+    "decode_ms": 1593.3,
+    "prefill_ms": 583.0,
+    "request_ms": {
+     "chat": 278562.0,
+     "long_prompt": 800909.0,
+     "long_answer": 890385.0
+    },
+    "min_margin_mib": 61,
+    "fits_engine_accounting": true
+   },
+   "engine_default": {
+    "pipeline": "pi4 25 + jetson 15",
+    "head_on": "pi4",
+    "decode_ms": 1635.2,
+    "prefill_ms": 620.0,
+    "request_ms": {
+     "chat": 288675.0,
+     "long_prompt": 844224.0,
+     "long_answer": 916608.0
+    },
+    "min_margin_mib": 385,
+    "fits_engine_accounting": true
+   },
+   "engine_request": {
+    "chat": {
+     "pipeline": "pi4 23 + jetson 17",
+     "head_on": "pi4",
+     "decode_ms": 1593.3,
+     "prefill_ms": 583.0,
+     "request_ms": {
+      "chat": 278562.0,
+      "long_prompt": 800909.0,
+      "long_answer": 890385.0
+     },
+     "min_margin_mib": 61,
+     "fits_engine_accounting": true
+    },
+    "long_prompt": {
+     "pipeline": "pi4 23 + jetson 17",
+     "head_on": "pi4",
+     "decode_ms": 1593.3,
+     "prefill_ms": 583.0,
+     "request_ms": {
+      "chat": 278562.0,
+      "long_prompt": 800909.0,
+      "long_answer": 890385.0
+     },
+     "min_margin_mib": 61,
+     "fits_engine_accounting": true
+    },
+    "long_answer": {
+     "pipeline": "pi4 23 + jetson 17",
+     "head_on": "pi4",
+     "decode_ms": 1593.3,
+     "prefill_ms": 583.0,
+     "request_ms": {
+      "chat": 278562.0,
+      "long_prompt": 800909.0,
+      "long_answer": 890385.0
+     },
+     "min_margin_mib": 61,
+     "fits_engine_accounting": true
+    }
+   },
+   "halda": [
+    {
+     "ring": [
+      "pi4",
+      "jetson"
+     ],
+     "halda_caps": {
+      "pi4": 38,
+      "jetson": 18
+     },
+     "removed": [],
+     "pipeline": "pi4 22 + jetson 18",
+     "head_on": "pi4",
+     "decode_ms": 1569.5,
+     "prefill_ms": 564.4,
+     "request_ms": {
+      "chat": 273150.0,
+      "long_prompt": 778896.0,
+      "long_answer": 875854.0
+     },
+     "min_margin_mib": -121,
+     "fits_engine_accounting": false
+    }
+   ],
+   "headroom": {
+    "0": {
+     "engine_decode_ms": 1593.3,
+     "engine_exact_decode_ms": 1593.3,
+     "engine_exact_pipeline": "pi4 23 + jetson 17",
+     "engine_exact_min_margin_mib": 61,
+     "halda_best_decode_ms": null
+    },
+    "1024": {
+     "engine_decode_ms": 1724.7,
+     "engine_exact_decode_ms": 1724.7,
+     "engine_exact_pipeline": "pi4 29 + jetson 11",
+     "engine_exact_min_margin_mib": 49,
+     "halda_best_decode_ms": null
+    },
+    "2048": {
+     "engine_decode_ms": null,
+     "engine_exact_decode_ms": null,
+     "engine_exact_pipeline": null,
+     "engine_exact_min_margin_mib": null,
+     "halda_best_decode_ms": null
+    }
+   }
+  },
+  {
+   "model": "qwen3_14b",
+   "arch": "qwen3",
+   "prima_can_run": true,
+   "boards": [
+    "pi5",
+    "pi4",
+    "jetson"
+   ],
+   "host": "pi5",
+   "engine": {
+    "pipeline": "pi5 32 + jetson 8",
+    "head_on": "pi5",
+    "decode_ms": 838.7,
+    "prefill_ms": 172.5,
+    "request_ms": {
+     "chat": 129429.0,
+     "long_prompt": 283977.0,
+     "long_answer": 451482.0
+    },
+    "min_margin_mib": 213,
+    "fits_engine_accounting": true
+   },
+   "engine_head_last": {
+    "pipeline": "pi5 33 + jetson 7",
+    "head_on": "jetson",
+    "decode_ms": 868.4,
+    "prefill_ms": 171.9,
+    "request_ms": {
+     "chat": 133163.0,
+     "long_prompt": 287174.0,
+     "long_answer": 466646.0
+    },
+    "min_margin_mib": 89,
+    "fits_engine_accounting": true
+   },
+   "engine_exact": {
+    "pipeline": "pi5 33 + jetson 7",
+    "head_on": "pi5",
+    "decode_ms": 828.6,
+    "prefill_ms": 172.0,
+    "request_ms": {
+     "chat": 128079.0,
+     "long_prompt": 282163.0,
+     "long_answer": 446280.0
+    },
+    "min_margin_mib": 19,
+    "fits_engine_accounting": true
+   },
+   "engine_default": {
+    "pipeline": "pi5 31 + jetson 9",
+    "head_on": "pi5",
+    "decode_ms": 850.0,
+    "prefill_ms": 173.0,
+    "request_ms": {
+     "chat": 130947.0,
+     "long_prompt": 285959.0,
+     "long_answer": 457356.0
+    },
+    "min_margin_mib": 429,
+    "fits_engine_accounting": true
+   },
+   "engine_request": {
+    "chat": {
+     "pipeline": "pi5 32 + jetson 8",
+     "head_on": "pi5",
+     "decode_ms": 838.7,
+     "prefill_ms": 172.5,
+     "request_ms": {
+      "chat": 129429.0,
+      "long_prompt": 283977.0,
+      "long_answer": 451482.0
+     },
+     "min_margin_mib": 213,
+     "fits_engine_accounting": true
+    },
+    "long_prompt": {
+     "pipeline": "pi5 32 + jetson 8",
+     "head_on": "pi5",
+     "decode_ms": 838.7,
+     "prefill_ms": 172.5,
+     "request_ms": {
+      "chat": 129429.0,
+      "long_prompt": 283977.0,
+      "long_answer": 451482.0
+     },
+     "min_margin_mib": 213,
+     "fits_engine_accounting": true
+    },
+    "long_answer": {
+     "pipeline": "pi5 32 + jetson 8",
+     "head_on": "pi5",
+     "decode_ms": 838.7,
+     "prefill_ms": 172.5,
+     "request_ms": {
+      "chat": 129429.0,
+      "long_prompt": 283977.0,
+      "long_answer": 451482.0
+     },
+     "min_margin_mib": 213,
+     "fits_engine_accounting": true
+    }
+   },
+   "halda": [
+    {
+     "ring": [
+      "pi5",
+      "pi4",
+      "jetson"
+     ],
+     "halda_caps": {
+      "pi5": 32,
+      "pi4": 34,
+      "jetson": 15
+     },
+     "removed": [
+      "pi4"
+     ],
+     "pipeline": "pi5 32 + jetson 8",
+     "head_on": "pi5",
+     "decode_ms": 838.7,
+     "prefill_ms": 172.5,
+     "request_ms": {
+      "chat": 129429.0,
+      "long_prompt": 283977.0,
+      "long_answer": 451482.0
+     },
+     "min_margin_mib": 213,
+     "fits_engine_accounting": true
+    },
+    {
+     "ring": [
+      "pi5",
+      "jetson",
+      "pi4"
+     ],
+     "halda_caps": {
+      "pi5": 32,
+      "jetson": 15,
+      "pi4": 34
+     },
+     "removed": [
+      "pi4"
+     ],
+     "pipeline": "pi5 32 + jetson 8",
+     "head_on": "pi5",
+     "decode_ms": 838.7,
+     "prefill_ms": 172.5,
+     "request_ms": {
+      "chat": 129429.0,
+      "long_prompt": 283977.0,
+      "long_answer": 451482.0
+     },
+     "min_margin_mib": 213,
+     "fits_engine_accounting": true
+    }
+   ],
+   "headroom": {
+    "0": {
+     "engine_decode_ms": 838.7,
+     "engine_exact_decode_ms": 828.6,
+     "engine_exact_pipeline": "pi5 33 + jetson 7",
+     "engine_exact_min_margin_mib": 19,
+     "halda_best_decode_ms": 838.7
+    },
+    "1024": {
+     "engine_decode_ms": 999.1,
+     "engine_exact_decode_ms": 963.2,
+     "engine_exact_pipeline": "pi5 28 + pi4 3 + jetson 9",
+     "engine_exact_min_margin_mib": 8,
+     "halda_best_decode_ms": null
+    },
+    "2048": {
+     "engine_decode_ms": 1327.4,
+     "engine_exact_decode_ms": 1327.4,
+     "engine_exact_pipeline": "pi5 22 + pi4 14 + jetson 4",
+     "engine_exact_min_margin_mib": 68,
+     "halda_best_decode_ms": null
+    }
+   }
+  },
+  {
+   "model": "qwen3_14b",
+   "arch": "qwen3",
+   "prima_can_run": true,
+   "boards": [
+    "pi5",
+    "pi4"
+   ],
+   "host": "pi5",
+   "engine": {
+    "pipeline": "pi5 32 + pi4 8",
+    "head_on": "pi5",
+    "decode_ms": 1065.2,
+    "prefill_ms": 350.2,
+    "request_ms": {
+     "chat": 181168.0,
+     "long_prompt": 494927.0,
+     "long_answer": 590204.0
+    },
+    "min_margin_mib": 213,
+    "fits_engine_accounting": true
+   },
+   "engine_head_last": {
+    "pipeline": "pi5 33 + pi4 7",
+    "head_on": "pi4",
+    "decode_ms": 1157.6,
+    "prefill_ms": 328.2,
+    "request_ms": {
+     "chat": 190176.0,
+     "long_prompt": 484231.0,
+     "long_answer": 634679.0
+    },
+    "min_margin_mib": 89,
+    "fits_engine_accounting": true
+   },
+   "engine_exact": {
+    "pipeline": "pi5 33 + pi4 7",
+    "head_on": "pi5",
+    "decode_ms": 1029.3,
+    "prefill_ms": 327.4,
+    "request_ms": {
+     "chat": 173664.0,
+     "long_prompt": 467054.0,
+     "long_answer": 568918.0
+    },
+    "min_margin_mib": 19,
+    "fits_engine_accounting": true
+   },
+   "engine_default": {
+    "pipeline": "pi5 31 + pi4 9",
+    "head_on": "pi5",
+    "decode_ms": 1105.8,
+    "prefill_ms": 372.9,
+    "request_ms": {
+     "chat": 189273.0,
+     "long_prompt": 523402.0,
+     "long_answer": 613895.0
+    },
+    "min_margin_mib": 429,
+    "fits_engine_accounting": true
+   },
+   "engine_request": {
+    "chat": {
+     "pipeline": "pi5 32 + pi4 8",
+     "head_on": "pi5",
+     "decode_ms": 1065.2,
+     "prefill_ms": 350.2,
+     "request_ms": {
+      "chat": 181168.0,
+      "long_prompt": 494927.0,
+      "long_answer": 590204.0
+     },
+     "min_margin_mib": 213,
+     "fits_engine_accounting": true
+    },
+    "long_prompt": {
+     "pipeline": "pi5 33 + pi4 7",
+     "head_on": "pi4",
+     "decode_ms": 1157.6,
+     "prefill_ms": 328.2,
+     "request_ms": {
+      "chat": 190176.0,
+      "long_prompt": 484231.0,
+      "long_answer": 634679.0
+     },
+     "min_margin_mib": 89,
+     "fits_engine_accounting": true
+    },
+    "long_answer": {
+     "pipeline": "pi5 32 + pi4 8",
+     "head_on": "pi5",
+     "decode_ms": 1065.2,
+     "prefill_ms": 350.2,
+     "request_ms": {
+      "chat": 181168.0,
+      "long_prompt": 494927.0,
+      "long_answer": 590204.0
+     },
+     "min_margin_mib": 213,
+     "fits_engine_accounting": true
+    }
+   },
+   "halda": [
+    {
+     "ring": [
+      "pi5",
+      "pi4"
+     ],
+     "halda_caps": {
+      "pi5": 32,
+      "pi4": 34
+     },
+     "removed": [],
+     "pipeline": "pi5 32 + pi4 8",
+     "head_on": "pi5",
+     "decode_ms": 1065.2,
+     "prefill_ms": 350.2,
+     "request_ms": {
+      "chat": 181168.0,
+      "long_prompt": 494927.0,
+      "long_answer": 590204.0
+     },
+     "min_margin_mib": 213,
+     "fits_engine_accounting": true
+    }
+   ],
+   "headroom": {
+    "0": {
+     "engine_decode_ms": 1065.2,
+     "engine_exact_decode_ms": 1029.3,
+     "engine_exact_pipeline": "pi5 33 + pi4 7",
+     "engine_exact_min_margin_mib": 19,
+     "halda_best_decode_ms": 1065.2
+    },
+    "1024": {
+     "engine_decode_ms": 1254.0,
+     "engine_exact_decode_ms": 1218.2,
+     "engine_exact_pipeline": "pi5 28 + pi4 12",
+     "engine_exact_min_margin_mib": 8,
+     "halda_best_decode_ms": 1254.0
+    },
+    "2048": {
+     "engine_decode_ms": 1442.9,
+     "engine_exact_decode_ms": 1442.9,
+     "engine_exact_pipeline": "pi5 22 + pi4 18",
+     "engine_exact_min_margin_mib": 190,
+     "halda_best_decode_ms": 1442.9
+    }
+   }
+  },
+  {
+   "model": "qwen3_14b",
+   "arch": "qwen3",
+   "prima_can_run": true,
+   "boards": [
+    "pi5",
+    "jetson"
+   ],
+   "host": "pi5",
+   "engine": {
+    "pipeline": "pi5 32 + jetson 8",
+    "head_on": "pi5",
+    "decode_ms": 838.7,
+    "prefill_ms": 172.5,
+    "request_ms": {
+     "chat": 129429.0,
+     "long_prompt": 283977.0,
+     "long_answer": 451482.0
+    },
+    "min_margin_mib": 213,
+    "fits_engine_accounting": true
+   },
+   "engine_head_last": {
+    "pipeline": "pi5 33 + jetson 7",
+    "head_on": "jetson",
+    "decode_ms": 868.4,
+    "prefill_ms": 171.9,
+    "request_ms": {
+     "chat": 133163.0,
+     "long_prompt": 287174.0,
+     "long_answer": 466646.0
+    },
+    "min_margin_mib": 89,
+    "fits_engine_accounting": true
+   },
+   "engine_exact": {
+    "pipeline": "pi5 33 + jetson 7",
+    "head_on": "pi5",
+    "decode_ms": 828.6,
+    "prefill_ms": 172.0,
+    "request_ms": {
+     "chat": 128079.0,
+     "long_prompt": 282163.0,
+     "long_answer": 446280.0
+    },
+    "min_margin_mib": 19,
+    "fits_engine_accounting": true
+   },
+   "engine_default": {
+    "pipeline": "pi5 31 + jetson 9",
+    "head_on": "pi5",
+    "decode_ms": 850.0,
+    "prefill_ms": 173.0,
+    "request_ms": {
+     "chat": 130947.0,
+     "long_prompt": 285959.0,
+     "long_answer": 457356.0
+    },
+    "min_margin_mib": 429,
+    "fits_engine_accounting": true
+   },
+   "engine_request": {
+    "chat": {
+     "pipeline": "pi5 32 + jetson 8",
+     "head_on": "pi5",
+     "decode_ms": 838.7,
+     "prefill_ms": 172.5,
+     "request_ms": {
+      "chat": 129429.0,
+      "long_prompt": 283977.0,
+      "long_answer": 451482.0
+     },
+     "min_margin_mib": 213,
+     "fits_engine_accounting": true
+    },
+    "long_prompt": {
+     "pipeline": "pi5 32 + jetson 8",
+     "head_on": "pi5",
+     "decode_ms": 838.7,
+     "prefill_ms": 172.5,
+     "request_ms": {
+      "chat": 129429.0,
+      "long_prompt": 283977.0,
+      "long_answer": 451482.0
+     },
+     "min_margin_mib": 213,
+     "fits_engine_accounting": true
+    },
+    "long_answer": {
+     "pipeline": "pi5 32 + jetson 8",
+     "head_on": "pi5",
+     "decode_ms": 838.7,
+     "prefill_ms": 172.5,
+     "request_ms": {
+      "chat": 129429.0,
+      "long_prompt": 283977.0,
+      "long_answer": 451482.0
+     },
+     "min_margin_mib": 213,
+     "fits_engine_accounting": true
+    }
+   },
+   "halda": [
+    {
+     "ring": [
+      "pi5",
+      "jetson"
+     ],
+     "halda_caps": {
+      "pi5": 32,
+      "jetson": 15
+     },
+     "removed": [],
+     "pipeline": "pi5 32 + jetson 8",
+     "head_on": "pi5",
+     "decode_ms": 838.7,
+     "prefill_ms": 172.5,
+     "request_ms": {
+      "chat": 129429.0,
+      "long_prompt": 283977.0,
+      "long_answer": 451482.0
+     },
+     "min_margin_mib": 213,
+     "fits_engine_accounting": true
+    }
+   ],
+   "headroom": {
+    "0": {
+     "engine_decode_ms": 838.7,
+     "engine_exact_decode_ms": 828.6,
+     "engine_exact_pipeline": "pi5 33 + jetson 7",
+     "engine_exact_min_margin_mib": 19,
+     "halda_best_decode_ms": 838.7
+    },
+    "1024": {
+     "engine_decode_ms": null,
+     "engine_exact_decode_ms": null,
+     "engine_exact_pipeline": null,
+     "engine_exact_min_margin_mib": null,
+     "halda_best_decode_ms": null
+    },
+    "2048": {
+     "engine_decode_ms": null,
+     "engine_exact_decode_ms": null,
+     "engine_exact_pipeline": null,
+     "engine_exact_min_margin_mib": null,
+     "halda_best_decode_ms": null
+    }
+   }
+  },
+  {
+   "model": "qwen3_14b",
+   "arch": "qwen3",
+   "prima_can_run": true,
+   "boards": [
+    "pi4",
+    "jetson"
+   ],
+   "host": "pi4",
+   "engine": {
+    "pipeline": "pi4 26 + jetson 14",
+    "head_on": "pi4",
+    "decode_ms": 2000.5,
+    "prefill_ms": 773.5,
+    "request_ms": {
+     "chat": 355069.0,
+     "long_prompt": 1048137.0,
+     "long_answer": 1123245.0
+    },
+    "min_margin_mib": 90,
+    "fits_engine_accounting": true
+   },
+   "engine_head_last": {
+    "pipeline": "pi4 32 + jetson 8",
+    "head_on": "jetson",
+    "decode_ms": 2077.3,
+    "prefill_ms": 907.3,
+    "request_ms": {
+     "chat": 382030.0,
+     "long_prompt": 1194952.0,
+     "long_answer": 1179726.0
+    },
+    "min_margin_mib": 149,
+    "fits_engine_accounting": true
+   },
+   "engine_exact": {
+    "pipeline": "pi4 26 + jetson 14",
+    "head_on": "pi4",
+    "decode_ms": 2000.5,
+    "prefill_ms": 773.5,
+    "request_ms": {
+     "chat": 355069.0,
+     "long_prompt": 1048137.0,
+     "long_answer": 1123245.0
+    },
+    "min_margin_mib": 90,
+    "fits_engine_accounting": true
+   },
+   "engine_default": {
+    "pipeline": "pi4 27 + jetson 13",
+    "head_on": "pi4",
+    "decode_ms": 2025.9,
+    "prefill_ms": 796.0,
+    "request_ms": {
+     "chat": 361195.0,
+     "long_prompt": 1074376.0,
+     "long_answer": 1139130.0
+    },
+    "min_margin_mib": 284,
+    "fits_engine_accounting": true
+   },
+   "engine_request": {
+    "chat": {
+     "pipeline": "pi4 26 + jetson 14",
+     "head_on": "pi4",
+     "decode_ms": 2000.5,
+     "prefill_ms": 773.5,
+     "request_ms": {
+      "chat": 355069.0,
+      "long_prompt": 1048137.0,
+      "long_answer": 1123245.0
+     },
+     "min_margin_mib": 90,
+     "fits_engine_accounting": true
+    },
+    "long_prompt": {
+     "pipeline": "pi4 26 + jetson 14",
+     "head_on": "pi4",
+     "decode_ms": 2000.5,
+     "prefill_ms": 773.5,
+     "request_ms": {
+      "chat": 355069.0,
+      "long_prompt": 1048137.0,
+      "long_answer": 1123245.0
+     },
+     "min_margin_mib": 90,
+     "fits_engine_accounting": true
+    },
+    "long_answer": {
+     "pipeline": "pi4 26 + jetson 14",
+     "head_on": "pi4",
+     "decode_ms": 2000.5,
+     "prefill_ms": 773.5,
+     "request_ms": {
+      "chat": 355069.0,
+      "long_prompt": 1048137.0,
+      "long_answer": 1123245.0
+     },
+     "min_margin_mib": 90,
+     "fits_engine_accounting": true
+    }
+   },
+   "halda": [
+    {
+     "ring": [
+      "pi4",
+      "jetson"
+     ],
+     "halda_caps": {
+      "pi4": 31,
+      "jetson": 15
+     },
+     "removed": [],
+     "pipeline": "pi4 25 + jetson 15",
+     "head_on": "pi4",
+     "decode_ms": 1971.7,
+     "prefill_ms": 751.1,
+     "request_ms": {
+      "chat": 348517.0,
+      "long_prompt": 1021472.0,
+      "long_answer": 1105657.0
+     },
+     "min_margin_mib": -126,
+     "fits_engine_accounting": false
+    }
+   ],
+   "headroom": {
+    "0": {
+     "engine_decode_ms": 2000.5,
+     "engine_exact_decode_ms": 2000.5,
+     "engine_exact_pipeline": "pi4 26 + jetson 14",
+     "engine_exact_min_margin_mib": 90,
+     "halda_best_decode_ms": null
+    },
+    "1024": {
+     "engine_decode_ms": null,
+     "engine_exact_decode_ms": null,
+     "engine_exact_pipeline": null,
+     "engine_exact_min_margin_mib": null,
+     "halda_best_decode_ms": null
+    },
+    "2048": {
+     "engine_decode_ms": null,
+     "engine_exact_decode_ms": null,
+     "engine_exact_pipeline": null,
+     "engine_exact_min_margin_mib": null,
+     "halda_best_decode_ms": null
+    }
+   }
+  },
+  {
+   "model": "qwen3moe",
+   "arch": "qwen3moe",
+   "prima_can_run": false,
+   "boards": [
+    "pi5",
+    "pi4",
+    "jetson"
+   ],
+   "host": "pi4",
+   "engine": {
+    "pipeline": "pi4 15 + jetson 9 + pi5 24",
+    "head_on": "pi5",
+    "decode_ms": 273.7,
+    "prefill_ms": 133.7,
+    "request_ms": {
+     "chat": 52141.0,
+     "long_prompt": 171914.0,
+     "long_answer": 157233.0
+    },
+    "min_margin_mib": 202,
+    "fits_engine_accounting": true
+   },
+   "engine_head_last": {
+    "pipeline": "pi4 15 + jetson 9 + pi5 24",
+    "head_on": "pi5",
+    "decode_ms": 273.7,
+    "prefill_ms": 133.7,
+    "request_ms": {
+     "chat": 52141.0,
+     "long_prompt": 171914.0,
+     "long_answer": 157233.0
+    },
+    "min_margin_mib": 202,
+    "fits_engine_accounting": true
+   },
+   "engine_exact": {
+    "pipeline": "pi4 14 + jetson 10 + pi5 24",
+    "head_on": "pi5",
+    "decode_ms": 272.6,
+    "prefill_ms": 128.8,
+    "request_ms": {
+     "chat": 51373.0,
+     "long_prompt": 166754.0,
+     "long_answer": 156042.0
+    },
+    "min_margin_mib": 10,
+    "fits_engine_accounting": true
+   },
+   "engine_default": {
+    "pipeline": "pi4 16 + jetson 9 + pi5 23",
+    "head_on": "pi5",
+    "decode_ms": 279.4,
+    "prefill_ms": 137.8,
+    "request_ms": {
+     "chat": 53398.0,
+     "long_prompt": 176886.0,
+     "long_answer": 160671.0
+    },
+    "min_margin_mib": 298,
+    "fits_engine_accounting": true
+   },
+   "engine_request": {
+    "chat": {
+     "pipeline": "pi4 15 + jetson 9 + pi5 24",
+     "head_on": "pi5",
+     "decode_ms": 273.7,
+     "prefill_ms": 133.7,
+     "request_ms": {
+      "chat": 52141.0,
+      "long_prompt": 171914.0,
+      "long_answer": 157233.0
+     },
+     "min_margin_mib": 202,
+     "fits_engine_accounting": true
+    },
+    "long_prompt": {
+     "pipeline": "pi4 15 + jetson 9 + pi5 24",
+     "head_on": "pi5",
+     "decode_ms": 273.7,
+     "prefill_ms": 133.7,
+     "request_ms": {
+      "chat": 52141.0,
+      "long_prompt": 171914.0,
+      "long_answer": 157233.0
+     },
+     "min_margin_mib": 202,
+     "fits_engine_accounting": true
+    },
+    "long_answer": {
+     "pipeline": "pi4 15 + jetson 9 + pi5 24",
+     "head_on": "pi5",
+     "decode_ms": 273.7,
+     "prefill_ms": 133.7,
+     "request_ms": {
+      "chat": 52141.0,
+      "long_prompt": 171914.0,
+      "long_answer": 157233.0
+     },
+     "min_margin_mib": 202,
+     "fits_engine_accounting": true
+    }
+   },
+   "halda": [
+    {
+     "ring": [
+      "pi4",
+      "pi5",
+      "jetson"
+     ],
+     "halda_caps": {
+      "pi4": 23,
+      "pi5": 25,
+      "jetson": 11
+     },
+     "removed": [],
+     "pipeline": "pi4 12 + pi5 25 + jetson 11",
+     "head_on": "pi4",
+     "decode_ms": 311.9,
+     "prefill_ms": 120.1,
+     "request_ms": {
+      "chat": 55287.0,
+      "long_prompt": 162869.0,
+      "long_answer": 175039.0
+     },
+     "min_margin_mib": -281,
+     "fits_engine_accounting": false
+    },
+    {
+     "ring": [
+      "pi4",
+      "jetson",
+      "pi5"
+     ],
+     "halda_caps": {
+      "pi4": 23,
+      "jetson": 11,
+      "pi5": 25
+     },
+     "removed": [],
+     "pipeline": "pi4 12 + jetson 11 + pi5 25",
+     "head_on": "pi4",
+     "decode_ms": 311.9,
+     "prefill_ms": 120.1,
+     "request_ms": {
+      "chat": 55287.0,
+      "long_prompt": 162869.0,
+      "long_answer": 175039.0
+     },
+     "min_margin_mib": -281,
+     "fits_engine_accounting": false
+    }
+   ],
+   "headroom": {
+    "0": {
+     "engine_decode_ms": 273.7,
+     "engine_exact_decode_ms": 272.6,
+     "engine_exact_pipeline": "pi4 14 + jetson 10 + pi5 24",
+     "engine_exact_min_margin_mib": 10,
+     "halda_best_decode_ms": null
+    },
+    "1024": {
+     "engine_decode_ms": 294.0,
+     "engine_exact_decode_ms": 294.0,
+     "engine_exact_pipeline": "pi4 21 + jetson 6 + pi5 21",
+     "engine_exact_min_margin_mib": 51,
+     "halda_best_decode_ms": null
+    },
+    "2048": {
+     "engine_decode_ms": null,
+     "engine_exact_decode_ms": null,
+     "engine_exact_pipeline": null,
+     "engine_exact_min_margin_mib": null,
+     "halda_best_decode_ms": null
+    }
+   }
+  },
+  {
+   "model": "qwen3moe",
+   "arch": "qwen3moe",
+   "prima_can_run": false,
+   "boards": [
+    "pi5",
+    "pi4"
+   ],
+   "host": "pi4",
+   "engine": {
+    "pipeline": "pi4 24 + pi5 24",
+    "head_on": "pi5",
+    "decode_ms": 282.2,
+    "prefill_ms": 177.6,
+    "request_ms": {
+     "chat": 58863.0,
+     "long_prompt": 218024.0,
+     "long_answer": 167241.0
+    },
+    "min_margin_mib": 202,
+    "fits_engine_accounting": true
+   },
+   "engine_head_last": {
+    "pipeline": "pi4 24 + pi5 24",
+    "head_on": "pi5",
+    "decode_ms": 282.2,
+    "prefill_ms": 177.6,
+    "request_ms": {
+     "chat": 58863.0,
+     "long_prompt": 218024.0,
+     "long_answer": 167241.0
+    },
+    "min_margin_mib": 202,
+    "fits_engine_accounting": true
+   },
+   "engine_exact": {
+    "pipeline": "pi4 24 + pi5 24",
+    "head_on": "pi5",
+    "decode_ms": 282.2,
+    "prefill_ms": 177.6,
+    "request_ms": {
+     "chat": 58863.0,
+     "long_prompt": 218024.0,
+     "long_answer": 167241.0
+    },
+    "min_margin_mib": 202,
+    "fits_engine_accounting": true
+   },
+   "engine_default": {
+    "infeasible": "no subset of the cluster can hold qwen3-30b-a3b-q3_k_m: it needs 48 layers x 292.5 MB = 13.7 GB, and the cluster can hold 48 layers (13.7 GB). The raw memory sum is 14.7 GB, but each participating nod"
+   },
+   "engine_request": {
+    "chat": {
+     "pipeline": "pi4 24 + pi5 24",
+     "head_on": "pi5",
+     "decode_ms": 282.2,
+     "prefill_ms": 177.6,
+     "request_ms": {
+      "chat": 58863.0,
+      "long_prompt": 218024.0,
+      "long_answer": 167241.0
+     },
+     "min_margin_mib": 202,
+     "fits_engine_accounting": true
+    },
+    "long_prompt": {
+     "pipeline": "pi4 24 + pi5 24",
+     "head_on": "pi5",
+     "decode_ms": 282.2,
+     "prefill_ms": 177.6,
+     "request_ms": {
+      "chat": 58863.0,
+      "long_prompt": 218024.0,
+      "long_answer": 167241.0
+     },
+     "min_margin_mib": 202,
+     "fits_engine_accounting": true
+    },
+    "long_answer": {
+     "pipeline": "pi4 24 + pi5 24",
+     "head_on": "pi5",
+     "decode_ms": 282.2,
+     "prefill_ms": 177.6,
+     "request_ms": {
+      "chat": 58863.0,
+      "long_prompt": 218024.0,
+      "long_answer": 167241.0
+     },
+     "min_margin_mib": 202,
+     "fits_engine_accounting": true
+    }
+   },
+   "halda": [
+    {
+     "ring": [
+      "pi4",
+      "pi5"
+     ],
+     "halda_caps": {
+      "pi4": 23,
+      "pi5": 25
+     },
+     "removed": [],
+     "pipeline": "pi4 23 + pi5 25",
+     "head_on": "pi4",
+     "decode_ms": 322.6,
+     "prefill_ms": 173.8,
+     "request_ms": {
+      "chat": 63546.0,
+      "long_prompt": 219300.0,
+      "long_answer": 187430.0
+     },
+     "min_margin_mib": 154,
+     "fits_engine_accounting": true
+    }
+   ],
+   "headroom": {
+    "0": {
+     "engine_decode_ms": 282.2,
+     "engine_exact_decode_ms": 282.2,
+     "engine_exact_pipeline": "pi4 24 + pi5 24",
+     "engine_exact_min_margin_mib": 202,
+     "halda_best_decode_ms": 322.6
+    },
+    "1024": {
+     "engine_decode_ms": null,
+     "engine_exact_decode_ms": null,
+     "engine_exact_pipeline": null,
+     "engine_exact_min_margin_mib": null,
+     "halda_best_decode_ms": null
+    },
+    "2048": {
+     "engine_decode_ms": null,
+     "engine_exact_decode_ms": null,
+     "engine_exact_pipeline": null,
+     "engine_exact_min_margin_mib": null,
+     "halda_best_decode_ms": null
+    }
+   }
+  },
+  {
+   "model": "qwen3moe",
+   "arch": "qwen3moe",
+   "prima_can_run": false,
+   "boards": [
+    "pi5",
+    "jetson"
+   ],
+   "host": "pi5",
+   "engine": {
+    "infeasible": "no subset of the cluster can hold qwen3-30b-a3b-q3_k_m: it needs 48 layers x 292.5 MB = 13.7 GB, and the cluster can hold 35 layers (10.0 GB). The raw memory sum is 10.9 GB, but each participating nod"
+   },
+   "engine_head_last": {
+    "infeasible": "no subset of the cluster can hold qwen3-30b-a3b-q3_k_m: it needs 48 layers x 292.5 MB = 13.7 GB, and the cluster can hold 35 layers (10.0 GB). The raw memory sum is 10.9 GB, but each participating nod"
+   },
+   "engine_exact": {
+    "infeasible": "no subset of the cluster can hold qwen3-30b-a3b-q3_k_m: it needs 48 layers x 292.5 MB = 13.7 GB, and the cluster can hold 35 layers (10.0 GB). The raw memory sum is 10.9 GB, but each participating nod"
+   },
+   "engine_default": {
+    "infeasible": "no subset of the cluster can hold qwen3-30b-a3b-q3_k_m: it needs 48 layers x 292.5 MB = 13.7 GB, and the cluster can hold 33 layers (9.4 GB). The raw memory sum is 10.9 GB, but each participating node"
+   },
+   "engine_request": {
+    "chat": {
+     "infeasible": "no subset of the cluster can hold qwen3-30b-a3b-q3_k_m: it needs 48 layers x 292.5 MB = 13.7 GB, and the cluster can hold 35 layers (10.0 GB). The raw memory sum is 10.9 GB, but each participating nod"
+    },
+    "long_prompt": {
+     "infeasible": "no subset of the cluster can hold qwen3-30b-a3b-q3_k_m: it needs 48 layers x 292.5 MB = 13.7 GB, and the cluster can hold 35 layers (10.0 GB). The raw memory sum is 10.9 GB, but each participating nod"
+    },
+    "long_answer": {
+     "infeasible": "no subset of the cluster can hold qwen3-30b-a3b-q3_k_m: it needs 48 layers x 292.5 MB = 13.7 GB, and the cluster can hold 35 layers (10.0 GB). The raw memory sum is 10.9 GB, but each participating nod"
+    }
+   },
+   "halda": [
+    {
+     "ring": [
+      "pi5",
+      "jetson"
+     ],
+     "halda_caps": {
+      "pi5": 24,
+      "jetson": 11
+     },
+     "removed": [],
+     "infeasible": "the shares cannot fit in memory (pi5 cap 24, jetson cap 11): Halda would move devices into its disk-offload sets M1-M3, which need prima.cpp's prefetching runtime, outside this port"
+    }
+   ],
+   "headroom": {
+    "0": {
+     "engine_decode_ms": null,
+     "engine_exact_decode_ms": null,
+     "engine_exact_pipeline": null,
+     "engine_exact_min_margin_mib": null,
+     "halda_best_decode_ms": null
+    },
+    "1024": {
+     "engine_decode_ms": null,
+     "engine_exact_decode_ms": null,
+     "engine_exact_pipeline": null,
+     "engine_exact_min_margin_mib": null,
+     "halda_best_decode_ms": null
+    },
+    "2048": {
+     "engine_decode_ms": null,
+     "engine_exact_decode_ms": null,
+     "engine_exact_pipeline": null,
+     "engine_exact_min_margin_mib": null,
+     "halda_best_decode_ms": null
+    }
+   }
+  },
+  {
+   "model": "qwen3moe",
+   "arch": "qwen3moe",
+   "prima_can_run": false,
+   "boards": [
+    "pi4",
+    "jetson"
+   ],
+   "host": "pi4",
+   "engine": {
+    "infeasible": "no subset of the cluster can hold qwen3-30b-a3b-q3_k_m: it needs 48 layers x 292.5 MB = 13.7 GB, and the cluster can hold 34 layers (9.7 GB). The raw memory sum is 10.7 GB, but each participating node"
+   },
+   "engine_head_last": {
+    "infeasible": "no subset of the cluster can hold qwen3-30b-a3b-q3_k_m: it needs 48 layers x 292.5 MB = 13.7 GB, and the cluster can hold 34 layers (9.7 GB). The raw memory sum is 10.7 GB, but each participating node"
+   },
+   "engine_exact": {
+    "infeasible": "no subset of the cluster can hold qwen3-30b-a3b-q3_k_m: it needs 48 layers x 292.5 MB = 13.7 GB, and the cluster can hold 34 layers (9.7 GB). The raw memory sum is 10.7 GB, but each participating node"
+   },
+   "engine_default": {
+    "infeasible": "no subset of the cluster can hold qwen3-30b-a3b-q3_k_m: it needs 48 layers x 292.5 MB = 13.7 GB, and the cluster can hold 33 layers (9.4 GB). The raw memory sum is 10.7 GB, but each participating node"
+   },
+   "engine_request": {
+    "chat": {
+     "infeasible": "no subset of the cluster can hold qwen3-30b-a3b-q3_k_m: it needs 48 layers x 292.5 MB = 13.7 GB, and the cluster can hold 34 layers (9.7 GB). The raw memory sum is 10.7 GB, but each participating node"
+    },
+    "long_prompt": {
+     "infeasible": "no subset of the cluster can hold qwen3-30b-a3b-q3_k_m: it needs 48 layers x 292.5 MB = 13.7 GB, and the cluster can hold 34 layers (9.7 GB). The raw memory sum is 10.7 GB, but each participating node"
+    },
+    "long_answer": {
+     "infeasible": "no subset of the cluster can hold qwen3-30b-a3b-q3_k_m: it needs 48 layers x 292.5 MB = 13.7 GB, and the cluster can hold 34 layers (9.7 GB). The raw memory sum is 10.7 GB, but each participating node"
+    }
+   },
+   "halda": [
+    {
+     "ring": [
+      "pi4",
+      "jetson"
+     ],
+     "halda_caps": {
+      "pi4": 23,
+      "jetson": 11
+     },
+     "removed": [],
+     "infeasible": "the shares cannot fit in memory (pi4 cap 23, jetson cap 11): Halda would move devices into its disk-offload sets M1-M3, which need prima.cpp's prefetching runtime, outside this port"
+    }
+   ],
+   "headroom": {
+    "0": {
+     "engine_decode_ms": null,
+     "engine_exact_decode_ms": null,
+     "engine_exact_pipeline": null,
+     "engine_exact_min_margin_mib": null,
+     "halda_best_decode_ms": null
+    },
+    "1024": {
+     "engine_decode_ms": null,
+     "engine_exact_decode_ms": null,
+     "engine_exact_pipeline": null,
+     "engine_exact_min_margin_mib": null,
+     "halda_best_decode_ms": null
+    },
+    "2048": {
+     "engine_decode_ms": null,
+     "engine_exact_decode_ms": null,
+     "engine_exact_pipeline": null,
+     "engine_exact_min_margin_mib": null,
+     "halda_best_decode_ms": null
+    }
+   }
+  },
+  {
+   "model": "qwen38_27b",
+   "arch": "qwen35",
+   "prima_can_run": false,
+   "boards": [
+    "pi5",
+    "pi4",
+    "jetson"
+   ],
+   "host": "pi4",
+   "engine": {
+    "pipeline": "pi4 11 + pi5 39 + jetson 15",
+    "head_on": "pi4",
+    "decode_ms": 2101.4,
+    "prefill_ms": 932.8,
+    "request_ms": {
+     "chat": 388385.0,
+     "long_prompt": 1224202.0,
+     "long_answer": 1195331.0
+    },
+    "min_margin_mib": 86,
+    "fits_engine_accounting": true
+   },
+   "engine_head_last": {
+    "pipeline": "pi4 16 + jetson 15 + pi5 34",
+    "head_on": "pi5",
+    "decode_ms": 2133.1,
+    "prefill_ms": 1065.1,
+    "request_ms": {
+     "chat": 409380.0,
+     "long_prompt": 1363753.0,
+     "long_answer": 1228503.0
+    },
+    "min_margin_mib": 278,
+    "fits_engine_accounting": true
+   },
+   "engine_exact": {
+    "pipeline": "pi4 18 + pi5 41 + jetson 6",
+    "head_on": "jetson",
+    "decode_ms": 2083.9,
+    "prefill_ms": 1171.1,
+    "request_ms": {
+     "chat": 416642.0,
+     "long_prompt": 1465992.0,
+     "long_answer": 1216846.0
+    },
+    "min_margin_mib": 24,
+    "fits_engine_accounting": true
+   },
+   "engine_default": {
+    "pipeline": "pi4 12 + pi5 39 + jetson 14",
+    "head_on": "pi4",
+    "decode_ms": 2112.3,
+    "prefill_ms": 965.7,
+    "request_ms": {
+     "chat": 393984.0,
+     "long_prompt": 1259233.0,
+     "long_answer": 1205115.0
+    },
+    "min_margin_mib": 268,
+    "fits_engine_accounting": true
+   },
+   "engine_request": {
+    "chat": {
+     "pipeline": "pi4 11 + pi5 39 + jetson 15",
+     "head_on": "pi4",
+     "decode_ms": 2101.4,
+     "prefill_ms": 932.8,
+     "request_ms": {
+      "chat": 388385.0,
+      "long_prompt": 1224202.0,
+      "long_answer": 1195331.0
+     },
+     "min_margin_mib": 86,
+     "fits_engine_accounting": true
+    },
+    "long_prompt": {
+     "pipeline": "pi4 11 + pi5 39 + jetson 15",
+     "head_on": "pi4",
+     "decode_ms": 2101.4,
+     "prefill_ms": 932.8,
+     "request_ms": {
+      "chat": 388385.0,
+      "long_prompt": 1224202.0,
+      "long_answer": 1195331.0
+     },
+     "min_margin_mib": 86,
+     "fits_engine_accounting": true
+    },
+    "long_answer": {
+     "pipeline": "pi4 11 + pi5 39 + jetson 15",
+     "head_on": "pi4",
+     "decode_ms": 2101.4,
+     "prefill_ms": 932.8,
+     "request_ms": {
+      "chat": 388385.0,
+      "long_prompt": 1224202.0,
+      "long_answer": 1195331.0
+     },
+     "min_margin_mib": 86,
+     "fits_engine_accounting": true
+    }
+   },
+   "halda": [
+    {
+     "ring": [
+      "pi4",
+      "pi5",
+      "jetson"
+     ],
+     "halda_caps": {
+      "pi4": 33,
+      "pi5": 39,
+      "jetson": 17
+     },
+     "removed": [],
+     "pipeline": "pi4 9 + pi5 39 + jetson 17",
+     "head_on": "pi4",
+     "decode_ms": 2078.6,
+     "prefill_ms": 867.1,
+     "request_ms": {
+      "chat": 377056.0,
+      "long_prompt": 1154012.0,
+      "long_answer": 1175242.0
+     },
+     "min_margin_mib": -280,
+     "fits_engine_accounting": false
+    },
+    {
+     "ring": [
+      "pi4",
+      "jetson",
+      "pi5"
+     ],
+     "halda_caps": {
+      "pi4": 33,
+      "jetson": 17,
+      "pi5": 39
+     },
+     "removed": [],
+     "pipeline": "pi4 9 + jetson 17 + pi5 39",
+     "head_on": "pi4",
+     "decode_ms": 2108.3,
+     "prefill_ms": 862.1,
+     "request_ms": {
+      "chat": 380210.0,
+      "long_prompt": 1152622.0,
+      "long_answer": 1189806.0
+     },
+     "min_margin_mib": -227,
+     "fits_engine_accounting": false
+    }
+   ],
+   "headroom": {
+    "0": {
+     "engine_decode_ms": 2101.4,
+     "engine_exact_decode_ms": 2083.9,
+     "engine_exact_pipeline": "pi4 18 + pi5 41 + jetson 6",
+     "engine_exact_min_margin_mib": 24,
+     "halda_best_decode_ms": null
+    },
+    "1024": {
+     "engine_decode_ms": 2338.0,
+     "engine_exact_decode_ms": 2297.4,
+     "engine_exact_pipeline": "pi4 21 + pi5 35 + jetson 9",
+     "engine_exact_min_margin_mib": 87,
+     "halda_best_decode_ms": null
+    },
+    "2048": {
+     "engine_decode_ms": null,
+     "engine_exact_decode_ms": null,
+     "engine_exact_pipeline": null,
+     "engine_exact_min_margin_mib": null,
+     "halda_best_decode_ms": null
+    }
+   }
+  },
+  {
+   "model": "qwen38_27b",
+   "arch": "qwen35",
+   "prima_can_run": false,
+   "boards": [
+    "pi5",
+    "pi4"
+   ],
+   "host": "pi4",
+   "engine": {
+    "pipeline": "pi4 26 + pi5 39",
+    "head_on": "pi4",
+    "decode_ms": 2227.0,
+    "prefill_ms": 1420.1,
+    "request_ms": {
+     "chat": 466833.0,
+     "long_prompt": 1739240.0,
+     "long_answer": 1322016.0
+    },
+    "min_margin_mib": 216,
+    "fits_engine_accounting": true
+   },
+   "engine_head_last": {
+    "pipeline": "pi4 31 + pi5 34",
+    "head_on": "pi5",
+    "decode_ms": 2231.4,
+    "prefill_ms": 1557.5,
+    "request_ms": {
+     "chat": 484983.0,
+     "long_prompt": 1880490.0,
+     "long_answer": 1341859.0
+    },
+    "min_margin_mib": 278,
+    "fits_engine_accounting": true
+   },
+   "engine_exact": {
+    "pipeline": "pi4 25 + pi5 40",
+    "head_on": "pi4",
+    "decode_ms": 2192.8,
+    "prefill_ms": 1392.3,
+    "request_ms": {
+     "chat": 458895.0,
+     "long_prompt": 1706415.0,
+     "long_answer": 1300928.0
+    },
+    "min_margin_mib": 37,
+    "fits_engine_accounting": true
+   },
+   "engine_default": {
+    "pipeline": "pi4 31 + pi5 34",
+    "head_on": "pi5",
+    "decode_ms": 2231.4,
+    "prefill_ms": 1557.5,
+    "request_ms": {
+     "chat": 484983.0,
+     "long_prompt": 1880490.0,
+     "long_answer": 1341859.0
+    },
+    "min_margin_mib": 278,
+    "fits_engine_accounting": true
+   },
+   "engine_request": {
+    "chat": {
+     "pipeline": "pi4 26 + pi5 39",
+     "head_on": "pi4",
+     "decode_ms": 2227.0,
+     "prefill_ms": 1420.1,
+     "request_ms": {
+      "chat": 466833.0,
+      "long_prompt": 1739240.0,
+      "long_answer": 1322016.0
+     },
+     "min_margin_mib": 216,
+     "fits_engine_accounting": true
+    },
+    "long_prompt": {
+     "pipeline": "pi4 26 + pi5 39",
+     "head_on": "pi4",
+     "decode_ms": 2227.0,
+     "prefill_ms": 1420.1,
+     "request_ms": {
+      "chat": 466833.0,
+      "long_prompt": 1739240.0,
+      "long_answer": 1322016.0
+     },
+     "min_margin_mib": 216,
+     "fits_engine_accounting": true
+    },
+    "long_answer": {
+     "pipeline": "pi4 26 + pi5 39",
+     "head_on": "pi4",
+     "decode_ms": 2227.0,
+     "prefill_ms": 1420.1,
+     "request_ms": {
+      "chat": 466833.0,
+      "long_prompt": 1739240.0,
+      "long_answer": 1322016.0
+     },
+     "min_margin_mib": 216,
+     "fits_engine_accounting": true
+    }
+   },
+   "halda": [
+    {
+     "ring": [
+      "pi4",
+      "pi5"
+     ],
+     "halda_caps": {
+      "pi4": 33,
+      "pi5": 39
+     },
+     "removed": [],
+     "pipeline": "pi4 26 + pi5 39",
+     "head_on": "pi4",
+     "decode_ms": 2227.0,
+     "prefill_ms": 1420.1,
+     "request_ms": {
+      "chat": 466833.0,
+      "long_prompt": 1739240.0,
+      "long_answer": 1322016.0
+     },
+     "min_margin_mib": 216,
+     "fits_engine_accounting": true
+    }
+   ],
+   "headroom": {
+    "0": {
+     "engine_decode_ms": 2227.0,
+     "engine_exact_decode_ms": 2192.8,
+     "engine_exact_pipeline": "pi4 25 + pi5 40",
+     "engine_exact_min_margin_mib": 37,
+     "halda_best_decode_ms": 2227.0
+    },
+    "1024": {
+     "engine_decode_ms": null,
+     "engine_exact_decode_ms": null,
+     "engine_exact_pipeline": null,
+     "engine_exact_min_margin_mib": null,
+     "halda_best_decode_ms": null
+    },
+    "2048": {
+     "engine_decode_ms": null,
+     "engine_exact_decode_ms": null,
+     "engine_exact_pipeline": null,
+     "engine_exact_min_margin_mib": null,
+     "halda_best_decode_ms": null
+    }
+   }
+  },
+  {
+   "model": "qwen38_27b",
+   "arch": "qwen35",
+   "prima_can_run": false,
+   "boards": [
+    "pi5",
+    "jetson"
+   ],
+   "host": "pi5",
+   "engine": {
+    "infeasible": "no subset of the cluster can hold qwen3.8-27b-q3_k_m: it needs 65 layers x 189.2 MB = 12.0 GB, and the cluster can hold 55 layers (10.2 GB). The raw memory sum is 10.9 GB, but each participating node "
+   },
+   "engine_head_last": {
+    "infeasible": "no subset of the cluster can hold qwen3.8-27b-q3_k_m: it needs 65 layers x 189.2 MB = 12.0 GB, and the cluster can hold 55 layers (10.2 GB). The raw memory sum is 10.9 GB, but each participating node "
+   },
+   "engine_exact": {
+    "infeasible": "no subset of the cluster can hold qwen3.8-27b-q3_k_m: it needs 65 layers x 189.2 MB = 12.0 GB, and the cluster can hold 55 layers (10.2 GB). The raw memory sum is 10.9 GB, but each participating node "
+   },
+   "engine_default": {
+    "infeasible": "no subset of the cluster can hold qwen3.8-27b-q3_k_m: it needs 65 layers x 189.2 MB = 12.0 GB, and the cluster can hold 51 layers (9.4 GB). The raw memory sum is 10.9 GB, but each participating node a"
+   },
+   "engine_request": {
+    "chat": {
+     "infeasible": "no subset of the cluster can hold qwen3.8-27b-q3_k_m: it needs 65 layers x 189.2 MB = 12.0 GB, and the cluster can hold 55 layers (10.2 GB). The raw memory sum is 10.9 GB, but each participating node "
+    },
+    "long_prompt": {
+     "infeasible": "no subset of the cluster can hold qwen3.8-27b-q3_k_m: it needs 65 layers x 189.2 MB = 12.0 GB, and the cluster can hold 55 layers (10.2 GB). The raw memory sum is 10.9 GB, but each participating node "
+    },
+    "long_answer": {
+     "infeasible": "no subset of the cluster can hold qwen3.8-27b-q3_k_m: it needs 65 layers x 189.2 MB = 12.0 GB, and the cluster can hold 55 layers (10.2 GB). The raw memory sum is 10.9 GB, but each participating node "
+    }
+   },
+   "halda": [
+    {
+     "ring": [
+      "pi5",
+      "jetson"
+     ],
+     "halda_caps": {
+      "pi5": 34,
+      "jetson": 17
+     },
+     "removed": [],
+     "infeasible": "the shares cannot fit in memory (pi5 cap 34, jetson cap 17): Halda would move devices into its disk-offload sets M1-M3, which need prima.cpp's prefetching runtime, outside this port"
+    }
+   ],
+   "headroom": {
+    "0": {
+     "engine_decode_ms": null,
+     "engine_exact_decode_ms": null,
+     "engine_exact_pipeline": null,
+     "engine_exact_min_margin_mib": null,
+     "halda_best_decode_ms": null
+    },
+    "1024": {
+     "engine_decode_ms": null,
+     "engine_exact_decode_ms": null,
+     "engine_exact_pipeline": null,
+     "engine_exact_min_margin_mib": null,
+     "halda_best_decode_ms": null
+    },
+    "2048": {
+     "engine_decode_ms": null,
+     "engine_exact_decode_ms": null,
+     "engine_exact_pipeline": null,
+     "engine_exact_min_margin_mib": null,
+     "halda_best_decode_ms": null
+    }
+   }
+  },
+  {
+   "model": "qwen38_27b",
+   "arch": "qwen35",
+   "prima_can_run": false,
+   "boards": [
+    "pi4",
+    "jetson"
+   ],
+   "host": "pi4",
+   "engine": {
+    "infeasible": "no subset of the cluster can hold qwen3.8-27b-q3_k_m: it needs 65 layers x 189.2 MB = 12.0 GB, and the cluster can hold 54 layers (10.0 GB). The raw memory sum is 10.7 GB, but each participating node "
+   },
+   "engine_head_last": {
+    "infeasible": "no subset of the cluster can hold qwen3.8-27b-q3_k_m: it needs 65 layers x 189.2 MB = 12.0 GB, and the cluster can hold 54 layers (10.0 GB). The raw memory sum is 10.7 GB, but each participating node "
+   },
+   "engine_exact": {
+    "infeasible": "no subset of the cluster can hold qwen3.8-27b-q3_k_m: it needs 65 layers x 189.2 MB = 12.0 GB, and the cluster can hold 54 layers (10.0 GB). The raw memory sum is 10.7 GB, but each participating node "
+   },
+   "engine_default": {
+    "infeasible": "no subset of the cluster can hold qwen3.8-27b-q3_k_m: it needs 65 layers x 189.2 MB = 12.0 GB, and the cluster can hold 51 layers (9.4 GB). The raw memory sum is 10.7 GB, but each participating node a"
+   },
+   "engine_request": {
+    "chat": {
+     "infeasible": "no subset of the cluster can hold qwen3.8-27b-q3_k_m: it needs 65 layers x 189.2 MB = 12.0 GB, and the cluster can hold 54 layers (10.0 GB). The raw memory sum is 10.7 GB, but each participating node "
+    },
+    "long_prompt": {
+     "infeasible": "no subset of the cluster can hold qwen3.8-27b-q3_k_m: it needs 65 layers x 189.2 MB = 12.0 GB, and the cluster can hold 54 layers (10.0 GB). The raw memory sum is 10.7 GB, but each participating node "
+    },
+    "long_answer": {
+     "infeasible": "no subset of the cluster can hold qwen3.8-27b-q3_k_m: it needs 65 layers x 189.2 MB = 12.0 GB, and the cluster can hold 54 layers (10.0 GB). The raw memory sum is 10.7 GB, but each participating node "
+    }
+   },
+   "halda": [
+    {
+     "ring": [
+      "pi4",
+      "jetson"
+     ],
+     "halda_caps": {
+      "pi4": 33,
+      "jetson": 17
+     },
+     "removed": [],
+     "infeasible": "the shares cannot fit in memory (pi4 cap 33, jetson cap 17): Halda would move devices into its disk-offload sets M1-M3, which need prima.cpp's prefetching runtime, outside this port"
+    }
+   ],
+   "headroom": {
+    "0": {
+     "engine_decode_ms": null,
+     "engine_exact_decode_ms": null,
+     "engine_exact_pipeline": null,
+     "engine_exact_min_margin_mib": null,
+     "halda_best_decode_ms": null
+    },
+    "1024": {
+     "engine_decode_ms": null,
+     "engine_exact_decode_ms": null,
+     "engine_exact_pipeline": null,
+     "engine_exact_min_margin_mib": null,
+     "halda_best_decode_ms": null
+    },
+    "2048": {
+     "engine_decode_ms": null,
+     "engine_exact_decode_ms": null,
+     "engine_exact_pipeline": null,
+     "engine_exact_min_margin_mib": null,
+     "halda_best_decode_ms": null
+    }
+   }
+  },
+  {
+   "model": "qwen35_9b",
+   "arch": "qwen35",
+   "prima_can_run": false,
+   "boards": [
+    "pi5",
+    "pi4",
+    "jetson"
+   ],
+   "host": "pi5",
+   "engine": {
+    "pipeline": "pi5 33",
+    "head_on": "pi5",
+    "decode_ms": 466.3,
+    "prefill_ms": 88.4,
+    "request_ms": {
+     "chat": 71005.0,
+     "long_prompt": 150223.0,
+     "long_answer": 250067.0
+    },
+    "min_margin_mib": 1544,
+    "fits_engine_accounting": true
+   },
+   "engine_head_last": {
+    "pipeline": "pi5 33",
+    "head_on": "pi5",
+    "decode_ms": 466.3,
+    "prefill_ms": 88.4,
+    "request_ms": {
+     "chat": 71005.0,
+     "long_prompt": 150223.0,
+     "long_answer": 250067.0
+    },
+    "min_margin_mib": 1544,
+    "fits_engine_accounting": true
+   },
+   "engine_exact": {
+    "pipeline": "pi5 33",
+    "head_on": "pi5",
+    "decode_ms": 466.3,
+    "prefill_ms": 88.4,
+    "request_ms": {
+     "chat": 71005.0,
+     "long_prompt": 150223.0,
+     "long_answer": 250067.0
+    },
+    "min_margin_mib": 1544,
+    "fits_engine_accounting": true
+   },
+   "engine_default": {
+    "pipeline": "pi5 33",
+    "head_on": "pi5",
+    "decode_ms": 466.3,
+    "prefill_ms": 88.4,
+    "request_ms": {
+     "chat": 71005.0,
+     "long_prompt": 150223.0,
+     "long_answer": 250067.0
+    },
+    "min_margin_mib": 1544,
+    "fits_engine_accounting": true
+   },
+   "engine_request": {
+    "chat": {
+     "pipeline": "pi5 33",
+     "head_on": "pi5",
+     "decode_ms": 466.3,
+     "prefill_ms": 88.4,
+     "request_ms": {
+      "chat": 71005.0,
+      "long_prompt": 150223.0,
+      "long_answer": 250067.0
+     },
+     "min_margin_mib": 1544,
+     "fits_engine_accounting": true
+    },
+    "long_prompt": {
+     "pipeline": "pi5 33",
+     "head_on": "pi5",
+     "decode_ms": 466.3,
+     "prefill_ms": 88.4,
+     "request_ms": {
+      "chat": 71005.0,
+      "long_prompt": 150223.0,
+      "long_answer": 250067.0
+     },
+     "min_margin_mib": 1544,
+     "fits_engine_accounting": true
+    },
+    "long_answer": {
+     "pipeline": "pi5 33",
+     "head_on": "pi5",
+     "decode_ms": 466.3,
+     "prefill_ms": 88.4,
+     "request_ms": {
+      "chat": 71005.0,
+      "long_prompt": 150223.0,
+      "long_answer": 250067.0
+     },
+     "min_margin_mib": 1544,
+     "fits_engine_accounting": true
+    }
+   },
+   "halda": [
+    {
+     "ring": [
+      "pi5",
+      "pi4",
+      "jetson"
+     ],
+     "halda_caps": {
+      "pi5": 43,
+      "pi4": 47,
+      "jetson": 22
+     },
+     "removed": [
+      "pi4",
+      "jetson"
+     ],
+     "pipeline": "pi5 33",
+     "head_on": "pi5",
+     "decode_ms": 466.3,
+     "prefill_ms": 88.4,
+     "request_ms": {
+      "chat": 71005.0,
+      "long_prompt": 150223.0,
+      "long_answer": 250067.0
+     },
+     "min_margin_mib": 1544,
+     "fits_engine_accounting": true
+    },
+    {
+     "ring": [
+      "pi5",
+      "jetson",
+      "pi4"
+     ],
+     "halda_caps": {
+      "pi5": 43,
+      "jetson": 22,
+      "pi4": 47
+     },
+     "removed": [
+      "jetson",
+      "pi4"
+     ],
+     "pipeline": "pi5 33",
+     "head_on": "pi5",
+     "decode_ms": 466.3,
+     "prefill_ms": 88.4,
+     "request_ms": {
+      "chat": 71005.0,
+      "long_prompt": 150223.0,
+      "long_answer": 250067.0
+     },
+     "min_margin_mib": 1544,
+     "fits_engine_accounting": true
+    }
+   ],
+   "headroom": {
+    "0": {
+     "engine_decode_ms": 466.3,
+     "engine_exact_decode_ms": 466.3,
+     "engine_exact_pipeline": "pi5 33",
+     "engine_exact_min_margin_mib": 1544,
+     "halda_best_decode_ms": 466.3
+    },
+    "1024": {
+     "engine_decode_ms": 466.3,
+     "engine_exact_decode_ms": 466.3,
+     "engine_exact_pipeline": "pi5 33",
+     "engine_exact_min_margin_mib": 520,
+     "halda_best_decode_ms": 466.3
+    },
+    "2048": {
+     "engine_decode_ms": 492.1,
+     "engine_exact_decode_ms": 483.8,
+     "engine_exact_pipeline": "pi5 30 + jetson 3",
+     "engine_exact_min_margin_mib": 23,
+     "halda_best_decode_ms": 483.8
+    }
+   }
+  },
+  {
+   "model": "qwen35_9b",
+   "arch": "qwen35",
+   "prima_can_run": false,
+   "boards": [
+    "pi5",
+    "pi4"
+   ],
+   "host": "pi5",
+   "engine": {
+    "pipeline": "pi5 33",
+    "head_on": "pi5",
+    "decode_ms": 466.3,
+    "prefill_ms": 88.4,
+    "request_ms": {
+     "chat": 71005.0,
+     "long_prompt": 150223.0,
+     "long_answer": 250067.0
+    },
+    "min_margin_mib": 1544,
+    "fits_engine_accounting": true
+   },
+   "engine_head_last": {
+    "pipeline": "pi5 33",
+    "head_on": "pi5",
+    "decode_ms": 466.3,
+    "prefill_ms": 88.4,
+    "request_ms": {
+     "chat": 71005.0,
+     "long_prompt": 150223.0,
+     "long_answer": 250067.0
+    },
+    "min_margin_mib": 1544,
+    "fits_engine_accounting": true
+   },
+   "engine_exact": {
+    "pipeline": "pi5 33",
+    "head_on": "pi5",
+    "decode_ms": 466.3,
+    "prefill_ms": 88.4,
+    "request_ms": {
+     "chat": 71005.0,
+     "long_prompt": 150223.0,
+     "long_answer": 250067.0
+    },
+    "min_margin_mib": 1544,
+    "fits_engine_accounting": true
+   },
+   "engine_default": {
+    "pipeline": "pi5 33",
+    "head_on": "pi5",
+    "decode_ms": 466.3,
+    "prefill_ms": 88.4,
+    "request_ms": {
+     "chat": 71005.0,
+     "long_prompt": 150223.0,
+     "long_answer": 250067.0
+    },
+    "min_margin_mib": 1544,
+    "fits_engine_accounting": true
+   },
+   "engine_request": {
+    "chat": {
+     "pipeline": "pi5 33",
+     "head_on": "pi5",
+     "decode_ms": 466.3,
+     "prefill_ms": 88.4,
+     "request_ms": {
+      "chat": 71005.0,
+      "long_prompt": 150223.0,
+      "long_answer": 250067.0
+     },
+     "min_margin_mib": 1544,
+     "fits_engine_accounting": true
+    },
+    "long_prompt": {
+     "pipeline": "pi5 33",
+     "head_on": "pi5",
+     "decode_ms": 466.3,
+     "prefill_ms": 88.4,
+     "request_ms": {
+      "chat": 71005.0,
+      "long_prompt": 150223.0,
+      "long_answer": 250067.0
+     },
+     "min_margin_mib": 1544,
+     "fits_engine_accounting": true
+    },
+    "long_answer": {
+     "pipeline": "pi5 33",
+     "head_on": "pi5",
+     "decode_ms": 466.3,
+     "prefill_ms": 88.4,
+     "request_ms": {
+      "chat": 71005.0,
+      "long_prompt": 150223.0,
+      "long_answer": 250067.0
+     },
+     "min_margin_mib": 1544,
+     "fits_engine_accounting": true
+    }
+   },
+   "halda": [
+    {
+     "ring": [
+      "pi5",
+      "pi4"
+     ],
+     "halda_caps": {
+      "pi5": 43,
+      "pi4": 47
+     },
+     "removed": [
+      "pi4"
+     ],
+     "pipeline": "pi5 33",
+     "head_on": "pi5",
+     "decode_ms": 466.3,
+     "prefill_ms": 88.4,
+     "request_ms": {
+      "chat": 71005.0,
+      "long_prompt": 150223.0,
+      "long_answer": 250067.0
+     },
+     "min_margin_mib": 1544,
+     "fits_engine_accounting": true
+    }
+   ],
+   "headroom": {
+    "0": {
+     "engine_decode_ms": 466.3,
+     "engine_exact_decode_ms": 466.3,
+     "engine_exact_pipeline": "pi5 33",
+     "engine_exact_min_margin_mib": 1544,
+     "halda_best_decode_ms": 466.3
+    },
+    "1024": {
+     "engine_decode_ms": 466.3,
+     "engine_exact_decode_ms": 466.3,
+     "engine_exact_pipeline": "pi5 33",
+     "engine_exact_min_margin_mib": 520,
+     "halda_best_decode_ms": 466.3
+    },
+    "2048": {
+     "engine_decode_ms": 554.2,
+     "engine_exact_decode_ms": 524.5,
+     "engine_exact_pipeline": "pi5 30 + pi4 3",
+     "engine_exact_min_margin_mib": 23,
+     "halda_best_decode_ms": 524.5
+    }
+   }
+  },
+  {
+   "model": "qwen35_9b",
+   "arch": "qwen35",
+   "prima_can_run": false,
+   "boards": [
+    "pi5",
+    "jetson"
+   ],
+   "host": "pi5",
+   "engine": {
+    "pipeline": "pi5 33",
+    "head_on": "pi5",
+    "decode_ms": 466.3,
+    "prefill_ms": 88.4,
+    "request_ms": {
+     "chat": 71005.0,
+     "long_prompt": 150223.0,
+     "long_answer": 250067.0
+    },
+    "min_margin_mib": 1544,
+    "fits_engine_accounting": true
+   },
+   "engine_head_last": {
+    "pipeline": "pi5 33",
+    "head_on": "pi5",
+    "decode_ms": 466.3,
+    "prefill_ms": 88.4,
+    "request_ms": {
+     "chat": 71005.0,
+     "long_prompt": 150223.0,
+     "long_answer": 250067.0
+    },
+    "min_margin_mib": 1544,
+    "fits_engine_accounting": true
+   },
+   "engine_exact": {
+    "pipeline": "pi5 33",
+    "head_on": "pi5",
+    "decode_ms": 466.3,
+    "prefill_ms": 88.4,
+    "request_ms": {
+     "chat": 71005.0,
+     "long_prompt": 150223.0,
+     "long_answer": 250067.0
+    },
+    "min_margin_mib": 1544,
+    "fits_engine_accounting": true
+   },
+   "engine_default": {
+    "pipeline": "pi5 33",
+    "head_on": "pi5",
+    "decode_ms": 466.3,
+    "prefill_ms": 88.4,
+    "request_ms": {
+     "chat": 71005.0,
+     "long_prompt": 150223.0,
+     "long_answer": 250067.0
+    },
+    "min_margin_mib": 1544,
+    "fits_engine_accounting": true
+   },
+   "engine_request": {
+    "chat": {
+     "pipeline": "pi5 33",
+     "head_on": "pi5",
+     "decode_ms": 466.3,
+     "prefill_ms": 88.4,
+     "request_ms": {
+      "chat": 71005.0,
+      "long_prompt": 150223.0,
+      "long_answer": 250067.0
+     },
+     "min_margin_mib": 1544,
+     "fits_engine_accounting": true
+    },
+    "long_prompt": {
+     "pipeline": "pi5 33",
+     "head_on": "pi5",
+     "decode_ms": 466.3,
+     "prefill_ms": 88.4,
+     "request_ms": {
+      "chat": 71005.0,
+      "long_prompt": 150223.0,
+      "long_answer": 250067.0
+     },
+     "min_margin_mib": 1544,
+     "fits_engine_accounting": true
+    },
+    "long_answer": {
+     "pipeline": "pi5 33",
+     "head_on": "pi5",
+     "decode_ms": 466.3,
+     "prefill_ms": 88.4,
+     "request_ms": {
+      "chat": 71005.0,
+      "long_prompt": 150223.0,
+      "long_answer": 250067.0
+     },
+     "min_margin_mib": 1544,
+     "fits_engine_accounting": true
+    }
+   },
+   "halda": [
+    {
+     "ring": [
+      "pi5",
+      "jetson"
+     ],
+     "halda_caps": {
+      "pi5": 43,
+      "jetson": 22
+     },
+     "removed": [
+      "jetson"
+     ],
+     "pipeline": "pi5 33",
+     "head_on": "pi5",
+     "decode_ms": 466.3,
+     "prefill_ms": 88.4,
+     "request_ms": {
+      "chat": 71005.0,
+      "long_prompt": 150223.0,
+      "long_answer": 250067.0
+     },
+     "min_margin_mib": 1544,
+     "fits_engine_accounting": true
+    }
+   ],
+   "headroom": {
+    "0": {
+     "engine_decode_ms": 466.3,
+     "engine_exact_decode_ms": 466.3,
+     "engine_exact_pipeline": "pi5 33",
+     "engine_exact_min_margin_mib": 1544,
+     "halda_best_decode_ms": 466.3
+    },
+    "1024": {
+     "engine_decode_ms": 466.3,
+     "engine_exact_decode_ms": 466.3,
+     "engine_exact_pipeline": "pi5 33",
+     "engine_exact_min_margin_mib": 520,
+     "halda_best_decode_ms": 466.3
+    },
+    "2048": {
+     "engine_decode_ms": 492.1,
+     "engine_exact_decode_ms": 483.8,
+     "engine_exact_pipeline": "pi5 30 + jetson 3",
+     "engine_exact_min_margin_mib": 23,
+     "halda_best_decode_ms": 483.8
+    }
+   }
+  },
+  {
+   "model": "qwen35_9b",
+   "arch": "qwen35",
+   "prima_can_run": false,
+   "boards": [
+    "pi4",
+    "jetson"
+   ],
+   "host": "pi4",
+   "engine": {
+    "pipeline": "pi4 14 + jetson 19",
+    "head_on": "pi4",
+    "decode_ms": 1137.8,
+    "prefill_ms": 307.2,
+    "request_ms": {
+     "chat": 184963.0,
+     "long_prompt": 460229.0,
+     "long_answer": 621882.0
+    },
+    "min_margin_mib": 36,
+    "fits_engine_accounting": true
+   },
+   "engine_head_last": {
+    "pipeline": "pi4 24 + jetson 9",
+    "head_on": "jetson",
+    "decode_ms": 1218.5,
+    "prefill_ms": 453.6,
+    "request_ms": {
+     "chat": 214033.0,
+     "long_prompt": 620492.0,
+     "long_answer": 681937.0
+    },
+    "min_margin_mib": -44,
+    "fits_engine_accounting": false
+   },
+   "engine_exact": {
+    "pipeline": "pi4 14 + jetson 19",
+    "head_on": "pi4",
+    "decode_ms": 1137.8,
+    "prefill_ms": 307.2,
+    "request_ms": {
+     "chat": 184963.0,
+     "long_prompt": 460229.0,
+     "long_answer": 621882.0
+    },
+    "min_margin_mib": 36,
+    "fits_engine_accounting": true
+   },
+   "engine_default": {
+    "pipeline": "pi4 16 + jetson 17",
+    "head_on": "pi4",
+    "decode_ms": 1176.7,
+    "prefill_ms": 336.7,
+    "request_ms": {
+     "chat": 193715.0,
+     "long_prompt": 495415.0,
+     "long_answer": 645561.0
+    },
+    "min_margin_mib": 339,
+    "fits_engine_accounting": true
+   },
+   "engine_request": {
+    "chat": {
+     "pipeline": "pi4 14 + jetson 19",
+     "head_on": "pi4",
+     "decode_ms": 1137.8,
+     "prefill_ms": 307.2,
+     "request_ms": {
+      "chat": 184963.0,
+      "long_prompt": 460229.0,
+      "long_answer": 621882.0
+     },
+     "min_margin_mib": 36,
+     "fits_engine_accounting": true
+    },
+    "long_prompt": {
+     "pipeline": "pi4 14 + jetson 19",
+     "head_on": "pi4",
+     "decode_ms": 1137.8,
+     "prefill_ms": 307.2,
+     "request_ms": {
+      "chat": 184963.0,
+      "long_prompt": 460229.0,
+      "long_answer": 621882.0
+     },
+     "min_margin_mib": 36,
+     "fits_engine_accounting": true
+    },
+    "long_answer": {
+     "pipeline": "pi4 14 + jetson 19",
+     "head_on": "pi4",
+     "decode_ms": 1137.8,
+     "prefill_ms": 307.2,
+     "request_ms": {
+      "chat": 184963.0,
+      "long_prompt": 460229.0,
+      "long_answer": 621882.0
+     },
+     "min_margin_mib": 36,
+     "fits_engine_accounting": true
+    }
+   },
+   "halda": [
+    {
+     "ring": [
+      "pi4",
+      "jetson"
+     ],
+     "halda_caps": {
+      "pi4": 42,
+      "jetson": 22
+     },
+     "removed": [],
+     "pipeline": "pi4 11 + jetson 22",
+     "head_on": "pi4",
+     "decode_ms": 1083.3,
+     "prefill_ms": 263.0,
+     "request_ms": {
+      "chat": 172320.0,
+      "long_prompt": 407936.0,
+      "long_answer": 588303.0
+     },
+     "min_margin_mib": -392,
+     "fits_engine_accounting": false
+    }
+   ],
+   "headroom": {
+    "0": {
+     "engine_decode_ms": 1137.8,
+     "engine_exact_decode_ms": 1137.8,
+     "engine_exact_pipeline": "pi4 14 + jetson 19",
+     "engine_exact_min_margin_mib": 36,
+     "halda_best_decode_ms": null
+    },
+    "1024": {
+     "engine_decode_ms": 1268.6,
+     "engine_exact_decode_ms": 1268.6,
+     "engine_exact_pipeline": "pi4 21 + jetson 12",
+     "engine_exact_min_margin_mib": 36,
+     "halda_best_decode_ms": null
+    },
+    "2048": {
+     "engine_decode_ms": 1381.6,
+     "engine_exact_decode_ms": 1401.2,
+     "engine_exact_pipeline": "pi4 28 + jetson 5",
+     "engine_exact_min_margin_mib": 48,
+     "halda_best_decode_ms": null
+    }
+   }
+  }
+ ],
+ "skipped": [],
+ "default_headroom_mib": 256.0
+}

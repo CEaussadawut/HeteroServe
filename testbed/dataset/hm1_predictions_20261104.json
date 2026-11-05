@@ -1,0 +1,163 @@
+{
+ "registered_at": "2026-11-04T05:25:36+07:00",
+ "script": "testbed/scripts/register_hm1_20261104.py",
+ "runner": "testbed/scripts/handoff_mem_20261104.py",
+ "scorer": "testbed/scripts/score_hm1_20261104.py",
+ "out_prefix": "hm1",
+ "phase_model": "qwen3_0.6b",
+ "costs": "testbed/dataset/phase_costs_20261028.json",
+ "headroom_bytes": 335544320,
+ "what": "the hand-off's memory check (phase_plan.handoff_fits and phase_serve's guard) at a context the Jetson has not served",
+ "measured_before": [
+  "testbed/results/hmem_20261104_052109/mem.json",
+  "testbed/results/hmem_20261104_052145/mem.json"
+ ],
+ "past_handoffs": [
+  {
+   "model": "qwen3_0.6b",
+   "ctx": 9216,
+   "prompt_n": 1036,
+   "outcome": "clean",
+   "avail_mib": 1691.5,
+   "state_mib": 113.4,
+   "margin_mib": 1258.0,
+   "check": "allow",
+   "agrees": true
+  },
+  {
+   "model": "qwen3_0.6b",
+   "ctx": 9216,
+   "prompt_n": 4108,
+   "outcome": "clean",
+   "avail_mib": 1691.5,
+   "state_mib": 449.5,
+   "margin_mib": 922.0,
+   "check": "allow",
+   "agrees": true
+  },
+  {
+   "model": "qwen3_0.6b",
+   "ctx": 9216,
+   "prompt_n": 8204,
+   "outcome": "clean",
+   "avail_mib": 1691.5,
+   "state_mib": 897.5,
+   "margin_mib": 473.9,
+   "check": "allow",
+   "agrees": true
+  },
+  {
+   "model": "qwen3_4b",
+   "ctx": 2560,
+   "prompt_n": 524,
+   "outcome": "clean",
+   "avail_mib": 401.0,
+   "state_mib": 73.7,
+   "margin_mib": 7.3,
+   "check": "allow",
+   "agrees": true
+  },
+  {
+   "model": "qwen3_4b",
+   "ctx": 2560,
+   "prompt_n": 1036,
+   "outcome": "thrashed",
+   "avail_mib": 401.0,
+   "state_mib": 145.7,
+   "margin_mib": -64.7,
+   "check": "refuse",
+   "agrees": true
+  }
+ ],
+ "past_all_agree": true,
+ "prediction": {
+  "ctx": 16384,
+  "avail_mib": 907.5,
+  "kv_growth_mib": 784.0,
+  "nstar_prompt_n": 5369,
+  "tol_mib": 64
+ },
+ "cases": [
+  {
+   "id": "a1",
+   "ctx": 16384,
+   "n": 2672,
+   "prompt_n": 2684,
+   "gen": 17,
+   "guard_headroom": 335544320,
+   "registered_verdict": "allow",
+   "state_mib": 293.7,
+   "margin_mib_at_predicted": 293.8,
+   "compare_L": false
+  },
+  {
+   "id": "a2",
+   "ctx": 16384,
+   "n": 4551,
+   "prompt_n": 4563,
+   "gen": 17,
+   "guard_headroom": 335544320,
+   "registered_verdict": "allow",
+   "state_mib": 499.3,
+   "margin_mib_at_predicted": 88.2,
+   "compare_L": false
+  },
+  {
+   "id": "g1",
+   "ctx": 16384,
+   "n": 5625,
+   "prompt_n": 5637,
+   "gen": 17,
+   "guard_headroom": 335544320,
+   "registered_verdict": "refuse",
+   "state_mib": 616.7,
+   "margin_mib_at_predicted": -29.3,
+   "compare_L": true,
+   "max_overrun_mib": 50
+  },
+  {
+   "id": "g2",
+   "ctx": 16384,
+   "n": 1024,
+   "prompt_n": 1036,
+   "gen": 17,
+   "guard_headroom": 8589934592,
+   "registered_verdict": "allow",
+   "forced_refusal": true,
+   "compare_L": true
+  }
+ ],
+ "hypotheses": {
+  "HM-READY": {
+   "tol_mib": 64,
+   "claim": "MemAvailable after the warm-up at 16,384 cells within 64 MiB of 907 MiB"
+  },
+  "HM-AGREE": {
+   "claim": "the live check's verdict on every case is the registered one"
+  },
+  "HM-ALLOW": {
+   "restore_s": 5.0,
+   "swap_drop_mib": 32,
+   "claim": "every case the live check allows restores within 5 s, SwapFree down < 32 MiB"
+  },
+  "HM-GUARD": {
+   "swap_drop_mib": 32,
+   "claim": "every guarded refusal decodes on the laptop with plan L's tokens, SwapFree down < 32 MiB"
+  }
+ },
+ "conditions": "Zen may stay open (QUIET_ALLOW_APPS=zen, the owner, 4 Nov); no energy measured",
+ "inputs_sha256": {
+  "testbed/scripts/register_hm1_20261104.py": "354409d3d24dfac519a5fb09296fb7aef6c3c0cac64b6bc9158522391765da45",
+  "testbed/scripts/handoff_mem_20261104.py": "e58ff710a76ba75b1045bb524929a3c9c1065896870e50887f17146767f0ce24",
+  "testbed/scripts/score_hm1_20261104.py": "accdb1b6c6a9d8e4a0afdaf01c49c70e3a983902c4dae7a9b379cd3f6b088617",
+  "testbed/scripts/phase_plan_20261028.py": "1063a1602240fa4b95a136d2574d41c302d2aa5f5c0cb5778a5e3a95bc6538be",
+  "testbed/scripts/phase_serve_20261028.py": "d2df9745df882d6a43d6c61bfba53609a5fb52419388b6ff755639f523e31bc7",
+  "testbed/scripts/pd_handoff.py": "8eb365ac261ac0238fd19922f38ded8040c36c8212928e267dde2eb5ef3450a2",
+  "testbed/scripts/jetson_proc_20261028.py": "ae6e7f9684015dda252fb0869830a3801c904732c11a19b4849f61aa42663b08",
+  "testbed/scripts/jetson_power_guard.sh": "6dafb56fef33f2bc0e070b2552dcb871053d3c0681358bd27436552f905d90de",
+  "testbed/dataset/phase_costs_20261028.json": "6f903f08ab01e63f265d355418489f285d274f6ab841b755aceb051671ea631f",
+  "testbed/dataset/phase_costs_qwen3_4b_20261103.json": "e10d8e92829d6d0fe80139e24b898e2abec5a5ccb4d97b750fa9fdfa5cea4914",
+  "testbed/results/hmem_20261104_052109/mem.json": "54b1d1a256518b2604e03144f544d2de36035dca1c155308c56a088de14b1c9a",
+  "testbed/results/hmem_20261104_052145/mem.json": "e74e4a81df75e09204493944a3da3beb730f55d85e399686f7e6cbd3f1cd6d2f"
+ }
+}

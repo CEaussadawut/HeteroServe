@@ -1,0 +1,21 @@
+########## 2026-11-03T13:48:54+07:00 serve qwen35_9b, ctx 4096, clocks locked, boards pi5 pi4 jetson, planned against testbed/dataset/memory_at_rest.json: laptop 33, head on laptop; predicted decode 273.6 ms/token (3.65 tok/s)
+hosts   laptop: fixed: laptop 33, head last
+llama-server -m ~/models/qwen3.5-9b-q4_k_m.gguf -ngl 0  --spec-type draft-mtp --spec-draft-n-max 2 -c 4096 -np 1 -t 4 -lv 4 -lm none --cache-ram 0 --host 192.168.1.108 --port 8080   pin b23701f77d47dad9de834d59ebfcbe25c9e8b46f
+gate    laptop: MemAvailable 27179 MiB, the plan needs 14593 MiB with its reserve (margin at rest 13192 MiB)
+server  starting on laptop (pid 121961); loading streams the model from the SD card to the workers
+READY   2026-11-03T13:49:04+07:00: http://192.168.1.108:8080/ (web chat) -- health {"status":"ok"}
+0.01.953.473 I load_tensors:          CPU model buffer size =  3308.08 MiB
+0.01.953.473 I load_tensors:   CPU_REPACK model buffer size =  2565.00 MiB
+0.07.983.749 I llama_context: n_ctx                 = 4096
+0.07.983.752 I llama_context: flash_attn            = auto
+0.07.983.902 I llama_kv_cache:        CPU KV buffer size =   128.00 MiB
+0.08.050.261 I llama_kv_cache: size =  128.00 MiB (  4096 cells,   8 layers,  1/1 seqs), K (f16):   64.00 MiB, V (f16):   64.00 MiB
+0.08.135.455 I sched_reserve:        CPU compute buffer size =   100.02 MiB
+0.08.514.826 I llama_context: n_ctx                 = 4096
+0.08.514.829 I llama_context: flash_attn            = auto
+0.08.515.051 I llama_kv_cache:        CPU KV buffer size =    16.00 MiB
+0.08.524.235 I llama_kv_cache: size =   16.00 MiB (  4096 cells,   1 layers,  1/1 seqs), K (f16):    8.00 MiB, V (f16):    8.00 MiB
+0.08.529.909 I sched_reserve:        CPU compute buffer size =    92.02 MiB
+0.08.537.068 I sched_reserve:        CPU compute buffer size =    92.02 MiB
+0.08.591.415 I slot   load_model: id  0 | task -1 | new slot, n_ctx = 4096
+mem     laptop: MemAvailable 20834 MiB at READY, 27179 at the gate: the serve holds 6345 MiB, charged 6401 MiB

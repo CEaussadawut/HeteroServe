@@ -1,0 +1,59 @@
+########## 2026-09-29T16:36:34+07:00 Jetson qwen35 RPC smoke (laptop host, -ngl 5, cases vulkan cuda), model qwen3.8-27b-q3_k_m.gguf 14865aaef0b6c26a
+jetson memavail 3532 MiB
+
+===== vulkan worker (~/llama.cpp/build/bin, -d Vulkan0)
+before: 16:37:10 V=5152 I=496 P=2592 alarms=0 minV=4840 maxP=8828 pmode:0000
+worker pid 20616
+| model                          |       size |     params | backend    | ngl |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | --------------: | -------------------: |
+| qwen35 27B Q3_K - Medium       |  12.47 GiB |    27.32 B | RPC        |   5 |            pp64 |          1.89 ± 0.00 |
+{"build_commit": "b23701f77", "build_number": 11047, "cpu_info": "Intel(R) Core(TM) i5-8350U CPU @ 1.70GHz", "gpu_info": "192.168.100.111:50052", "backends": "RPC", "model_filename": "/opt/heteroserve/models/qwen3.8-27b-q3_k_m.gguf", "model_type": "qwen35 27B Q3_K - Medium", "model_size": 13393055744, "model_n_params": 27320697856, "n_batch": 2048, "n_ubatch": 512, "n_threads": 4, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "f16", "type_v": "f16", "n_gpu_layers": 5, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": -1, "devices": "auto", "tensor_split": "0.00", "tensor_buft_overrides": "none", "load_mode": "auto", "lazy_mode": "auto", "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "n_prompt": 64, "n_gen": 0, "n_depth": 0, "test_time": "2026-09-29T09:37:35Z", "avg_ns": 33824852262, "stddev_ns": 0, "avg_ts": 1.892100, "stddev_ts": 0.000000, "samples_ns": [ 33824852262 ],"samples_ts": [ 1.8921 ]}
+| qwen35 27B Q3_K - Medium       |  12.47 GiB |    27.32 B | RPC        |   5 |            tg16 |          0.89 ± 0.00 |
+{"build_commit": "b23701f77", "build_number": 11047, "cpu_info": "Intel(R) Core(TM) i5-8350U CPU @ 1.70GHz", "gpu_info": "192.168.100.111:50052", "backends": "RPC", "model_filename": "/opt/heteroserve/models/qwen3.8-27b-q3_k_m.gguf", "model_type": "qwen35 27B Q3_K - Medium", "model_size": 13393055744, "model_n_params": 27320697856, "n_batch": 2048, "n_ubatch": 512, "n_threads": 4, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "f16", "type_v": "f16", "n_gpu_layers": 5, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": -1, "devices": "auto", "tensor_split": "0.00", "tensor_buft_overrides": "none", "load_mode": "auto", "lazy_mode": "auto", "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "n_prompt": 0, "n_gen": 16, "n_depth": 0, "test_time": "2026-09-29T09:38:41Z", "avg_ns": 17987179527, "stddev_ns": 0, "avg_ts": 0.889522, "stddev_ts": 0.000000, "samples_ns": [ 17987179527 ],"samples_ts": [ 0.889522 ]}
+
+build: b23701f77 (11047)
+EXIT_BENCH_vulkan=0
+worker alive after: yes
+--- worker log tail
+Accepted client connection
+Client connection closed
+Accepted client connection
+Client connection closed
+Accepted client connection
+Client connection closed
+Accepted client connection
+Client connection closed
+after: 16:39:01 V=5072 I=824 P=4064 alarms=0 minV=4840 maxP=8828 pmode:0000
+[15578.991804] wlan0: Limiting TX power to 30 (30 - 0) dBm as advertised by 02:00:00:00:00:05
+[15581.979471] wlan0: deauthenticated from 02:00:00:00:00:05 (Reason: 15=4WAY_HANDSHAKE_TIMEOUT)
+[15582.066034] IPv6: ADDRCONF(NETDEV_UP): wlan0: link is not ready
+worker stopped
+
+===== cuda worker (~/llama.cpp-cuda/build/bin, -d CUDA0)
+before: 16:39:05 V=5152 I=488 P=2551 alarms=0 minV=4840 maxP=8828 pmode:0000
+worker pid 22180
+| model                          |       size |     params | backend    | ngl |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | --------------: | -------------------: |
+| qwen35 27B Q3_K - Medium       |  12.47 GiB |    27.32 B | RPC        |   5 |            pp64 |          1.91 ± 0.00 |
+{"build_commit": "b23701f77", "build_number": 11047, "cpu_info": "Intel(R) Core(TM) i5-8350U CPU @ 1.70GHz", "gpu_info": "192.168.100.111:50052", "backends": "RPC", "model_filename": "/opt/heteroserve/models/qwen3.8-27b-q3_k_m.gguf", "model_type": "qwen35 27B Q3_K - Medium", "model_size": 13393055744, "model_n_params": 27320697856, "n_batch": 2048, "n_ubatch": 512, "n_threads": 4, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "f16", "type_v": "f16", "n_gpu_layers": 5, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": -1, "devices": "auto", "tensor_split": "0.00", "tensor_buft_overrides": "none", "load_mode": "auto", "lazy_mode": "auto", "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "n_prompt": 64, "n_gen": 0, "n_depth": 0, "test_time": "2026-09-29T09:39:31Z", "avg_ns": 33504969215, "stddev_ns": 0, "avg_ts": 1.910164, "stddev_ts": 0.000000, "samples_ns": [ 33504969215 ],"samples_ts": [ 1.91016 ]}
+| qwen35 27B Q3_K - Medium       |  12.47 GiB |    27.32 B | RPC        |   5 |            tg16 |          0.88 ± 0.00 |
+{"build_commit": "b23701f77", "build_number": 11047, "cpu_info": "Intel(R) Core(TM) i5-8350U CPU @ 1.70GHz", "gpu_info": "192.168.100.111:50052", "backends": "RPC", "model_filename": "/opt/heteroserve/models/qwen3.8-27b-q3_k_m.gguf", "model_type": "qwen35 27B Q3_K - Medium", "model_size": 13393055744, "model_n_params": 27320697856, "n_batch": 2048, "n_ubatch": 512, "n_threads": 4, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "f16", "type_v": "f16", "n_gpu_layers": 5, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": -1, "devices": "auto", "tensor_split": "0.00", "tensor_buft_overrides": "none", "load_mode": "auto", "lazy_mode": "auto", "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "n_prompt": 0, "n_gen": 16, "n_depth": 0, "test_time": "2026-09-29T09:40:37Z", "avg_ns": 18094754631, "stddev_ns": 0, "avg_ts": 0.884234, "stddev_ts": 0.000000, "samples_ns": [ 18094754631 ],"samples_ts": [ 0.884234 ]}
+
+build: b23701f77 (11047)
+EXIT_BENCH_cuda=0
+worker alive after: yes
+--- worker log tail
+Client connection closed
+Accepted client connection
+ggml_backend_cuda_get_available_uma_memory: final available_memory_kb: 3251020
+Client connection closed
+Accepted client connection
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+ggml_cuda_graph_set_enabled: disabling CUDA graphs due to GPU architecture
+Client connection closed
+after: 16:40:57 V=5152 I=504 P=2716 alarms=0 minV=4840 maxP=8828 pmode:0000
+[15578.991804] wlan0: Limiting TX power to 30 (30 - 0) dBm as advertised by 02:00:00:00:00:05
+[15581.979471] wlan0: deauthenticated from 02:00:00:00:00:05 (Reason: 15=4WAY_HANDSHAKE_TIMEOUT)
+[15582.066034] IPv6: ADDRCONF(NETDEV_UP): wlan0: link is not ready
+worker stopped
+log: testbed/results/jetson_qwen35_smoke_20260929_163634.log

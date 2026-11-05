@@ -1,0 +1,195 @@
+{
+ "registered": "2026-10-09T20:45:31+07:00",
+ "name": "q14b_20261009",
+ "model": "qwen3_14b",
+ "nodes": [
+  "pi4",
+  "jetson"
+ ],
+ "ctx": 4096,
+ "rounds": 5,
+ "reqs": 2,
+ "n": 128,
+ "gen": 32,
+ "rtt_trips": 1,
+ "warm_n": 64,
+ "warm_gen": 8,
+ "note": "Placements checked against the memory accounting with each board's reserve: the engine's 27+13 must keep the head on the host; 32+8 is the only split whose head-last plan fits the Jetson. p32host leaves the Pi 4 159 MiB by the accounting (worst registered error 110 MiB, never optimistic); serve_pool.sh's live gate refuses rather than overloads, and a refused cell is reported, not hidden. Protocol cut for a 14B at about 2 s a token: 2 requests of 128 + 32 tokens per placement per round, warm-up 64 + 8 (the weights are read into memory, so nothing pages in).",
+ "order": [
+  [
+   "engine",
+   "p32last",
+   "p32host"
+  ],
+  [
+   "p32last",
+   "p32host",
+   "engine"
+  ],
+  [
+   "p32host",
+   "engine",
+   "p32last"
+  ],
+  [
+   "engine",
+   "p32last",
+   "p32host"
+  ],
+  [
+   "p32last",
+   "p32host",
+   "engine"
+  ]
+ ],
+ "configs": {
+  "engine": {
+   "assign": [
+    [
+     "pi4",
+     27
+    ],
+    [
+     "jetson",
+     13
+    ]
+   ],
+   "head": "host",
+   "host": "pi4",
+   "place_env": null,
+   "predicted": {
+    "decode_ms": 2025.7,
+    "prefill_ms": 796.0,
+    "decode_gross_j_plan_boards": 20.6743,
+    "decode_gross_j_all_boards": 20.6743
+   },
+   "predicted_rtt_alt": {
+    "rtt_trips": 2,
+    "decode_ms": 2026.8,
+    "prefill_ms": 796.0
+   },
+   "considered": [
+    [
+     "pi4",
+     "pi4 27 + jetson 13: decode 2025.7 ms, prefill 796.0 ms"
+    ]
+   ]
+  },
+  "p32last": {
+   "assign": [
+    [
+     "pi4",
+     32
+    ],
+    [
+     "jetson",
+     8
+    ]
+   ],
+   "head": "last",
+   "host": "pi4",
+   "place_env": "pi4:32,jetson:8",
+   "predicted": {
+    "decode_ms": 2077.2,
+    "prefill_ms": 907.3,
+    "decode_gross_j_plan_boards": 20.9441,
+    "decode_gross_j_all_boards": 20.9441
+   },
+   "predicted_rtt_alt": {
+    "rtt_trips": 2,
+    "decode_ms": 2078.3,
+    "prefill_ms": 907.3
+   },
+   "considered": [
+    [
+     "pi4",
+     "fixed: pi4 32 + jetson 8, head last"
+    ]
+   ]
+  },
+  "p32host": {
+   "assign": [
+    [
+     "pi4",
+     32
+    ],
+    [
+     "jetson",
+     8
+    ]
+   ],
+   "head": "host",
+   "host": "pi4",
+   "place_env": "pi4:32,jetson:8",
+   "predicted": {
+    "decode_ms": 2159.4,
+    "prefill_ms": 908.2,
+    "decode_gross_j_plan_boards": 21.3714,
+    "decode_gross_j_all_boards": 21.3714
+   },
+   "predicted_rtt_alt": {
+    "rtt_trips": 2,
+    "decode_ms": 2160.5,
+    "prefill_ms": 908.2
+   },
+   "considered": [
+    [
+     "pi4",
+     "fixed: pi4 32 + jetson 8, head host"
+    ]
+   ]
+  }
+ },
+ "power_table": {
+  "pi5": {
+   "idle": 2.3096321070234116,
+   "pp": 9.464891986082828,
+   "tg": 8.26205030239452,
+   "source": "testbed/dataset/energy_results_20261005b.json",
+   "sha256": "84a365c26489be46"
+  },
+  "pi4": {
+   "idle": 2.390896921017403,
+   "pp": 7.462781757353395,
+   "tg": 6.3219096642345205,
+   "source": "testbed/dataset/energy_results_20261005_pi4_q4km.json",
+   "sha256": "9c946768787cc0e7"
+  },
+  "jetson": {
+   "idle": 3.1383277591973244,
+   "pp": 8.893831082803821,
+   "tg": 11.173527822798489,
+   "source": "testbed/dataset/energy_results_20261005_jetson_vk_q4km.json",
+   "sha256": "102bfb16db360832"
+  },
+  "laptop": {
+   "idle": 14.054983277591974,
+   "pp": 29.33976692499638,
+   "tg": 32.12029854570033,
+   "source": "testbed/dataset/energy_results_20261006_laptop_q4km.json",
+   "sha256": "26856942a7d72a74"
+  }
+ },
+ "inputs_sha256": {
+  "full_eval.py": "39f767fc261b10b74a311a747e35a93aba3a4e679f20797f490f8fdbe0789a43",
+  "serve_pool.sh": "87dbda4b32265b1af8bd1f53802eab6171234839fa0db1764c65a0bb3eb94a91",
+  "predict_pool.py": "a85f06784a93d4508c97c4fbd0db26eebe3eb115cf27490093e58e65db2e5564",
+  "energy_model.py": "2fe7a0f4bcd5da664bfe385a7875ba486190430745c38fc7a5bc1da803c152a7",
+  "qr3_tpot.py": "a52727bbad61c077d2be32beb79938f1eb9c3ce81218fdbbdd18ffb106620b45",
+  "shelly_strip.py": "b7aaa7ceb2f1e94aa3f1f46100c06ca9d6c0c3fa8764a6372239747ffc0fe5a8"
+ },
+ "hypotheses": [
+  {
+   "id": "FE-TPOT",
+   "claim": "the placement with the lowest predicted decode has the lowest server TPOT P50 and P95, its 95 % CI clear of every other placement's"
+  },
+  {
+   "id": "FE-ENERGY",
+   "claim": "the placement with the lowest predicted gross J/token (every pool board powered) measures the lowest"
+  },
+  {
+   "id": "FE-ACC",
+   "claim": "every placement's measured mean server TPOT within 10 % of its predicted decode ms"
+  }
+ ]
+}

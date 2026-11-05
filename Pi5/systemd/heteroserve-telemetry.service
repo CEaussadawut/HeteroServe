@@ -1,0 +1,15 @@
+[Unit]
+Description=HeteroServe Pi5 -- thermal/clock/memory sampler
+After=heteroserve-prepare.service
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/heteroserve/node.env
+ExecStart=/opt/heteroserve/venv/bin/python /opt/heteroserve/node/telemetry.py \
+  --hz 5 --out /opt/heteroserve/data/telemetry
+Restart=on-failure
+RestartSec=5
+Nice=10
+
+[Install]
+WantedBy=multi-user.target

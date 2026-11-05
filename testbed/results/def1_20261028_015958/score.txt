@@ -1,0 +1,16 @@
+def1: PLANNER_V3 against the shipped predictor on qwen36moe_q6k, three new placements; code changed since registration: none
+
+D1-V3      FAILS      {'err_v3_pct': {'H1': -0.63, 'H2': -0.58, 'H3': -6.34}}
+D1-SHIP    HOLDS      {'err_shipped_pct': {'H1': 19.27, 'H2': 20.41, 'H3': 11.56}}
+D1-BETTER  HOLDS      {'abs_err_pct': {'H1': [0.63, 19.27], 'H2': [0.58, 20.41], 'H3': [6.34, 11.56]}}
+D1-REPEAT  HOLDS      {'run_spread_pct': {'H1': 0.42, 'H2': 0.21, 'H3': 0.05}}
+
+arm H1 laptop:25,pi5:10,pi4:6 head host: predicted shipped 226.7 / v3 272.1 ms; measured {'complete': True, 'server_mean_ms': 270.38, 'client_p50_ms': 270.21, 'ttft_ms_p50': 10956.6, 'j_per_token_all': 9.5512, 'err_v3_pct': -0.63, 'err_shipped_pct': 19.27, 'run_means': [269.82, 270.94]}
+arm H2 laptop:25,pi5:10,pi4:3,jetson:3 head host: predicted shipped 211.2 / v3 255.8 ms; measured {'complete': True, 'server_mean_ms': 254.31, 'client_p50_ms': 253.33, 'ttft_ms_p50': 11197.1, 'j_per_token_all': 9.6435, 'err_v3_pct': -0.58, 'err_shipped_pct': 20.41, 'run_means': [254.04, 254.58]}
+arm H3 laptop:25,jetson:3,pi5:10,pi4:3 head last: predicted shipped 306.0 / v3 364.5 ms; measured {'complete': True, 'server_mean_ms': 341.38, 'client_p50_ms': 340.67, 'ttft_ms_p50': 10857.0, 'j_per_token_all': 11.6725, 'err_v3_pct': -6.34, 'err_shipped_pct': 11.56, 'run_means': [341.3, 341.46]}
+run 1 H1 rc 0: 5 requests, server mean 269.82 ms, client P50 269.39 ms, battery None
+run 2 H2 rc 0: 5 requests, server mean 254.04 ms, client P50 252.97 ms, battery None
+run 3 H3 rc 0: 5 requests, server mean 341.3 ms, client P50 340.53 ms, battery None
+run 4 H3 rc 0: 5 requests, server mean 341.46 ms, client P50 340.73 ms, battery None
+run 5 H2 rc 0: 5 requests, server mean 254.58 ms, client P50 253.68 ms, battery None
+run 6 H1 rc 0: 5 requests, server mean 270.94 ms, client P50 270.68 ms, battery None

@@ -1,0 +1,62 @@
+results : testbed/results/quant_campaign_20260927_191550/jetson/jetson_tinyllama-q8_0_vulkan_20260927_192713
+  mode   : vulkan   binaries: /home/jetson/llama.cpp/build/bin
+  commit : b23701f77d47dad9de834d59ebfcbe25c9e8b46f   patched files: 0
+  model  : a4c9bb1dbaa372f6381a035fa5c02ef087aaa1ff1f843a56a22328114f03fc59  /home/jetson/models/tinyllama-1.1b-
+  pins   : MODEL NOT VERIFIED (sha256 a4c9bb1dbaa372f6... is not testbed/models.md's TinyLlama 9fecc3b3cd76bba8...)  <- on every case
+  backends registered at run time (llama-bench 'backends'; NOT what a case ran on -- see 'ran on'): Vulkan
+  board time zone: UTC+0700 (from run.log ISO stamps)
+  guard log: testbed/results/quant_campaign_20260927_191550/jetson/power-guard.log
+  power mode at '[clocks locked]': pmode:0000 online=0-3 (MAXN)
+  clocks at '[clocks locked]': cpu0 min/max=1479000/1479000 gpu min/max=921600000/921600000 (locked: min == max)
+
+case    test      mean t/s            min-max  rep range  n  ran on
+vulkan  pp512       79.180  [ 79.143- 79.264]      0.15%  5  GPU (Vulkan)  [dev=auto ngl=99 t=4 rev b23701f start pmode:0000 online=0-3 gpu_info="NVIDIA Tegra X1 (nvgpu)"]  <- MODEL NOT VERIFIED (sha256 a4c9bb1dbaa372f6... is not testbed/models.md's TinyLlama 9fecc3b3cd76bba8...)
+vulkan  tg128        6.791  [  6.790-  6.792]      0.02%  5  GPU (Vulkan)  [dev=auto ngl=99 t=4 rev b23701f start pmode:0000 online=0-3 gpu_info="NVIDIA Tegra X1 (nvgpu)"]  <- MODEL NOT VERIFIED (sha256 a4c9bb1dbaa372f6... is not testbed/models.md's TinyLlama 9fecc3b3cd76bba8...)
+cpu     pp512        8.484  [  8.481-  8.488]      0.09%  5  CPU only  [dev=none ngl=0 t=4 rev b23701f start pmode:0000 online=0-3 gpu_info="NVIDIA Tegra X1 (nvgpu)"]  <- MODEL NOT VERIFIED (sha256 a4c9bb1dbaa372f6... is not testbed/models.md's TinyLlama 9fecc3b3cd76bba8...)
+cpu     tg128        4.910  [  4.889-  4.930]      0.84%  5  CPU only  [dev=none ngl=0 t=4 rev b23701f start pmode:0000 online=0-3 gpu_info="NVIDIA Tegra X1 (nvgpu)"]  <- MODEL NOT VERIFIED (sha256 a4c9bb1dbaa372f6... is not testbed/models.md's TinyLlama 9fecc3b3cd76bba8...)
+  rep range = (max-min)/mean over the n repetitions of ONE llama-bench invocation: a within-run
+    repetition range, NOT the across-run spread the house rule asks for (the same config minutes
+    apart drifts ~2%: testbed/benchmarks.md, "A caution about error bars")
+  gpu_info = GPUs llama-bench enumerated at run time (listed even for -dev none); a GPU label needs it
+
+locked-clock idle floor: first 3 s dropped = 6 samples at the requested 500 ms (IDLE_DROP_S / IDLE_INTERVAL_MS)
+  run mean / peak = the whole llama-bench invocation (start-up, model load, a full-length pp warm-up,
+    every pp and tg repetition): NOT a pp or a tg figure, and NOT comparable across cases whose pp/tg
+    time shares differ -- each case's 'mix' line gives its shares, from the records' samples_ns
+  sample counts: tegrastats writes at most one per requested interval (run 200 ms, idle 500 ms: RUN_INTERVAL_MS / IDLE_INTERVAL_MS), so a file holding more is n/a;
+    a run file's rate against its case's idle capture (timed 15 s: what this board's tegrastats delivers): under 0.85 x is LOW, over 1.2 x HIGH
+    -- small errors pass: a file missing under ~18% of its samples, or holding up to ~15% extra (e.g. a `tegrastats --stop` that
+    failed on the run's last case, its dir collected soon after the run; n/a only past ~1.6 windows) -- the 1.2 margin and these
+    limits rest on one run's two cases (its run files at 1.04 / 1.05 x the idle rate)
+case vulkan: MODEL NOT VERIFIED -- the pinned model on the pinned tree is not established (llama-bench exit 0)  <- MODEL NOT VERIFIED (sha256 a4c9bb1dbaa372f6... is not testbed/models.md's TinyLlama 9fecc3b3cd76bba8...)
+  start    CPU 39C GPU 40C pmode:0000 online=0-3 clocks locked at 2026-09-27T19:29:32+07:00
+  end      CPU 47C GPU 47C pmode:0000 online=0-3 clocks locked at 2026-09-27T19:32:05+07:00; power state unchanged from start
+  window   2026-09-27T19:29:48+07:00 -> 2026-09-27T19:32:05+07:00 (137.0 s)
+  power    MODEL NOT VERIFIED (sha256 a4c9bb1dbaa372f6... is not testbed/models.md's TinyLlama 9fecc3b3cd76bba8...) -- locked-clock idle floor  2070 mW (n=20 of 26) | run mean  7036 mW, peak  7833 mW (n=245, achieved 1.79 Hz; idle reference 1.73 Hz)
+  mix      of the 137.0 s window: pp512 reps 24% (5 x 6.47 s), tg128 reps 69% (5 x 18.85 s), warm-ups ~5% (est.: one pp512 run + one token), the rest ~3% (start-up, model load, contexts, exit)
+  guard    MODEL NOT VERIFIED (sha256 a4c9bb1dbaa372f6... is not testbed/models.md's TinyLlama 9fecc3b3cd76bba8...) -- input min 4904 mV, guard peak 7598 mW (n=133, covered 137 of 137 s, largest gap 2 s), pmode:0000; trips in window: 0
+case cpu: MODEL NOT VERIFIED -- the pinned model on the pinned tree is not established (llama-bench exit 0)  <- MODEL NOT VERIFIED (sha256 a4c9bb1dbaa372f6... is not testbed/models.md's TinyLlama 9fecc3b3cd76bba8...)
+  start    CPU 39C GPU 39C pmode:0000 online=0-3 clocks locked at 2026-09-27T19:35:05+07:00
+  end      CPU 43C GPU 43C pmode:0000 online=0-3 clocks locked at 2026-09-27T19:43:33+07:00; power state unchanged from start
+  window   2026-09-27T19:35:20+07:00 -> 2026-09-27T19:43:33+07:00 (493.4 s)
+  power    MODEL NOT VERIFIED (sha256 a4c9bb1dbaa372f6... is not testbed/models.md's TinyLlama 9fecc3b3cd76bba8...) -- locked-clock idle floor  2129 mW (n=21 of 27) | run mean  6148 mW, peak  6359 mW (n=890, achieved 1.80 Hz; idle reference 1.80 Hz)
+  mix      of the 493.4 s window: pp512 reps 61% (5 x 60.35 s), tg128 reps 26% (5 x 26.07 s), warm-ups ~12% (est.: one pp512 run + one token), the rest ~0% (start-up, model load, contexts, exit)
+  guard    MODEL NOT VERIFIED (sha256 a4c9bb1dbaa372f6... is not testbed/models.md's TinyLlama 9fecc3b3cd76bba8...) -- input min 4960 mV, guard peak 6369 mW (n=425, covered 493 of 493 s, largest gap 2 s), pmode:0000; trips in window: 0
+
+power guard log: testbed/results/quant_campaign_20260927_191550/jetson/power-guard.log
+  dated span 2026-09-25T10:25:03+07:00 -> 2026-09-27T19:57:37+07:00, 112931 samples
+  sample lines carry the time of day only; any clock step in the guard session covering a case withholds that case's guard figures; a whole-day step of at most GUARD_STALL_S, or a clock that was already wrong when the guard started, cannot be detected -- the procedure syncs the clock before the guard starts.
+  'guard start' lines: 4
+    2026-09-25T10:25:03+07:00 guard start: min 4750 mV, baseline alarms 0, pmode:0000 fmode:fanNull
+    2026-09-25T22:44:24+07:00 guard start: min 4750 mV, baseline alarms 0, pmode:0000 fmode:fanNull
+    2026-09-26T13:38:12+07:00 guard start: min 4750 mV, baseline alarms 0, pmode:0000 fmode:fanNull
+    2026-09-26T16:39:34+07:00 guard start: min 4750 mV, baseline alarms 0, pmode:0000 fmode:fanNull
+  trips in whole log: 0
+
+state log:
+  [clocks locked] 2026-09-27T19:27:32+07:00 pmode:0000 online=0-3 cpu0 min/max=1479000/1479000 gpu min/max=921600000/921600000 swap_used_kB=0 alarms=0 CPU-therm=44C GPU-therm=44C 
+  [before vulkan] 2026-09-27T19:29:32+07:00 pmode:0000 online=0-3 cpu0 min/max=1479000/1479000 gpu min/max=921600000/921600000 swap_used_kB=0 alarms=0 CPU-therm=39C GPU-therm=40C 
+  [after vulkan] 2026-09-27T19:32:05+07:00 pmode:0000 online=0-3 cpu0 min/max=1479000/1479000 gpu min/max=921600000/921600000 swap_used_kB=0 alarms=0 CPU-therm=47C GPU-therm=47C 
+  [before cpu] 2026-09-27T19:35:05+07:00 pmode:0000 online=0-3 cpu0 min/max=1479000/1479000 gpu min/max=921600000/921600000 swap_used_kB=0 alarms=0 CPU-therm=39C GPU-therm=39C 
+  [after cpu] 2026-09-27T19:43:33+07:00 pmode:0000 online=0-3 cpu0 min/max=1479000/1479000 gpu min/max=921600000/921600000 swap_used_kB=0 alarms=0 CPU-therm=43C GPU-therm=43C 
+  [clocks restored] 2026-09-27T19:43:37+07:00 pmode:0000 online=0-3 cpu0 min/max=102000/1479000 gpu min/max=76800000/921600000 swap_used_kB=0 alarms=0 CPU-therm=42C GPU-therm=42C 

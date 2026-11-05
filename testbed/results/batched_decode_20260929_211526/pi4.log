@@ -1,0 +1,31 @@
+pgrep: pattern that searches for process name longer than 15 characters will result in zero matches
+Try `pgrep -f' option to match against the complete command line.
+##### pi4 build b23701f77d47dad9de834d59ebfcbe25c9e8b46f, model sha256 ok, -npp 128 -ntg 32 -npl 1,2 -c 4096 -t 4 
+===== pi4 round 1  cold gate: waited 0s, now 52 C (threshold 57 C)
+STATE_BEFORE pi4 2026-09-29T21:16:05+07:00 temp=52.1'C throttled=0x80000 arm=1800404352 load=0.49
+0.01.561.037 W model has unused tensor blk.32.attn_norm.weight (size = 16384 bytes) -- ignoring
+0.01.561.071 W model has unused tensor blk.32.post_attention_norm.weight (size = 16384 bytes) -- ignoring
+0.01.561.105 W model has unused tensor blk.32.attn_q.weight (size = 35651584 bytes) -- ignoring
+0.01.561.117 W model has unused tensor blk.32.attn_k.weight (size = 4456448 bytes) -- ignoring
+0.01.561.130 W model has unused tensor blk.32.attn_v.weight (size = 4456448 bytes) -- ignoring
+0.01.561.172 W model has unused tensor blk.32.attn_output.weight (size = 17825792 bytes) -- ignoring
+0.01.561.188 W model has unused tensor blk.32.attn_q_norm.weight (size = 1024 bytes) -- ignoring
+0.01.561.201 W model has unused tensor blk.32.attn_k_norm.weight (size = 1024 bytes) -- ignoring
+0.01.561.214 W model has unused tensor blk.32.ffn_gate.weight (size = 53477376 bytes) -- ignoring
+0.01.561.229 W model has unused tensor blk.32.ffn_down.weight (size = 53477376 bytes) -- ignoring
+0.01.561.245 W model has unused tensor blk.32.ffn_up.weight (size = 53477376 bytes) -- ignoring
+0.01.561.262 W model has unused tensor blk.32.nextn.eh_proj.weight (size = 35651584 bytes) -- ignoring
+0.01.561.279 W model has unused tensor blk.32.nextn.enorm.weight (size = 16384 bytes) -- ignoring
+0.01.561.295 W model has unused tensor blk.32.nextn.hnorm.weight (size = 16384 bytes) -- ignoring
+0.01.561.354 W model has unused tensor blk.32.nextn.shared_head_norm.weight (size = 16384 bytes) -- ignoring
+
+llama_batched_bench: n_kv_max = 4096, n_batch = 2048, n_ubatch = 512, flash_attn = -1, is_pp_shared = 0, is_tg_separate = 0, n_gpu_layers = -1, n_threads = 4, n_threads_batch = 4
+
+|    PP |     TG |    B |   N_KV |   T_PP s | S_PP t/s |   T_TG s | S_TG t/s |      T s |    S t/s |
+|-------|--------|------|--------|----------|----------|----------|----------|----------|----------|
+|   128 |     32 |    1 |    160 |   80.118 |     1.60 |   49.180 |     0.65 |  129.298 |     1.24 |
+|   128 |     32 |    2 |    320 |  159.393 |     1.61 |   57.877 |     1.11 |  217.270 |     1.47 |
+
+EXIT_pi4_r1=0
+STATE_AFTER pi4 2026-09-29T21:22:06+07:00 temp=71.5'C throttled=0x80000 arm=1800457088 load=3.98
+STATE_END pi4 2026-09-29T21:22:36+07:00 temp=56.4'C throttled=0x80000 arm=900228544 load=2.41

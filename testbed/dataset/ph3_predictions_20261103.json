@@ -1,0 +1,211 @@
+{
+ "registered_at": "2026-11-04T02:39:52+07:00",
+ "script": "testbed/scripts/register_ph3_20261103.py",
+ "runner": "testbed/scripts/phase_study_20261028.py",
+ "out_prefix": "ph3",
+ "follows": "ph2 (testbed/results/ph2_20261028_122445)",
+ "model": "Qwen3-4B Q4_K_M",
+ "phase_model": "qwen3_4b",
+ "model_sha256": "7485fe6f11af29433bc51cab58009521f205840f5b4ae3a32fa7f92e8534fdf5",
+ "what": "the phase scheduler on a second model (Qwen3-4B Q4_K_M), with its own calibrated times and the power rows measured on Qwen3-0.6B: do per-model rows carry to another model?",
+ "costs": {
+  "file": "testbed/dataset/phase_costs_qwen3_4b_20261103.json",
+  "sha256": "e10d8e92829d6d0fe80139e24b898e2abec5a5ccb4d97b750fa9fdfa5cea4914"
+ },
+ "plans": [
+  "L",
+  "J"
+ ],
+ "handoff_excluded": {
+  "calibration": "testbed/results/phase_calib_20261104_004942.log",
+  "sha256": "e03091e94e7395d79e49096a51022f03fc98bf1f4ae8d21542ea99946d2b4c35",
+  "why": "the 4B's hand-off thrashed the 4 GB Jetson's memory from n = 1,024 (the slot file in /dev/shm plus the restore's copy, on top of the model and its 2,560 cells): restore 214 s and 53 min for 17 decoded tokens at n = 1,024 (0.3 s at n = 512), three hand-offs then failed on ssh, and the n = 2,048 restore never returned; H is infeasible at these lengths here"
+ },
+ "power_rows": {
+  "file": "testbed/dataset/phase_power_20261028.json",
+  "sha256": "535060758a6b475610af5852188a907cd708ce919d6f9739ee61901b0dd0c092",
+  "rows": {
+   "laptop": {
+    "idle": 17.069920105054646,
+    "pp_burst": 40.51901665275878,
+    "pp": 30.58116152704561,
+    "burst_s": 20.4,
+    "tg_burst": 35.63390265236945,
+    "tg": 33.116147889730215,
+    "handoff": 24.38768046503867
+   },
+   "jetson": {
+    "idle": 3.1837196684037523,
+    "pp": 8.259028132829828,
+    "tg": 9.387865202520178,
+    "handoff": 4.229102693299843
+   },
+   "pi5": {
+    "idle": 2.874994058185778
+   },
+   "pi4": {
+    "idle": 2.484510936789987
+   }
+  }
+ },
+ "power_table": {
+  "pi5": {
+   "idle": 3.0183277591973243,
+   "pp": 11.28765331186967,
+   "tg": 9.696049271076996,
+   "source": "testbed/dataset/energy_results_20261020_pi5fw_q4km.json",
+   "sha256": "44eed747b5cd19c0"
+  },
+  "pi4": {
+   "idle": 2.390896921017403,
+   "pp": 7.462781757353395,
+   "tg": 6.3219096642345205,
+   "source": "testbed/dataset/energy_results_20261005_pi4_q4km.json",
+   "sha256": "9c946768787cc0e7"
+  },
+  "jetson": {
+   "idle": 3.1383277591973244,
+   "pp": 8.893831082803821,
+   "tg": 11.173527822798489,
+   "source": "testbed/dataset/energy_results_20261005_jetson_vk_q4km.json",
+   "sha256": "102bfb16db360832"
+  },
+  "laptop": {
+   "idle": 14.054983277591974,
+   "pp": 29.33976692499638,
+   "tg": 32.12029854570033,
+   "source": "testbed/dataset/energy_results_20261006_laptop_q4km.json",
+   "sha256": "26856942a7d72a74"
+  }
+ },
+ "outlets": {
+  "pi4": 0,
+  "jetson": 1,
+  "pi5": 2,
+  "laptop": 3
+ },
+ "pause_s": 60,
+ "question_tokens_assumed": 12,
+ "conditions": "aunsync.timer (Google Drive sync, every 16 min, ~20 s) runs; the quiet gate is checked once before the run (phase_calib_20261028.laptop_quiet), not during it; the Zen browser stays open, allowed by the owner (2026-11-04: \"it's ok with zen open, RAM 8GB is reserved\"; the gate runs with QUIET_ALLOW_APPS=zen), so the laptop's outlet includes it; the 4B's calibration ran the same way",
+ "arms": {
+  "n768_L": {
+   "n": 768,
+   "gen": 256,
+   "plan": "L",
+   "predicted": {
+    "ttft_s": 28.6013,
+    "decode_s": 40.4217,
+    "total_s": 69.023,
+    "handoff_s": 0.0,
+    "energy_j": 3005.68,
+    "energy_j_table": 2727.49,
+    "prefill_node": "laptop",
+    "decode_node": "laptop"
+   }
+  },
+  "n768_J": {
+   "n": 768,
+   "gen": 256,
+   "plan": "J",
+   "predicted": {
+    "ttft_s": 43.85,
+    "decode_s": 90.4869,
+    "total_s": 134.3369,
+    "handoff_s": 0.0,
+    "energy_j": 4224.74,
+    "energy_j_table": 4015.81,
+    "prefill_node": "jetson",
+    "decode_node": "jetson"
+   }
+  },
+  "n1536_L": {
+   "n": 1536,
+   "gen": 256,
+   "plan": "L",
+   "predicted": {
+    "ttft_s": 64.5402,
+    "decode_s": 51.2453,
+    "total_s": 115.7855,
+    "handoff_s": 0.0,
+    "energy_j": 4862.67,
+    "energy_j_table": 4529.29,
+    "prefill_node": "laptop",
+    "decode_node": "laptop"
+   }
+  },
+  "n1536_J": {
+   "n": 1536,
+   "gen": 256,
+   "plan": "J",
+   "predicted": {
+    "ttft_s": 86.6334,
+    "decode_s": 94.3656,
+    "total_s": 180.999,
+    "handoff_s": 0.0,
+    "energy_j": 5661.1,
+    "energy_j_table": 5347.9,
+    "prefill_node": "jetson",
+    "decode_node": "jetson"
+   }
+  }
+ },
+ "order": [
+  "n768_L",
+  "n768_J",
+  "n1536_J",
+  "n1536_L",
+  "n1536_L",
+  "n1536_J",
+  "n768_J",
+  "n768_L"
+ ],
+ "picks": {
+  "energy": {
+   "768": "L",
+   "1536": "L"
+  },
+  "time": {
+   "768": "L",
+   "1536": "L"
+  }
+ },
+ "hypotheses": {
+  "PH-PICK-E": {
+   "claim": "at each n, the least predicted energy (rows) is the least measured (mean of two)"
+  },
+  "PH-PICK-T": {
+   "claim": "at each n, the least predicted total time is the least measured"
+  },
+  "PH-TIME": {
+   "tol": 0.1,
+   "claim": "every arm's mean total time within 10 % of its prediction"
+  },
+  "PH-ENERGY": {
+   "tol": 0.1,
+   "claim": "every arm's mean energy within 10 % of the 0.6B's rows' prediction"
+  },
+  "PH-BETTER": {
+   "claim": "the rows' |error| below the TinyLlama table's on every arm"
+  },
+  "PH-REPEAT": {
+   "tol": 0.03,
+   "claim": "every arm's two total times within 3 % of each other"
+  }
+ },
+ "inputs_sha256": {
+  "testbed/scripts/register_ph3_20261103.py": "11dd029c1f415e019f6a794b9a43557e1de4090f8bc364ee5adc808ccb13588b",
+  "testbed/scripts/phase_study_20261028.py": "f3b338b217355c211bebcabc902484edcb42a88218bf5a23ea201b0ecbe60bd7",
+  "testbed/scripts/phase_calib_20261028.py": "7777bbff5bf81436f600a281ee300336ef9506b2e85a7a395fbec37569e9dc19",
+  "testbed/scripts/phase_serve_20261028.py": "f6fe428453e14f00dc64d2f4979d2c64f6d426a01c4a10288eb3d3ade57f6ed5",
+  "testbed/scripts/phase_plan_20261028.py": "3591f10833e5cb0a1b2de15adc1c8dda94622749890071f65e4891d6f41a82ce",
+  "testbed/scripts/phase_power_20261028.py": "852fd3208108f40e1e1a57703e2153e2f14aa1fc8c3af6a9681afa3aecf8094c",
+  "testbed/scripts/jetson_proc_20261028.py": "ae6e7f9684015dda252fb0869830a3801c904732c11a19b4849f61aa42663b08",
+  "testbed/scripts/pd_handoff.py": "8eb365ac261ac0238fd19922f38ded8040c36c8212928e267dde2eb5ef3450a2",
+  "testbed/scripts/energy_model.py": "5642934ca5a4083708ad816878c60c39d44aea913e4a7843d006262a7c3f2a6c",
+  "testbed/scripts/shelly_strip.py": "b7aaa7ceb2f1e94aa3f1f46100c06ca9d6c0c3fa8764a6372239747ffc0fe5a8",
+  "testbed/scripts/jetson_power_guard.sh": "6dafb56fef33f2bc0e070b2552dcb871053d3c0681358bd27436552f905d90de",
+  "testbed/dataset/phase_costs_qwen3_4b_20261103.json": "e10d8e92829d6d0fe80139e24b898e2abec5a5ccb4d97b750fa9fdfa5cea4914",
+  "testbed/dataset/phase_power_20261028.json": "535060758a6b475610af5852188a907cd708ce919d6f9739ee61901b0dd0c092",
+  "ThinkPad/config/cluster.json": "1f0a3529dd384647ab71a0a08e2c142226ccf2b80aa5160ffc91e5e2e9485943"
+ }
+}

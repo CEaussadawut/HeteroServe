@@ -1,0 +1,21 @@
+########## 2026-10-21T20:29:22+07:00 prima.cpp four-node profile, ring laptop pi5 pi4 jetson, models/tinyllama-1.1b-q4km.gguf
+ok      laptop: idle, models/tinyllama-1.1b-q4km.gguf sha256 9fecc3b3cd76bba8, MemAvailable 26490 MiB
+ok      pi5: idle, models/tinyllama-1.1b-q4km.gguf sha256 9fecc3b3cd76bba8, MemAvailable 7528 MiB
+ok      pi4: idle, models/tinyllama-1.1b-q4km.gguf sha256 9fecc3b3cd76bba8, MemAvailable 7377 MiB
+ok      jetson: idle, models/tinyllama-1.1b-q4km.gguf sha256 9fecc3b3cd76bba8, MemAvailable 3519 MiB
+guard started
+start   rank 3 jetson: ./llama-cli -m ~/models/tinyllama-1.1b-q4km.gguf -t 4 --world 4 --rank 3 --master 192.168.1.108 --next 192.168.1.108 --prefetch
+start   rank 2 pi4: ./llama-cli -m ~/models/tinyllama-1.1b-q4km.gguf -t 4 --world 4 --rank 2 --master 192.168.1.108 --next 192.168.1.114 --prefetch
+start   rank 1 pi5: ./llama-cli -m ~/models/tinyllama-1.1b-q4km.gguf -t 4 --world 4 --rank 1 --master 192.168.1.108 --next 192.168.1.110 --prefetch
+start   rank 0 laptop: ./llama-cli -m ~/models/tinyllama-1.1b-q4km.gguf -t 4 --world 4 --rank 0 --master 192.168.1.108 --next 192.168.1.122 --prefetch -c 1024 -n 16 -p 'The capital of France is' (2026-10-21T20:29:51+07:00)
+testbed/scripts/prima_profile4_20261021.sh: line 43: 1703360 Aborted                    (core dumped) timeout 900 bash -c "$cmd" > "$OUT"_rank0.log 2>&1 < /dev/null
+rank 0 exit 134 (2026-10-21T20:29:56+07:00)
+rank 1 pi5: 
+stopped rank 1 pid 119113 on pi5
+rank 2 pi4: 
+stopped rank 2 pid 129262 on pi4
+rank 3 jetson: 
+stopped rank 3 pid 26245 on jetson
+guard pid 26184 stopped
+TRIP lines: 0
+PROFILE DONE 2026-10-21T20:30:06+07:00

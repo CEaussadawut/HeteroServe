@@ -1,0 +1,18 @@
+########## 2026-10-21T13:15:53+07:00 re-register the 30B MoE at Q6_K (moeq6b) against testbed/dataset/memory_snapshot_20261021_131439.json (7ce422825aed93c6)
+engine   laptop 34 + pi5 14                       head host decode   147.9 ms  prefill    69.3 ms  margin   454 MiB  (plan_host_choice on ['pi5', 'pi4', 'jetson', 'laptop'])
+default  laptop 31 + pi5 8 + pi4 7 + jetson 2     head last decode   248.0 ms  prefill    98.4 ms  margin  1561 MiB  (llama.cpp's split by reported free memory {'laptop': 31296, 'pi5': 805)
+lap_pi4  laptop 34 + pi4 14                       head host decode   275.8 ms  prefill   125.5 ms  margin   292 MiB  (named on the command line)
+DROPPED boards   the boards alone cannot hold it: no host gives a feasible plan for qwen3moe_q6k on ['pi5', 'pi4', 'jetson']: [('laptop', "not among the boards ['pi5', 'pi4', 'jetson']")]
+DROPPED single   no single node holds it
+DROPPED even     no order of equal blocks fits
+DROPPED halda    no Halda ring fits (6 priced)
+--placements 'engine,default=laptop:31+pi5:8+pi4:7+jetson:2/last,lap_pi4=laptop:34+pi4:14/host'
+wrote testbed/results/fe4_register_20261021_131553/placements_qwen3moe_q6k.json
+engine   laptop 34 + pi5 14           head host host laptop decode  147.9 ms  prefill  69.3 ms  J/token 4.538 (all boards 5.356)
+         memory: laptop needs 17710 + 8192 of 26356 MiB, margin 454, pi5 needs 7139 + 0 of 7606 MiB, margin 467
+default  laptop 31 + pi5 8 + pi4 7 + jetson 2 head last host laptop decode  248.0 ms  prefill  98.4 ms  J/token 7.826 (all boards 7.826)
+         memory: laptop needs 15978 + 8192 of 26356 MiB, margin 2186, pi5 needs 4161 + 0 of 7606 MiB, margin 3445, pi4 needs 3633 + 0 of 7399 MiB, margin 3766, jetson needs 1523 + 450 of 3534 MiB, margin 1561
+lap_pi4  laptop 34 + pi4 14           head host host laptop decode  275.8 ms  prefill 125.5 ms  J/token 6.898 (all boards 8.596)
+         memory: laptop needs 17710 + 8192 of 26356 MiB, margin 454, pi4 needs 7107 + 0 of 7399 MiB, margin 292
+order: [['engine', 'default', 'lap_pi4'], ['default', 'lap_pi4', 'engine'], ['lap_pi4', 'engine', 'default'], ['engine', 'default', 'lap_pi4'], ['default', 'lap_pi4', 'engine']]
+registered testbed/dataset/full_eval_moeq6b_fe4_20261021.json at 2026-10-21T13:15:54+07:00, sha256 76f4adc60861383e (read-only)

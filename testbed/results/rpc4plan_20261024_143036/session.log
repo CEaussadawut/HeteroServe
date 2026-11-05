@@ -1,0 +1,520 @@
+########## 2026-10-24T14:30:36+07:00 rpc4plan session on four nodes, with energy -> testbed/results/rpc4plan_20261024_143036 (registration 014cd4519ba03cd0)
+model tinyllama_q4_0; order H10 L10 LB10 H3 L3 LB3 H10; deadline none; 6 requests of 128 + 64 per arm-run, ctx 2048 (MEMFILE testbed/dataset/memory_snapshot_20261024_142953.json)
+arm H10: PLACE=laptop:11,pi4:11 PLACE_HEAD=host SERVE_DRAFT=none
+arm H3: PLACE=laptop:11,pi4:11 PLACE_HEAD=host SERVE_DRAFT=none
+arm L10: PLACE=laptop:11,pi4:11 PLACE_HEAD=last SERVE_DRAFT=none
+arm L3: PLACE=laptop:11,pi4:11 PLACE_HEAD=last SERVE_DRAFT=none
+arm LB10: PLACE=laptop:11,pi4:11 PLACE_HEAD=last SERVE_DRAFT=none SERVE_EXTRA=--backend-sampling
+arm LB3: PLACE=laptop:11,pi4:11 PLACE_HEAD=last SERVE_DRAFT=none SERVE_EXTRA=--backend-sampling
+CHECK: NETSHAPE_PEER=192.168.10.5 NETSHAPE_PORT=50052 bash testbed/scripts/netshape.sh check
+UNSHAPED
+guard started
+quiet   laptop: load 0.48, on the charger, no battery charging, wifi disabled
+IDLE_BEFORE start 1792827119.206930447
+IDLE_BEFORE end 1792827299.217235412
+===== 2026-10-24T14:34:59+07:00 arm-run 1: H10
+quiet   laptop: load 0.69, on the charger, no battery charging, wifi disabled
+cold    pi5 at 48.3 C (< 50) after 0 s
+cold    pi4 at 53.0 C (< 55) after 0 s
+PRE H10: nohup bash testbed/scripts/ns4c_shape_20261024.sh when-served 10 0 "$OUT/ns4_shape.log" >> "$OUT/ns4_shape.out" 2>&1 &
+2026-10-24T14:37:30+07:00 start {"what": "QR3 TPOT, one user", "engine": "llama", "nodes": "laptop pi4", "prima_lw": null, "model": "tinyllama_q4_0", "ctx": 2048, "mem": "testbed/dataset/memory_snapshot_20261024_142953.json", "clocks": "loc
+2026-10-24T14:37:34+07:00 model_sha256 {"host": "laptop", "file": "~/models/tinyllama-1.1b-q4_0.gguf", "sha256": "da3087fb14aede55fde6eb81a0e55e886810e43509ec82ecdc7aa5d62a03b556", "expected": "da3087fb14aede55fde6eb81a0e55e886810e43509ec82
+2026-10-24T14:37:54+07:00 settled {"host": "laptop", "mem_available_mib": 27533}
+2026-10-24T14:37:54+07:00 serve_pool ########## 2026-10-24T14:37:54+07:00 serve tinyllama_q4_0, ctx 2048, clocks locked, boards laptop pi4, planned against testbed/dataset/memory_snapshot_20261024_142953.json: laptop 11 + pi4 11, head on la
+2026-10-24T14:37:54+07:00 serve_pool hosts   laptop: fixed: laptop 11 + pi4 11, head host
+2026-10-24T14:37:54+07:00 serve_pool llama-server -m ~/models/tinyllama-1.1b-q4_0.gguf --rpc 192.168.10.12:50052 -ngl 12 -ot "^output\.weight=CPU"  -c 2048 -np 1 -t 4 -lv 4 -lm none --cache-ram 0 --host 192.168.1.108 --port 8080   pin b2370
+2026-10-24T14:37:54+07:00 serve_pool gate    laptop: MemAvailable 27527 MiB, the plan needs 8910 MiB with its reserve (margin at rest 18622 MiB)
+2026-10-24T14:37:55+07:00 serve_pool gate    pi4: MemAvailable 7410 MiB, the plan needs 441 MiB with its reserve (margin at rest 6928 MiB)
+2026-10-24T14:37:56+07:00 serve_pool worker  pi4 listening on 192.168.10.12:50052 (pid 31315)
+2026-10-24T14:37:56+07:00 serve_pool server  starting on laptop (pid 213563); loading streams the model from the SD card to the workers
+2026-10-24T14:38:01+07:00 serve_pool READY   2026-10-24T14:38:01+07:00: http://192.168.1.108:8080/ (web chat) -- health {"status":"ok"}
+2026-10-24T14:38:01+07:00 serve_pool 0.00.158.616 I load_tensors:          CPU model buffer size =    86.60 MiB
+2026-10-24T14:38:01+07:00 serve_pool 0.00.158.617 I load_tensors:   CPU_REPACK model buffer size =   259.88 MiB
+2026-10-24T14:38:01+07:00 serve_pool 0.00.158.618 I load_tensors: RPC0[192.168.10.12:50052] model buffer size =   260.05 MiB
+2026-10-24T14:38:01+07:00 serve_pool 0.02.925.037 I llama_context: n_ctx                 = 2048
+2026-10-24T14:38:01+07:00 serve_pool 0.02.925.040 I llama_context: flash_attn            = auto
+2026-10-24T14:38:01+07:00 serve_pool 0.02.925.191 I llama_kv_cache:        CPU KV buffer size =    22.00 MiB
+2026-10-24T14:38:01+07:00 serve_pool 0.02.931.968 I llama_kv_cache: RPC0[192.168.10.12:50052] KV buffer size =    22.00 MiB
+2026-10-24T14:38:01+07:00 serve_pool 0.02.932.030 I llama_kv_cache: size =   44.00 MiB (  2048 cells,  22 layers,  1/1 seqs), K (f16):   22.00 MiB, V (f16):   22.00 MiB
+2026-10-24T14:38:01+07:00 serve_pool 0.02.959.328 I sched_reserve: RPC0[192.168.10.12:50052] compute buffer size =    43.01 MiB
+2026-10-24T14:38:01+07:00 serve_pool 0.02.959.336 I sched_reserve:        CPU compute buffer size =    51.01 MiB
+2026-10-24T14:38:01+07:00 serve_pool 0.03.200.610 I slot   load_model: id  0 | task -1 | new slot, n_ctx = 2048
+2026-10-24T14:38:01+07:00 serve_pool split   pi4: llama.cpp 260.05 MiB, planned 260.0 MiB (head on laptop)
+2026-10-24T14:38:01+07:00 serve_pool mem     laptop: MemAvailable 27132 MiB at READY, 27527 at the gate: the serve holds 395 MiB, charged 718 MiB
+2026-10-24T14:38:01+07:00 serve_pool mem     pi4: MemAvailable 7092 MiB at READY, 7410 at the gate: the serve holds 318 MiB, charged 441 MiB
+2026-10-24T14:38:01+07:00 served {"host": "laptop", "workers": "pi4", "args": "-m ~/models/tinyllama-1.1b-q4_0.gguf --rpc 192.168.10.12:50052 -ngl 12 -ot \"^output\\.weight=CPU\"", "ctx": "2048", "serve_log": "testbed/results/serve_tinyllam
+2026-10-24T14:38:01+07:00 prompts {"doc_tokens": 8900, "head": 1, "question": 14, "warm_offset": 8403, "sha256": ["fa269846accdb5df", "5f883f45f3b0f05d", "187493e8cc0d86ff", "d8fb27d9f777dcd0", "3fb3a10a4aa896f0", "ba54d94d3e5b335b"]}
+2026-10-24T14:38:01+07:00 health warm {"laptop": "load=0.87 pkg_mC=56000 MemAvailable_kB=27776384", "pi4": "throttled=0x0 temp=55.0'C MemAvailable_kB=7259800", "laptop_load": [0.86572265625, 1.0693359375, 0.947265625]}
+2026-10-24T14:38:37+07:00 warm {"prompt_n": 512, "n_predict": 32, "sent_wall": 1792827481.7443104, "events": [[31.415927, [13], 1, 0.001, 31414.758, "\n"], [31.673164, [13], 2, 257.277, 31414.758, "\n"], [31.810137, [29896], 3, 394.238, 314
+2026-10-24T14:38:37+07:00 health 0 {"laptop": "load=0.75 pkg_mC=55000 MemAvailable_kB=27728620", "pi4": "throttled=0x0 temp=64.7'C MemAvailable_kB=7204220", "laptop_load": [0.7490234375, 1.01318359375, 0.9326171875]}
+2026-10-24T14:38:53+07:00 req 0 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792827517.844247, "events": [[7.773315, [13], 1, 0.001, 7772.207, "\n"], [8.014104, [13], 2, 240.791, 7772.207, "\n"], [8.133149, [29933], 3, 359.821, 7772.207
+2026-10-24T14:38:53+07:00 health 1 {"laptop": "load=0.66 pkg_mC=55000 MemAvailable_kB=27724516", "pi4": "throttled=0x0 temp=63.7'C MemAvailable_kB=7210260", "laptop_load": [0.65673828125, 0.97998046875, 0.92236328125]}
+2026-10-24T14:39:09+07:00 req 1 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792827533.6675177, "events": [[7.749419, [13], 1, 0.001, 7748.576, "\n"], [7.989203, [13], 2, 239.789, 7748.576, "\n"], [8.10916, [29933], 3, 359.75, 7748.576,
+2026-10-24T14:39:09+07:00 health 2 {"laptop": "load=0.51 pkg_mC=55000 MemAvailable_kB=27697064", "pi4": "throttled=0x0 temp=62.8'C MemAvailable_kB=7211464", "laptop_load": [0.51025390625, 0.93115234375, 0.90625]}
+2026-10-24T14:39:25+07:00 req 2 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792827549.4278412, "events": [[7.772547, [13], 1, 0.001, 7771.775, "\n"], [8.013257, [13], 2, 240.652, 7771.775, "\n"], [8.134039, [29933], 3, 361.428, 7771.77
+2026-10-24T14:39:25+07:00 health 3 {"laptop": "load=0.88 pkg_mC=55000 MemAvailable_kB=27633208", "pi4": "throttled=0x0 temp=63.3'C MemAvailable_kB=7211468", "laptop_load": [0.8779296875, 0.98486328125, 0.92431640625]}
+2026-10-24T14:39:40+07:00 req 3 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792827565.3119576, "events": [[7.790341, [13], 1, 0.001, 7789.29, "\n"], [8.033314, [13], 2, 242.845, 7789.29, "\n"], [8.152128, [29933], 3, 361.737, 7789.29, 
+2026-10-24T14:39:41+07:00 health 4 {"laptop": "load=0.68 pkg_mC=55000 MemAvailable_kB=27665248", "pi4": "throttled=0x0 temp=64.7'C MemAvailable_kB=7213220", "laptop_load": [0.68310546875, 0.93603515625, 0.908203125]}
+2026-10-24T14:39:56+07:00 req 4 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792827581.1235754, "events": [[7.751277, [13], 1, 0.001, 7750.327, "\n"], [7.992275, [13], 2, 240.985, 7750.327, "\n"], [8.114086, [29898], 3, 362.748, 7750.32
+2026-10-24T14:39:56+07:00 health 5 {"laptop": "load=0.94 pkg_mC=58000 MemAvailable_kB=27659748", "pi4": "throttled=0x0 temp=64.7'C MemAvailable_kB=7212200", "laptop_load": [0.9365234375, 0.986328125, 0.92578125]}
+2026-10-24T14:40:12+07:00 req 5 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792827596.8797767, "events": [[7.825979, [13], 1, 0.001, 7825.13, "\n"], [8.067857, [13], 2, 241.774, 7825.13, "\n"], [8.187182, [29899], 3, 361.124, 7825.13, 
+2026-10-24T14:40:12+07:00 health end {"laptop": "load=0.89 pkg_mC=53000 MemAvailable_kB=27644868", "pi4": "throttled=0x0 temp=64.2'C MemAvailable_kB=7211404", "laptop_load": [0.88916015625, 0.97119140625, 0.9208984375]}
+scp: Connection closed
+2026-10-24T14:40:14+07:00 serve_pool stop    llama-server on laptop stopped
+2026-10-24T14:40:14+07:00 serve_pool stop    worker on pi4 stopped
+2026-10-24T14:40:14+07:00 done {"log": "testbed/results/qr3_rpc4H101_tinyllama_q4_0_20261024_143730.log"}
+req 0: 64 tokens, 0 merged; TTFT 7773.3 ms; client mean 123.5 p95 124.24 max 240.79 | server mean 123.5 p95 124.19 max 240.79
+req 1: 64 tokens, 0 merged; TTFT 7749.4 ms; client mean 123.13 p95 124.0 max 239.78 | server mean 123.13 p95 123.97 max 239.79
+req 2: 64 tokens, 0 merged; TTFT 7772.5 ms; client mean 124.66 p95 126.48 max 240.71 | server mean 124.66 p95 126.47 max 240.65
+req 3: 64 tokens, 0 merged; TTFT 7790.3 ms; client mean 123.36 p95 125.79 max 242.97 | server mean 123.36 p95 124.93 max 242.84
+req 4: 64 tokens, 0 merged; TTFT 7751.3 ms; client mean 123.13 p95 123.98 max 241.0 | server mean 123.13 p95 123.99 max 240.98
+req 5: 64 tokens, 0 merged; TTFT 7826.0 ms; client mean 126.8 p95 130.78 max 304.12 | server mean 126.8 p95 130.49 max 307.03
+POOLED client {"n": 378, "mean": 124.1, "p50": 121.33, "p95": 125.67, "p99": 240.84, "max": 304.12, "min": 118.52, "p95_ci95": [124.25, 128.79]}
+POOLED server {"n": 378, "mean": 124.1, "p50": 121.35, "p95": 125.13, "p99": 240.83, "max": 307.03, "min": 118.53, "p95_ci95": [124.21, 126.57]}
+wrote testbed/results/qr3_rpc4H101_tinyllama_q4_0_20261024_143730_summary.json
+POST H10: [ -f "$OUT/ns4_shape.log.pid" ] && kill $(cat "$OUT/ns4_shape.log.pid") 2>/dev/null; bash testbed/scripts/ns4c_shape_20261024.sh counters "$OUT/ns4c_counters.log"; bash testbed/scripts/ns4c_shape_20261024.sh clear
+    counters: egress 7945 pkts 3936630 B, ingress 25973 pkts 33680786 B
+    CLEARED eth0: qdisc mq 0: root 
+    UNSHAPED
+ARM 1 H10 rc=0 log=testbed/results/qr3_rpc4H101_tinyllama_q4_0_20261024_143730.log
+===== 2026-10-24T14:40:36+07:00 arm-run 2: L10
+quiet   laptop: load 0.21, on the charger, no battery charging, wifi disabled
+cold    pi5 at 48.3 C (< 50) after 0 s
+cold    pi4 at 52.5 C (< 55) after 0 s
+PRE L10: nohup bash testbed/scripts/ns4c_shape_20261024.sh when-served 10 0 "$OUT/ns4_shape.log" >> "$OUT/ns4_shape.out" 2>&1 &
+2026-10-24T14:41:37+07:00 start {"what": "QR3 TPOT, one user", "engine": "llama", "nodes": "laptop pi4", "prima_lw": null, "model": "tinyllama_q4_0", "ctx": 2048, "mem": "testbed/dataset/memory_snapshot_20261024_142953.json", "clocks": "loc
+2026-10-24T14:41:40+07:00 model_sha256 {"host": "laptop", "file": "~/models/tinyllama-1.1b-q4_0.gguf", "sha256": "da3087fb14aede55fde6eb81a0e55e886810e43509ec82ecdc7aa5d62a03b556", "expected": "da3087fb14aede55fde6eb81a0e55e886810e43509ec82
+2026-10-24T14:41:45+07:00 settled {"host": "laptop", "mem_available_mib": 27537}
+2026-10-24T14:41:45+07:00 serve_pool ########## 2026-10-24T14:41:45+07:00 serve tinyllama_q4_0, ctx 2048, clocks locked, boards laptop pi4, planned against testbed/dataset/memory_snapshot_20261024_142953.json: laptop 11 + pi4 11, head on pi
+2026-10-24T14:41:45+07:00 serve_pool hosts   laptop: fixed: laptop 11 + pi4 11, head last
+2026-10-24T14:41:45+07:00 serve_pool llama-server -m ~/models/tinyllama-1.1b-q4_0.gguf --rpc 192.168.10.12:50052 -ngl 12  -c 2048 -np 1 -t 4 -lv 4 -lm none --cache-ram 0 --host 192.168.1.108 --port 8080   pin b23701f77d47dad9de834d59ebfcbe2
+2026-10-24T14:41:45+07:00 serve_pool gate    laptop: MemAvailable 27529 MiB, the plan needs 8859 MiB with its reserve (margin at rest 18673 MiB)
+2026-10-24T14:41:46+07:00 serve_pool gate    pi4: MemAvailable 7370 MiB, the plan needs 492 MiB with its reserve (margin at rest 6877 MiB)
+2026-10-24T14:41:47+07:00 serve_pool worker  pi4 listening on 192.168.10.12:50052 (pid 31734)
+2026-10-24T14:41:47+07:00 serve_pool server  starting on laptop (pid 214799); loading streams the model from the SD card to the workers
+2026-10-24T14:41:52+07:00 serve_pool READY   2026-10-24T14:41:52+07:00: http://192.168.1.108:8080/ (web chat) -- health {"status":"ok"}
+2026-10-24T14:41:52+07:00 serve_pool 0.00.150.151 I load_tensors:          CPU model buffer size =    35.33 MiB
+2026-10-24T14:41:52+07:00 serve_pool 0.00.150.152 I load_tensors:   CPU_REPACK model buffer size =   259.88 MiB
+2026-10-24T14:41:52+07:00 serve_pool 0.00.150.153 I load_tensors: RPC0[192.168.10.12:50052] model buffer size =   311.32 MiB
+2026-10-24T14:41:52+07:00 serve_pool 0.03.551.914 I llama_context: n_ctx                 = 2048
+2026-10-24T14:41:52+07:00 serve_pool 0.03.551.915 I llama_context: flash_attn            = auto
+2026-10-24T14:41:52+07:00 serve_pool 0.03.552.089 I llama_kv_cache:        CPU KV buffer size =    22.00 MiB
+2026-10-24T14:41:52+07:00 serve_pool 0.03.569.252 I llama_kv_cache: RPC0[192.168.10.12:50052] KV buffer size =    22.00 MiB
+2026-10-24T14:41:52+07:00 serve_pool 0.03.569.427 I llama_kv_cache: size =   44.00 MiB (  2048 cells,  22 layers,  1/1 seqs), K (f16):   22.00 MiB, V (f16):   22.00 MiB
+2026-10-24T14:41:52+07:00 serve_pool 0.03.604.183 I sched_reserve: RPC0[192.168.10.12:50052] compute buffer size =    43.01 MiB
+2026-10-24T14:41:52+07:00 serve_pool 0.03.604.188 I sched_reserve:        CPU compute buffer size =    51.01 MiB
+2026-10-24T14:41:52+07:00 serve_pool 0.03.862.739 I slot   load_model: id  0 | task -1 | new slot, n_ctx = 2048
+2026-10-24T14:41:52+07:00 serve_pool split   pi4: llama.cpp 311.32 MiB, planned 311.3 MiB (head on pi4)
+2026-10-24T14:41:52+07:00 serve_pool mem     laptop: MemAvailable 27155 MiB at READY, 27529 at the gate: the serve holds 374 MiB, charged 667 MiB
+2026-10-24T14:41:52+07:00 serve_pool mem     pi4: MemAvailable 7008 MiB at READY, 7370 at the gate: the serve holds 362 MiB, charged 492 MiB
+2026-10-24T14:41:52+07:00 served {"host": "laptop", "workers": "pi4", "args": "-m ~/models/tinyllama-1.1b-q4_0.gguf --rpc 192.168.10.12:50052 -ngl 12", "ctx": "2048", "serve_log": "testbed/results/serve_tinyllama_q4_0_20261024_144145.log"}
+2026-10-24T14:41:52+07:00 prompts {"doc_tokens": 8900, "head": 1, "question": 14, "warm_offset": 8403, "sha256": ["fa269846accdb5df", "5f883f45f3b0f05d", "187493e8cc0d86ff", "d8fb27d9f777dcd0", "3fb3a10a4aa896f0", "ba54d94d3e5b335b"]}
+2026-10-24T14:41:53+07:00 health warm {"laptop": "load=0.56 pkg_mC=51000 MemAvailable_kB=27805520", "pi4": "throttled=0x0 temp=53.5'C MemAvailable_kB=7175880", "laptop_load": [0.56005859375, 0.7744140625, 0.849609375]}
+2026-10-24T14:42:32+07:00 warm {"prompt_n": 512, "n_predict": 32, "sent_wall": 1792827713.171808, "events": [[31.097162, [13], 1, 0.001, 31096.019, "\n"], [31.466465, [13], 2, 369.279, 31096.019, "\n"], [31.715822, [29896], 3, 618.611, 3109
+2026-10-24T14:42:32+07:00 health 0 {"laptop": "load=0.35 pkg_mC=47000 MemAvailable_kB=27806104", "pi4": "throttled=0x0 temp=61.8'C MemAvailable_kB=7150560", "laptop_load": [0.35400390625, 0.69189453125, 0.81640625]}
+2026-10-24T14:42:54+07:00 req 0 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792827752.3517897, "events": [[7.838729, [13], 1, 0.001, 7837.946, "\n"], [8.190385, [13], 2, 351.613, 7837.946, "\n"], [8.421256, [29933], 3, 582.498, 7837.94
+2026-10-24T14:42:55+07:00 health 1 {"laptop": "load=0.56 pkg_mC=48000 MemAvailable_kB=27806764", "pi4": "throttled=0x0 temp=60.3'C MemAvailable_kB=7154076", "laptop_load": [0.56103515625, 0.712890625, 0.8212890625]}
+2026-10-24T14:43:17+07:00 req 1 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792827775.1914635, "events": [[7.781547, [13], 1, 0.001, 7780.72, "\n"], [8.133054, [13], 2, 351.458, 7780.72, "\n"], [8.363875, [29933], 3, 582.266, 7780.72, 
+2026-10-24T14:43:17+07:00 health 2 {"laptop": "load=0.37 pkg_mC=55000 MemAvailable_kB=27799364", "pi4": "throttled=0x0 temp=60.8'C MemAvailable_kB=7153392", "laptop_load": [0.36865234375, 0.654296875, 0.798828125]}
+2026-10-24T14:43:40+07:00 req 2 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792827797.951927, "events": [[7.801625, [13], 1, 0.001, 7800.713, "\n"], [8.152245, [13], 2, 350.628, 7800.713, "\n"], [8.38148, [29933], 3, 579.855, 7800.713,
+2026-10-24T14:43:40+07:00 health 3 {"laptop": "load=0.33 pkg_mC=51000 MemAvailable_kB=27802208", "pi4": "throttled=0x0 temp=60.8'C MemAvailable_kB=7156900", "laptop_load": [0.3310546875, 0.62744140625, 0.787109375]}
+2026-10-24T14:44:03+07:00 req 3 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792827820.7238684, "events": [[7.794167, [13], 1, 0.001, 7793.318, "\n"], [8.147813, [13], 2, 353.547, 7793.318, "\n"], [8.379102, [29933], 3, 584.869, 7793.31
+2026-10-24T14:44:03+07:00 health 4 {"laptop": "load=0.51 pkg_mC=52000 MemAvailable_kB=27791360", "pi4": "throttled=0x0 temp=60.3'C MemAvailable_kB=7168236", "laptop_load": [0.509765625, 0.654296875, 0.79296875]}
+2026-10-24T14:44:26+07:00 req 4 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792827843.4836907, "events": [[7.802639, [13], 1, 0.001, 7801.71, "\n"], [8.154608, [13], 2, 351.947, 7801.71, "\n"], [8.389227, [29898], 3, 586.57, 7801.71, "
+2026-10-24T14:44:26+07:00 health 5 {"laptop": "load=0.36 pkg_mC=49000 MemAvailable_kB=27812468", "pi4": "throttled=0x0 temp=60.8'C MemAvailable_kB=7169828", "laptop_load": [0.3349609375, 0.6005859375, 0.77099609375]}
+2026-10-24T14:44:48+07:00 req 5 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792827866.2966485, "events": [[7.784852, [13], 1, 0.001, 7783.997, "\n"], [8.13659, [13], 2, 351.741, 7783.997, "\n"], [8.367925, [29899], 3, 583.043, 7783.997
+2026-10-24T14:44:49+07:00 health end {"laptop": "load=0.24 pkg_mC=51000 MemAvailable_kB=27811576", "pi4": "throttled=0x0 temp=61.3'C MemAvailable_kB=7169656", "laptop_load": [0.2392578125, 0.560546875, 0.75341796875]}
+scp: Connection closed
+2026-10-24T14:44:50+07:00 serve_pool stop    llama-server on laptop stopped
+2026-10-24T14:44:51+07:00 serve_pool stop    worker on pi4 stopped
+2026-10-24T14:44:51+07:00 done {"log": "testbed/results/qr3_rpc4L102_tinyllama_q4_0_20261024_144137.log"}
+req 0: 64 tokens, 0 merged; TTFT 7838.7 ms; client mean 234.09 p95 237.04 max 351.66 | server mean 234.09 p95 237.04 max 351.61
+req 1: 64 tokens, 0 merged; TTFT 7781.5 ms; client mean 234.03 p95 235.05 max 351.51 | server mean 234.03 p95 235.01 max 351.46
+req 2: 64 tokens, 0 merged; TTFT 7801.6 ms; client mean 233.57 p95 234.81 max 350.62 | server mean 233.57 p95 234.75 max 350.63
+req 3: 64 tokens, 0 merged; TTFT 7794.2 ms; client mean 233.74 p95 235.05 max 353.65 | server mean 233.74 p95 234.98 max 353.55
+req 4: 64 tokens, 0 merged; TTFT 7802.6 ms; client mean 234.53 p95 234.88 max 351.97 | server mean 234.52 p95 234.91 max 351.95
+req 5: 64 tokens, 0 merged; TTFT 7784.9 ms; client mean 234.68 p95 235.07 max 351.74 | server mean 234.68 p95 235.03 max 351.74
+POOLED client {"n": 378, "mean": 234.11, "p50": 231.78, "p95": 235.38, "p99": 351.54, "max": 353.65, "min": 229.23, "p95_ci95": [235.09, 237.29]}
+POOLED server {"n": 378, "mean": 234.1, "p50": 231.81, "p95": 235.34, "p99": 351.49, "max": 353.55, "min": 229.23, "p95_ci95": [235.02, 237.32]}
+wrote testbed/results/qr3_rpc4L102_tinyllama_q4_0_20261024_144137_summary.json
+POST L10: [ -f "$OUT/ns4_shape.log.pid" ] && kill $(cat "$OUT/ns4_shape.log.pid") 2>/dev/null; bash testbed/scripts/ns4c_shape_20261024.sh counters "$OUT/ns4c_counters.log"; bash testbed/scripts/ns4c_shape_20261024.sh clear
+    counters: egress 41052 pkts 55961100 B, ingress 26145 pkts 33681014 B
+    CLEARED eth0: qdisc mq 0: root 
+    UNSHAPED
+ARM 2 L10 rc=0 log=testbed/results/qr3_rpc4L102_tinyllama_q4_0_20261024_144137.log
+===== 2026-10-24T14:45:12+07:00 arm-run 3: LB10
+quiet   laptop: load 0.13, on the charger, no battery charging, wifi disabled
+cold    pi5 at 49.4 C (< 50) after 0 s
+cold    pi4 at 51.1 C (< 55) after 0 s
+PRE LB10: nohup bash testbed/scripts/ns4c_shape_20261024.sh when-served 10 0 "$OUT/ns4_shape.log" >> "$OUT/ns4_shape.out" 2>&1 &
+2026-10-24T14:46:13+07:00 start {"what": "QR3 TPOT, one user", "engine": "llama", "nodes": "laptop pi4", "prima_lw": null, "model": "tinyllama_q4_0", "ctx": 2048, "mem": "testbed/dataset/memory_snapshot_20261024_142953.json", "clocks": "loc
+2026-10-24T14:46:16+07:00 model_sha256 {"host": "laptop", "file": "~/models/tinyllama-1.1b-q4_0.gguf", "sha256": "da3087fb14aede55fde6eb81a0e55e886810e43509ec82ecdc7aa5d62a03b556", "expected": "da3087fb14aede55fde6eb81a0e55e886810e43509ec82
+2026-10-24T14:46:21+07:00 settled {"host": "laptop", "mem_available_mib": 27552}
+2026-10-24T14:46:22+07:00 serve_pool ########## 2026-10-24T14:46:22+07:00 serve tinyllama_q4_0, ctx 2048, clocks locked, boards laptop pi4, planned against testbed/dataset/memory_snapshot_20261024_142953.json: laptop 11 + pi4 11, head on pi
+2026-10-24T14:46:22+07:00 serve_pool hosts   laptop: fixed: laptop 11 + pi4 11, head last
+2026-10-24T14:46:22+07:00 serve_pool llama-server -m ~/models/tinyllama-1.1b-q4_0.gguf --rpc 192.168.10.12:50052 -ngl 12  --backend-sampling -c 2048 -np 1 -t 4 -lv 4 -lm none --cache-ram 0 --host 192.168.1.108 --port 8080   pin b23701f77d47
+2026-10-24T14:46:22+07:00 serve_pool gate    laptop: MemAvailable 27541 MiB, the plan needs 8859 MiB with its reserve (margin at rest 18673 MiB)
+2026-10-24T14:46:22+07:00 serve_pool gate    pi4: MemAvailable 7371 MiB, the plan needs 492 MiB with its reserve (margin at rest 6877 MiB)
+2026-10-24T14:46:23+07:00 serve_pool worker  pi4 listening on 192.168.10.12:50052 (pid 32150)
+2026-10-24T14:46:23+07:00 serve_pool server  starting on laptop (pid 216254); loading streams the model from the SD card to the workers
+2026-10-24T14:46:28+07:00 serve_pool READY   2026-10-24T14:46:28+07:00: http://192.168.1.108:8080/ (web chat) -- health {"status":"ok"}
+2026-10-24T14:46:28+07:00 serve_pool 0.00.140.563 I load_tensors:          CPU model buffer size =    35.33 MiB
+2026-10-24T14:46:28+07:00 serve_pool 0.00.140.564 I load_tensors:   CPU_REPACK model buffer size =   259.88 MiB
+2026-10-24T14:46:28+07:00 serve_pool 0.00.140.565 I load_tensors: RPC0[192.168.10.12:50052] model buffer size =   311.32 MiB
+2026-10-24T14:46:28+07:00 serve_pool 0.03.533.946 I llama_context: n_ctx                 = 2048
+2026-10-24T14:46:28+07:00 serve_pool 0.03.533.950 I llama_context: flash_attn            = auto
+2026-10-24T14:46:28+07:00 serve_pool 0.03.534.091 I llama_kv_cache:        CPU KV buffer size =    22.00 MiB
+2026-10-24T14:46:28+07:00 serve_pool 0.03.543.148 I llama_kv_cache: RPC0[192.168.10.12:50052] KV buffer size =    22.00 MiB
+2026-10-24T14:46:28+07:00 serve_pool 0.03.543.289 I llama_kv_cache: size =   44.00 MiB (  2048 cells,  22 layers,  1/1 seqs), K (f16):   22.00 MiB, V (f16):   22.00 MiB
+2026-10-24T14:46:28+07:00 serve_pool 0.03.584.965 I sched_reserve: RPC0[192.168.10.12:50052] compute buffer size =    43.01 MiB
+2026-10-24T14:46:28+07:00 serve_pool 0.03.584.969 I sched_reserve:        CPU compute buffer size =    51.01 MiB
+2026-10-24T14:46:28+07:00 serve_pool 0.03.876.665 I slot   load_model: id  0 | task -1 | new slot, n_ctx = 2048
+2026-10-24T14:46:28+07:00 serve_pool split   pi4: llama.cpp 311.32 MiB, planned 311.3 MiB (head on pi4)
+2026-10-24T14:46:28+07:00 serve_pool mem     laptop: MemAvailable 27222 MiB at READY, 27541 at the gate: the serve holds 319 MiB, charged 667 MiB
+2026-10-24T14:46:29+07:00 serve_pool mem     pi4: MemAvailable 7011 MiB at READY, 7371 at the gate: the serve holds 360 MiB, charged 492 MiB
+2026-10-24T14:46:29+07:00 served {"host": "laptop", "workers": "pi4", "args": "-m ~/models/tinyllama-1.1b-q4_0.gguf --rpc 192.168.10.12:50052 -ngl 12", "ctx": "2048", "serve_log": "testbed/results/serve_tinyllama_q4_0_20261024_144621.log"}
+2026-10-24T14:46:29+07:00 prompts {"doc_tokens": 8900, "head": 1, "question": 14, "warm_offset": 8403, "sha256": ["fa269846accdb5df", "5f883f45f3b0f05d", "187493e8cc0d86ff", "d8fb27d9f777dcd0", "3fb3a10a4aa896f0", "ba54d94d3e5b335b"]}
+2026-10-24T14:46:29+07:00 health warm {"laptop": "load=0.17 pkg_mC=51000 MemAvailable_kB=27871960", "pi4": "throttled=0x0 temp=53.5'C MemAvailable_kB=7178616", "laptop_load": [0.171875, 0.4404296875, 0.68896484375]}
+2026-10-24T14:47:04+07:00 warm {"prompt_n": 512, "n_predict": 32, "sent_wall": 1792827989.3358223, "events": [[31.007406, [13], 1, 0.001, 31006.263, "\n"], [31.286349, [13], 2, 278.938, 31006.263, "\n"], [31.43088, [29896], 3, 423.505, 3100
+2026-10-24T14:47:05+07:00 health 0 {"laptop": "load=0.37 pkg_mC=48000 MemAvailable_kB=27800976", "pi4": "throttled=0x0 temp=63.7'C MemAvailable_kB=7149044", "laptop_load": [0.369140625, 0.46826171875, 0.689453125]}
+2026-10-24T14:47:20+07:00 req 0 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792828025.1483223, "events": [[7.712066, [13], 1, 0.001, 7711.217, "\n"], [7.97495, [13], 2, 262.871, 7711.217, "\n"], [8.100831, [29933], 3, 388.647, 7711.217
+2026-10-24T14:47:21+07:00 health 1 {"laptop": "load=0.61 pkg_mC=49000 MemAvailable_kB=27854048", "pi4": "throttled=0x0 temp=64.2'C MemAvailable_kB=7187836", "laptop_load": [0.607421875, 0.51171875, 0.69970703125]}
+2026-10-24T14:47:37+07:00 req 1 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792828041.2218437, "events": [[7.697491, [13], 1, 0.001, 7696.576, "\n"], [7.960048, [13], 2, 262.54, 7696.576, "\n"], [8.085456, [29933], 3, 387.905, 7696.576
+2026-10-24T14:47:37+07:00 health 2 {"laptop": "load=1.00 pkg_mC=51000 MemAvailable_kB=27853564", "pi4": "throttled=0x0 temp=64.2'C MemAvailable_kB=7188124", "laptop_load": [1.0048828125, 0.60791015625, 0.72802734375]}
+2026-10-24T14:47:53+07:00 req 2 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792828057.2995455, "events": [[7.726807, [13], 1, 0.001, 7725.858, "\n"], [7.989373, [13], 2, 262.564, 7725.858, "\n"], [8.114762, [29933], 3, 387.927, 7725.85
+2026-10-24T14:47:53+07:00 health 3 {"laptop": "load=0.78 pkg_mC=51000 MemAvailable_kB=27855140", "pi4": "throttled=0x0 temp=64.2'C MemAvailable_kB=7189628", "laptop_load": [0.78173828125, 0.57763671875, 0.7158203125]}
+2026-10-24T14:48:09+07:00 req 3 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792828073.3756924, "events": [[7.729556, [13], 1, 0.001, 7728.665, "\n"], [7.992372, [13], 2, 262.707, 7728.665, "\n"], [8.118004, [29933], 3, 388.362, 7728.66
+2026-10-24T14:48:09+07:00 health 4 {"laptop": "load=0.61 pkg_mC=49000 MemAvailable_kB=27844292", "pi4": "throttled=0x0 temp=65.7'C MemAvailable_kB=7189552", "laptop_load": [0.60791015625, 0.548828125, 0.7041015625]}
+2026-10-24T14:48:25+07:00 req 4 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792828089.4925766, "events": [[7.716733, [13], 1, 0.001, 7715.674, "\n"], [7.979803, [13], 2, 263.0, 7715.674, "\n"], [8.106823, [29898], 3, 390.027, 7715.674,
+2026-10-24T14:48:25+07:00 health 5 {"laptop": "load=0.47 pkg_mC=49000 MemAvailable_kB=27849568", "pi4": "throttled=0x0 temp=65.7'C MemAvailable_kB=7189128", "laptop_load": [0.47265625, 0.52099609375, 0.6923828125]}
+2026-10-24T14:48:41+07:00 req 5 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792828105.587985, "events": [[7.734627, [13], 1, 0.001, 7733.773, "\n"], [7.9982, [13], 2, 263.478, 7733.773, "\n"], [8.124279, [29899], 3, 389.528, 7733.773, 
+2026-10-24T14:48:41+07:00 health end {"laptop": "load=0.34 pkg_mC=49000 MemAvailable_kB=27844760", "pi4": "throttled=0x0 temp=65.7'C MemAvailable_kB=7187456", "laptop_load": [0.33740234375, 0.486328125, 0.6767578125]}
+scp: Connection closed
+2026-10-24T14:48:42+07:00 serve_pool stop    llama-server on laptop stopped
+2026-10-24T14:48:43+07:00 serve_pool stop    worker on pi4 stopped
+2026-10-24T14:48:43+07:00 done {"log": "testbed/results/qr3_rpc4LB103_tinyllama_q4_0_20261024_144613.log"}
+req 0: 64 tokens, 0 merged; TTFT 7712.1 ms; client mean 128.96 p95 127.93 max 262.88 | server mean 128.96 p95 127.87 max 262.87
+req 1: 64 tokens, 0 merged; TTFT 7697.5 ms; client mean 129.14 p95 129.19 max 262.56 | server mean 129.14 p95 129.1 max 262.54
+req 2: 64 tokens, 0 merged; TTFT 7726.8 ms; client mean 128.81 p95 128.47 max 262.57 | server mean 128.81 p95 128.44 max 262.56
+req 3: 64 tokens, 0 merged; TTFT 7729.6 ms; client mean 129.33 p95 129.46 max 262.82 | server mean 129.33 p95 129.46 max 262.71
+req 4: 64 tokens, 0 merged; TTFT 7716.7 ms; client mean 129.13 p95 129.19 max 263.07 | server mean 129.13 p95 129.17 max 263.0
+req 5: 64 tokens, 0 merged; TTFT 7734.6 ms; client mean 129.19 p95 130.19 max 263.57 | server mean 129.19 p95 130.1 max 263.48
+POOLED client {"n": 378, "mean": 129.09, "p50": 126.86, "p95": 129.3, "p99": 262.62, "max": 263.57, "min": 124.48, "p95_ci95": [128.56, 129.63]}
+POOLED server {"n": 378, "mean": 129.09, "p50": 126.86, "p95": 129.33, "p99": 262.6, "max": 263.48, "min": 124.49, "p95_ci95": [128.53, 129.58]}
+wrote testbed/results/qr3_rpc4LB103_tinyllama_q4_0_20261024_144613_summary.json
+POST LB10: [ -f "$OUT/ns4_shape.log.pid" ] && kill $(cat "$OUT/ns4_shape.log.pid") 2>/dev/null; bash testbed/scripts/ns4c_shape_20261024.sh counters "$OUT/ns4c_counters.log"; bash testbed/scripts/ns4c_shape_20261024.sh clear
+    counters: egress 9502 pkts 649976 B, ingress 32501 pkts 35234506 B
+    CLEARED eth0: qdisc mq 0: root 
+    UNSHAPED
+ARM 3 LB10 rc=0 log=testbed/results/qr3_rpc4LB103_tinyllama_q4_0_20261024_144613.log
+===== 2026-10-24T14:49:05+07:00 arm-run 4: H3
+quiet   laptop: load 0.09, on the charger, no battery charging, wifi disabled
+cold    pi5 at 48.8 C (< 50) after 0 s
+cold    pi4 at 52.1 C (< 55) after 0 s
+PRE H3: nohup bash testbed/scripts/ns4c_shape_20261024.sh when-served 3 0 "$OUT/ns4_shape.log" >> "$OUT/ns4_shape.out" 2>&1 &
+2026-10-24T14:50:05+07:00 start {"what": "QR3 TPOT, one user", "engine": "llama", "nodes": "laptop pi4", "prima_lw": null, "model": "tinyllama_q4_0", "ctx": 2048, "mem": "testbed/dataset/memory_snapshot_20261024_142953.json", "clocks": "loc
+2026-10-24T14:50:09+07:00 model_sha256 {"host": "laptop", "file": "~/models/tinyllama-1.1b-q4_0.gguf", "sha256": "da3087fb14aede55fde6eb81a0e55e886810e43509ec82ecdc7aa5d62a03b556", "expected": "da3087fb14aede55fde6eb81a0e55e886810e43509ec82
+2026-10-24T14:50:14+07:00 settled {"host": "laptop", "mem_available_mib": 27549}
+2026-10-24T14:50:14+07:00 serve_pool ########## 2026-10-24T14:50:14+07:00 serve tinyllama_q4_0, ctx 2048, clocks locked, boards laptop pi4, planned against testbed/dataset/memory_snapshot_20261024_142953.json: laptop 11 + pi4 11, head on la
+2026-10-24T14:50:14+07:00 serve_pool hosts   laptop: fixed: laptop 11 + pi4 11, head host
+2026-10-24T14:50:14+07:00 serve_pool llama-server -m ~/models/tinyllama-1.1b-q4_0.gguf --rpc 192.168.10.12:50052 -ngl 12 -ot "^output\.weight=CPU"  -c 2048 -np 1 -t 4 -lv 4 -lm none --cache-ram 0 --host 192.168.1.108 --port 8080   pin b2370
+2026-10-24T14:50:14+07:00 serve_pool gate    laptop: MemAvailable 27542 MiB, the plan needs 8910 MiB with its reserve (margin at rest 18622 MiB)
+2026-10-24T14:50:15+07:00 serve_pool gate    pi4: MemAvailable 7368 MiB, the plan needs 441 MiB with its reserve (margin at rest 6928 MiB)
+2026-10-24T14:50:16+07:00 serve_pool worker  pi4 listening on 192.168.10.12:50052 (pid 32564)
+2026-10-24T14:50:16+07:00 serve_pool server  starting on laptop (pid 217403); loading streams the model from the SD card to the workers
+2026-10-24T14:50:21+07:00 serve_pool READY   2026-10-24T14:50:21+07:00: http://192.168.1.108:8080/ (web chat) -- health {"status":"ok"}
+2026-10-24T14:50:21+07:00 serve_pool 0.00.145.086 I load_tensors:          CPU model buffer size =    86.60 MiB
+2026-10-24T14:50:21+07:00 serve_pool 0.00.145.087 I load_tensors:   CPU_REPACK model buffer size =   259.88 MiB
+2026-10-24T14:50:21+07:00 serve_pool 0.00.145.088 I load_tensors: RPC0[192.168.10.12:50052] model buffer size =   260.05 MiB
+2026-10-24T14:50:21+07:00 serve_pool 0.02.874.350 I llama_context: n_ctx                 = 2048
+2026-10-24T14:50:21+07:00 serve_pool 0.02.874.352 I llama_context: flash_attn            = auto
+2026-10-24T14:50:21+07:00 serve_pool 0.02.874.461 I llama_kv_cache:        CPU KV buffer size =    22.00 MiB
+2026-10-24T14:50:21+07:00 serve_pool 0.02.879.552 I llama_kv_cache: RPC0[192.168.10.12:50052] KV buffer size =    22.00 MiB
+2026-10-24T14:50:21+07:00 serve_pool 0.02.879.715 I llama_kv_cache: size =   44.00 MiB (  2048 cells,  22 layers,  1/1 seqs), K (f16):   22.00 MiB, V (f16):   22.00 MiB
+2026-10-24T14:50:21+07:00 serve_pool 0.02.907.192 I sched_reserve: RPC0[192.168.10.12:50052] compute buffer size =    43.01 MiB
+2026-10-24T14:50:21+07:00 serve_pool 0.02.907.196 I sched_reserve:        CPU compute buffer size =    51.01 MiB
+2026-10-24T14:50:21+07:00 serve_pool 0.03.142.530 I slot   load_model: id  0 | task -1 | new slot, n_ctx = 2048
+2026-10-24T14:50:21+07:00 serve_pool split   pi4: llama.cpp 260.05 MiB, planned 260.0 MiB (head on laptop)
+2026-10-24T14:50:21+07:00 serve_pool mem     laptop: MemAvailable 27172 MiB at READY, 27542 at the gate: the serve holds 370 MiB, charged 718 MiB
+2026-10-24T14:50:21+07:00 serve_pool mem     pi4: MemAvailable 7067 MiB at READY, 7368 at the gate: the serve holds 301 MiB, charged 441 MiB
+2026-10-24T14:50:21+07:00 served {"host": "laptop", "workers": "pi4", "args": "-m ~/models/tinyllama-1.1b-q4_0.gguf --rpc 192.168.10.12:50052 -ngl 12 -ot \"^output\\.weight=CPU\"", "ctx": "2048", "serve_log": "testbed/results/serve_tinyllam
+2026-10-24T14:50:21+07:00 prompts {"doc_tokens": 8900, "head": 1, "question": 14, "warm_offset": 8403, "sha256": ["fa269846accdb5df", "5f883f45f3b0f05d", "187493e8cc0d86ff", "d8fb27d9f777dcd0", "3fb3a10a4aa896f0", "ba54d94d3e5b335b"]}
+2026-10-24T14:50:21+07:00 health warm {"laptop": "load=0.12 pkg_mC=50000 MemAvailable_kB=27821532", "pi4": "throttled=0x0 temp=54.5'C MemAvailable_kB=7235628", "laptop_load": [0.123046875, 0.36083984375, 0.60888671875]}
+2026-10-24T14:51:17+07:00 warm {"prompt_n": 512, "n_predict": 32, "sent_wall": 1792828221.8934147, "events": [[48.730652, [13], 1, 0.001, 48729.638, "\n"], [49.322909, [13], 2, 592.258, 48729.638, "\n"], [49.513563, [29896], 3, 782.92, 4872
+2026-10-24T14:51:17+07:00 health 0 {"laptop": "load=0.10 pkg_mC=48000 MemAvailable_kB=27750320", "pi4": "throttled=0x0 temp=62.3'C MemAvailable_kB=7206840", "laptop_load": [0.095703125, 0.31298828125, 0.5771484375]}
+2026-10-24T14:51:40+07:00 req 0 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792828277.2636104, "events": [[12.241836, [13], 1, 0.001, 12240.984, "\n"], [12.81462, [13], 2, 572.711, 12240.984, "\n"], [12.986587, [29933], 3, 744.681, 122
+2026-10-24T14:51:41+07:00 health 1 {"laptop": "load=0.07 pkg_mC=49000 MemAvailable_kB=27752184", "pi4": "throttled=0x0 temp=61.8'C MemAvailable_kB=7210440", "laptop_load": [0.0673828125, 0.29150390625, 0.5634765625]}
+2026-10-24T14:52:04+07:00 req 1 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792828301.1029828, "events": [[12.220927, [13], 1, 0.001, 12220.073, "\n"], [12.793845, [13], 2, 572.888, 12220.073, "\n"], [12.965061, [29933], 3, 744.1, 1222
+2026-10-24T14:52:04+07:00 health 2 {"laptop": "load=0.59 pkg_mC=50000 MemAvailable_kB=27747580", "pi4": "throttled=0x0 temp=61.8'C MemAvailable_kB=7212068", "laptop_load": [0.59375, 0.396484375, 0.59033203125]}
+2026-10-24T14:52:28+07:00 req 2 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792828324.8827987, "events": [[12.244726, [13], 1, 0.001, 12243.964, "\n"], [12.817932, [13], 2, 573.168, 12243.964, "\n"], [12.989264, [29933], 3, 744.474, 12
+2026-10-24T14:52:28+07:00 health 3 {"laptop": "load=0.39 pkg_mC=51000 MemAvailable_kB=27763180", "pi4": "throttled=0x0 temp=61.3'C MemAvailable_kB=7217608", "laptop_load": [0.39013671875, 0.36328125, 0.5732421875]}
+2026-10-24T14:52:52+07:00 req 3 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792828348.7195659, "events": [[12.217385, [13], 1, 0.001, 12216.59, "\n"], [12.791565, [13], 2, 574.152, 12216.59, "\n"], [12.962717, [29933], 3, 745.354, 1221
+2026-10-24T14:52:52+07:00 health 4 {"laptop": "load=0.26 pkg_mC=49000 MemAvailable_kB=27758348", "pi4": "throttled=0x0 temp=60.8'C MemAvailable_kB=7217996", "laptop_load": [0.25634765625, 0.3330078125, 0.55615234375]}
+2026-10-24T14:53:16+07:00 req 4 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792828372.5070658, "events": [[12.208519, [13], 1, 0.001, 12207.738, "\n"], [12.782565, [13], 2, 574.022, 12207.738, "\n"], [12.954443, [29898], 3, 745.87, 122
+2026-10-24T14:53:16+07:00 health 5 {"laptop": "load=0.58 pkg_mC=49000 MemAvailable_kB=27762764", "pi4": "throttled=0x0 temp=60.3'C MemAvailable_kB=7218388", "laptop_load": [0.57763671875, 0.39404296875, 0.5703125]}
+2026-10-24T14:53:39+07:00 req 5 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792828396.327892, "events": [[12.220675, [13], 1, 0.001, 12219.856, "\n"], [12.794634, [13], 2, 573.917, 12219.856, "\n"], [12.966124, [29899], 3, 745.406, 122
+2026-10-24T14:53:40+07:00 health end {"laptop": "load=0.90 pkg_mC=50000 MemAvailable_kB=27743852", "pi4": "throttled=0x0 temp=61.8'C MemAvailable_kB=7218836", "laptop_load": [0.904296875, 0.48974609375, 0.59716796875]}
+scp: Connection closed
+2026-10-24T14:53:41+07:00 serve_pool stop    llama-server on laptop stopped
+2026-10-24T14:53:42+07:00 serve_pool stop    worker on pi4 stopped
+2026-10-24T14:53:42+07:00 done {"log": "testbed/results/qr3_rpc4H34_tinyllama_q4_0_20261024_145005.log"}
+req 0: 64 tokens, 0 merged; TTFT 12241.8 ms; client mean 180.35 p95 177.0 max 572.78 | server mean 180.35 p95 177.0 max 572.71
+req 1: 64 tokens, 0 merged; TTFT 12220.9 ms; client mean 179.76 p95 176.71 max 572.92 | server mean 179.76 p95 176.73 max 572.89
+req 2: 64 tokens, 0 merged; TTFT 12244.7 ms; client mean 180.13 p95 177.91 max 573.21 | server mean 180.13 p95 177.89 max 573.17
+req 3: 64 tokens, 0 merged; TTFT 12217.4 ms; client mean 179.94 p95 176.44 max 574.18 | server mean 179.94 p95 176.44 max 574.15
+req 4: 64 tokens, 0 merged; TTFT 12208.5 ms; client mean 180.45 p95 177.95 max 574.05 | server mean 180.44 p95 177.87 max 574.02
+req 5: 64 tokens, 0 merged; TTFT 12220.7 ms; client mean 179.81 p95 176.14 max 573.96 | server mean 179.81 p95 176.1 max 573.92
+POOLED client {"n": 378, "mean": 180.07, "p50": 173.19, "p95": 176.99, "p99": 572.98, "max": 574.18, "min": 170.69, "p95_ci95": [176.75, 178.11]}
+POOLED server {"n": 378, "mean": 180.07, "p50": 173.19, "p95": 177.0, "p99": 572.95, "max": 574.15, "min": 170.72, "p95_ci95": [176.77, 178.08]}
+wrote testbed/results/qr3_rpc4H34_tinyllama_q4_0_20261024_145005_summary.json
+POST H3: [ -f "$OUT/ns4_shape.log.pid" ] && kill $(cat "$OUT/ns4_shape.log.pid") 2>/dev/null; bash testbed/scripts/ns4c_shape_20261024.sh counters "$OUT/ns4c_counters.log"; bash testbed/scripts/ns4c_shape_20261024.sh clear
+    counters: egress 6945 pkts 3869658 B, ingress 25130 pkts 33598992 B
+    CLEARED eth0: qdisc mq 0: root 
+    UNSHAPED
+ARM 4 H3 rc=0 log=testbed/results/qr3_rpc4H34_tinyllama_q4_0_20261024_145005.log
+===== 2026-10-24T14:54:03+07:00 arm-run 5: L3
+quiet   laptop: load 0.25, on the charger, no battery charging, wifi disabled
+cold    pi5 at 48.8 C (< 50) after 0 s
+cold    pi4 at 52.5 C (< 55) after 0 s
+PRE L3: nohup bash testbed/scripts/ns4c_shape_20261024.sh when-served 3 0 "$OUT/ns4_shape.log" >> "$OUT/ns4_shape.out" 2>&1 &
+2026-10-24T14:55:04+07:00 start {"what": "QR3 TPOT, one user", "engine": "llama", "nodes": "laptop pi4", "prima_lw": null, "model": "tinyllama_q4_0", "ctx": 2048, "mem": "testbed/dataset/memory_snapshot_20261024_142953.json", "clocks": "loc
+2026-10-24T14:55:07+07:00 model_sha256 {"host": "laptop", "file": "~/models/tinyllama-1.1b-q4_0.gguf", "sha256": "da3087fb14aede55fde6eb81a0e55e886810e43509ec82ecdc7aa5d62a03b556", "expected": "da3087fb14aede55fde6eb81a0e55e886810e43509ec82
+2026-10-24T14:55:12+07:00 settled {"host": "laptop", "mem_available_mib": 27562}
+2026-10-24T14:55:12+07:00 serve_pool ########## 2026-10-24T14:55:12+07:00 serve tinyllama_q4_0, ctx 2048, clocks locked, boards laptop pi4, planned against testbed/dataset/memory_snapshot_20261024_142953.json: laptop 11 + pi4 11, head on pi
+2026-10-24T14:55:12+07:00 serve_pool hosts   laptop: fixed: laptop 11 + pi4 11, head last
+2026-10-24T14:55:12+07:00 serve_pool llama-server -m ~/models/tinyllama-1.1b-q4_0.gguf --rpc 192.168.10.12:50052 -ngl 12  -c 2048 -np 1 -t 4 -lv 4 -lm none --cache-ram 0 --host 192.168.1.108 --port 8080   pin b23701f77d47dad9de834d59ebfcbe2
+2026-10-24T14:55:13+07:00 serve_pool gate    laptop: MemAvailable 27556 MiB, the plan needs 8859 MiB with its reserve (margin at rest 18673 MiB)
+2026-10-24T14:55:13+07:00 serve_pool gate    pi4: MemAvailable 7371 MiB, the plan needs 492 MiB with its reserve (margin at rest 6877 MiB)
+2026-10-24T14:55:14+07:00 serve_pool worker  pi4 listening on 192.168.10.12:50052 (pid 32979)
+2026-10-24T14:55:14+07:00 serve_pool server  starting on laptop (pid 218727); loading streams the model from the SD card to the workers
+2026-10-24T14:55:19+07:00 serve_pool READY   2026-10-24T14:55:19+07:00: http://192.168.1.108:8080/ (web chat) -- health {"status":"ok"}
+2026-10-24T14:55:19+07:00 serve_pool 0.00.135.358 I load_tensors:          CPU model buffer size =    35.33 MiB
+2026-10-24T14:55:19+07:00 serve_pool 0.00.135.358 I load_tensors:   CPU_REPACK model buffer size =   259.88 MiB
+2026-10-24T14:55:19+07:00 serve_pool 0.00.135.359 I load_tensors: RPC0[192.168.10.12:50052] model buffer size =   311.32 MiB
+2026-10-24T14:55:19+07:00 serve_pool 0.03.552.031 I llama_context: n_ctx                 = 2048
+2026-10-24T14:55:19+07:00 serve_pool 0.03.552.032 I llama_context: flash_attn            = auto
+2026-10-24T14:55:19+07:00 serve_pool 0.03.552.154 I llama_kv_cache:        CPU KV buffer size =    22.00 MiB
+2026-10-24T14:55:19+07:00 serve_pool 0.03.566.435 I llama_kv_cache: RPC0[192.168.10.12:50052] KV buffer size =    22.00 MiB
+2026-10-24T14:55:19+07:00 serve_pool 0.03.566.531 I llama_kv_cache: size =   44.00 MiB (  2048 cells,  22 layers,  1/1 seqs), K (f16):   22.00 MiB, V (f16):   22.00 MiB
+2026-10-24T14:55:19+07:00 serve_pool 0.03.603.620 I sched_reserve: RPC0[192.168.10.12:50052] compute buffer size =    43.01 MiB
+2026-10-24T14:55:19+07:00 serve_pool 0.03.603.625 I sched_reserve:        CPU compute buffer size =    51.01 MiB
+2026-10-24T14:55:19+07:00 serve_pool 0.03.864.143 I slot   load_model: id  0 | task -1 | new slot, n_ctx = 2048
+2026-10-24T14:55:19+07:00 serve_pool split   pi4: llama.cpp 311.32 MiB, planned 311.3 MiB (head on pi4)
+2026-10-24T14:55:19+07:00 serve_pool mem     laptop: MemAvailable 27185 MiB at READY, 27556 at the gate: the serve holds 371 MiB, charged 667 MiB
+2026-10-24T14:55:19+07:00 serve_pool mem     pi4: MemAvailable 7018 MiB at READY, 7371 at the gate: the serve holds 353 MiB, charged 492 MiB
+2026-10-24T14:55:20+07:00 served {"host": "laptop", "workers": "pi4", "args": "-m ~/models/tinyllama-1.1b-q4_0.gguf --rpc 192.168.10.12:50052 -ngl 12", "ctx": "2048", "serve_log": "testbed/results/serve_tinyllama_q4_0_20261024_145512.log"}
+2026-10-24T14:55:20+07:00 prompts {"doc_tokens": 8900, "head": 1, "question": 14, "warm_offset": 8403, "sha256": ["fa269846accdb5df", "5f883f45f3b0f05d", "187493e8cc0d86ff", "d8fb27d9f777dcd0", "3fb3a10a4aa896f0", "ba54d94d3e5b335b"]}
+2026-10-24T14:55:20+07:00 health warm {"laptop": "load=0.34 pkg_mC=50000 MemAvailable_kB=27834592", "pi4": "throttled=0x0 temp=54.0'C MemAvailable_kB=7185820", "laptop_load": [0.33984375, 0.39306640625, 0.54736328125]}
+2026-10-24T14:56:26+07:00 warm {"prompt_n": 512, "n_predict": 32, "sent_wall": 1792828520.290624, "events": [[49.041089, [13], 1, 0.001, 49039.976, "\n"], [49.980356, [13], 2, 939.251, 49039.976, "\n"], [50.517576, [29896], 3, 1476.477, 490
+2026-10-24T14:56:26+07:00 health 0 {"laptop": "load=0.21 pkg_mC=49000 MemAvailable_kB=27833252", "pi4": "throttled=0x0 temp=57.9'C MemAvailable_kB=7147540", "laptop_load": [0.21240234375, 0.36181640625, 0.52490234375]}
+2026-10-24T14:57:12+07:00 req 0 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792828586.7467465, "events": [[12.603401, [13], 1, 0.001, 12602.598, "\n"], [13.522638, [13], 2, 919.154, 12602.598, "\n"], [14.041215, [29933], 3, 1437.862, 1
+2026-10-24T14:57:12+07:00 health 1 {"laptop": "load=0.10 pkg_mC=48000 MemAvailable_kB=27840644", "pi4": "throttled=0x0 temp=56.4'C MemAvailable_kB=7158392", "laptop_load": [0.09912109375, 0.30908203125, 0.49853515625]}
+2026-10-24T14:57:58+07:00 req 1 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792828632.9149034, "events": [[12.582424, [13], 1, 0.001, 12581.652, "\n"], [13.503007, [13], 2, 920.591, 12581.652, "\n"], [14.021677, [29933], 3, 1439.167, 1
+2026-10-24T14:57:59+07:00 health 2 {"laptop": "load=0.05 pkg_mC=47000 MemAvailable_kB=27750848", "pi4": "throttled=0x0 temp=56.0'C MemAvailable_kB=7158608", "laptop_load": [0.04541015625, 0.263671875, 0.47216796875]}
+2026-10-24T14:58:44+07:00 req 2 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792828679.0988903, "events": [[12.551116, [13], 1, 0.001, 12550.365, "\n"], [13.471319, [13], 2, 920.125, 12550.365, "\n"], [13.990025, [29933], 3, 1438.859, 1
+2026-10-24T14:58:45+07:00 health 3 {"laptop": "load=0.25 pkg_mC=48000 MemAvailable_kB=27818808", "pi4": "throttled=0x0 temp=56.9'C MemAvailable_kB=7182376", "laptop_load": [0.24951171875, 0.28759765625, 0.4677734375]}
+2026-10-24T14:59:31+07:00 req 3 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792828725.2185392, "events": [[12.571898, [13], 1, 0.001, 12571.092, "\n"], [13.494577, [13], 2, 922.618, 12571.092, "\n"], [14.011931, [29933], 3, 1439.997, 1
+2026-10-24T14:59:31+07:00 health 4 {"laptop": "load=0.44 pkg_mC=49000 MemAvailable_kB=27820732", "pi4": "throttled=0x0 temp=56.0'C MemAvailable_kB=7181596", "laptop_load": [0.4375, 0.3125, 0.46533203125]}
+2026-10-24T15:00:17+07:00 req 4 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792828771.4078124, "events": [[12.564827, [13], 1, 0.001, 12563.952, "\n"], [13.484575, [13], 2, 919.725, 12563.952, "\n"], [14.003742, [29898], 3, 1438.833, 1
+2026-10-24T15:00:17+07:00 health 5 {"laptop": "load=0.34 pkg_mC=49000 MemAvailable_kB=27819828", "pi4": "throttled=0x0 temp=56.0'C MemAvailable_kB=7180728", "laptop_load": [0.33984375, 0.3193359375, 0.4580078125]}
+2026-10-24T15:01:03+07:00 req 5 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792828817.5072002, "events": [[12.57078, [13], 1, 0.001, 12569.951, "\n"], [13.492229, [13], 2, 921.34, 12569.951, "\n"], [14.01017, [29899], 3, 1439.294, 1256
+2026-10-24T15:01:03+07:00 health end {"laptop": "load=0.36 pkg_mC=50000 MemAvailable_kB=27817792", "pi4": "throttled=0x0 temp=56.0'C MemAvailable_kB=7180364", "laptop_load": [0.3623046875, 0.3212890625, 0.451171875]}
+scp: Connection closed
+2026-10-24T15:01:04+07:00 serve_pool stop    llama-server on laptop stopped
+2026-10-24T15:01:05+07:00 serve_pool stop    worker on pi4 stopped
+2026-10-24T15:01:05+07:00 done {"log": "testbed/results/qr3_rpc4L35_tinyllama_q4_0_20261024_145504.log"}
+req 0: 64 tokens, 0 merged; TTFT 12603.4 ms; client mean 528.73 p95 550.5 max 919.24 | server mean 528.73 p95 550.52 max 919.15
+req 1: 64 tokens, 0 merged; TTFT 12582.4 ms; client mean 529.43 p95 558.73 max 920.58 | server mean 529.43 p95 558.72 max 920.59
+req 2: 64 tokens, 0 merged; TTFT 12551.1 ms; client mean 528.97 p95 546.16 max 920.2 | server mean 528.97 p95 546.15 max 920.12
+req 3: 64 tokens, 0 merged; TTFT 12571.9 ms; client mean 529.63 p95 552.53 max 922.68 | server mean 529.63 p95 552.53 max 922.62
+req 4: 64 tokens, 0 merged; TTFT 12564.8 ms; client mean 528.59 p95 554.54 max 919.75 | server mean 528.59 p95 554.58 max 919.72
+req 5: 64 tokens, 0 merged; TTFT 12570.8 ms; client mean 530.43 p95 558.27 max 921.45 | server mean 530.43 p95 558.36 max 921.34
+POOLED client {"n": 378, "mean": 529.3, "p50": 519.59, "p95": 556.82, "p99": 919.85, "max": 922.68, "min": 516.94, "p95_ci95": [553.18, 559.34]}
+POOLED server {"n": 378, "mean": 529.3, "p50": 519.6, "p95": 556.82, "p99": 919.82, "max": 922.62, "min": 516.93, "p95_ci95": [553.19, 559.33]}
+wrote testbed/results/qr3_rpc4L35_tinyllama_q4_0_20261024_145504_summary.json
+POST L3: [ -f "$OUT/ns4_shape.log.pid" ] && kill $(cat "$OUT/ns4_shape.log.pid") 2>/dev/null; bash testbed/scripts/ns4c_shape_20261024.sh counters "$OUT/ns4c_counters.log"; bash testbed/scripts/ns4c_shape_20261024.sh clear
+    counters: egress 41154 pkts 55967592 B, ingress 25885 pkts 33657226 B
+    CLEARED eth0: qdisc mq 0: root 
+    UNSHAPED
+ARM 5 L3 rc=0 log=testbed/results/qr3_rpc4L35_tinyllama_q4_0_20261024_145504.log
+===== 2026-10-24T15:01:27+07:00 arm-run 6: LB3
+quiet   laptop: load 0.09, on the charger, no battery charging, wifi disabled
+cold    pi5 at 47.7 C (< 50) after 0 s
+cold    pi4 at 52.1 C (< 55) after 0 s
+PRE LB3: nohup bash testbed/scripts/ns4c_shape_20261024.sh when-served 3 0 "$OUT/ns4_shape.log" >> "$OUT/ns4_shape.out" 2>&1 &
+2026-10-24T15:02:28+07:00 start {"what": "QR3 TPOT, one user", "engine": "llama", "nodes": "laptop pi4", "prima_lw": null, "model": "tinyllama_q4_0", "ctx": 2048, "mem": "testbed/dataset/memory_snapshot_20261024_142953.json", "clocks": "loc
+2026-10-24T15:02:31+07:00 model_sha256 {"host": "laptop", "file": "~/models/tinyllama-1.1b-q4_0.gguf", "sha256": "da3087fb14aede55fde6eb81a0e55e886810e43509ec82ecdc7aa5d62a03b556", "expected": "da3087fb14aede55fde6eb81a0e55e886810e43509ec82
+2026-10-24T15:02:36+07:00 settled {"host": "laptop", "mem_available_mib": 27565}
+2026-10-24T15:02:36+07:00 serve_pool ########## 2026-10-24T15:02:36+07:00 serve tinyllama_q4_0, ctx 2048, clocks locked, boards laptop pi4, planned against testbed/dataset/memory_snapshot_20261024_142953.json: laptop 11 + pi4 11, head on pi
+2026-10-24T15:02:36+07:00 serve_pool hosts   laptop: fixed: laptop 11 + pi4 11, head last
+2026-10-24T15:02:36+07:00 serve_pool llama-server -m ~/models/tinyllama-1.1b-q4_0.gguf --rpc 192.168.10.12:50052 -ngl 12  --backend-sampling -c 2048 -np 1 -t 4 -lv 4 -lm none --cache-ram 0 --host 192.168.1.108 --port 8080   pin b23701f77d47
+2026-10-24T15:02:36+07:00 serve_pool gate    laptop: MemAvailable 27557 MiB, the plan needs 8859 MiB with its reserve (margin at rest 18673 MiB)
+2026-10-24T15:02:37+07:00 serve_pool gate    pi4: MemAvailable 7373 MiB, the plan needs 492 MiB with its reserve (margin at rest 6877 MiB)
+2026-10-24T15:02:38+07:00 serve_pool worker  pi4 listening on 192.168.10.12:50052 (pid 33398)
+2026-10-24T15:02:38+07:00 serve_pool server  starting on laptop (pid 220712); loading streams the model from the SD card to the workers
+2026-10-24T15:02:43+07:00 serve_pool READY   2026-10-24T15:02:43+07:00: http://192.168.1.108:8080/ (web chat) -- health {"status":"ok"}
+2026-10-24T15:02:43+07:00 serve_pool 0.00.133.518 I load_tensors:          CPU model buffer size =    35.33 MiB
+2026-10-24T15:02:43+07:00 serve_pool 0.00.133.520 I load_tensors:   CPU_REPACK model buffer size =   259.88 MiB
+2026-10-24T15:02:43+07:00 serve_pool 0.00.133.520 I load_tensors: RPC0[192.168.10.12:50052] model buffer size =   311.32 MiB
+2026-10-24T15:02:43+07:00 serve_pool 0.03.535.274 I llama_context: n_ctx                 = 2048
+2026-10-24T15:02:43+07:00 serve_pool 0.03.535.277 I llama_context: flash_attn            = auto
+2026-10-24T15:02:43+07:00 serve_pool 0.03.535.456 I llama_kv_cache:        CPU KV buffer size =    22.00 MiB
+2026-10-24T15:02:43+07:00 serve_pool 0.03.551.417 I llama_kv_cache: RPC0[192.168.10.12:50052] KV buffer size =    22.00 MiB
+2026-10-24T15:02:43+07:00 serve_pool 0.03.551.554 I llama_kv_cache: size =   44.00 MiB (  2048 cells,  22 layers,  1/1 seqs), K (f16):   22.00 MiB, V (f16):   22.00 MiB
+2026-10-24T15:02:43+07:00 serve_pool 0.03.580.269 I sched_reserve: RPC0[192.168.10.12:50052] compute buffer size =    43.01 MiB
+2026-10-24T15:02:43+07:00 serve_pool 0.03.580.274 I sched_reserve:        CPU compute buffer size =    51.01 MiB
+2026-10-24T15:02:43+07:00 serve_pool 0.03.883.366 I slot   load_model: id  0 | task -1 | new slot, n_ctx = 2048
+2026-10-24T15:02:43+07:00 serve_pool split   pi4: llama.cpp 311.32 MiB, planned 311.3 MiB (head on pi4)
+2026-10-24T15:02:43+07:00 serve_pool mem     laptop: MemAvailable 27230 MiB at READY, 27557 at the gate: the serve holds 327 MiB, charged 667 MiB
+2026-10-24T15:02:43+07:00 serve_pool mem     pi4: MemAvailable 7010 MiB at READY, 7373 at the gate: the serve holds 363 MiB, charged 492 MiB
+2026-10-24T15:02:43+07:00 served {"host": "laptop", "workers": "pi4", "args": "-m ~/models/tinyllama-1.1b-q4_0.gguf --rpc 192.168.10.12:50052 -ngl 12", "ctx": "2048", "serve_log": "testbed/results/serve_tinyllama_q4_0_20261024_150236.log"}
+2026-10-24T15:02:43+07:00 prompts {"doc_tokens": 8900, "head": 1, "question": 14, "warm_offset": 8403, "sha256": ["fa269846accdb5df", "5f883f45f3b0f05d", "187493e8cc0d86ff", "d8fb27d9f777dcd0", "3fb3a10a4aa896f0", "ba54d94d3e5b335b"]}
+2026-10-24T15:02:44+07:00 health warm {"laptop": "load=0.20 pkg_mC=52000 MemAvailable_kB=27882964", "pi4": "throttled=0x0 temp=54.0'C MemAvailable_kB=7178180", "laptop_load": [0.20166015625, 0.25830078125, 0.41357421875]}
+2026-10-24T15:03:39+07:00 warm {"prompt_n": 512, "n_predict": 32, "sent_wall": 1792828964.0151277, "events": [[48.763399, [13], 1, 0.001, 48762.242, "\n"], [49.409075, [13], 2, 645.782, 48762.242, "\n"], [49.604629, [29896], 3, 841.203, 487
+2026-10-24T15:03:39+07:00 health 0 {"laptop": "load=0.22 pkg_mC=48000 MemAvailable_kB=27816492", "pi4": "throttled=0x0 temp=62.3'C MemAvailable_kB=7152500", "laptop_load": [0.2177734375, 0.26953125, 0.40869140625]}
+2026-10-24T15:04:03+07:00 req 0 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792829019.4666011, "events": [[12.339128, [13], 1, 0.001, 12338.193, "\n"], [12.96489, [13], 2, 625.675, 12338.193, "\n"], [13.138183, [29933], 3, 799.019, 123
+2026-10-24T15:04:03+07:00 health 1 {"laptop": "load=0.20 pkg_mC=48000 MemAvailable_kB=27841300", "pi4": "throttled=0x0 temp=61.3'C MemAvailable_kB=7189972", "laptop_load": [0.2001953125, 0.26220703125, 0.40234375]}
+2026-10-24T15:04:27+07:00 req 1 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792829043.4901474, "events": [[12.287196, [13], 1, 0.001, 12286.236, "\n"], [12.915246, [13], 2, 628.062, 12286.236, "\n"], [13.089201, [29933], 3, 801.966, 12
+2026-10-24T15:04:27+07:00 health 2 {"laptop": "load=0.21 pkg_mC=50000 MemAvailable_kB=27855756", "pi4": "throttled=0x0 temp=61.8'C MemAvailable_kB=7190232", "laptop_load": [0.21142578125, 0.25732421875, 0.39599609375]}
+2026-10-24T15:04:51+07:00 req 2 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792829067.47478, "events": [[12.297516, [13], 1, 0.001, 12296.675, "\n"], [12.924547, [13], 2, 626.93, 12296.675, "\n"], [13.09758, [29933], 3, 799.955, 12296.
+2026-10-24T15:04:51+07:00 health 3 {"laptop": "load=0.39 pkg_mC=50000 MemAvailable_kB=27864300", "pi4": "throttled=0x0 temp=61.8'C MemAvailable_kB=7190620", "laptop_load": [0.3916015625, 0.2900390625, 0.40283203125]}
+2026-10-24T15:05:15+07:00 req 3 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792829091.4265203, "events": [[12.27577, [13], 1, 0.001, 12274.931, "\n"], [12.901611, [13], 2, 625.746, 12274.931, "\n"], [13.074123, [29933], 3, 798.353, 122
+2026-10-24T15:05:15+07:00 health 4 {"laptop": "load=0.49 pkg_mC=51000 MemAvailable_kB=27854796", "pi4": "throttled=0x0 temp=61.8'C MemAvailable_kB=7190688", "laptop_load": [0.48681640625, 0.32861328125, 0.41259765625]}
+2026-10-24T15:05:39+07:00 req 4 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792829115.394967, "events": [[12.257009, [13], 1, 0.001, 12256.083, "\n"], [12.883515, [13], 2, 626.409, 12256.083, "\n"], [13.056417, [29898], 3, 799.296, 122
+2026-10-24T15:05:39+07:00 health 5 {"laptop": "load=0.32 pkg_mC=49000 MemAvailable_kB=27850836", "pi4": "throttled=0x0 temp=62.3'C MemAvailable_kB=7190272", "laptop_load": [0.3193359375, 0.30126953125, 0.400390625]}
+2026-10-24T15:06:03+07:00 req 5 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792829139.314328, "events": [[12.258929, [13], 1, 0.001, 12258.036, "\n"], [12.885005, [13], 2, 625.998, 12258.036, "\n"], [13.059042, [29899], 3, 800.029, 122
+2026-10-24T15:06:03+07:00 health end {"laptop": "load=0.21 pkg_mC=47000 MemAvailable_kB=27841848", "pi4": "throttled=0x0 temp=61.8'C MemAvailable_kB=7190244", "laptop_load": [0.208984375, 0.27587890625, 0.38818359375]}
+scp: Connection closed
+2026-10-24T15:06:04+07:00 serve_pool stop    llama-server on laptop stopped
+2026-10-24T15:06:05+07:00 serve_pool stop    worker on pi4 stopped
+2026-10-24T15:06:05+07:00 done {"log": "testbed/results/qr3_rpc4LB36_tinyllama_q4_0_20261024_150228.log"}
+req 0: 64 tokens, 0 merged; TTFT 12339.1 ms; client mean 181.55 p95 176.51 max 625.76 | server mean 181.55 p95 176.55 max 625.67
+req 1: 64 tokens, 0 merged; TTFT 12287.2 ms; client mean 181.74 p95 178.82 max 628.05 | server mean 181.74 p95 178.86 max 628.06
+req 2: 64 tokens, 0 merged; TTFT 12297.5 ms; client mean 181.13 p95 175.76 max 627.03 | server mean 181.13 p95 175.76 max 626.93
+req 3: 64 tokens, 0 merged; TTFT 12275.8 ms; client mean 181.45 p95 176.12 max 625.84 | server mean 181.44 p95 176.11 max 625.75
+req 4: 64 tokens, 0 merged; TTFT 12257.0 ms; client mean 181.37 p95 175.97 max 626.51 | server mean 181.36 p95 176.01 max 626.41
+req 5: 64 tokens, 0 merged; TTFT 12258.9 ms; client mean 182.02 p95 179.57 max 626.08 | server mean 182.02 p95 179.56 max 626.0
+POOLED client {"n": 378, "mean": 181.54, "p50": 174.04, "p95": 176.78, "p99": 625.9, "max": 628.05, "min": 171.54, "p95_ci95": [176.35, 179.2]}
+POOLED server {"n": 378, "mean": 181.54, "p50": 174.03, "p95": 176.77, "p99": 625.8, "max": 628.06, "min": 171.63, "p95_ci95": [176.33, 179.24]}
+wrote testbed/results/qr3_rpc4LB36_tinyllama_q4_0_20261024_150228_summary.json
+POST LB3: [ -f "$OUT/ns4_shape.log.pid" ] && kill $(cat "$OUT/ns4_shape.log.pid") 2>/dev/null; bash testbed/scripts/ns4c_shape_20261024.sh counters "$OUT/ns4c_counters.log"; bash testbed/scripts/ns4c_shape_20261024.sh clear
+    counters: egress 9105 pkts 621314 B, ingress 31603 pkts 35097298 B
+    CLEARED eth0: qdisc mq 0: root 
+    UNSHAPED
+ARM 6 LB3 rc=0 log=testbed/results/qr3_rpc4LB36_tinyllama_q4_0_20261024_150228.log
+===== 2026-10-24T15:06:26+07:00 arm-run 7: H10
+quiet   laptop: load 0.05, on the charger, no battery charging, wifi disabled
+cold    pi5 at 48.3 C (< 50) after 0 s
+cold    pi4 at 53.0 C (< 55) after 0 s
+PRE H10: nohup bash testbed/scripts/ns4c_shape_20261024.sh when-served 10 0 "$OUT/ns4_shape.log" >> "$OUT/ns4_shape.out" 2>&1 &
+2026-10-24T15:07:27+07:00 start {"what": "QR3 TPOT, one user", "engine": "llama", "nodes": "laptop pi4", "prima_lw": null, "model": "tinyllama_q4_0", "ctx": 2048, "mem": "testbed/dataset/memory_snapshot_20261024_142953.json", "clocks": "loc
+2026-10-24T15:07:31+07:00 model_sha256 {"host": "laptop", "file": "~/models/tinyllama-1.1b-q4_0.gguf", "sha256": "da3087fb14aede55fde6eb81a0e55e886810e43509ec82ecdc7aa5d62a03b556", "expected": "da3087fb14aede55fde6eb81a0e55e886810e43509ec82
+2026-10-24T15:07:41+07:00 settled {"host": "laptop", "mem_available_mib": 27577}
+2026-10-24T15:07:41+07:00 serve_pool ########## 2026-10-24T15:07:41+07:00 serve tinyllama_q4_0, ctx 2048, clocks locked, boards laptop pi4, planned against testbed/dataset/memory_snapshot_20261024_142953.json: laptop 11 + pi4 11, head on la
+2026-10-24T15:07:41+07:00 serve_pool hosts   laptop: fixed: laptop 11 + pi4 11, head host
+2026-10-24T15:07:41+07:00 serve_pool llama-server -m ~/models/tinyllama-1.1b-q4_0.gguf --rpc 192.168.10.12:50052 -ngl 12 -ot "^output\.weight=CPU"  -c 2048 -np 1 -t 4 -lv 4 -lm none --cache-ram 0 --host 192.168.1.108 --port 8080   pin b2370
+2026-10-24T15:07:41+07:00 serve_pool gate    laptop: MemAvailable 27564 MiB, the plan needs 8910 MiB with its reserve (margin at rest 18622 MiB)
+2026-10-24T15:07:42+07:00 serve_pool gate    pi4: MemAvailable 7368 MiB, the plan needs 441 MiB with its reserve (margin at rest 6928 MiB)
+2026-10-24T15:07:42+07:00 serve_pool worker  pi4 listening on 192.168.10.12:50052 (pid 33814)
+2026-10-24T15:07:42+07:00 serve_pool server  starting on laptop (pid 222064); loading streams the model from the SD card to the workers
+2026-10-24T15:07:47+07:00 serve_pool READY   2026-10-24T15:07:47+07:00: http://192.168.1.108:8080/ (web chat) -- health {"status":"ok"}
+2026-10-24T15:07:47+07:00 serve_pool 0.00.137.919 I load_tensors:          CPU model buffer size =    86.60 MiB
+2026-10-24T15:07:47+07:00 serve_pool 0.00.137.920 I load_tensors:   CPU_REPACK model buffer size =   259.88 MiB
+2026-10-24T15:07:47+07:00 serve_pool 0.00.137.921 I load_tensors: RPC0[192.168.10.12:50052] model buffer size =   260.05 MiB
+2026-10-24T15:07:47+07:00 serve_pool 0.02.851.631 I llama_context: n_ctx                 = 2048
+2026-10-24T15:07:47+07:00 serve_pool 0.02.851.632 I llama_context: flash_attn            = auto
+2026-10-24T15:07:47+07:00 serve_pool 0.02.851.723 I llama_kv_cache:        CPU KV buffer size =    22.00 MiB
+2026-10-24T15:07:47+07:00 serve_pool 0.02.857.008 I llama_kv_cache: RPC0[192.168.10.12:50052] KV buffer size =    22.00 MiB
+2026-10-24T15:07:47+07:00 serve_pool 0.02.857.091 I llama_kv_cache: size =   44.00 MiB (  2048 cells,  22 layers,  1/1 seqs), K (f16):   22.00 MiB, V (f16):   22.00 MiB
+2026-10-24T15:07:47+07:00 serve_pool 0.02.883.866 I sched_reserve: RPC0[192.168.10.12:50052] compute buffer size =    43.01 MiB
+2026-10-24T15:07:47+07:00 serve_pool 0.02.883.870 I sched_reserve:        CPU compute buffer size =    51.01 MiB
+2026-10-24T15:07:47+07:00 serve_pool 0.03.118.873 I slot   load_model: id  0 | task -1 | new slot, n_ctx = 2048
+2026-10-24T15:07:47+07:00 serve_pool split   pi4: llama.cpp 260.05 MiB, planned 260.0 MiB (head on laptop)
+2026-10-24T15:07:47+07:00 serve_pool mem     laptop: MemAvailable 27203 MiB at READY, 27564 at the gate: the serve holds 361 MiB, charged 718 MiB
+2026-10-24T15:07:48+07:00 serve_pool mem     pi4: MemAvailable 7076 MiB at READY, 7368 at the gate: the serve holds 292 MiB, charged 441 MiB
+2026-10-24T15:07:48+07:00 served {"host": "laptop", "workers": "pi4", "args": "-m ~/models/tinyllama-1.1b-q4_0.gguf --rpc 192.168.10.12:50052 -ngl 12 -ot \"^output\\.weight=CPU\"", "ctx": "2048", "serve_log": "testbed/results/serve_tinyllam
+2026-10-24T15:07:48+07:00 prompts {"doc_tokens": 8900, "head": 1, "question": 14, "warm_offset": 8403, "sha256": ["fa269846accdb5df", "5f883f45f3b0f05d", "187493e8cc0d86ff", "d8fb27d9f777dcd0", "3fb3a10a4aa896f0", "ba54d94d3e5b335b"]}
+2026-10-24T15:07:48+07:00 health warm {"laptop": "load=0.03 pkg_mC=51000 MemAvailable_kB=27851076", "pi4": "throttled=0x0 temp=53.0'C MemAvailable_kB=7244328", "laptop_load": [0.03369140625, 0.18994140625, 0.341796875]}
+2026-10-24T15:08:23+07:00 warm {"prompt_n": 512, "n_predict": 32, "sent_wall": 1792829268.4315057, "events": [[30.988793, [13], 1, 0.001, 30987.804, "\n"], [31.245218, [13], 2, 256.441, 30987.804, "\n"], [31.38189, [29896], 3, 393.11, 30987
+2026-10-24T15:08:23+07:00 health 0 {"laptop": "load=0.02 pkg_mC=51000 MemAvailable_kB=27794916", "pi4": "throttled=0x0 temp=65.2'C MemAvailable_kB=7197888", "laptop_load": [0.01708984375, 0.16748046875, 0.328125]}
+2026-10-24T15:08:39+07:00 req 0 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792829303.9863992, "events": [[7.668929, [13], 1, 0.001, 7668.159, "\n"], [7.908949, [13], 2, 239.996, 7668.159, "\n"], [8.027549, [29933], 3, 358.596, 7668.15
+2026-10-24T15:08:39+07:00 health 1 {"laptop": "load=0.01 pkg_mC=53000 MemAvailable_kB=27789888", "pi4": "throttled=0x0 temp=64.7'C MemAvailable_kB=7206744", "laptop_load": [0.0126953125, 0.15869140625, 0.322265625]}
+2026-10-24T15:08:54+07:00 req 1 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792829319.5623767, "events": [[7.673982, [13], 1, 0.001, 7673.205, "\n"], [7.914321, [13], 2, 240.295, 7673.205, "\n"], [8.033758, [29933], 3, 359.711, 7673.20
+2026-10-24T15:08:55+07:00 health 2 {"laptop": "load=0.33 pkg_mC=52000 MemAvailable_kB=27792264", "pi4": "throttled=0x0 temp=64.2'C MemAvailable_kB=7207216", "laptop_load": [0.330078125, 0.216796875, 0.33837890625]}
+2026-10-24T15:09:10+07:00 req 2 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792829335.1589453, "events": [[7.666009, [13], 1, 0.001, 7665.194, "\n"], [7.905186, [13], 2, 239.154, 7665.194, "\n"], [8.023849, [29933], 3, 357.824, 7665.19
+2026-10-24T15:09:10+07:00 health 3 {"laptop": "load=0.57 pkg_mC=51000 MemAvailable_kB=27787428", "pi4": "throttled=0x0 temp=64.2'C MemAvailable_kB=7209088", "laptop_load": [0.5654296875, 0.2724609375, 0.35498046875]}
+2026-10-24T15:09:26+07:00 req 3 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792829350.7388651, "events": [[7.664521, [13], 1, 0.001, 7663.799, "\n"], [7.90386, [13], 2, 239.292, 7663.799, "\n"], [8.023779, [29933], 3, 359.189, 7663.799
+2026-10-24T15:09:26+07:00 health 4 {"laptop": "load=0.44 pkg_mC=51000 MemAvailable_kB=27786932", "pi4": "throttled=0x0 temp=64.7'C MemAvailable_kB=7209380", "laptop_load": [0.439453125, 0.25830078125, 0.34912109375]}
+2026-10-24T15:09:41+07:00 req 4 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792829366.314193, "events": [[7.666373, [13], 1, 0.001, 7665.638, "\n"], [7.906755, [13], 2, 240.342, 7665.638, "\n"], [8.025923, [29898], 3, 359.5, 7665.638, 
+2026-10-24T15:09:41+07:00 health 5 {"laptop": "load=0.56 pkg_mC=52000 MemAvailable_kB=27788056", "pi4": "throttled=0x0 temp=64.2'C MemAvailable_kB=7209348", "laptop_load": [0.5634765625, 0.3046875, 0.36181640625]}
+2026-10-24T15:09:57+07:00 req 5 {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792829381.8863845, "events": [[7.681891, [13], 1, 0.001, 7681.128, "\n"], [7.921879, [13], 2, 239.949, 7681.128, "\n"], [8.040011, [29899], 3, 358.083, 7681.12
+2026-10-24T15:09:57+07:00 health end {"laptop": "load=0.44 pkg_mC=49000 MemAvailable_kB=27786960", "pi4": "throttled=0x0 temp=65.7'C MemAvailable_kB=7210392", "laptop_load": [0.43798828125, 0.2890625, 0.35595703125]}
+scp: Connection closed
+2026-10-24T15:09:58+07:00 serve_pool stop    llama-server on laptop stopped
+2026-10-24T15:09:59+07:00 serve_pool stop    worker on pi4 stopped
+2026-10-24T15:09:59+07:00 done {"log": "testbed/results/qr3_rpc4H107_tinyllama_q4_0_20261024_150727.log"}
+req 0: 64 tokens, 0 merged; TTFT 7668.9 ms; client mean 121.89 p95 121.93 max 240.02 | server mean 121.89 p95 121.86 max 240.0
+req 1: 64 tokens, 0 merged; TTFT 7674.0 ms; client mean 121.85 p95 121.67 max 240.34 | server mean 121.84 p95 121.68 max 240.29
+req 2: 64 tokens, 0 merged; TTFT 7666.0 ms; client mean 121.83 p95 122.2 max 239.18 | server mean 121.83 p95 122.18 max 239.15
+req 3: 64 tokens, 0 merged; TTFT 7664.5 ms; client mean 121.87 p95 121.7 max 239.34 | server mean 121.87 p95 121.69 max 239.29
+req 4: 64 tokens, 0 merged; TTFT 7666.4 ms; client mean 121.72 p95 121.32 max 240.38 | server mean 121.72 p95 121.29 max 240.34
+req 5: 64 tokens, 0 merged; TTFT 7681.9 ms; client mean 121.87 p95 122.05 max 239.99 | server mean 121.87 p95 122.08 max 239.95
+POOLED client {"n": 378, "mean": 121.84, "p50": 119.88, "p95": 122.0, "p99": 239.49, "max": 240.38, "min": 117.76, "p95_ci95": [121.74, 122.27]}
+POOLED server {"n": 378, "mean": 121.84, "p50": 119.88, "p95": 122.06, "p99": 239.44, "max": 240.34, "min": 117.78, "p95_ci95": [121.72, 122.25]}
+wrote testbed/results/qr3_rpc4H107_tinyllama_q4_0_20261024_150727_summary.json
+POST H10: [ -f "$OUT/ns4_shape.log.pid" ] && kill $(cat "$OUT/ns4_shape.log.pid") 2>/dev/null; bash testbed/scripts/ns4c_shape_20261024.sh counters "$OUT/ns4c_counters.log"; bash testbed/scripts/ns4c_shape_20261024.sh clear
+    counters: egress 7360 pkts 3897708 B, ingress 25297 pkts 33627521 B
+    CLEARED eth0: qdisc mq 0: root 
+    UNSHAPED
+ARM 7 H10 rc=0 log=testbed/results/qr3_rpc4H107_tinyllama_q4_0_20261024_150727.log
+IDLE_AFTER start 1792829421.033125035
+IDLE_AFTER end 1792829481.040933330
+RESTORE H10: [ -f "$OUT/ns4_shape.log.pid" ] && kill $(cat "$OUT/ns4_shape.log.pid") 2>/dev/null; bash testbed/scripts/ns4c_shape_20261024.sh counters "$OUT/ns4c_counters.log"; bash testbed/scripts/ns4c_shape_20261024.sh clear
+    counters: egress None pkts None B, ingress None pkts None B
+    CLEARED eth0: qdisc mq 0: root 
+    UNSHAPED
+RESTORE H3: [ -f "$OUT/ns4_shape.log.pid" ] && kill $(cat "$OUT/ns4_shape.log.pid") 2>/dev/null; bash testbed/scripts/ns4c_shape_20261024.sh counters "$OUT/ns4c_counters.log"; bash testbed/scripts/ns4c_shape_20261024.sh clear
+    counters: egress None pkts None B, ingress None pkts None B
+    CLEARED eth0: qdisc mq 0: root 
+    UNSHAPED
+RESTORE L10: [ -f "$OUT/ns4_shape.log.pid" ] && kill $(cat "$OUT/ns4_shape.log.pid") 2>/dev/null; bash testbed/scripts/ns4c_shape_20261024.sh counters "$OUT/ns4c_counters.log"; bash testbed/scripts/ns4c_shape_20261024.sh clear
+    counters: egress None pkts None B, ingress None pkts None B
+    CLEARED eth0: qdisc mq 0: root 
+    UNSHAPED
+RESTORE L3: [ -f "$OUT/ns4_shape.log.pid" ] && kill $(cat "$OUT/ns4_shape.log.pid") 2>/dev/null; bash testbed/scripts/ns4c_shape_20261024.sh counters "$OUT/ns4c_counters.log"; bash testbed/scripts/ns4c_shape_20261024.sh clear
+    counters: egress None pkts None B, ingress None pkts None B
+    CLEARED eth0: qdisc mq 0: root 
+    UNSHAPED
+RESTORE LB10: [ -f "$OUT/ns4_shape.log.pid" ] && kill $(cat "$OUT/ns4_shape.log.pid") 2>/dev/null; bash testbed/scripts/ns4c_shape_20261024.sh counters "$OUT/ns4c_counters.log"; bash testbed/scripts/ns4c_shape_20261024.sh clear
+    counters: egress None pkts None B, ingress None pkts None B
+    CLEARED eth0: qdisc mq 0: root 
+    UNSHAPED
+RESTORE LB3: [ -f "$OUT/ns4_shape.log.pid" ] && kill $(cat "$OUT/ns4_shape.log.pid") 2>/dev/null; bash testbed/scripts/ns4c_shape_20261024.sh counters "$OUT/ns4c_counters.log"; bash testbed/scripts/ns4c_shape_20261024.sh clear
+    counters: egress None pkts None B, ingress None pkts None B
+    CLEARED eth0: qdisc mq 0: root 
+    UNSHAPED
+guard pid 18025 stopped
+TRIP lines: 0
+rpc4plan: the RPC link term on four nodes: TinyLlama Q4_0, laptop 11 + Pi 4 11, the head on the host (H), last (L) or last with backend sampling (LB), the Pi 4's RPC link at 10 and 3 Mbit/s, priced from step 1's measured bytes per token; code changed since registration: none
+
+RP-ACC       HOLDS      {'type': 'acc', 'metric': 'mean_ms_per_token', 'err_pct': {'H10': 4.02, 'H3': 3.82, 'L10': 1.46, 'L3': 1.91, 'LB10': 2.11, 'LB3': 5.79}, 'tol': 0.1}
+RP-HOST-3    HOLDS      {'type': 'lower', 'metric': 'mean_ms_per_token', 'H3': 180.07, 'L3': 529.3}
+RP-LB-3      HOLDS      {'type': 'lower', 'metric': 'mean_ms_per_token', 'LB3': 181.54, 'L3': 529.3}
+RP-DRIFT     HOLDS      {'type': 'spread', 'metric': 'mean_ms_per_token', 'runs': [124.1, 121.84], 'spread': 0.0184, 'tol': 0.03}
+
+arm H10: {'runs': [1, 7], 'requests': 12, 'complete': True, 'mean_ms_per_token': 122.97, 'client_p50_ms': 120.38, 'client_p95_ms': 124.24, 'server_mean_ms': 122.97, 'ttft_ms_p50': 7715.7, 'j_per_token_all': 3.4818, 'j_per_token_by_outlet': {'pi4': 0.6493, 'jetson': 0.2424, 'pi5': 0.3575, 'laptop': 2.2326}, 'draft_acceptance_rate': None, 'predicted': {'mean_ms_per_token': 118.22, 'server_mean_ms': 118.22, 'j_per_token_all': 3.3338, 'prefill_ms': 61.14}}
+arm H3: {'runs': [4], 'requests': 6, 'complete': True, 'mean_ms_per_token': 180.07, 'client_p50_ms': 173.19, 'client_p95_ms': 176.99, 'server_mean_ms': 180.07, 'ttft_ms_p50': 12220.8, 'j_per_token_all': 4.1627, 'j_per_token_by_outlet': {'pi4': 0.813, 'jetson': 0.358, 'pi5': 0.5202, 'laptop': 2.4716}, 'draft_acceptance_rate': None, 'predicted': {'mean_ms_per_token': 173.44, 'server_mean_ms': 173.44, 'j_per_token_all': 4.6762, 'prefill_ms': 91.73}}
+arm L10: {'runs': [2], 'requests': 6, 'complete': True, 'mean_ms_per_token': 234.11, 'client_p50_ms': 231.78, 'client_p95_ms': 235.38, 'server_mean_ms': 234.1, 'ttft_ms_p50': 7797.9, 'j_per_token_all': 5.1242, 'j_per_token_by_outlet': {'pi4': 1.0081, 'jetson': 0.4711, 'pi5': 0.663, 'laptop': 2.982}, 'draft_acceptance_rate': None, 'predicted': {'mean_ms_per_token': 230.74, 'server_mean_ms': 230.74, 'j_per_token_all': 5.8705, 'prefill_ms': 56.27}}
+arm L3: {'runs': [5], 'requests': 6, 'complete': True, 'mean_ms_per_token': 529.3, 'client_p50_ms': 519.59, 'client_p95_ms': 556.82, 'server_mean_ms': 529.3, 'ttft_ms_p50': 12571.3, 'j_per_token_all': 10.1911, 'j_per_token_by_outlet': {'pi4': 1.8284, 'jetson': 1.0578, 'pi5': 1.5244, 'laptop': 5.7805}, 'draft_acceptance_rate': None, 'predicted': {'mean_ms_per_token': 519.38, 'server_mean_ms': 519.38, 'j_per_token_all': 12.4165, 'prefill_ms': 75.29}}
+arm LB10: {'runs': [3], 'requests': 6, 'complete': True, 'mean_ms_per_token': 129.09, 'client_p50_ms': 126.86, 'client_p95_ms': 129.3, 'server_mean_ms': 129.09, 'ttft_ms_p50': 7721.8, 'j_per_token_all': 3.1921, 'j_per_token_by_outlet': {'pi4': 0.7162, 'jetson': 0.2592, 'pi5': 0.362, 'laptop': 1.8547}, 'draft_acceptance_rate': None, 'predicted': {'mean_ms_per_token': 126.42, 'server_mean_ms': 126.42, 'j_per_token_all': 3.2162, 'prefill_ms': 56.27}}
+arm LB3: {'runs': [6], 'requests': 6, 'complete': True, 'mean_ms_per_token': 181.54, 'client_p50_ms': 174.04, 'client_p95_ms': 176.78, 'server_mean_ms': 181.54, 'ttft_ms_p50': 12281.5, 'j_per_token_all': 4.2385, 'j_per_token_by_outlet': {'pi4': 0.8792, 'jetson': 0.3679, 'pi5': 0.5198, 'laptop': 2.4716}, 'draft_acceptance_rate': None, 'predicted': {'mean_ms_per_token': 171.61, 'server_mean_ms': 171.61, 'j_per_token_all': 4.1027, 'prefill_ms': 75.29}}
+run 1 H10 rc 0: 6 requests, mean 124.1 ms/token, client P50 121.33, server mean 124.1, TTFT P50 7772.9 ms, J/token all 3.852
+run 2 L10 rc 0: 6 requests, mean 234.11 ms/token, client P50 231.78, server mean 234.1, TTFT P50 7797.9 ms, J/token all 5.1242
+run 3 LB10 rc 0: 6 requests, mean 129.09 ms/token, client P50 126.86, server mean 129.09, TTFT P50 7721.8 ms, J/token all 3.1921
+run 4 H3 rc 0: 6 requests, mean 180.07 ms/token, client P50 173.19, server mean 180.07, TTFT P50 12220.8 ms, J/token all 4.1627
+run 5 L3 rc 0: 6 requests, mean 529.3 ms/token, client P50 519.59, server mean 529.3, TTFT P50 12571.3 ms, J/token all 10.1911
+run 6 LB3 rc 0: 6 requests, mean 181.54 ms/token, client P50 174.04, server mean 181.54, TTFT P50 12281.5 ms, J/token all 4.2385
+run 7 H10 rc 0: 6 requests, mean 121.84 ms/token, client P50 119.88, server mean 121.84, TTFT P50 7667.7 ms, J/token all 3.1115
+
+extra: {"hypotheses": {"RP-SHAPED": {"verdict": "HOLDS", "checks": [{"run": 1, "arm": "H10", "shape": {"ok": true, "rate_mbit": 10, "delay_ms": 0, "applied_epoch": 1792827480.162375}, "first_scored_request_epoch": 1792827517.844247, "counters": {"epoch": 1792827615.883537, "egress_bytes": 3936630, "egress_pkts": 7945, "ingress_bytes": 33680786, "ingress_pkts": 25973}, "traffic_through_netem": true, "ok": true}, {"run": 2, "arm": "L10", "shape": {"ok": true, "rate_mbit": 10, "delay_ms": 0, "applied_epoch": 1792827712.8536425}, "first_scored_request_epoch": 1792827752.3517897, "counters": {"epoch": 1792827892.033281, "egress_bytes": 55961100, "egress_pkts": 41052, "ingress_bytes": 33681014, "ingress_pkts": 26145}, "traffic_through_netem": true, "ok": true}, {"run": 3, "arm": "LB10", "shape": {"ok": true, "rate_mbit": 10, "delay_ms": 0, "applied_epoch": 1792827989.0365093}, "first_scored_request_epoch": 1792828025.1483223, "counters": {"epoch": 1792828124.5991766, "egress_bytes": 649976, "egress_pkts": 9502, "ingress_bytes": 35234506, "ingress_pkts": 32501}, "traffic_through_netem": true, "ok": true}, {"run": 4, "arm": "H3", "shape": {"ok": true, "rate_mbit": 3, "delay_ms": 0, "applied_epoch": 1792828220.672984}, "first_scored_request_epoch": 1792828277.2636104, "counters": {"epoch": 1792828422.9794254, "egress_bytes": 3869658, "egress_pkts": 6945, "ingress_bytes": 33598992, "ingress_pkts": 25130}, "traffic_through_netem": true, "ok": true}, {"run": 5, "arm": "L3", "shape": {"ok": true, "rate_mbit": 3, "delay_ms": 0, "applied_epoch": 1792828519.9946222}, "first_scored_request_epoch": 1792828586.7467465, "counters": {"epoch": 1792828866.6959867, "egress_bytes": 55967592, "egress_pkts": 41154, "ingress_bytes": 33657226, "ingress_pkts": 25885}, "traffic_through_netem": true, "ok": true}, {"run": 6, "arm": "LB3", "shape": {"ok": true, "rate_mbit": 3, "delay_ms": 0, "applied_epoch": 1792828963.715445}, "first_scored_request_epoch": 1792829019.4666011, "counters": {"epoch": 1792829166.1305318, "egress_bytes": 621314, "egress_pkts": 9105, "ingress_bytes": 35097298, "ingress_pkts": 31603}, "traffic_through_netem": true, "ok": true}, {"run": 7, "arm": "H10", "shape": {"ok": true, "rate_mbit": 10, "delay_ms": 0, "applied_epoch": 1792829267.2635968}, "first_scored_request_epoch": 1792829303.9863992, "counters": {"epoch": 1792829400.4045825, "egress_bytes": 3897708, "egress_pkts": 7360, "ingress_bytes": 33627521, "ingress_pkts": 25297}, "traffic_through_netem": true, "ok": true}]}, "RP-BETTER": {"verdict": "HOLDS", "arms": {"H10": {"measured": 122.97, "new": 118.22, "old": 107.66, "err_new_pct": 4.02, "err_old_pct": 14.22}, "H3": {"measured": 180.07, "new": 173.44, "old": 138.24, "err_new_pct": 3.82, "err_old_pct": 30.26}, "L10": {"measured": 234.11, "new": 230.74, "old": 216.0, "err_new_pct": 1.46, "err_old_pct": 8.38}, "L3": {"measured": 529.3, "new": 519.38, "old": 470.22, "err_new_pct": 1.91, "err_old_pct": 12.56}, "LB10": {"measured": 129.09, "new": 126.42, "old": 113.6, "err_new_pct": 2.11, "err_old_pct": 13.64}, "LB3": {"measured": 181.54, "new": 171.61, "old": 128.9, "err_new_pct": 5.79, "err_old_pct": 40.84}}}}}
+SESSION DONE 2026-10-24T15:12:05+07:00

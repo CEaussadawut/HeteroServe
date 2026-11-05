@@ -1,0 +1,327 @@
+{
+ "registered": "2026-10-09T20:27:17+07:00",
+ "campaign": "the TCP diagnostic: why the logits cost more than size / rate on a shaped Pi 4 <-> Jetson link",
+ "inputs_sha256": {
+  "characterisation.csv": "ef94c22318ccb0ce9ab913a08174d110095d9d4e0cad65aeeb052304dbc13d6a",
+  "model_shapes.json": "c92bbc0278b030d5218d7740b3fac99f146b5bdeffe684404d94a012f7232c38",
+  "link.json": "f961e94b8781e34081e0f11b3fb6339a150ae229fe43eb4566ca44094384568c",
+  "memory_at_rest.json": "1ec5a19725d7c565b9b97449beb0130b179da895e2e93fdb5e36e9ea4f141589",
+  "predict_pool.py": "a85f06784a93d4508c97c4fbd0db26eebe3eb115cf27490093e58e65db2e5564",
+  "run_pool.sh": "5f4b8c5c8f1c9a7edf127c284f3d616fbf3d841572e901745a57ee526e3e8cc7",
+  "compare_pool.py": "42bc6b13e83df0c5cad19289618bb5ba27c91492bd985717f1263ab50ef70057",
+  "netshape.sh": "04f6d238b776be5c6593a66bd5b169f22d97e827825889d8d6b72f2fbb9827c7",
+  "measure_link.sh": "054ad795e3a4f6018a262fe3ed53d4dacd7619f44c71081aeafeb787bf2f6165",
+  "link_to_json.py": "6f5b0b2a7f024690d667ca2a509d6475517954bef1b065831c08ed303db5481b",
+  "ss_sample.sh": "f3f667e584df58f09d352353832bc44f046fa0055246c26d0e4ed5e321a2ebe7",
+  "tcpdiag_campaign_20261009.sh": "165bf918cdb00d9f106d063b0b1cd16b332aba9ab09bfa36a57c1eda6c4a9c40",
+  "score_tcpdiag_20261009.py": "f8d4a357f30244fc8741fb713c4dde1f8cc9e9a5a6ae35559fb22de918fbd001",
+  "register_tcpdiag_20261009.py": "1da307c2941b71a449667238cc0d477334bed071ca14114563fbf78eca556df4"
+ },
+ "protocol": "-t 4 -p 64 -n 64 -r 3 -oe jsonl -v",
+ "base_link": {
+  "pair": "pi4-jetson",
+  "mbps": 938.8,
+  "rtt_ms": 1.081
+ },
+ "settings": [
+  {
+   "id": "b20",
+   "rate_mbit": 20,
+   "delay_ms_one_way": 0.0
+  },
+  {
+   "id": "s0",
+   "rate_mbit": 0,
+   "delay_ms_one_way": 0.0
+  }
+ ],
+ "sampler": {
+  "script": "ss_sample.sh",
+  "interval_s": 0.05,
+  "jetson": "( sport = :50052 )",
+  "pi4": "( dport = :50052 )"
+ },
+ "run_order": [
+  "tcp.tiny.last.b20",
+  "tcp.tiny.host.b20",
+  "tcp.tiny.host.s0",
+  "tcp.tiny.last.s0"
+ ],
+ "configs": {
+  "tcp.tiny.last.b20": {
+   "model": "tinyllama-1.1b-q4km",
+   "quant": "Q4_K_M",
+   "setting": "b20",
+   "layout": "last",
+   "rate_mbit": 20,
+   "delay_ms_one_way": 0.0,
+   "why": "TCP diagnostic 2026-10-09: setting b20, head on the Jetson",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 1
+    },
+    {
+     "node": "jetson",
+     "blocks": 21
+    }
+   ],
+   "head_on": "jetson",
+   "head_at": null,
+   "bench": {
+    "host": "pi4",
+    "args": "-m ~/models/tinyllama-1.1b-q4km.gguf -rpc 192.168.1.114:50052 -ngl 22",
+    "protocol": "-t 4 -p 64 -n 64 -r 3 -oe jsonl -v"
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 1,
+     "need_mib": 168,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 7245
+    },
+    "jetson": {
+     "blocks": 21,
+     "need_mib": 754,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 2341,
+     "weights_mib": 574.4,
+     "weights_cap_mib": 2845,
+     "weights_margin_mib": 2271
+    }
+   },
+   "link_nominal": {
+    "mbps": 20.0,
+    "rtt_ms": 1.081,
+    "pair": "pi4-jetson"
+   },
+   "predicted": {
+    "decode_ms_per_token": 149.6,
+    "decode_tok_s": 6.683,
+    "prefill_ms_per_token": 20.9,
+    "prefill_tok_s": 47.75
+   },
+   "cost_sources": {
+    "pi4": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "jetson": {
+     "host": "vulkan row",
+     "worker": "vulkan row + smoke-test RPC cost"
+    }
+   }
+  },
+  "tcp.tiny.host.b20": {
+   "model": "tinyllama-1.1b-q4km",
+   "quant": "Q4_K_M",
+   "setting": "b20",
+   "layout": "host",
+   "rate_mbit": 20,
+   "delay_ms_one_way": 0.0,
+   "why": "TCP diagnostic 2026-10-09: setting b20, head on the host",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 1
+    },
+    {
+     "node": "jetson",
+     "blocks": 21
+    }
+   ],
+   "head_on": "pi4",
+   "head_at": 0,
+   "bench": {
+    "host": "pi4",
+    "args": "-m ~/models/tinyllama-1.1b-q4km.gguf -rpc 192.168.1.114:50052 -ngl 22 -ot \"^output\\.weight=CPU\"",
+    "protocol": "-t 4 -p 64 -n 64 -r 3 -oe jsonl -v"
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 1,
+     "need_mib": 219,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 7194
+    },
+    "jetson": {
+     "blocks": 21,
+     "need_mib": 660,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 2435,
+     "weights_mib": 523.1,
+     "weights_cap_mib": 2845,
+     "weights_margin_mib": 2322
+    }
+   },
+   "link_nominal": {
+    "mbps": 20.0,
+    "rtt_ms": 1.081,
+    "pair": "pi4-jetson"
+   },
+   "predicted": {
+    "decode_ms_per_token": 109.1,
+    "decode_tok_s": 9.17,
+    "prefill_ms_per_token": 23.5,
+    "prefill_tok_s": 42.57
+   },
+   "cost_sources": {
+    "pi4": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "jetson": {
+     "host": "vulkan row",
+     "worker": "vulkan row + smoke-test RPC cost"
+    }
+   }
+  },
+  "tcp.tiny.host.s0": {
+   "model": "tinyllama-1.1b-q4km",
+   "quant": "Q4_K_M",
+   "setting": "s0",
+   "layout": "host",
+   "rate_mbit": 0,
+   "delay_ms_one_way": 0.0,
+   "why": "TCP diagnostic 2026-10-09: setting s0, head on the host",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 1
+    },
+    {
+     "node": "jetson",
+     "blocks": 21
+    }
+   ],
+   "head_on": "pi4",
+   "head_at": 0,
+   "bench": {
+    "host": "pi4",
+    "args": "-m ~/models/tinyllama-1.1b-q4km.gguf -rpc 192.168.1.114:50052 -ngl 22 -ot \"^output\\.weight=CPU\"",
+    "protocol": "-t 4 -p 64 -n 64 -r 3 -oe jsonl -v"
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 1,
+     "need_mib": 219,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 7194
+    },
+    "jetson": {
+     "blocks": 21,
+     "need_mib": 660,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 2435,
+     "weights_mib": 523.1,
+     "weights_cap_mib": 2845,
+     "weights_margin_mib": 2322
+    }
+   },
+   "link_nominal": {
+    "mbps": 938.8,
+    "rtt_ms": 1.081,
+    "pair": "pi4-jetson"
+   },
+   "predicted": {
+    "decode_ms_per_token": 102.6,
+    "decode_tok_s": 9.742,
+    "prefill_ms_per_token": 17.1,
+    "prefill_tok_s": 58.56
+   },
+   "cost_sources": {
+    "pi4": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "jetson": {
+     "host": "vulkan row",
+     "worker": "vulkan row + smoke-test RPC cost"
+    }
+   }
+  },
+  "tcp.tiny.last.s0": {
+   "model": "tinyllama-1.1b-q4km",
+   "quant": "Q4_K_M",
+   "setting": "s0",
+   "layout": "last",
+   "rate_mbit": 0,
+   "delay_ms_one_way": 0.0,
+   "why": "TCP diagnostic 2026-10-09: setting s0, head on the Jetson",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 1
+    },
+    {
+     "node": "jetson",
+     "blocks": 21
+    }
+   ],
+   "head_on": "jetson",
+   "head_at": null,
+   "bench": {
+    "host": "pi4",
+    "args": "-m ~/models/tinyllama-1.1b-q4km.gguf -rpc 192.168.1.114:50052 -ngl 22",
+    "protocol": "-t 4 -p 64 -n 64 -r 3 -oe jsonl -v"
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 1,
+     "need_mib": 168,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 7245
+    },
+    "jetson": {
+     "blocks": 21,
+     "need_mib": 754,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 2341,
+     "weights_mib": 574.4,
+     "weights_cap_mib": 2845,
+     "weights_margin_mib": 2271
+    }
+   },
+   "link_nominal": {
+    "mbps": 938.8,
+    "rtt_ms": 1.081,
+    "pair": "pi4-jetson"
+   },
+   "predicted": {
+    "decode_ms_per_token": 96.3,
+    "decode_tok_s": 10.383,
+    "prefill_ms_per_token": 17.0,
+    "prefill_tok_s": 58.99
+   },
+   "cost_sources": {
+    "pi4": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "jetson": {
+     "host": "vulkan row",
+     "worker": "vulkan row + smoke-test RPC cost"
+    }
+   }
+  }
+ },
+ "hypotheses": [
+  {
+   "id": "TD-SSAI",
+   "claim": "in tcp.tiny.last.b20's decode runs, the measured time per token is below the Jetson's median RTO on the connection, and no Jetson sample with data in flight shows cwnd <= 10"
+  }
+ ],
+ "exploratory": [
+  "the Jetson's retransmissions, cwnd and smoothed RTT (in flight and idle) and delivery rate",
+  "the Pi 4's rcv_space, rcv_ssthresh and rcv_wnd",
+  "the decode time against the re-priced prediction"
+ ]
+}

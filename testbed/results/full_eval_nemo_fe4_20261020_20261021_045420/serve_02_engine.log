@@ -1,0 +1,15 @@
+########## 2026-10-21T05:29:53+07:00 serve nemo12b, ctx 4096, clocks locked, boards pi5 pi4 jetson laptop, planned against testbed/dataset/memory_at_rest.json: laptop 40, head on laptop; predicted decode 364.2 ms/token (2.75 tok/s)
+hosts   laptop: laptop 40: decode 364.2 ms, prefill 122.0 ms; pi5: pi5 1 + laptop 39: decode 383.5 ms, prefill 191.6 ms
+llama-server -m ~/models/mistral-nemo-12b-q4_k_m.gguf -ngl 0  -c 4096 -np 1 -t 4 -lv 4 -lm none --host 192.168.1.108 --port 8080   pin b23701f77d47dad9de834d59ebfcbe25c9e8b46f
+gate    laptop: MemAvailable 26544 MiB, the plan needs 16305 MiB with its reserve (margin at rest 11480 MiB)
+server  starting on laptop (pid 593773); loading streams the model from the SD card to the workers
+READY   2026-10-21T05:30:08+07:00: http://192.168.1.108:8080/ (web chat) -- health {"status":"ok"}
+0.00.880.721 I load_tensors:          CPU model buffer size =  2117.05 MiB
+0.00.880.721 I load_tensors:   CPU_REPACK model buffer size =  5006.25 MiB
+0.13.030.332 I llama_context: n_ctx                 = 4096
+0.13.030.334 I llama_context: flash_attn            = auto
+0.13.030.597 I llama_kv_cache:        CPU KV buffer size =   640.00 MiB
+0.13.411.438 I llama_kv_cache: size =  640.00 MiB (  4096 cells,  40 layers,  1/1 seqs), K (f16):  320.00 MiB, V (f16):  320.00 MiB
+0.13.418.651 I sched_reserve:        CPU compute buffer size =   126.01 MiB
+0.14.615.554 I slot   load_model: id  0 | task -1 | new slot, n_ctx = 4096
+mem     laptop: MemAvailable 18672 MiB at READY, 26544 at the gate: the serve holds 7872 MiB, charged 8113 MiB

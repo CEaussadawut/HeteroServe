@@ -1,0 +1,17 @@
+### plan tinyllama-1.1b-q4_0.gguf (profiles_q4_0)
+heteroserve-rule  [tinyllama-1.1b-q4_0]
+  pi5            22 layers  ############################## 
+  predicted: 58.0 ms/token (17.24 tok/s), not measured: no power figure for pi5
+
+  llama.cpp flags:
+    -m tinyllama-1.1b-q4_0.gguf --rpc 192.168.10.11:50052 -ngl 99 --tensor-split 1.0
+rc=0
+### plan qwen3-14b-q4km.gguf (profiles_q4km)
+heteroserve-rule  [qwen3-14b-q4km]
+  pi4             6 layers  ####                           
+  pi5            34 layers  #########################      
+  predicted: 141.6 ms/token (7.06 tok/s), not measured: no power figure for pi4, pi5
+
+  llama.cpp flags:
+    -m qwen3-14b-q4km.gguf --rpc 192.168.10.12:50052,192.168.10.11:50052 -ngl 99 --tensor-split 0.15,0.85
+rc=0

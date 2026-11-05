@@ -1,0 +1,59 @@
+{
+ "_source": "testbed/scripts/attention_cost_20261011.py; units: ns, turned into ms per block per token of context depth by predict_pool.attn_ms()",
+ "boards": {
+  "pi4": {
+   "law": "query_heads",
+   "ns_per_qhead_dim": 1.89395,
+   "from": "kv14b: Qwen3-14B Pi 4 27 + Jetson 13, both depths hot, 265.56 ms per 1,000 tokens, less the Jetson's share (3.74 ms) at its law",
+   "check_from_0_6b": 1.99517
+  },
+  "jetson": {
+   "law": "kv_bytes",
+   "ns_per_kv_byte": 0.070251,
+   "from": "kv_depth: Qwen3-0.6B whole on the Jetson (Vulkan), 2 query heads per KV head; its scaling with query heads is not measured"
+  },
+  "laptop": {
+   "law": "query_heads",
+   "ns_per_qhead_dim": 0.71401,
+   "from": "laptop_worker: Qwen3-0.6B as an RPC worker on loopback, three runs; the law by analogy with the Pi 4's CPU",
+   "slope_ms_per_1k_each": [
+    36.29,
+    40.32,
+    46.22
+   ],
+   "spread_pct": 24.3,
+   "check_14b_not_used": {
+    "ms_per_token_by_depth_each_run": [
+     {
+      "1024": 621.3,
+      "0": 686.5
+     },
+     {
+      "1024": 660.5,
+      "0": 587.0
+     },
+     {
+      "1024": 604.0,
+      "0": 502.5
+     }
+    ],
+    "why": "d = 0 alone spread 502-687 ms: the laptop is also the user's desktop"
+   }
+  }
+ },
+ "inputs_sha256": {
+  "testbed/results/kv_depth_20261010_193538/score.json": "d2ffbfb714c3fb1a37973610feff813613795132a447797d109f341d9032eb97",
+  "testbed/results/kv14_20261010_213514/score.json": "ba70682123cb48015cd089170c4dc704220d6e1167eae084a52c83b2c0bf808b",
+  "testbed/results/laptop_worker_20261010_232946/q06_depth.1.log": "eaeadb45456c84138c4df2d94568a874640dc42025bea028492a35b18ddd05c1",
+  "testbed/results/laptop_worker_20261010_232946/q06_depth.2.log": "6709d7960bee9f3af3508f97a96746adb45e3cb14f3b61a894a2c19a4f30c722",
+  "testbed/results/laptop_worker_20261010_232946/q06_depth.3.log": "ee1cc5fb43d38e6f29caed555e07975734c2873910200fe553a863915b566837",
+  "testbed/results/laptop_worker_20261010_232946/q14_depth.1.log": "eacfc96232beaf8bb9df409afb8fa9a63c5f36969e9660ca525849151e2c43dd",
+  "testbed/results/laptop_worker_20261010_232946/q14_depth.2.log": "76f258f5a12572693fcdcc37ce6bb222f169ef55e96f7438ffa887bbe84ec6cb",
+  "testbed/results/laptop_worker_20261010_232946/q14_depth.3.log": "7e940b05f4180763fe66db237d9074598c5735205f73deca507f6da650b0f418",
+  "testbed/results/laptop_worker_20261010_232946/rpc-server-loopback.log": "e88390c8531e09d8decf559a6d35dac3869e747a14c13d0e0d46a72326d96fc0",
+  "testbed/results/laptop_worker_20261010_232946/run.log": "1db0f9a5d7244948026463f386c02e4c94207b16c57dddd066867659ab70303c",
+  "testbed/results/laptop_worker_20261010_232946/tiny_q4km.1.log": "fa520eae3ead5f065d5a5c7e3f7722e49107312da8279bd8e290538de7d80978",
+  "testbed/results/laptop_worker_20261010_232946/tiny_q4km.2.log": "a9fa52f4815e6cb4075b4abdf8e8bbbf40d56dcf9f91f5c7ed98e59b63f2d1ba",
+  "testbed/results/laptop_worker_20261010_232946/tiny_q4km.3.log": "42ffc77ccc2bd6ba6b4505c4cb21cf1a402bfe73b1870344622dbfc5d29fed81"
+ }
+}

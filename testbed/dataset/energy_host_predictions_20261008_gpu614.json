@@ -1,0 +1,123 @@
+{
+ "registered": "2026-10-08T02:12:18+07:00",
+ "campaign": "host choice: TinyLlama on the Jetson alone, the Pi 4 idle and metered (follow-up to the energy head-to-head)",
+ "inputs_sha256": {
+  "characterisation.csv": "ef94c22318ccb0ce9ab913a08174d110095d9d4e0cad65aeeb052304dbc13d6a",
+  "model_shapes.json": "c92bbc0278b030d5218d7740b3fac99f146b5bdeffe684404d94a012f7232c38",
+  "link.json": "e5084df7d3e62a47c7f93339ef4412c8e5f31db2d500ad5f189aafde95548ac5",
+  "memory_at_rest.json": "1ec5a19725d7c565b9b97449beb0130b179da895e2e93fdb5e36e9ea4f141589",
+  "predict_pool.py": "be08fdad2a0fac1abb0875ee038e845bb11328e918b18c24983aa9ca311afeca",
+  "energy_model.py": "44417b726621b2a27e7702818e12f4be679a784820c1ae1a3ac88a1229181eb5",
+  "run_pool.sh": "7b4baf35345b34e6fe1346c75a06e9fbad4f9fe1bf8913cfd82677c1814ee728",
+  "energy_pool_run.py": "c894af1f8c3897f2e6179a3a7bc247c0b8f71ea6a422097e194236ed3d9b54da",
+  "score_energy_pool_run.py": "dcdaea0ff3d6cdc53cdbc4a6b534e9572d702fab2f0523cd9018a78a5decccd0",
+  "shelly_strip.py": "b7aaa7ceb2f1e94aa3f1f46100c06ca9d6c0c3fa8764a6372239747ffc0fe5a8",
+  "register_energy_host_20261008.py": "2755f89ac0fa3fd7a3f6243755ebb04c5ce85bd6d0c2a03dfe97e06734e7f28c",
+  "strip.json": "1f101fc0c934c347ad4399a9fae103daa980163996d00de8bd83b74d94db24a6"
+ },
+ "power_table": {
+  "pi5": {
+   "idle": 2.3096321070234116,
+   "pp": 9.464891986082828,
+   "tg": 8.26205030239452,
+   "source": "testbed/dataset/energy_results_20261005b.json",
+   "sha256": "84a365c26489be46"
+  },
+  "pi4": {
+   "idle": 2.390896921017403,
+   "pp": 7.462781757353395,
+   "tg": 6.3219096642345205,
+   "source": "testbed/dataset/energy_results_20261005_pi4_q4km.json",
+   "sha256": "9c946768787cc0e7"
+  },
+  "jetson": {
+   "idle": 3.1383277591973244,
+   "pp": 8.893831082803821,
+   "tg": 11.173527822798489,
+   "source": "testbed/dataset/energy_results_20261005_jetson_vk_q4km.json",
+   "sha256": "102bfb16db360832"
+  },
+  "laptop": {
+   "idle": 14.054983277591974,
+   "pp": 29.33976692499638,
+   "tg": 32.12029854570033,
+   "source": "testbed/dataset/energy_results_20261006_laptop_q4km.json",
+   "sha256": "26856942a7d72a74"
+  }
+ },
+ "run_order": [
+  "eh.tiny.jetson",
+  "eh.tiny.jetson"
+ ],
+ "outlets": {
+  "pi4": 0,
+  "jetson": 2
+ },
+ "conditions": "as energy_h2h_predictions_20261008.json: the Jetson's clocks locked for the whole session; the guard running; the Pi 4 powered, idle, on outlet 0; the Jetson's GPU held at 614.4 MHz (devfreq min = max) for the whole session, the EMC at 1,600 MHz: EXPLORATORY, the predicted throughput below is the full-clock one",
+ "gpu_mhz": 614.4,
+ "configs": {
+  "eh.tiny.jetson": {
+   "model": "tinyllama-1.1b-q4km",
+   "quant": "Q4_K_M",
+   "why": "the planner's pick with the host chosen among the boards holding the file",
+   "pipeline": [
+    {
+     "node": "jetson",
+     "blocks": 22
+    }
+   ],
+   "head_on": "jetson",
+   "head_at": null,
+   "bench": {
+    "host": "jetson",
+    "args": "-m ~/models/tinyllama-1.1b-q4km.gguf -ngl 99",
+    "protocol": "-t 4 -p 512 -n 128 -r 18 --progress -oe jsonl"
+   },
+   "memory": {
+    "jetson": {
+     "blocks": 22,
+     "need_mib": 988,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 2107,
+     "weights_mib": 601.0,
+     "weights_cap_mib": 2845,
+     "weights_margin_mib": 2244
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 87.0,
+    "decode_tok_s": 11.494,
+    "prefill_ms_per_token": 13.7,
+    "prefill_tok_s": 73.12,
+    "timed_s": {
+     "pp": 126.0,
+     "tg": 200.4
+    },
+    "energy_model": {
+     "tg": {
+      "gross_j_per_token": 0.9721,
+      "gross_j_per_token_with_pi4_idle": 1.1801
+     },
+     "pp": {
+      "gross_j_per_token": 0.1216,
+      "gross_j_per_token_with_pi4_idle": 0.1543
+     }
+    }
+   },
+   "cost_sources": {
+    "jetson": {
+     "host": "vulkan row",
+     "worker": "vulkan row + smoke-test RPC cost"
+    }
+   }
+  }
+ },
+ "energy_hypotheses": [],
+ "h2h_hypotheses": [
+  {
+   "id": "H-DVFS",
+   "claim": "decode gross J/token below the full-clock eh.tiny.jetson cell's (same night), at whatever speed"
+  }
+ ]
+}

@@ -1,0 +1,15 @@
+########## 2026-10-11T03:58:29+07:00 serve tinyllama, ctx 1024, clocks asfound, boards laptop, planned against /tmp/claude-1000/-mnt-data-KMITL-Final-HeteroServe/a8d5254a-2d7a-4b7a-a330-39fe8f7ced15/scratchpad/mem_smoke.json: laptop 22, head on laptop; predicted decode 35.5 ms/token (28.19 tok/s)
+hosts   laptop: fixed: laptop 22, head last
+llama-server -m ~/models/tinyllama-1.1b-q4km.gguf -ngl 0  -c 1024 -np 1 -t 4 -lv 4 -lm none --host 192.168.1.108 --port 8080   pin b23701f77d47dad9de834d59ebfcbe25c9e8b46f
+gate    laptop: MemAvailable 17088 MiB, the plan needs 9200 MiB with its reserve (margin at rest 7800 MiB)
+server  starting on laptop (pid 371096); loading streams the model from the SD card to the workers
+READY   2026-10-11T03:58:35+07:00: http://192.168.1.108:8080/ (web chat) -- health {"status":"ok"}
+0.00.176.247 I load_tensors:          CPU model buffer size =   181.11 MiB
+0.00.176.248 I load_tensors:   CPU_REPACK model buffer size =   455.06 MiB
+0.02.401.523 I llama_context: n_ctx                 = 1024
+0.02.401.524 I llama_context: flash_attn            = auto
+0.02.401.684 I llama_kv_cache:        CPU KV buffer size =    22.00 MiB
+0.02.412.331 I llama_kv_cache: size =   22.00 MiB (  1024 cells,  22 layers,  1/1 seqs), K (f16):   11.00 MiB, V (f16):   11.00 MiB
+0.02.417.039 I sched_reserve:        CPU compute buffer size =    50.01 MiB
+0.02.535.363 I slot   load_model: id  0 | task -1 | new slot, n_ctx = 1024
+mem     laptop: MemAvailable 16483 MiB at READY, 17088 at the gate: the serve holds 605 MiB, charged 1008 MiB

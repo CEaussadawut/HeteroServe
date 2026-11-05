@@ -1,0 +1,293 @@
+{
+ "registered_at": "2026-10-24T07:19:09+07:00",
+ "script": "testbed/scripts/register_spec4d_20261024.py",
+ "session": "testbed/scripts/spec4_session_20261023.sh",
+ "scorer": "testbed/scripts/score_spec4d_20261024.py",
+ "tag_prefix": "sd",
+ "out_prefix": "spec4d",
+ "supersedes": "testbed/dataset/spec4c_predictions_20261024.json (INCOMPLETE: arm-run 4 refused by the laptop's memory gate)",
+ "what": "the draft length for speculative decoding on scheduler v2's plan (Qwen3-32B Q6_K, all four nodes): 1, 2 and 3 drafted tokens per check, each arm twice, energy at the wall, all four outlets",
+ "plan_options": {
+  "order_check": true,
+  "load_mode": "none",
+  "host": "laptop",
+  "planning_reserve_mb": "laptop=8992",
+  "headroom_mib": 1024
+ },
+ "model": "qwen3_32b_q6k",
+ "model_file": "~/models/qwen3-32b-q6_k.gguf",
+ "model_sha256": "c4c7c3cb6da260df1fe1d3cfd090a32dc7cc348f1278158be18e301f390d6f6e",
+ "draft": {
+  "file": "~/models/qwen3-0.6b-q8_0.gguf",
+  "sha256": "9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031",
+  "host_mib": 800
+ },
+ "ctx": 2048,
+ "nodes": [
+  "pi5",
+  "pi4",
+  "jetson",
+  "laptop"
+ ],
+ "outlets": {
+  "pi4": 0,
+  "jetson": 1,
+  "pi5": 2,
+  "laptop": 3
+ },
+ "memfile": "testbed/dataset/memory_snapshot_20261024_071825.json",
+ "reserve_mb": "laptop=7168",
+ "reserve": "as spec4: the user's 7 GiB laptop reserve for the Qwen3-32B runs at the serve-time gate, the draft's 800 MiB charged on top; the plan holds back 1,024 MiB more (HEADROOM)",
+ "reqs": 3,
+ "n": 128,
+ "gen": 64,
+ "warm": [
+  512,
+  32
+ ],
+ "order": [
+  "S1",
+  "S2",
+  "S3",
+  "S3",
+  "S2",
+  "S1"
+ ],
+ "conditions": "2026-10-24, after the four-node chain: the laptop on its charger, battery full, Wi-Fi off, no working apps; one Claude desktop app open (this session's); Claude works on the laptop during the session (text files, light load, no LibreOffice renders), the laptop's load logged; aunsync.timer every 16 min (~20 s).",
+ "cold_c": {
+  "pi5": 50,
+  "pi4": 55
+ },
+ "t1_predictor_ms": 1620.4,
+ "t1_measured_ms": 1481.47,
+ "measured_inputs": [
+  {
+   "d": 1,
+   "ms": 1150.46,
+   "acceptance": 0.6973,
+   "j_per_token_all": 51.4365,
+   "plan": "23oct",
+   "source": "spec4_20261023_134113 S"
+  },
+  {
+   "d": 1,
+   "ms": 1186.86,
+   "acceptance": 0.6261,
+   "j_per_token_all": 53.2659,
+   "plan": "23oct",
+   "source": "spec4b_20261023_170315 S1"
+  },
+  {
+   "d": 2,
+   "ms": 1355.31,
+   "acceptance": 0.4663,
+   "j_per_token_all": 60.5885,
+   "plan": "23oct",
+   "source": "spec4b_20261023_170315 S2"
+  },
+  {
+   "d": 1,
+   "ms": 1261.9,
+   "acceptance": 0.6607142857142857,
+   "j_per_token_all": 57.469,
+   "plan": "spec4c",
+   "source": "spec4c_20261024_004103 run 1 S1"
+  },
+  {
+   "d": 2,
+   "ms": 1288.43,
+   "acceptance": 0.5714285714285714,
+   "j_per_token_all": 51.9855,
+   "plan": "spec4c",
+   "source": "spec4c_20261024_004103 run 2 S2"
+  },
+  {
+   "d": 3,
+   "ms": 1556.28,
+   "acceptance": 0.45147679324894513,
+   "j_per_token_all": 65.8597,
+   "plan": "spec4c",
+   "source": "spec4c_20261024_004103 run 3 S3"
+  },
+  {
+   "d": 2,
+   "ms": 1346.71,
+   "acceptance": 0.5714285714285714,
+   "j_per_token_all": 60.1348,
+   "plan": "spec4c",
+   "source": "spec4c_20261024_004103 run 5 S2"
+  },
+  {
+   "d": 1,
+   "ms": 1235.74,
+   "acceptance": 0.6607142857142857,
+   "j_per_token_all": 53.8703,
+   "plan": "spec4c",
+   "source": "spec4c_20261024_004103 run 6 S1"
+  }
+ ],
+ "model_terms": {
+  "t1_ms_by_plan": {
+   "23oct": 1481.5,
+   "spec4c": 1591.7
+  },
+  "t1_ms_this_plan": 1533.5,
+  "ratio_by_d": {
+   "1": 0.7867,
+   "2": 0.8568,
+   "3": 0.9777
+  },
+  "n_runs_by_d": {
+   "1": 4,
+   "2": 3,
+   "3": 1
+  },
+  "watts_mean": 43.84,
+  "watts_range": [
+   40.35,
+   45.54
+  ]
+ },
+ "memory_at_rest_vs_planning_reserve_mib": {
+  "laptop": 349,
+  "pi5": 383,
+  "jetson": 1427
+ },
+ "laptop_margin_vs_gate_mib": 1373,
+ "arms": {
+  "S1": {
+   "what": "the Qwen3-0.6B draft on the laptop CPU, 1 drafted token per check",
+   "assign": [
+    [
+     "laptop",
+     45
+    ],
+    [
+     "pi5",
+     18
+    ],
+    [
+     "jetson",
+     1
+    ]
+   ],
+   "head": "last",
+   "place_env": {
+    "PLACE": "laptop:45,pi5:18,jetson:1",
+    "PLACE_HEAD": "last"
+   },
+   "serve_env": {
+    "SERVE_DRAFT": "-md ~/models/qwen3-0.6b-q8_0.gguf --spec-type draft-simple --spec-draft-n-max 1 --spec-draft-n-min 0 --spec-draft-p-min 0 -devd none -ngld 0",
+    "DRAFT_HOST_MIB": "800",
+    "HETEROSERVE_RESERVE_MB": "laptop=7168"
+   },
+   "predicted": {
+    "mean_ms_per_token": 1206.4,
+    "j_per_token_all": 52.8924,
+    "basis": "T1 of this plan times the mean measured ms / T1(plan) at d = 1, over spec4_20261023_134113 S; spec4b_20261023_170315 S1; spec4c_20261024_004103 run 1 S1; spec4c_20261024_004103 run 6 S1"
+   }
+  },
+  "S2": {
+   "what": "the Qwen3-0.6B draft on the laptop CPU, 2 drafted tokens per check",
+   "assign": [
+    [
+     "laptop",
+     45
+    ],
+    [
+     "pi5",
+     18
+    ],
+    [
+     "jetson",
+     1
+    ]
+   ],
+   "head": "last",
+   "place_env": {
+    "PLACE": "laptop:45,pi5:18,jetson:1",
+    "PLACE_HEAD": "last"
+   },
+   "serve_env": {
+    "SERVE_DRAFT": "-md ~/models/qwen3-0.6b-q8_0.gguf --spec-type draft-simple --spec-draft-n-max 2 --spec-draft-n-min 0 --spec-draft-p-min 0 -devd none -ngld 0",
+    "DRAFT_HOST_MIB": "800",
+    "HETEROSERVE_RESERVE_MB": "laptop=7168"
+   },
+   "predicted": {
+    "mean_ms_per_token": 1313.9,
+    "j_per_token_all": 57.6039,
+    "basis": "T1 of this plan times the mean measured ms / T1(plan) at d = 2, over spec4b_20261023_170315 S2; spec4c_20261024_004103 run 2 S2; spec4c_20261024_004103 run 5 S2"
+   }
+  },
+  "S3": {
+   "what": "the Qwen3-0.6B draft on the laptop CPU, 3 drafted tokens per check",
+   "assign": [
+    [
+     "laptop",
+     45
+    ],
+    [
+     "pi5",
+     18
+    ],
+    [
+     "jetson",
+     1
+    ]
+   ],
+   "head": "last",
+   "place_env": {
+    "PLACE": "laptop:45,pi5:18,jetson:1",
+    "PLACE_HEAD": "last"
+   },
+   "serve_env": {
+    "SERVE_DRAFT": "-md ~/models/qwen3-0.6b-q8_0.gguf --spec-type draft-simple --spec-draft-n-max 3 --spec-draft-n-min 0 --spec-draft-p-min 0 -devd none -ngld 0",
+    "DRAFT_HOST_MIB": "800",
+    "HETEROSERVE_RESERVE_MB": "laptop=7168"
+   },
+   "predicted": {
+    "mean_ms_per_token": 1499.3,
+    "j_per_token_all": 65.7354,
+    "basis": "T1 of this plan times the mean measured ms / T1(plan) at d = 3, over spec4c_20261024_004103 run 3 S3"
+   }
+  }
+ },
+ "hypotheses": {
+  "SC-ORDER": {
+   "claim": "mean time per token rises with the draft length: S1 < S2 < S3 (predicted 1206.4, 1313.9, 1499.3 ms)"
+  },
+  "SC-BEST": {
+   "predicted": "S1",
+   "claim": "S1 has the lowest mean time per token of the three"
+  },
+  "SC-ENERGY": {
+   "claim": "the arm with the lowest mean time per token also has the lowest gross J per decoded token"
+  },
+  "SC-ACC": {
+   "tol": 0.1,
+   "claim": "each arm's mean time per token within 10 % of its prediction"
+  },
+  "SC-TEXT": {
+   "claim": "within each arm, request 0's first 16 tokens of text are the same in both of its arm-runs"
+  }
+ },
+ "energy_definition": "per request, the gross energy at all four outlets over its decode window (first token to last), with the session's idle-before window; summed over requests and divided by gen - 1 per request",
+ "inputs_sha256": {
+  "testbed/scripts/qr3_tpot.py": "2b44f219faa6c767e64f78d54cb7608add38cbfeb26db145335a355f490b25af",
+  "testbed/scripts/serve_pool.sh": "647f03b3eefa90cf562d23d1dedb04be729abe83283646c1dfe51cea8b221354",
+  "testbed/scripts/serve_defaults.sh": "4fdedec2da1479d577117606f3d810e313ef4483a71be6c9787895133a66a095",
+  "testbed/scripts/predict_pool.py": "1e932a5012ed8d2d902e4d4a87d7d54f8e27f83169a9331c881b6bbec2f51821",
+  "testbed/scripts/energy_model.py": "10bf9f5771f693845872a45c12b154395005af8064fccdcffcac5d4563223d63",
+  "testbed/scripts/shelly_strip.py": "b7aaa7ceb2f1e94aa3f1f46100c06ca9d6c0c3fa8764a6372239747ffc0fe5a8",
+  "testbed/scripts/full_eval.py": "cfb89e752890a8d1223b4efc2b3caa6568bb74fc86bf5e830e47e59469484e4e",
+  "testbed/scripts/spec4_session_20261023.sh": "6239f57f576f60526ff812c1e5f89215aa0c2e6ea80e7de1c0bec83e6a44c0c7",
+  "testbed/scripts/score_spec4d_20261024.py": "7a07cd14bf603d5df986de177620a816367666f9dc2da72ac22773380980f4fb",
+  "testbed/scripts/register_spec4d_20261024.py": "39a5546ba8b15eb73e8cc9989b16f2c4dd6ee2f7ec17985e1f450aace4a2722f",
+  "testbed/scripts/score_prima4_20261021.py": "136121efb41ebc88455c8eb0ecf8bcf6904799937fe03cfdfb938a1988284f6b",
+  "testbed/results/spec4c_20261024_004103/score.json": "1b623c447449c476998b9c8ed2532bbba3847f5c20442e60cdd22714ea83d04f",
+  "testbed/dataset/model_shapes.json": "c3400b14d42e61f363f2df6e68974a12847d5cb6bd7c785f9b4ace8e3b6f5478",
+  "testbed/dataset/characterisation.csv": "183b4002fb6801f2559872cba7fbc9c7f11df9d858286dc60bf0971ddde1ad2c",
+  "ThinkPad/config/cluster.json": "1f0a3529dd384647ab71a0a08e2c142226ccf2b80aa5160ffc91e5e2e9485943",
+  "testbed/dataset/memory_snapshot_20261024_071825.json": "a38df39c7622312d0cd37f73f41138d4d0dacfded4178392ac3da5058ae59599"
+ }
+}

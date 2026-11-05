@@ -1,0 +1,14 @@
+[Unit]
+Description=HeteroServe Pi5 -- node agent (health + readiness for the orchestrator)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/heteroserve/node.env
+ExecStart=/opt/heteroserve/venv/bin/python /opt/heteroserve/node/agent.py
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

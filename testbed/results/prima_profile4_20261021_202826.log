@@ -1,0 +1,22 @@
+########## 2026-10-21T20:28:26+07:00 prima.cpp four-node profile, ring laptop pi5 pi4 jetson, models/tinyllama-1.1b-q4km.gguf
+ok      laptop: idle, models/tinyllama-1.1b-q4km.gguf sha256 9fecc3b3cd76bba8, MemAvailable 26486 MiB
+ok      pi5: idle, models/tinyllama-1.1b-q4km.gguf sha256 9fecc3b3cd76bba8, MemAvailable 7528 MiB
+ok      pi4: idle, models/tinyllama-1.1b-q4km.gguf sha256 9fecc3b3cd76bba8, MemAvailable 7389 MiB
+ok      jetson: idle, models/tinyllama-1.1b-q4km.gguf sha256 9fecc3b3cd76bba8, MemAvailable 3519 MiB
+guard started
+start   rank 3 jetson: ./llama-cli -m ~/models/tinyllama-1.1b-q4km.gguf -t 4 --world 4 --rank 3 --master 192.168.1.108 --next 192.168.1.108 --prefetch
+start   rank 2 pi4: ./llama-cli -m ~/models/tinyllama-1.1b-q4km.gguf -t 4 --world 4 --rank 2 --master 192.168.1.108 --next 192.168.1.114 --prefetch
+start   rank 1 pi5: ./llama-cli -m ~/models/tinyllama-1.1b-q4km.gguf -t 4 --world 4 --rank 1 --master 192.168.1.108 --next 192.168.1.110 --prefetch
+start   rank 0 laptop: ./llama-cli -m ~/models/tinyllama-1.1b-q4km.gguf -t 4 --world 4 --rank 0 --master 192.168.1.108 --next 192.168.1.122 --prefetch -c 1024 -n 16 -p 'The capital of France is' (2026-10-21T20:28:54+07:00)
+testbed/scripts/prima_profile4_20261021.sh: line 43: testbed/results/prima_profile4_20261021_202826_rank0.log: No such file or directory
+rank 0 exit 1 (2026-10-21T20:28:54+07:00)
+rank 1 pi5: 
+stopped rank 1 pid 118988 on pi5
+rank 2 pi4: 
+stopped rank 2 pid 129138 on pi4
+rank 3 jetson: 
+stopped rank 3 pid 25449 on jetson
+guard pid 25388 stopped
+TRIP lines: 0
+grep: testbed/results/prima_profile4_20261021_202826_rank0.log: No such file or directory
+PROFILE DONE 2026-10-21T20:29:05+07:00

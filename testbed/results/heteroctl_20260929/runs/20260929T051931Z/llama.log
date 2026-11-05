@@ -1,0 +1,36 @@
+[New LWP 28180]
+[New LWP 28178]
+[New LWP 28124]
+
+This GDB supports auto-downloading debuginfo from the following URLs:
+  <https://debuginfod.ubuntu.com>
+Enable debuginfod for this session? (y or [n]) [answered N; input not from terminal]
+Debuginfod has been disabled.
+To make this setting permanent, add 'set debuginfod enabled off' to .gdbinit.
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+syscall () at ../sysdeps/unix/sysv/linux/x86_64/syscall.S:38
+#0  syscall () at ../sysdeps/unix/sysv/linux/x86_64/syscall.S:38
+38	in ../sysdeps/unix/sysv/linux/x86_64/syscall.S
+#1  0x00007bc8dbce73c1 in std::__atomic_futex_unsigned_base::_M_futex_wait_until(unsigned int*, unsigned int, bool, std::chrono::duration<long, std::ratio<1l, 1l> >, std::chrono::duration<long, std::ratio<1l, 1000000000l> >) () from /lib/x86_64-linux-gnu/libstdc++.so.6
+#2  0x00007bc8dcc31eac in rpc_dispatcher::send(rpc_cmd, std::shared_ptr<void const>, unsigned long, void*, unsigned long) () from /opt/heteroserve/llama.cpp/build/bin/libggml-rpc.so.0
+#3  0x00007bc8dcc38a78 in ggml_backend_rpc_get_device_memory () from /opt/heteroserve/llama.cpp/build/bin/libggml-rpc.so.0
+#4  0x00007bc8dcc38bd8 in ggml_backend_rpc_device_get_props(ggml_backend_device*, ggml_backend_dev_props*) () from /opt/heteroserve/llama.cpp/build/bin/libggml-rpc.so.0
+#5  0x00007bc8dc1f90ea in llama_context::llama_context(llama_model const&, llama_context_params) () from /opt/heteroserve/llama.cpp/build/bin/libllama.so.0
+#6  0x00007bc8dc1f9bb4 in llama_init_from_model () from /opt/heteroserve/llama.cpp/build/bin/libllama.so.0
+#7  0x00007bc8dc62f5ab in common_init_result::common_init_result(common_params&, bool) () from /opt/heteroserve/llama.cpp/build/bin/libllama-common.so.0
+#8  0x00007bc8dc62ff23 in common_init_from_params(common_params&, bool) () from /opt/heteroserve/llama.cpp/build/bin/libllama-common.so.0
+#9  0x00007bc8dcd85a31 in llama_completion(int, char**) () from /opt/heteroserve/llama.cpp/build/bin/libllama-completion-impl.so
+#10 0x00007bc8dca2a1ca in __libc_start_call_main (main=main@entry=0x5ee456a7d060 <main>, argc=argc@entry=16, argv=argv@entry=0x7ffeb59b0b18) at ../sysdeps/nptl/libc_start_call_main.h:58
+#11 0x00007bc8dca2a28b in __libc_start_main_impl (main=0x5ee456a7d060 <main>, argc=16, argv=0x7ffeb59b0b18, init=<optimized out>, fini=<optimized out>, rtld_fini=<optimized out>, stack_end=0x7ffeb59b0b08) at ../csu/libc-start.c:360
+#12 0x00005ee456a7d095 in _start ()
+[Inferior 1 (process 28122) detached]
+
+0.00.014.374 I llama_completion: llama backend init
+0.00.014.406 I llama_completion: load the model and apply lora adapter, if any
+0.01.007.609 W common_fit_params: failed to fit params to free device memory: n_gpu_layers already set by user to 99, abort
+0.01.249.686 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden
+/opt/heteroserve/llama.cpp/ggml/src/ggml-rpc/ggml-rpc.cpp:566: Remote RPC server crashed or returned malformed response
+warning: 38	../sysdeps/unix/sysv/linux/x86_64/syscall.S: No such file or directory
+warning: 58	../sysdeps/nptl/libc_start_call_main.h: No such file or directory
+warning: 360	../csu/libc-start.c: No such file or directory

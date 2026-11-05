@@ -1,0 +1,77 @@
+{
+ "registered": "2026-10-06T00:56:39+07:00",
+ "campaign": "2026-10-06: the laptop's (ThinkPad T580) energy per token, TinyLlama-1.1B q4km on its CPU, prefill-only and decode-only at the wall (outlet 1; one of four laptop runs registered together; the 2026-10-05 energy campaign, continued after midnight)",
+ "inputs_sha256": {
+  "testbed/scripts/energy_phase_run.py": "f0cc72e52bec5408205c63a4db5049f7c0c59be51ed18393a5116dfcea668734",
+  "testbed/scripts/score_energy_phase_run.py": "5172f01ec55c6387c59297dd447e453e47a9a40dff87eb23bf52d64f146285fd",
+  "testbed/scripts/shelly_strip.py": "b7aaa7ceb2f1e94aa3f1f46100c06ca9d6c0c3fa8764a6372239747ffc0fe5a8",
+  "testbed/energy/strip.json": "04efaf39d8fc06e47c514ee164836c18996cf985f0565fd8d6d535c4b2f6686c",
+  ".handoff/assets/energy-2026-10-05/run_laptop_chain.sh": "2847964c61c23c8675a1e74f25921d42402dafd80da9c50dab37828149327c5b"
+ },
+ "model": {
+  "file_on_board": "/opt/heteroserve/models/tinyllama-1.1b-q4km.gguf",
+  "sha256": "9fecc3b3cd76bba89d504f29b616eedf7da85b96540e490ca5824d3f7d2776a0",
+  "verified": "re-hashed on the laptop by the runner's preflight"
+ },
+ "build": "llama.cpp b23701f7 (clean tree) on the laptop, /opt/heteroserve/llama.cpp/build/bin/llama-bench, run locally (--local)",
+ "command": "python3 testbed/scripts/energy_phase_run.py --node laptop --outlet 1 --local --llama-dir /opt/heteroserve/llama.cpp --model /opt/heteroserve/models/tinyllama-1.1b-q4km.gguf --sha256 9fecc3b3cd76bba89d504f29b616eedf7da85b96540e490ca5824d3f7d2776a0 --pp 512:22 --tg 128:28 --cycles 3 --threads 4 --idle-before 300 --idle-after 120 --settle 30 --gap 10",
+ "conditions": "the laptop on AC with its batteries neither charging nor discharging (00:48-00:53 on 2026-10-06: BAT0 'Not charging' at 99 %, BAT1 0 % 'Not charging', both power_now 0): the outlet reads the laptop's own draw only while no battery charges, which the scorer checks throughout. POWER PATH (sysfs, 00:50): the laptop's only power input is a USB-C port (UCSI USBC000:002, USB PD, the source offers 20 V / 2.75 A max) whose partner also holds the DisplayPort alt mode (DP-2) that drives the external monitor (Gigabyte GS27QCA, by its EDID); a Genesys Logic USB hub (05e3:0610 / 05e3:0625) carries the USB microphone and the keyboard. What feeds that USB-C link is not visible from the laptop: if it is a hub or dock fed by the laptop's charger on outlet 1, outlet 1's figure also holds that hub or dock and its USB devices (energy.md's wiring plan says only 'the laptop and its charger'); the user is asked to confirm. Constant extras cancel in the net figures, not in the gross ones. The internal panel (eDP-1) is off and the external monitor on throughout (GNOME idle-delay 0 and idle-dim off: it never blanks), so the display state is the same in the idle and the load windows. Idle sleep on AC 'nothing'; the lid stays open (lid close on AC = suspend). Power profile 'performance' (intel_pstate, governor powersave, turbo on); integrated GPU only (UHD 620). Running: GNOME Shell, the Claude desktop app that runs this session, and LINE under Wine (winedevice.exe ~1.7 % CPU). The user closed Discord, LibreOffice, the Zen browser and VS Code before registration (load average 0.5, x86_pkg_temp 51-53 C at 00:49-00:53). The session makes no tool calls while a laptop run is in progress (its own activity lands in outlet 1). systemd timers that may fire during the chain were left as they are (sysstat-collect every 10 min; fwupd-refresh ~01:25; man-db ~01:29). Each run starts once x86_pkg_temp reads below 55 C (run_laptop_chain.sh: polled every 5 s, at most 20 min, the wait logged). A SHAKEDOWN ran before this registration: 23:05 on 2026-10-05, q4km, one cycle at pp 512:3 / tg 128:3 (-r 2 was first refused by the runner's house rule), under a scratch registration with these same predictions, written at 23:05:08 before it ran (kept with its scores in .handoff/assets/energy-2026-10-05/laptop_shakedown/). It measured pp 48.3 t/s and tg 20.4 t/s (both below their bands), idle 31.1 W, the package up to 78 C, with Discord and LibreOffice open (and the Zen browser and VS Code, still running after it). No band was changed after it; the apps were closed instead. Runs only after the pooled-energy session and the Jetson CPU redo have ended, one strip logger at a time.",
+ "plan": "settle 30 s; idle 300 s; pp1, tg1, pp2, tg2, pp3, tg3 (10 s gaps); idle 120 s; the four runs back to back in one chain (q4km, q4_0, q8_0, q3km; run_laptop_chain.sh: the command plus --out testbed/results/energy_phase_laptop_<quant>_<stamp>), each started once x86_pkg_temp reads below 55 C",
+ "definitions": "as in energy_predictions_20261005b.json",
+ "predictions": {
+  "pp": {
+   "tps": [
+    72.14,
+    94.69
+   ],
+   "mean_w": [
+    22.7,
+    49.5
+   ],
+   "j_per_token_net": {
+    "trap": [
+     0.0333,
+     0.2772
+    ],
+    "counter": [
+     0.0343,
+     0.2994
+    ]
+   }
+  },
+  "tg": {
+   "tps": [
+    23.12,
+    30.34
+   ],
+   "mean_w": [
+    22.7,
+    49.5
+   ],
+   "j_per_token_net": {
+    "trap": [
+     0.1038,
+     0.8651
+    ],
+    "counter": [
+     0.1069,
+     0.9343
+    ]
+   }
+  },
+  "spread_pct_max": 12.0,
+  "gap_pct": [
+   -7.0,
+   -3.0
+  ]
+ },
+ "basis": {
+  "tps": "the T580's characterisation rows (pp512 90.18 t/s, tg128 28.90 t/s, mean of 2), band [-20 %, +5 %]: documented turbo noise and thermal limiting under sustained load",
+  "mean_w": "outlet 1 idles at 19.7-24.5 W and a 45 s 4-core busy loop added +5.45 W (17:49 map check); llama.cpp's AVX2 kernels are heavier, a guess: +3 to +25 W above idle",
+  "j_per_token_net": "trapezoid band = (+3 to +25 W) / the t/s point; counter band = trapezoid x [1.03, 1.08] (outlet 1's ~5 % gap)",
+  "spread": "the laptop's documented round-to-round noise (12 %, batched decode 2026-09-29)",
+  "gap": "outlet 1 at idle 2026-10-05: -5.58 % (when it was the Pi 5's outlet); registered as for the Pi 5",
+  "reps": "R chosen so each invocation is about 120 s timed at the row rate: pp 512:22, tg 128:28"
+ },
+ "scoring": "testbed/scripts/score_energy_phase_run.py (its battery check: 'Full' or 'Not charging' throughout); PASS / FAIL / N/A, reported as found"
+}

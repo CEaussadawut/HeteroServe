@@ -1,0 +1,229 @@
+{
+ "registration": "testbed/dataset/prima_predictions_20260930.json",
+ "arms": {
+  "A_ours_pis": {
+   "log": "testbed/results/qr3_primacmpA_qwen3_14b_20260930_053423.log",
+   "client": {
+    "n": 1270,
+    "mean": 1188.62,
+    "p50": 1184.79,
+    "p95": 1216.13,
+    "p99": 1239.99,
+    "max": 1444.03,
+    "min": 1168.12,
+    "p95_ci95": [
+     1207.76,
+     1221.54
+    ]
+   },
+   "server": {
+    "n": 1270,
+    "mean": 1188.67,
+    "p50": 1184.89,
+    "p95": 1216.15,
+    "p99": 1236.11,
+    "max": 1444.37,
+    "min": 1173.74,
+    "p95_ci95": [
+     1207.15,
+     1220.9
+    ]
+   },
+   "ttft_client_ms": {
+    "n": 10,
+    "mean": 45217.16,
+    "p50": 45210.9,
+    "p95": 45450.42,
+    "p99": 45493.76,
+    "max": 45504.6,
+    "min": 45042.8
+   },
+   "per_request_mean_tpot": {
+    "client": {
+     "n": 10,
+     "mean": 1188.62,
+     "p50": 1188.18,
+     "p95": 1192.23,
+     "p99": 1193.06,
+     "max": 1193.26,
+     "min": 1186.52
+    },
+    "server": {
+     "n": 10,
+     "mean": 1188.67,
+     "p50": 1188.18,
+     "p95": 1192.35,
+     "p99": 1193.2,
+     "max": 1193.42,
+     "min": 1186.52
+    }
+   },
+   "requests": 10,
+   "complete_requests": 10,
+   "merged_events": 0,
+   "served_args": "-m ~/models/qwen3-14b-q4_k_m.gguf --rpc 192.168.10.12:50052 -ngl 9 -c 4096 -np 1 -t 4",
+   "plan_as_registered": true
+  },
+  "B_prima_halda": {
+   "log": "testbed/results/qr3_primacmpB_qwen3_14b_20260930_061646.log",
+   "client": {
+    "n": 1270,
+    "mean": 1339.26,
+    "p50": 1335.42,
+    "p95": 1356.05,
+    "p99": 1538.86,
+    "max": 1561.49,
+    "min": 1125.14,
+    "p95_ci95": [
+     1354.85,
+     1357.25
+    ]
+   },
+   "server": {},
+   "ttft_client_ms": {
+    "n": 10,
+    "mean": 81566.49,
+    "p50": 81565.65,
+    "p95": 81606.49,
+    "p99": 81614.66,
+    "max": 81616.7,
+    "min": 81515.5
+   },
+   "per_request_mean_tpot": {
+    "client": {
+     "n": 10,
+     "mean": 1339.26,
+     "p50": 1339.01,
+     "p95": 1340.96,
+     "p99": 1340.97,
+     "max": 1340.97,
+     "min": 1337.48
+    },
+    "server": {}
+   },
+   "requests": 10,
+   "complete_requests": 10,
+   "merged_events": 0,
+   "halda_split": {
+    "pi5": 24,
+    "pi4": 16
+   },
+   "tokens_predicted": [
+    128,
+    128,
+    128,
+    128,
+    128,
+    128,
+    128,
+    128,
+    128,
+    128
+   ]
+  },
+  "D_ours_full_reference": {
+   "client_mean_ms": 851.58,
+   "client_p95_ms": 854.89,
+   "ttft_client_mean_ms": 23072.05,
+   "log": "testbed/results/qr3_scored_qwen3_14b_20260930_023225.log"
+  }
+ },
+ "rules": {
+  "CORRECTNESS": {
+   "smoke": {
+    "identical_leading_tokens": 16,
+    "of": 16,
+    "holds": true,
+    "llama_first_16": " The first sentence should be a summary of the license, the second should be a",
+    "prima_first_16": " The first sentence should be a summary of the license, the second should be a"
+   },
+   "B": {
+    "identical_leading_tokens": 128,
+    "of": 128,
+    "holds": true,
+    "llama_first_16": " The first sentence should be a summary of the license, the second should be a",
+    "prima_first_16": " The first sentence should be a summary of the license, the second should be a"
+   }
+  },
+  "DECODE": {
+   "A_mean_ms": 1188.62,
+   "B_mean_ms": 1339.26,
+   "faster": "A",
+   "A_less_than_B_pct": 11.2,
+   "B_over_A": 1.127,
+   "predicted": "A",
+   "as_predicted": true
+  },
+  "TTFT": {
+   "A_mean_ms": 45217.16,
+   "B_mean_ms": 81566.49,
+   "faster": "A",
+   "A_less_than_B_pct": 44.6,
+   "predicted": "A",
+   "as_predicted": true
+  },
+  "QR3": {
+   "A": {
+    "p95": 1216.13,
+    "ci": [
+     1207.76,
+     1221.54
+    ],
+    "MVP": "not met",
+    "STRETCH": "not met"
+   },
+   "B": {
+    "p95": 1356.05,
+    "ci": [
+     1354.85,
+     1357.25
+    ],
+    "MVP": "not met",
+    "STRETCH": "not met"
+   },
+   "predicted": "neither meets 500"
+  },
+  "HALDA-SPLIT": {
+   "split": {
+    "pi5": 24,
+    "pi4": 16
+   },
+   "pi5_blocks": 24,
+   "predicted": "pi5 <= 30",
+   "holds": true,
+   "smoke_split": {
+    "pi5": 24,
+    "pi4": 16
+   }
+  },
+  "ACCURACY": {
+   "A_server_mean_ms": 1188.67,
+   "predicted_ms": 1193.5,
+   "error_pct": 0.41,
+   "holds": true,
+   "plan_as_registered": true
+  },
+  "COMPLETE": {
+   "A": true,
+   "B": true,
+   "B_tokens_predicted": [
+    128,
+    128,
+    128,
+    128,
+    128,
+    128,
+    128,
+    128,
+    128,
+    128
+   ]
+  },
+  "REFERENCE_D": {
+   "client_mean_ms": 851.58,
+   "client_p95_ms": 854.89,
+   "ttft_client_mean_ms": 23072.05,
+   "log": "testbed/results/qr3_scored_qwen3_14b_20260930_023225.log"
+  }
+ }
+}

@@ -1,0 +1,251 @@
+########## 2026-10-20T06:14:31+07:00 register the four-node full evaluation -> testbed/results/fe4_register_20261020_061431
+input  testbed/dataset/memory_at_rest.json  46f5cf132f2fc5dd
+input  testbed/dataset/characterisation.csv  183b4002fb6801f2
+input  testbed/dataset/link.json  61915f41652f2206
+input  testbed/dataset/model_shapes.json  e1af6c7f9f0c7102
+input  testbed/dataset/model_inventory_20261020_052754.json  fc21be616f3752ce
+input  testbed/dataset/laptop_worker_20261011.json  e45eb675a368ed17
+===== 06:14:31 qwen3_14b -> q14b_fe4_20261020
+engine   laptop 40                                head last decode   439.5 ms  prefill   147.8 ms  margin 10024 MiB  (plan_host_choice on ['pi5', 'pi4', 'jetson', 'laptop'])
+boards   pi4 1 + jetson 7 + pi5 32                head last decode   867.4 ms  prefill   297.0 ms  margin   311 MiB  (plan_host_choice on ['pi5', 'pi4', 'jetson'])
+even     laptop 10 + pi5 10 + pi4 10 + jetson 10  head host decode  1138.3 ms  prefill   428.3 ms  margin   887 MiB  (equal blocks, order ['laptop', 'pi5', 'pi4', 'jetson'], head host)
+default  laptop 26 + pi5 6 + pi4 7 + jetson 1     head last decode   892.3 ms  prefill   334.6 ms  margin  1617 MiB  (llama.cpp's split by reported free memory {'laptop': 31296, 'pi5': 805)
+served1009 pi4 27 + jetson 13                       head host decode  2025.7 ms  prefill   796.0 ms  margin   284 MiB  (named on the command line)
+lap39    pi4 1 + laptop 39                        head last decode   500.3 ms  prefill   255.0 ms  margin  6642 MiB  (named on the command line)
+DROPPED single   the same placement as engine
+DROPPED halda    the same placement as engine
+--placements 'engine,boards=pi4:1+jetson:7+pi5:32/last,even=laptop:10+pi5:10+pi4:10+jetson:10/host,default=laptop:26+pi5:6+pi4:7+jetson:1/last,served1009=pi4:27+jetson:13/host,lap39=pi4:1+laptop:39/last'
+wrote testbed/results/fe4_register_20261020_061431/placements_qwen3_14b.json
+engine   laptop 40                    head last host laptop decode  439.5 ms  prefill 147.8 ms  J/token 14.118 (all boards 17.875)
+         memory: laptop needs 9569 + 8192 of 27785 MiB, margin 10024
+boards   pi4 1 + jetson 7 + pi5 32    head last host pi4    decode  867.4 ms  prefill 297.0 ms  J/token 13.269 (all boards 25.460)
+         memory: pi4 needs 771 + 0 of 7413 MiB, margin 6642, jetson needs 1582 + 450 of 3545 MiB, margin 1513, pi5 needs 7308 + 0 of 7619 MiB, margin 311
+even     laptop 10 + pi5 10 + pi4 10 + jetson 10 head host host laptop decode 1138.3 ms  prefill 428.3 ms  J/token 33.749 (all boards 33.749)
+         memory: laptop needs 3447 + 8192 of 27785 MiB, margin 16146, pi5 needs 2216 + 0 of 7619 MiB, margin 5403, pi4 needs 2161 + 0 of 7413 MiB, margin 5252, jetson needs 2208 + 450 of 3545 MiB, margin 887
+default  laptop 26 + pi5 6 + pi4 7 + jetson 1 head last host laptop decode  892.3 ms  prefill 334.6 ms  J/token 28.129 (all boards 28.129)
+         memory: laptop needs 6070 + 8192 of 27785 MiB, margin 13523, pi5 needs 1397 + 0 of 7619 MiB, margin 6222, pi4 needs 1628 + 0 of 7413 MiB, margin 5785, jetson needs 1478 + 450 of 3545 MiB, margin 1617
+served1009 pi4 27 + jetson 13           head host host pi4    decode 2025.7 ms  prefill 796.0 ms  J/token 20.674 (all boards 55.260)
+         memory: pi4 needs 6658 + 0 of 7413 MiB, margin 755, jetson needs 2811 + 450 of 3545 MiB, margin 284
+lap39    pi4 1 + laptop 39            head last host pi4    decode  500.3 ms  prefill 255.0 ms  J/token 16.327 (all boards 19.407)
+         memory: pi4 needs 771 + 0 of 7413 MiB, margin 6642, laptop needs 8935 + 8192 of 27785 MiB, margin 10658
+order: [['engine', 'boards', 'even', 'default', 'served1009', 'lap39'], ['boards', 'even', 'default', 'served1009', 'lap39', 'engine'], ['even', 'default', 'served1009', 'lap39', 'engine', 'boards'], ['default', 'served1009', 'lap39', 'engine', 'boards', 'even'], ['served1009', 'lap39', 'engine', 'boards', 'even', 'default']]
+registered testbed/dataset/full_eval_q14b_fe4_20261020.json at 2026-10-20T06:14:31+07:00, sha256 fa494bb3c91dc461 (read-only)
+===== 06:14:31 qwen3moe_q6k -> moeq6_fe4_20261020
+engine   laptop 37 + pi5 11                       head host decode   142.8 ms  prefill    65.7 ms  margin   394 MiB  (plan_host_choice on ['pi5', 'pi4', 'jetson', 'laptop'])
+default  laptop 31 + pi5 8 + pi4 7 + jetson 2     head last decode   248.0 ms  prefill    98.4 ms  margin  1572 MiB  (llama.cpp's split by reported free memory {'laptop': 31296, 'pi5': 805)
+lap_pi4  laptop 37 + pi4 11                       head host decode   243.2 ms  prefill   109.9 ms  margin   394 MiB  (named on the command line)
+DROPPED boards   the boards alone cannot hold it: no host gives a feasible plan for qwen3moe_q6k on ['pi5', 'pi4', 'jetson']: [('laptop', "not among the boards ['pi5', 'pi4', 'jetson']")]
+DROPPED single   no single node holds it
+DROPPED even     no order of equal blocks fits
+DROPPED halda    no Halda ring fits (6 priced)
+--placements 'engine,default=laptop:31+pi5:8+pi4:7+jetson:2/last,lap_pi4=laptop:37+pi4:11/host'
+wrote testbed/results/fe4_register_20261020_061431/placements_qwen3moe_q6k.json
+engine   laptop 37 + pi5 11           head host host laptop decode  142.8 ms  prefill  65.7 ms  J/token 4.496 (all boards 5.285)
+         memory: laptop needs 19199 + 8192 of 27785 MiB, margin 394, pi5 needs 5650 + 0 of 7619 MiB, margin 1969
+default  laptop 31 + pi5 8 + pi4 7 + jetson 2 head last host laptop decode  248.0 ms  prefill  98.4 ms  J/token 7.826 (all boards 7.826)
+         memory: laptop needs 15978 + 8192 of 27785 MiB, margin 3615, pi5 needs 4161 + 0 of 7619 MiB, margin 3458, pi4 needs 3633 + 0 of 7413 MiB, margin 3780, jetson needs 1523 + 450 of 3545 MiB, margin 1572
+lap_pi4  laptop 37 + pi4 11           head host host laptop decode  243.2 ms  prefill 109.9 ms  J/token 6.333 (all boards 7.831)
+         memory: laptop needs 19199 + 8192 of 27785 MiB, margin 394, pi4 needs 5618 + 0 of 7413 MiB, margin 1795
+order: [['engine', 'default', 'lap_pi4'], ['default', 'lap_pi4', 'engine'], ['lap_pi4', 'engine', 'default'], ['engine', 'default', 'lap_pi4'], ['default', 'lap_pi4', 'engine']]
+registered testbed/dataset/full_eval_moeq6_fe4_20261020.json at 2026-10-20T06:14:32+07:00, sha256 792156ec442577ab (read-only)
+===== 06:14:32 qwen3moe -> moeq3_fe4_20261020
+engine   laptop 48                                head last decode    99.8 ms  prefill    53.3 ms  margin  4834 MiB  (plan_host_choice on ['pi5', 'pi4', 'jetson', 'laptop'])
+boards   pi4 16 + jetson 9 + pi5 23               head last decode   281.2 ms  prefill   137.8 ms  margin   300 MiB  (plan_host_choice on ['pi5', 'pi4', 'jetson'])
+default  laptop 31 + pi5 8 + pi4 7 + jetson 2     head last decode   216.8 ms  prefill    90.0 ms  margin  1982 MiB  (llama.cpp's split by reported free memory {'laptop': 31296, 'pi5': 805)
+DROPPED single   the same placement as engine
+DROPPED even     no order of equal blocks fits
+DROPPED halda    the same placement as engine
+--placements 'engine,boards=pi4:16+jetson:9+pi5:23/last,default=laptop:31+pi5:8+pi4:7+jetson:2/last'
+wrote testbed/results/fe4_register_20261020_061431/placements_qwen3moe.json
+engine   laptop 48                    head last host laptop decode   99.8 ms  prefill  53.3 ms  J/token 3.205 (all boards 4.059)
+         memory: laptop needs 14759 + 8192 of 27785 MiB, margin 4834
+boards   pi4 16 + jetson 9 + pi5 23   head last host pi4    decode  281.2 ms  prefill 137.8 ms  J/token 3.959 (all boards 7.912)
+         memory: pi4 needs 4992 + 0 of 7413 MiB, margin 2421, jetson needs 2795 + 450 of 3545 MiB, margin 300, pi5 needs 7126 + 0 of 7619 MiB, margin 493
+default  laptop 31 + pi5 8 + pi4 7 + jetson 2 head last host laptop decode  216.8 ms  prefill  90.0 ms  J/token 6.860 (all boards 6.860)
+         memory: laptop needs 9569 + 8192 of 27785 MiB, margin 10024, pi5 needs 2519 + 0 of 7619 MiB, margin 5100, pi4 needs 2196 + 0 of 7413 MiB, margin 5217, jetson needs 1113 + 450 of 3545 MiB, margin 1982
+order: [['engine', 'boards', 'default'], ['boards', 'default', 'engine'], ['default', 'engine', 'boards'], ['engine', 'boards', 'default'], ['boards', 'default', 'engine']]
+registered testbed/dataset/full_eval_moeq3_fe4_20261020.json at 2026-10-20T06:14:32+07:00, sha256 c6b754d80b3268bc (read-only)
+===== 06:14:32 qwen38_27b -> q27b_fe4_20261020
+engine   laptop 65                                head last decode   766.4 ms  prefill   475.3 ms  margin  5430 MiB  (plan_host_choice on ['pi5', 'pi4', 'jetson', 'laptop'])
+boards   pi5 28 + jetson 15 + pi4 22              head host decode  2266.5 ms  prefill  1174.5 ms  margin   307 MiB  (plan_host_choice on ['pi5', 'pi4', 'jetson'])
+default  laptop 41 + pi5 11 + pi4 10 + jetson 3   head last decode  1468.8 ms  prefill   823.1 ms  margin   699 MiB  (llama.cpp's split by reported free memory {'laptop': 31296, 'pi5': 805)
+DROPPED single   the same placement as engine
+DROPPED even     no order of equal blocks fits
+DROPPED halda    the same placement as engine
+--placements 'engine,boards=pi5:28+jetson:15+pi4:22/host,default=laptop:41+pi5:11+pi4:10+jetson:3/last'
+wrote testbed/results/fe4_register_20261020_061431/placements_qwen38_27b.json
+engine   laptop 65                    head last host laptop decode  766.4 ms  prefill 475.3 ms  J/token 24.618 (all boards 31.169)
+         memory: laptop needs 14163 + 8192 of 27785 MiB, margin 5430
+boards   pi5 28 + jetson 15 + pi4 22  head host host pi5    decode 2266.5 ms  prefill 1174.5 ms  J/token 32.392 (all boards 64.247)
+         memory: pi5 needs 7238 + 0 of 7619 MiB, margin 381, jetson needs 2788 + 450 of 3545 MiB, margin 307, pi4 needs 4327 + 0 of 7413 MiB, margin 3086
+default  laptop 41 + pi5 11 + pi4 10 + jetson 3 head last host laptop decode 1468.8 ms  prefill 823.1 ms  J/token 47.205 (all boards 47.205)
+         memory: laptop needs 8803 + 8192 of 27785 MiB, margin 10790, pi5 needs 2185 + 0 of 7619 MiB, margin 5434, pi4 needs 2006 + 0 of 7413 MiB, margin 5407, jetson needs 2396 + 450 of 3545 MiB, margin 699
+order: [['engine', 'boards', 'default'], ['boards', 'default', 'engine'], ['default', 'engine', 'boards'], ['engine', 'boards', 'default'], ['boards', 'default', 'engine']]
+registered testbed/dataset/full_eval_q27b_fe4_20261020.json at 2026-10-20T06:14:33+07:00, sha256 430d55e0a14f45e7 (read-only)
+===== 06:14:33 nemo12b -> nemo_fe4_20261020
+engine   laptop 40                                head last decode   364.2 ms  prefill   122.0 ms  margin 11480 MiB  (plan_host_choice on ['pi5', 'pi4', 'jetson', 'laptop'])
+boards   pi5 36 + jetson 4                        head host decode   688.8 ms  prefill   141.9 ms  margin   305 MiB  (plan_host_choice on ['pi5', 'pi4', 'jetson'])
+even     laptop 10 + pi5 10 + pi4 10 + jetson 10  head host decode   942.0 ms  prefill   353.7 ms  margin  1235 MiB  (equal blocks, order ['laptop', 'pi5', 'pi4', 'jetson'], head host)
+default  laptop 26 + pi5 6 + pi4 7 + jetson 1     head last decode   741.2 ms  prefill   276.4 ms  margin  1819 MiB  (llama.cpp's split by reported free memory {'laptop': 31296, 'pi5': 805)
+DROPPED single   the same placement as engine
+DROPPED halda    the same placement as engine
+--placements 'engine,boards=pi5:36+jetson:4/host,even=laptop:10+pi5:10+pi4:10+jetson:10/host,default=laptop:26+pi5:6+pi4:7+jetson:1/last'
+wrote testbed/results/fe4_register_20261020_061431/placements_nemo12b.json
+engine   laptop 40                    head last host laptop decode  364.2 ms  prefill 122.0 ms  J/token 11.699 (all boards 14.812)
+         memory: laptop needs 8113 + 8192 of 27785 MiB, margin 11480
+boards   pi5 36 + jetson 4            head host host pi5    decode  688.8 ms  prefill 141.9 ms  J/token 8.963 (all boards 20.291)
+         memory: pi5 needs 7314 + 0 of 7619 MiB, margin 305, jetson needs 828 + 450 of 3545 MiB, margin 2267
+even     laptop 10 + pi5 10 + pi4 10 + jetson 10 head host host laptop decode  942.0 ms  prefill 353.7 ms  J/token 27.937 (all boards 27.937)
+         memory: laptop needs 2974 + 8192 of 27785 MiB, margin 16619, pi5 needs 1891 + 0 of 7619 MiB, margin 5728, pi4 needs 1840 + 0 of 7413 MiB, margin 5573, jetson needs 1860 + 450 of 3545 MiB, margin 1235
+default  laptop 26 + pi5 6 + pi4 7 + jetson 1 head last host laptop decode  741.2 ms  prefill 276.4 ms  J/token 23.355 (all boards 23.355)
+         memory: laptop needs 5162 + 8192 of 27785 MiB, margin 14431, pi5 needs 1203 + 0 of 7619 MiB, margin 6416, pi4 needs 1392 + 0 of 7413 MiB, margin 6021, jetson needs 1276 + 450 of 3545 MiB, margin 1819
+order: [['engine', 'boards', 'even', 'default'], ['boards', 'even', 'default', 'engine'], ['even', 'default', 'engine', 'boards'], ['default', 'engine', 'boards', 'even'], ['engine', 'boards', 'even', 'default']]
+registered testbed/dataset/full_eval_nemo_fe4_20261020.json at 2026-10-20T06:14:34+07:00, sha256 c634d10034d56445 (read-only)
+===== 06:14:34 qwen35_9b -> q9b_fe4_20261020
+engine   laptop 33                                head last decode   273.6 ms  prefill    77.8 ms  margin 12842 MiB  (plan_host_choice on ['pi5', 'pi4', 'jetson', 'laptop'])
+boards   pi5 33                                   head last decode   490.5 ms  prefill    89.3 ms  margin   998 MiB  (plan_host_choice on ['pi5', 'pi4', 'jetson'])
+even     laptop 9 + pi5 8 + pi4 8 + jetson 8      head host decode   658.9 ms  prefill   224.9 ms  margin  1651 MiB  (equal blocks, order ['laptop', 'pi5', 'pi4', 'jetson'], head host)
+default  laptop 22 + pi5 5 + pi4 5 + jetson 1     head last decode   556.6 ms  prefill   167.2 ms  margin  1197 MiB  (llama.cpp's split by reported free memory {'laptop': 31296, 'pi5': 805)
+pi4alone pi4 33                                   head last decode  1482.4 ms  prefill   572.4 ms  margin   875 MiB  (named on the command line)
+DROPPED single   the same placement as engine
+DROPPED halda    the same placement as engine
+--placements 'engine,boards=pi5:33/last,even=laptop:9+pi5:8+pi4:8+jetson:8/host,default=laptop:22+pi5:5+pi4:5+jetson:1/last,pi4alone=pi4:33/last'
+wrote testbed/results/fe4_register_20261020_061431/placements_qwen35_9b.json
+engine   laptop 33                    head last host laptop decode  273.6 ms  prefill  77.8 ms  J/token 8.789 (all boards 11.128)
+         memory: laptop needs 6751 + 8192 of 27785 MiB, margin 12842
+boards   pi5 33                       head last host pi5    decode  490.5 ms  prefill  89.3 ms  J/token 4.756 (all boards 14.362)
+         memory: pi5 needs 6621 + 0 of 7619 MiB, margin 998
+even     laptop 9 + pi5 8 + pi4 8 + jetson 8 head host host laptop decode  658.9 ms  prefill 224.9 ms  J/token 19.856 (all boards 19.856)
+         memory: laptop needs 3053 + 8192 of 27785 MiB, margin 16540, pi5 needs 1370 + 0 of 7619 MiB, margin 6249, pi4 needs 1329 + 0 of 7413 MiB, margin 6084, jetson needs 1444 + 450 of 3545 MiB, margin 1651
+default  laptop 22 + pi5 5 + pi4 5 + jetson 1 head last host laptop decode  556.6 ms  prefill 167.2 ms  J/token 17.592 (all boards 17.592)
+         memory: laptop needs 4170 + 8192 of 27785 MiB, margin 15423, pi5 needs 920 + 0 of 7619 MiB, margin 6699, pi4 needs 953 + 0 of 7413 MiB, margin 6460, jetson needs 1898 + 450 of 3545 MiB, margin 1197
+pi4alone pi4 33                       head last host pi4    decode 1482.4 ms  prefill 572.4 ms  J/token 9.372 (all boards 39.333)
+         memory: pi4 needs 6538 + 0 of 7413 MiB, margin 875
+order: [['engine', 'boards', 'even', 'default', 'pi4alone'], ['boards', 'even', 'default', 'pi4alone', 'engine'], ['even', 'default', 'pi4alone', 'engine', 'boards'], ['default', 'pi4alone', 'engine', 'boards', 'even'], ['pi4alone', 'engine', 'boards', 'even', 'default']]
+registered testbed/dataset/full_eval_q9b_fe4_20261020.json at 2026-10-20T06:14:35+07:00, sha256 d6272fe96806ef6b (read-only)
+===== 06:14:35 tinyllama -> tinyq4km_fe4_20261020
+engine   laptop 22                                head last decode    32.4 ms  prefill    10.8 ms  margin 18519 MiB  (plan_host_choice on ['pi5', 'pi4', 'jetson', 'laptop'])
+boards   pi5 22                                   head last decode    58.0 ms  prefill    12.4 ms  margin  6675 MiB  (plan_host_choice on ['pi5', 'pi4', 'jetson'])
+even     laptop 6 + pi5 6 + pi4 5 + jetson 5      head last decode    88.8 ms  prefill    30.4 ms  margin  2804 MiB  (equal blocks, order ['laptop', 'pi5', 'pi4', 'jetson'], head last)
+default  laptop 15 + pi5 3 + pi4 4                head last decode    74.6 ms  prefill    25.0 ms  margin  7086 MiB  (llama.cpp's split by reported free memory {'laptop': 31296, 'pi5': 805)
+pi4alone pi4 22                                   head last decode   175.4 ms  prefill    79.8 ms  margin  6552 MiB  (named on the command line)
+jetsonalone jetson 22                                head last decode    87.0 ms  prefill    13.7 ms  margin  2021 MiB  (named on the command line)
+DROPPED single   the same placement as engine
+DROPPED halda    the same placement as engine
+--placements 'engine,boards=pi5:22/last,even=laptop:6+pi5:6+pi4:5+jetson:5/last,default=laptop:15+pi5:3+pi4:4/last,pi4alone=pi4:22/last,jetsonalone=jetson:22/last'
+wrote testbed/results/fe4_register_20261020_061431/placements_tinyllama.json
+engine   laptop 22                    head last host laptop decode   32.4 ms  prefill  10.8 ms  J/token 1.040 (all boards 1.316)
+         memory: laptop needs 1074 + 8192 of 27785 MiB, margin 18519
+boards   pi5 22                       head last host pi5    decode   58.0 ms  prefill  12.4 ms  J/token 0.563 (all boards 1.699)
+         memory: pi5 needs 944 + 0 of 7619 MiB, margin 6675
+even     laptop 6 + pi5 6 + pi4 5 + jetson 5 head last host laptop decode   88.8 ms  prefill  30.4 ms  J/token 2.597 (all boards 2.597)
+         memory: laptop needs 560 + 8192 of 27785 MiB, margin 19033, pi5 needs 366 + 0 of 7619 MiB, margin 7253, pi4 needs 303 + 0 of 7413 MiB, margin 7110, jetson needs 291 + 450 of 3545 MiB, margin 2804
+default  laptop 15 + pi5 3 + pi4 4    head last host laptop decode   74.6 ms  prefill  25.0 ms  J/token 2.038 (all boards 2.272)
+         memory: laptop needs 821 + 8192 of 27785 MiB, margin 18772, pi5 needs 277 + 0 of 7619 MiB, margin 7342, pi4 needs 327 + 0 of 7413 MiB, margin 7086
+pi4alone pi4 22                       head last host pi4    decode  175.4 ms  prefill  79.8 ms  J/token 1.109 (all boards 4.653)
+         memory: pi4 needs 861 + 0 of 7413 MiB, margin 6552
+jetsonalone jetson 22                    head last host jetson decode   87.0 ms  prefill  13.7 ms  J/token 0.972 (all boards 2.666)
+         memory: jetson needs 1074 + 450 of 3545 MiB, margin 2021
+order: [['engine', 'boards', 'even', 'default', 'pi4alone', 'jetsonalone'], ['boards', 'even', 'default', 'pi4alone', 'jetsonalone', 'engine'], ['even', 'default', 'pi4alone', 'jetsonalone', 'engine', 'boards'], ['default', 'pi4alone', 'jetsonalone', 'engine', 'boards', 'even'], ['pi4alone', 'jetsonalone', 'engine', 'boards', 'even', 'default']]
+registered testbed/dataset/full_eval_tinyq4km_fe4_20261020.json at 2026-10-20T06:14:35+07:00, sha256 cb6ab162dd648ed7 (read-only)
+===== 06:14:35 tinyllama_q8_0 -> tinyq8_fe4_20261020
+engine   laptop 22                                head last decode    50.5 ms  prefill    14.8 ms  margin 18040 MiB  (plan_host_choice on ['pi5', 'pi4', 'jetson', 'laptop'])
+boards   pi5 22                                   head last decode   108.6 ms  prefill    17.7 ms  margin  6196 MiB  (plan_host_choice on ['pi5', 'pi4', 'jetson'])
+even     laptop 6 + pi5 6 + pi4 5 + jetson 5      head last decode   148.7 ms  prefill    30.9 ms  margin  2675 MiB  (equal blocks, order ['laptop', 'pi5', 'pi4', 'jetson'], head last)
+default  laptop 15 + pi5 3 + pi4 4                head last decode   118.3 ms  prefill    27.7 ms  margin  6993 MiB  (llama.cpp's split by reported free memory {'laptop': 31296, 'pi5': 805)
+pi4alone pi4 22                                   head last decode   300.0 ms  prefill    81.2 ms  margin  6073 MiB  (named on the command line)
+jetsonalone jetson 22                                head last decode   147.3 ms  prefill    12.6 ms  margin  1542 MiB  (named on the command line)
+DROPPED single   the same placement as engine
+DROPPED halda    the same placement as engine
+--placements 'engine,boards=pi5:22/last,even=laptop:6+pi5:6+pi4:5+jetson:5/last,default=laptop:15+pi5:3+pi4:4/last,pi4alone=pi4:22/last,jetsonalone=jetson:22/last'
+wrote testbed/results/fe4_register_20261020_061431/placements_tinyllama_q8_0.json
+engine   laptop 22                    head last host laptop decode   50.5 ms  prefill  14.8 ms  J/token 1.621 (all boards 2.052)
+         memory: laptop needs 1553 + 8192 of 27785 MiB, margin 18040
+boards   pi5 22                       head last host pi5    decode  108.6 ms  prefill  17.7 ms  J/token 1.053 (all boards 3.181)
+         memory: pi5 needs 1423 + 0 of 7619 MiB, margin 6196
+even     laptop 6 + pi5 6 + pi4 5 + jetson 5 head last host laptop decode  148.7 ms  prefill  30.9 ms  J/token 4.352 (all boards 4.352)
+         memory: laptop needs 708 + 8192 of 27785 MiB, margin 18885, pi5 needs 483 + 0 of 7619 MiB, margin 7136, pi4 needs 402 + 0 of 7413 MiB, margin 7011, jetson needs 420 + 450 of 3545 MiB, margin 2675
+default  laptop 15 + pi5 3 + pi4 4    head last host laptop decode  118.3 ms  prefill  27.7 ms  J/token 3.246 (all boards 3.618)
+         memory: laptop needs 1146 + 8192 of 27785 MiB, margin 18447, pi5 needs 337 + 0 of 7619 MiB, margin 7282, pi4 needs 420 + 0 of 7413 MiB, margin 6993
+pi4alone pi4 22                       head last host pi4    decode  300.0 ms  prefill  81.2 ms  J/token 1.896 (all boards 7.959)
+         memory: pi4 needs 1340 + 0 of 7413 MiB, margin 6073
+jetsonalone jetson 22                    head last host jetson decode  147.3 ms  prefill  12.6 ms  J/token 1.645 (all boards 4.511)
+         memory: jetson needs 1553 + 450 of 3545 MiB, margin 1542
+order: [['engine', 'boards', 'even', 'default', 'pi4alone', 'jetsonalone'], ['boards', 'even', 'default', 'pi4alone', 'jetsonalone', 'engine'], ['even', 'default', 'pi4alone', 'jetsonalone', 'engine', 'boards'], ['default', 'pi4alone', 'jetsonalone', 'engine', 'boards', 'even'], ['pi4alone', 'jetsonalone', 'engine', 'boards', 'even', 'default']]
+registered testbed/dataset/full_eval_tinyq8_fe4_20261020.json at 2026-10-20T06:14:35+07:00, sha256 a7751e70c766df84 (read-only)
+===== 06:14:35 tinyllama_q4_0 -> tinyq40_fe4_20261020
+engine   laptop 22                                head last decode    30.4 ms  prefill    11.7 ms  margin 18548 MiB  (plan_host_choice on ['pi5', 'pi4', 'jetson', 'laptop'])
+boards   pi5 22                                   head last decode    53.1 ms  prefill     7.7 ms  margin  6704 MiB  (plan_host_choice on ['pi5', 'pi4', 'jetson'])
+even     laptop 6 + pi5 6 + pi4 5 + jetson 5      head last decode    96.7 ms  prefill    30.9 ms  margin  2810 MiB  (equal blocks, order ['laptop', 'pi5', 'pi4', 'jetson'], head last)
+default  laptop 15 + pi5 3 + pi4 4                head last decode    71.6 ms  prefill    26.3 ms  margin  7092 MiB  (llama.cpp's split by reported free memory {'laptop': 31296, 'pi5': 805)
+pi4alone pi4 22                                   head last decode   169.6 ms  prefill    84.4 ms  margin  6581 MiB  (named on the command line)
+jetsonalone jetson 22                                head last decode   121.1 ms  prefill    12.5 ms  margin  2050 MiB  (named on the command line)
+DROPPED single   the same placement as engine
+DROPPED halda    the same placement as engine
+--placements 'engine,boards=pi5:22/last,even=laptop:6+pi5:6+pi4:5+jetson:5/last,default=laptop:15+pi5:3+pi4:4/last,pi4alone=pi4:22/last,jetsonalone=jetson:22/last'
+wrote testbed/results/fe4_register_20261020_061431/placements_tinyllama_q4_0.json
+engine   laptop 22                    head last host laptop decode   30.4 ms  prefill  11.7 ms  J/token 0.976 (all boards 1.236)
+         memory: laptop needs 1045 + 8192 of 27785 MiB, margin 18548
+boards   pi5 22                       head last host pi5    decode   53.1 ms  prefill   7.7 ms  J/token 0.515 (all boards 1.554)
+         memory: pi5 needs 915 + 0 of 7619 MiB, margin 6704
+even     laptop 6 + pi5 6 + pi4 5 + jetson 5 head last host laptop decode   96.7 ms  prefill  30.9 ms  J/token 2.843 (all boards 2.843)
+         memory: laptop needs 551 + 8192 of 27785 MiB, margin 19042, pi5 needs 357 + 0 of 7619 MiB, margin 7262, pi4 needs 297 + 0 of 7413 MiB, margin 7116, jetson needs 285 + 450 of 3545 MiB, margin 2810
+default  laptop 15 + pi5 3 + pi4 4    head last host laptop decode   71.6 ms  prefill  26.3 ms  J/token 1.948 (all boards 2.173)
+         memory: laptop needs 800 + 8192 of 27785 MiB, margin 18793, pi5 needs 274 + 0 of 7619 MiB, margin 7345, pi4 needs 321 + 0 of 7413 MiB, margin 7092
+pi4alone pi4 22                       head last host pi4    decode  169.6 ms  prefill  84.4 ms  J/token 1.072 (all boards 4.500)
+         memory: pi4 needs 832 + 0 of 7413 MiB, margin 6581
+jetsonalone jetson 22                    head last host jetson decode  121.1 ms  prefill  12.5 ms  J/token 1.353 (all boards 3.710)
+         memory: jetson needs 1045 + 450 of 3545 MiB, margin 2050
+order: [['engine', 'boards', 'even', 'default', 'pi4alone', 'jetsonalone'], ['boards', 'even', 'default', 'pi4alone', 'jetsonalone', 'engine'], ['even', 'default', 'pi4alone', 'jetsonalone', 'engine', 'boards'], ['default', 'pi4alone', 'jetsonalone', 'engine', 'boards', 'even'], ['pi4alone', 'jetsonalone', 'engine', 'boards', 'even', 'default']]
+registered testbed/dataset/full_eval_tinyq40_fe4_20261020.json at 2026-10-20T06:14:36+07:00, sha256 5bdd4662ae8c3023 (read-only)
+===== 06:14:36 tinyllama_q3km -> tinyq3_fe4_20261020
+engine   laptop 22                                head last decode    32.1 ms  prefill    18.9 ms  margin 18631 MiB  (plan_host_choice on ['pi5', 'pi4', 'jetson', 'laptop'])
+boards   pi5 22                                   head last decode    47.0 ms  prefill    25.0 ms  margin  6787 MiB  (plan_host_choice on ['pi5', 'pi4', 'jetson'])
+even     laptop 6 + pi5 6 + pi4 5 + jetson 5      head last decode    93.2 ms  prefill    38.8 ms  margin  2828 MiB  (equal blocks, order ['laptop', 'pi5', 'pi4', 'jetson'], head last)
+default  laptop 15 + pi5 3 + pi4 4                head last decode    67.9 ms  prefill    34.8 ms  margin  7106 MiB  (llama.cpp's split by reported free memory {'laptop': 31296, 'pi5': 805)
+pi4alone pi4 22                                   head last decode   149.2 ms  prefill    98.3 ms  margin  6664 MiB  (named on the command line)
+jetsonalone jetson 22                                head last decode   125.8 ms  prefill    14.6 ms  margin  2133 MiB  (named on the command line)
+DROPPED single   the same placement as engine
+DROPPED halda    the same placement as engine
+--placements 'engine,boards=pi5:22/last,even=laptop:6+pi5:6+pi4:5+jetson:5/last,default=laptop:15+pi5:3+pi4:4/last,pi4alone=pi4:22/last,jetsonalone=jetson:22/last'
+wrote testbed/results/fe4_register_20261020_061431/placements_tinyllama_q3km.json
+engine   laptop 22                    head last host laptop decode   32.1 ms  prefill  18.9 ms  J/token 1.031 (all boards 1.305)
+         memory: laptop needs 962 + 8192 of 27785 MiB, margin 18631
+boards   pi5 22                       head last host pi5    decode   47.0 ms  prefill  25.0 ms  J/token 0.456 (all boards 1.376)
+         memory: pi5 needs 832 + 0 of 7619 MiB, margin 6787
+even     laptop 6 + pi5 6 + pi4 5 + jetson 5 head last host laptop decode   93.2 ms  prefill  38.8 ms  J/token 2.760 (all boards 2.760)
+         memory: laptop needs 524 + 8192 of 27785 MiB, margin 19069, pi5 needs 336 + 0 of 7619 MiB, margin 7283, pi4 needs 280 + 0 of 7413 MiB, margin 7133, jetson needs 267 + 450 of 3545 MiB, margin 2828
+default  laptop 15 + pi5 3 + pi4 4    head last host laptop decode   67.9 ms  prefill  34.8 ms  J/token 1.869 (all boards 2.082)
+         memory: laptop needs 742 + 8192 of 27785 MiB, margin 18851, pi5 needs 263 + 0 of 7619 MiB, margin 7356, pi4 needs 307 + 0 of 7413 MiB, margin 7106
+pi4alone pi4 22                       head last host pi4    decode  149.2 ms  prefill  98.3 ms  J/token 0.943 (all boards 3.960)
+         memory: pi4 needs 749 + 0 of 7413 MiB, margin 6664
+jetsonalone jetson 22                    head last host jetson decode  125.8 ms  prefill  14.6 ms  J/token 1.406 (all boards 3.854)
+         memory: jetson needs 962 + 450 of 3545 MiB, margin 2133
+order: [['engine', 'boards', 'even', 'default', 'pi4alone', 'jetsonalone'], ['boards', 'even', 'default', 'pi4alone', 'jetsonalone', 'engine'], ['even', 'default', 'pi4alone', 'jetsonalone', 'engine', 'boards'], ['default', 'pi4alone', 'jetsonalone', 'engine', 'boards', 'even'], ['pi4alone', 'jetsonalone', 'engine', 'boards', 'even', 'default']]
+registered testbed/dataset/full_eval_tinyq3_fe4_20261020.json at 2026-10-20T06:14:36+07:00, sha256 b7df376f91a088ca (read-only)
+===== 06:14:36 tinyllama_q6k -> tinyq6_fe4_20261020
+engine   laptop 22                                head last decode    41.2 ms  prefill    18.7 ms  margin 18294 MiB  (plan_host_choice on ['pi5', 'pi4', 'jetson', 'laptop'])
+boards   pi4 1 + pi5 21                           head last decode    80.5 ms  prefill    41.8 ms  margin  6569 MiB  (plan_host_choice on ['pi5', 'pi4', 'jetson'])
+even     laptop 6 + pi5 6 + pi4 5 + jetson 5      head last decode   112.7 ms  prefill    43.7 ms  margin  2756 MiB  (equal blocks, order ['laptop', 'pi5', 'pi4', 'jetson'], head last)
+default  laptop 15 + pi5 3 + pi4 4                head last decode    93.4 ms  prefill    37.8 ms  margin  7049 MiB  (llama.cpp's split by reported free memory {'laptop': 31296, 'pi5': 805)
+pi4alone pi4 22                                   head last decode   235.0 ms  prefill   107.1 ms  margin  6327 MiB  (named on the command line)
+jetsonalone jetson 22                                head last decode   103.9 ms  prefill    14.6 ms  margin  1796 MiB  (named on the command line)
+DROPPED single   the same placement as engine
+DROPPED halda    the same placement as engine
+--placements 'engine,boards=pi4:1+pi5:21/last,even=laptop:6+pi5:6+pi4:5+jetson:5/last,default=laptop:15+pi5:3+pi4:4/last,pi4alone=pi4:22/last,jetsonalone=jetson:22/last'
+wrote testbed/results/fe4_register_20261020_061431/placements_tinyllama_q6k.json
+engine   laptop 22                    head last host laptop decode   41.2 ms  prefill  18.7 ms  J/token 1.322 (all boards 1.674)
+         memory: laptop needs 1299 + 8192 of 27785 MiB, margin 18294
+boards   pi4 1 + pi5 21               head last host pi4    decode   80.5 ms  prefill  41.8 ms  J/token 0.932 (all boards 2.315)
+         memory: pi4 needs 227 + 0 of 7413 MiB, margin 7186, pi5 needs 1050 + 0 of 7619 MiB, margin 6569
+even     laptop 6 + pi5 6 + pi4 5 + jetson 5 head last host laptop decode  112.7 ms  prefill  43.7 ms  J/token 3.292 (all boards 3.292)
+         memory: laptop needs 632 + 8192 of 27785 MiB, margin 18961, pi5 needs 422 + 0 of 7619 MiB, margin 7197, pi4 needs 351 + 0 of 7413 MiB, margin 7062, jetson needs 339 + 450 of 3545 MiB, margin 2756
+default  laptop 15 + pi5 3 + pi4 4    head last host laptop decode   93.4 ms  prefill  37.8 ms  J/token 2.569 (all boards 2.862)
+         memory: laptop needs 978 + 8192 of 27785 MiB, margin 18615, pi5 needs 306 + 0 of 7619 MiB, margin 7313, pi4 needs 364 + 0 of 7413 MiB, margin 7049
+pi4alone pi4 22                       head last host pi4    decode  235.0 ms  prefill 107.1 ms  J/token 1.486 (all boards 6.235)
+         memory: pi4 needs 1086 + 0 of 7413 MiB, margin 6327
+jetsonalone jetson 22                    head last host jetson decode  103.9 ms  prefill  14.6 ms  J/token 1.161 (all boards 3.184)
+         memory: jetson needs 1299 + 450 of 3545 MiB, margin 1796
+order: [['engine', 'boards', 'even', 'default', 'pi4alone', 'jetsonalone'], ['boards', 'even', 'default', 'pi4alone', 'jetsonalone', 'engine'], ['even', 'default', 'pi4alone', 'jetsonalone', 'engine', 'boards'], ['default', 'pi4alone', 'jetsonalone', 'engine', 'boards', 'even'], ['pi4alone', 'jetsonalone', 'engine', 'boards', 'even', 'default']]
+registered testbed/dataset/full_eval_tinyq6_fe4_20261020.json at 2026-10-20T06:14:37+07:00, sha256 5848bb0497fb62c3 (read-only)
+REGISTERED 2026-10-20T06:14:37+07:00: 11 registrations

@@ -1,0 +1,48 @@
+########## 2026-09-28T15:41:34+07:00 Jetson Nano standalone, tinyllama-1.1b-q3km.gguf, pp512/tg128, -r 5, cases: vulkan cpu
+mode   : vulkan   binaries: /home/jetson/llama.cpp/build/bin
+commit : b23701f77d47dad9de834d59ebfcbe25c9e8b46f   patched files: 0
+model  : ec461c4d2b60896152bca3978aa49cd70edad7298715e4222e12af1eefea2125  /home/jetson/models/tinyllama-1.1b-q3km.gguf
+build  : { "node_id": "jetson-nano-01", "built_at_utc": "20260925T045603Z", "llama_cpp_ref": "b11046-1-gb23701f", "llama_cpp_commit": "b23701f77d47dad9de834d59ebfcbe25c9e8b46f", "backend": "vulkan", "cmake_options": "-S /home/jetson/llama.cpp -B /home/jetson/llama.cpp/build -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=gcc-11 -DCMAKE_CXX_COMPILER=g++-11 -DLLAMA_CURL=OFF -DGGML_RPC=ON -DGGML_NATIVE=ON -DGGML_VULKAN=ON -DVulkan_INCLUDE_DIR=/home/jetson/opt/src/Vulkan-Headers/include -DVulkan_LIBRARY=/usr/lib/aarch64-linux-gnu/libvulkan.so.1 -DVulkan_GLSLC_EXECUTABLE=/home/jetson/opt/shaderc/bin/glslc -DCMAKE_PREFIX_PATH=/home/jetson/opt/spirv-headers -DCMAKE_CXX_FLAGS=-isystem /home/jetson/opt/spirv-headers/include", "cuda_version": "n/a -- Vulkan build (Path 1)", "cuda_arch": "n/a", "host_cxx": "g++-11 (Ubuntu 11.4.0-2ubuntu1~18.04) 11.4.0", "glslc": "shaderc v2026.4 v2026.4", "vulkan_headers": "v1.4.363", "spirv_headers": "04fd3caa1e82 (shaderc v2026.4 pin)", "vulkan_loader": "/usr/lib/aarch64-linux-gnu/tegra/libvulkan.so.1.2.141", "l4t": "32.7.6", "kernel": "4.9.337-tegra", "cmake": "cmake version 3.31.12"}
+ggml_vulkan: Found 1 Vulkan devices:
+ggml_vulkan: 0 = NVIDIA Tegra X1 (nvgpu) (NVIDIA) | uma: 1 | fp16: 1 | bf16: 0 | fp4: 0 | warp size: 32 | shared memory: 49152 | int dot: 0 | matrix cores: none
+Available devices:
+  Vulkan0: NVIDIA Tegra X1 (nvgpu) (4363 MiB, 3105 MiB free)
+[clocks locked] 2026-09-28T15:41:45+07:00 pmode:0000 online=0-3 cpu0 min/max=1479000/1479000 gpu min/max=921600000/921600000 swap_used_kB=0 alarms=0 CPU-therm=29C GPU-therm=29C 
+
+##### case vulkan: -ngl 99
+cold gate: waited 0s for CPU < 40 C, now 29 C
+[before vulkan] 2026-09-28T15:42:16+07:00 pmode:0000 online=0-3 cpu0 min/max=1479000/1479000 gpu min/max=921600000/921600000 swap_used_kB=0 alarms=0 CPU-therm=29C GPU-therm=29C 
+power_window_start vulkan 1790584951.077133539
+ggml_vulkan: Found 1 Vulkan devices:
+ggml_vulkan: 0 = NVIDIA Tegra X1 (nvgpu) (NVIDIA) | uma: 1 | fp16: 1 | bf16: 0 | fp4: 0 | warp size: 32 | shared memory: 49152 | int dot: 0 | matrix cores: none
+| model                          |       size |     params | backend    | ngl |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | --------------: | -------------------: |
+| llama 1B Q3_K - Medium         | 523.67 MiB |     1.10 B | Vulkan     |  99 |           pp512 |         68.68 ± 0.11 |
+{"build_commit": "b23701f", "build_number": 200, "cpu_info": "ARMv8 Processor rev 1 (v8l)", "gpu_info": "NVIDIA Tegra X1 (nvgpu)", "backends": "Vulkan", "model_filename": "/home/jetson/models/tinyllama-1.1b-q3km.gguf", "model_type": "llama 1B Q3_K - Medium", "model_size": 549109760, "model_n_params": 1100048384, "n_batch": 2048, "n_ubatch": 512, "n_threads": 4, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "f16", "type_v": "f16", "n_gpu_layers": 99, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": -1, "devices": "auto", "tensor_split": "0.00", "tensor_buft_overrides": "none", "load_mode": "auto", "lazy_mode": "auto", "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "n_prompt": 512, "n_gen": 0, "n_depth": 0, "test_time": "2026-09-28T08:42:32Z", "avg_ns": 7454490122, "stddev_ns": 11480498, "avg_ts": 68.683567, "stddev_ts": 0.105717, "samples_ns": [ 7454247076, 7439981071, 7471951208, 7451127889, 7455143367 ],"samples_ts": [ 68.6857, 68.8174, 68.5229, 68.7144, 68.6774 ]}
+| llama 1B Q3_K - Medium         | 523.67 MiB |     1.10 B | Vulkan     |  99 |           tg128 |          7.95 ± 0.00 |
+{"build_commit": "b23701f", "build_number": 200, "cpu_info": "ARMv8 Processor rev 1 (v8l)", "gpu_info": "NVIDIA Tegra X1 (nvgpu)", "backends": "Vulkan", "model_filename": "/home/jetson/models/tinyllama-1.1b-q3km.gguf", "model_type": "llama 1B Q3_K - Medium", "model_size": 549109760, "model_n_params": 1100048384, "n_batch": 2048, "n_ubatch": 512, "n_threads": 4, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "f16", "type_v": "f16", "n_gpu_layers": 99, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": -1, "devices": "auto", "tensor_split": "0.00", "tensor_buft_overrides": "none", "load_mode": "auto", "lazy_mode": "auto", "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "n_prompt": 0, "n_gen": 128, "n_depth": 0, "test_time": "2026-09-28T08:43:20Z", "avg_ns": 16103662189, "stddev_ns": 1584020, "avg_ts": 7.948503, "stddev_ts": 0.000781, "samples_ns": [ 16103980115, 16100945784, 16104127647, 16105097424, 16104159976 ],"samples_ts": [ 7.94835, 7.94984, 7.94827, 7.94779, 7.94826 ]}
+
+build: b23701f (200)
+EXIT_vulkan=0
+power_window_end vulkan 1790585080.959725759
+[after vulkan] 2026-09-28T15:44:40+07:00 pmode:0000 online=0-3 cpu0 min/max=1479000/1479000 gpu min/max=921600000/921600000 swap_used_kB=0 alarms=0 CPU-therm=37C GPU-therm=37C 
+
+##### case cpu: -ngl 0 -dev none
+cold gate: waited 0s for CPU < 40 C, now 34 C
+[before cpu] 2026-09-28T15:45:11+07:00 pmode:0000 online=0-3 cpu0 min/max=1479000/1479000 gpu min/max=921600000/921600000 swap_used_kB=0 alarms=0 CPU-therm=34C GPU-therm=34C 
+power_window_start cpu 1790585126.107826096
+ggml_vulkan: Found 1 Vulkan devices:
+ggml_vulkan: 0 = NVIDIA Tegra X1 (nvgpu) (NVIDIA) | uma: 1 | fp16: 1 | bf16: 0 | fp4: 0 | warp size: 32 | shared memory: 49152 | int dot: 0 | matrix cores: none
+| model                          |       size |     params | backend    | ngl | dev          |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | ------------ | --------------: | -------------------: |
+| llama 1B Q3_K - Medium         | 523.67 MiB |     1.10 B | Vulkan     |   0 | none         |           pp512 |          7.14 ± 0.00 |
+{"build_commit": "b23701f", "build_number": 200, "cpu_info": "ARMv8 Processor rev 1 (v8l)", "gpu_info": "NVIDIA Tegra X1 (nvgpu)", "backends": "Vulkan", "model_filename": "/home/jetson/models/tinyllama-1.1b-q3km.gguf", "model_type": "llama 1B Q3_K - Medium", "model_size": 549109760, "model_n_params": 1100048384, "n_batch": 2048, "n_ubatch": 512, "n_threads": 4, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "f16", "type_v": "f16", "n_gpu_layers": 0, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": -1, "devices": "none", "tensor_split": "0.00", "tensor_buft_overrides": "none", "load_mode": "auto", "lazy_mode": "auto", "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "n_prompt": 512, "n_gen": 0, "n_depth": 0, "test_time": "2026-09-28T08:45:26Z", "avg_ns": 71745955473, "stddev_ns": 18455317, "avg_ts": 7.136291, "stddev_ts": 0.001836, "samples_ns": [ 71713996462, 71751706908, 71755025799, 71760779100, 71748269100 ],"samples_ts": [ 7.13947, 7.13572, 7.13539, 7.13482, 7.13606 ]}
+| llama 1B Q3_K - Medium         | 523.67 MiB |     1.10 B | Vulkan     |   0 | none         |           tg128 |          5.22 ± 0.02 |
+{"build_commit": "b23701f", "build_number": 200, "cpu_info": "ARMv8 Processor rev 1 (v8l)", "gpu_info": "NVIDIA Tegra X1 (nvgpu)", "backends": "Vulkan", "model_filename": "/home/jetson/models/tinyllama-1.1b-q3km.gguf", "model_type": "llama 1B Q3_K - Medium", "model_size": 549109760, "model_n_params": 1100048384, "n_batch": 2048, "n_ubatch": 512, "n_threads": 4, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "f16", "type_v": "f16", "n_gpu_layers": 0, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": -1, "devices": "none", "tensor_split": "0.00", "tensor_buft_overrides": "none", "load_mode": "auto", "lazy_mode": "auto", "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "n_prompt": 0, "n_gen": 128, "n_depth": 0, "test_time": "2026-09-28T08:52:37Z", "avg_ns": 24528317730, "stddev_ns": 91646135, "avg_ts": 5.218516, "stddev_ts": 0.019477, "samples_ns": [ 24589738752, 24424759616, 24653171264, 24493661081, 24480257937 ],"samples_ts": [ 5.20542, 5.24058, 5.19203, 5.22584, 5.2287 ]}
+
+build: b23701f (200)
+EXIT_cpu=0
+power_window_end cpu 1790585679.969389351
+[after cpu] 2026-09-28T15:54:39+07:00 pmode:0000 online=0-3 cpu0 min/max=1479000/1479000 gpu min/max=921600000/921600000 swap_used_kB=0 alarms=0 CPU-therm=37C GPU-therm=37C 
+[clocks restored] 2026-09-28T15:54:43+07:00 pmode:0000 online=0-3 cpu0 min/max=102000/1479000 gpu min/max=76800000/921600000 swap_used_kB=0 alarms=0 CPU-therm=36C GPU-therm=36C 
+########## done 2026-09-28T15:54:43+07:00

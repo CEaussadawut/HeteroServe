@@ -1,0 +1,21 @@
+# HeteroServe model manifest.  <short_name>	<filename>	<url>	<sha256>
+#
+# The 4th column is the AUTHORITATIVE sha256, or "-" if nobody has recorded
+# one yet. 30_fetch_models.sh verifies against it when present and refuses the
+# file on a mismatch. With "-" it can only check the size the server reports,
+# which catches truncation but not corruption -- and it says so, rather than
+# writing an unverified sum into SHA256SUMS and calling that proof.
+# Fill these in once, from a download you trust, and the "all four nodes ran
+# the same bytes" claim stops being circular.
+# Lines starting with # ignored. Keep the same file on all four nodes so the
+# GGUF checksums match across the cluster.
+#
+# Q4_K_M is the study's default quantisation; Q8_0 rows are there for the
+# quantisation sweep. The Nano's Maxwell GPU is FP16-capable but has no useful
+# INT8 path, so K-quant dequant cost lands on the CPU side more than it does on
+# the Pi 5 -- that asymmetry is one of the things being characterised.
+qwen2.5-0.5b-instruct-q4_k_m	Qwen2.5-0.5B-Instruct-Q4_K_M.gguf	https://huggingface.co/bartowski/Qwen2.5-0.5B-Instruct-GGUF/resolve/main/Qwen2.5-0.5B-Instruct-Q4_K_M.gguf	-
+qwen2.5-0.5b-instruct-q8_0	Qwen2.5-0.5B-Instruct-Q8_0.gguf	https://huggingface.co/bartowski/Qwen2.5-0.5B-Instruct-GGUF/resolve/main/Qwen2.5-0.5B-Instruct-Q8_0.gguf	-
+qwen2.5-1.5b-instruct-q4_k_m	Qwen2.5-1.5B-Instruct-Q4_K_M.gguf	https://huggingface.co/bartowski/Qwen2.5-1.5B-Instruct-GGUF/resolve/main/Qwen2.5-1.5B-Instruct-Q4_K_M.gguf	-
+llama-3.2-1b-instruct-q4_k_m	Llama-3.2-1B-Instruct-Q4_K_M.gguf	https://huggingface.co/bartowski/Llama-3.2-1B-Instruct-GGUF/resolve/main/Llama-3.2-1B-Instruct-Q4_K_M.gguf	-
+qwen2.5-3b-instruct-q4_k_m	Qwen2.5-3B-Instruct-Q4_K_M.gguf	https://huggingface.co/bartowski/Qwen2.5-3B-Instruct-GGUF/resolve/main/Qwen2.5-3B-Instruct-Q4_K_M.gguf	-

@@ -1,0 +1,139 @@
+########## 2026-10-21T17:07:45+07:00 four-node full evaluation: q27bnc_fe4_20261021
+===== 2026-10-21T17:07:45+07:00 q27bnc_fe4_20261021 (registration c8136306ab47b0c7)
+quiet: load 0.39, no battery charging, wifi disabled
+net: laptop wifi disabled; the Pi 4 resolves .108 to 48:2a:e3:2b:44:9d (wired 48:2a:e3:2b:44:9d); AC 1 BAT Full/Not charging
+clock offset pi5: +0.065 s (ssh round trip 0.133 s)
+clock offset pi4: +0.090 s (ssh round trip 0.190 s)
+clock offset jetson: +0.233 s (ssh round trip 0.478 s)
+started
+guard procs: 2
+17:08:55 start {"registration": "testbed/dataset/full_eval_q27bnc_fe4_20261021.json", "registration_sha256": "c8136306ab47b0c7bb5122770bffcfb750e08c32b116a042bb9cfa3fd89b4e16", "outlets": {"pi4": 0, "jetson": 1, "pi
+17:10:22 model_sha256 {"host": "laptop", "sha256": "14865aaef0b6c26a013538782d366443c7298b11d5df9f0fb829d34d1963f869", "ok": true}
+17:13:05 model_sha256 {"host": "pi5", "sha256": "14865aaef0b6c26a013538782d366443c7298b11d5df9f0fb829d34d1963f869", "ok": true}
+17:13:05 laptop power {"ac": "1", "bat0": "Full/100", "bat1": "Not_charging/0"}
+17:13:05 laptop poll start {"pid": 1471765}
+17:13:06 jetson clocks "LOCKED"
+17:13:26 throttle poll start {"node": "pi5", "pid": "103570"}
+17:13:26 throttle poll start {"node": "pi4", "pid": "117199"}
+17:13:26 idle-before start {}
+17:16:26 idle-before end {}
+17:16:26 serve start {"round": 1, "placement": "engine"}
+17:16:42 served {"round": 1, "placement": "engine", "host": "laptop", "workers": "", "args": "-m ~/models/qwen3.8-27b-q3_k_m.gguf -ngl 0"}
+17:17:21 warm {"round": 1, "placement": "engine", "done_s": 39.490705}
+17:19:26 req {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792577841.8332677, "events": [[70.730771, [271], 1, 0.001, 70729.493], [71.57566, [760], 2, 844.905, 70729.493], [72.418627, [1414], 3, 1687.818, 70729
+17:21:29 req {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792577966.0514526, "events": [[70.473575, [271], 1, 0.001, 70472.476], [71.32849, [760], 2, 854.949, 70472.476], [72.160289, [1414], 3, 1686.744, 70472
+17:21:31 serve stop {"round": 1, "placement": "engine", "out": "stop    llama-server on laptop stopped"}
+17:21:41 serve start {"round": 1, "placement": "boards"}
+17:25:56 served {"round": 1, "placement": "boards", "host": "pi5", "workers": "jetson pi4", "args": "-m ~/models/qwen3.8-27b-q3_k_m.gguf --rpc 192.168.1.114:50052,192.168.10.12:50052 -ngl 38 -ts 14.5,23.5 -ot \"^outp
+17:27:40 warm {"round": 1, "placement": "boards", "done_s": 103.695733}
+17:33:12 req {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792578460.6464853, "events": [[165.139766, [271], 1, 0.001, 165133.817], [167.776259, [760], 2, 2638.298, 165133.817], [170.403521, [1414], 3, 5261.349
+17:38:45 req {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792578792.721673, "events": [[165.893064, [271], 1, 0.001, 165890.478], [168.531885, [760], 2, 2640.241, 165890.478], [171.154349, [1414], 3, 5262.582,
+17:38:49 serve stop {"round": 1, "placement": "boards", "out": "stop    llama-server on pi5 stopped\nstop    worker on jetson stopped\nstop    worker on pi4 stopped"}
+17:38:59 serve start {"round": 1, "placement": "default"}
+17:40:17 served {"round": 1, "placement": "default", "host": "laptop", "workers": "pi5 pi4 jetson", "args": "-m ~/models/qwen3.8-27b-q3_k_m.gguf --rpc 192.168.10.11:50052,192.168.10.12:50052,192.168.1.114:50052 -ngl 
+17:41:23 warm {"round": 1, "placement": "default", "done_s": 66.533608}
+17:44:50 req {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792579283.8153365, "events": [[113.268905, [271], 1, 0.001, 113267.886], [114.824487, [760], 2, 1555.568, 113267.886], [116.296475, [1414], 3, 3027.643
+17:48:20 req {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792579490.5280895, "events": [[115.968885, [271], 1, 0.001, 115967.884], [117.482053, [760], 2, 1513.124, 115967.884], [118.949837, [1414], 3, 2980.925
+17:48:24 serve stop {"round": 1, "placement": "default", "out": "stop    llama-server on laptop stopped\nstop    worker on pi5 stopped\nstop    worker on pi4 stopped\nstop    worker on jetson stopped"}
+17:48:34 serve start {"round": 2, "placement": "boards"}
+17:52:48 served {"round": 2, "placement": "boards", "host": "pi5", "workers": "jetson pi4", "args": "-m ~/models/qwen3.8-27b-q3_k_m.gguf --rpc 192.168.1.114:50052,192.168.10.12:50052 -ngl 38 -ts 14.5,23.5 -ot \"^outp
+17:54:32 warm {"round": 2, "placement": "boards", "done_s": 104.071703}
+18:00:04 req {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792580072.4656658, "events": [[165.974522, [271], 1, 0.001, 165968.144], [168.59992, [760], 2, 2630.655, 165968.144], [171.240619, [1414], 3, 5271.403,
+18:05:37 req {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792580404.8822935, "events": [[166.742458, [271], 1, 0.001, 166741.311], [169.384065, [760], 2, 2641.786, 166741.311], [172.060875, [1414], 3, 5318.466
+18:05:42 serve stop {"round": 2, "placement": "boards", "out": "stop    llama-server on pi5 stopped\nstop    worker on jetson stopped\nstop    worker on pi4 stopped"}
+18:05:52 serve start {"round": 2, "placement": "default"}
+18:07:09 served {"round": 2, "placement": "default", "host": "laptop", "workers": "pi5 pi4 jetson", "args": "-m ~/models/qwen3.8-27b-q3_k_m.gguf --rpc 192.168.10.11:50052,192.168.10.12:50052,192.168.1.114:50052 -ngl 
+18:08:15 warm {"round": 2, "placement": "default", "done_s": 65.981965}
+18:11:40 req {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792580895.3824482, "events": [[113.385907, [271], 1, 0.001, 113385.024], [114.877966, [760], 2, 1492.134, 113385.024], [116.285472, [1414], 3, 2899.624
+18:15:06 req {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792581100.75492, "events": [[114.237889, [271], 1, 0.001, 114237.087], [115.713725, [760], 2, 1475.752, 114237.087], [117.147989, [1414], 3, 2910.082, 
+18:15:10 serve stop {"round": 2, "placement": "default", "out": "stop    llama-server on laptop stopped\nstop    worker on pi5 stopped\nstop    worker on pi4 stopped\nstop    worker on jetson stopped"}
+18:15:20 serve start {"round": 2, "placement": "engine"}
+18:15:36 served {"round": 2, "placement": "engine", "host": "laptop", "workers": "", "args": "-m ~/models/qwen3.8-27b-q3_k_m.gguf -ngl 0"}
+18:16:13 warm {"round": 2, "placement": "engine", "done_s": 37.452955}
+18:18:10 req {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792581373.5421727, "events": [[67.2025, [271], 1, 0.001, 67201.403], [68.007069, [760], 2, 804.573, 67201.403], [68.796458, [1414], 3, 1593.969, 67201.
+18:20:07 req {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792581490.3609455, "events": [[67.219284, [271], 1, 0.001, 67218.317], [68.036418, [760], 2, 817.134, 67218.317], [68.822578, [1414], 3, 1603.295, 6721
+18:20:08 serve stop {"round": 2, "placement": "engine", "out": "stop    llama-server on laptop stopped"}
+18:20:18 serve start {"round": 3, "placement": "default"}
+18:21:35 served {"round": 3, "placement": "default", "host": "laptop", "workers": "pi5 pi4 jetson", "args": "-m ~/models/qwen3.8-27b-q3_k_m.gguf --rpc 192.168.10.11:50052,192.168.10.12:50052,192.168.1.114:50052 -ngl 
+18:22:41 warm {"round": 3, "placement": "default", "done_s": 66.218993}
+18:26:05 req {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792581761.7746437, "events": [[113.294339, [271], 1, 0.001, 113293.115], [114.74046, [760], 2, 1446.144, 113293.115], [116.183628, [1414], 3, 2889.401,
+18:29:31 req {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792581965.3452525, "events": [[114.171858, [271], 1, 0.001, 114170.852], [115.677396, [760], 2, 1505.633, 114170.852], [117.101688, [1414], 3, 2929.876
+18:29:35 serve stop {"round": 3, "placement": "default", "out": "stop    llama-server on laptop stopped\nstop    worker on pi5 stopped\nstop    worker on pi4 stopped\nstop    worker on jetson stopped"}
+18:29:45 serve start {"round": 3, "placement": "engine"}
+18:30:00 served {"round": 3, "placement": "engine", "host": "laptop", "workers": "", "args": "-m ~/models/qwen3.8-27b-q3_k_m.gguf -ngl 0"}
+18:30:38 warm {"round": 3, "placement": "engine", "done_s": 37.638099}
+18:32:35 req {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792582238.4540887, "events": [[67.533608, [271], 1, 0.001, 67532.554], [68.346201, [760], 2, 812.607, 67532.554], [69.143249, [1414], 3, 1609.666, 6753
+18:34:33 req {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792582355.8897095, "events": [[67.492915, [271], 1, 0.001, 67492.012], [68.296196, [760], 2, 803.288, 67492.012], [69.101266, [1414], 3, 1608.355, 6749
+18:34:35 serve stop {"round": 3, "placement": "engine", "out": "stop    llama-server on laptop stopped"}
+18:34:45 serve start {"round": 3, "placement": "boards"}
+18:39:00 served {"round": 3, "placement": "boards", "host": "pi5", "workers": "jetson pi4", "args": "-m ~/models/qwen3.8-27b-q3_k_m.gguf --rpc 192.168.1.114:50052,192.168.10.12:50052 -ngl 38 -ts 14.5,23.5 -ot \"^outp
+18:40:43 warm {"round": 3, "placement": "boards", "done_s": 103.618457}
+18:46:14 req {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792582843.978223, "events": [[165.458441, [271], 1, 0.001, 165457.128], [168.070204, [760], 2, 2611.969, 165457.128], [170.668502, [1414], 3, 5210.234,
+18:51:46 req {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792583174.5370831, "events": [[165.892629, [271], 1, 0.001, 165891.266], [168.508519, [760], 2, 2615.906, 165891.266], [171.146676, [1414], 3, 5254.21,
+18:51:50 serve stop {"round": 3, "placement": "boards", "out": "stop    llama-server on pi5 stopped\nstop    worker on jetson stopped\nstop    worker on pi4 stopped"}
+18:52:00 serve start {"round": 4, "placement": "engine"}
+18:52:15 served {"round": 4, "placement": "engine", "host": "laptop", "workers": "", "args": "-m ~/models/qwen3.8-27b-q3_k_m.gguf -ngl 0"}
+18:52:50 warm {"round": 4, "placement": "engine", "done_s": 35.084899}
+18:54:48 req {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792583570.7806165, "events": [[67.516372, [271], 1, 0.001, 67515.387], [68.303326, [760], 2, 786.958, 67515.387], [69.120964, [1414], 3, 1604.596, 6751
+18:56:45 req {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792583688.0430229, "events": [[67.336238, [271], 1, 0.001, 67335.211], [68.122208, [760], 2, 785.962, 67335.211], [68.919221, [1414], 3, 1582.943, 6733
+18:56:47 serve stop {"round": 4, "placement": "engine", "out": "stop    llama-server on laptop stopped"}
+18:56:57 serve start {"round": 4, "placement": "boards"}
+19:01:08 served {"round": 4, "placement": "boards", "host": "pi5", "workers": "jetson pi4", "args": "-m ~/models/qwen3.8-27b-q3_k_m.gguf --rpc 192.168.1.114:50052,192.168.10.12:50052 -ngl 38 -ts 14.5,23.5 -ot \"^outp
+19:02:52 warm {"round": 4, "placement": "boards", "done_s": 103.786756}
+19:08:22 req {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792584172.159961, "events": [[165.427502, [271], 1, 0.001, 165421.702], [168.048172, [760], 2, 2624.976, 165421.702], [170.664784, [1414], 3, 5241.504,
+19:13:54 req {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792584502.8687751, "events": [[165.867362, [271], 1, 0.001, 165863.49], [168.48972, [760], 2, 2624.166, 165863.49], [171.122982, [1414], 3, 5257.439, 1
+19:13:59 serve stop {"round": 4, "placement": "boards", "out": "stop    llama-server on pi5 stopped\nstop    worker on jetson stopped\nstop    worker on pi4 stopped"}
+19:14:09 serve start {"round": 4, "placement": "default"}
+19:15:26 served {"round": 4, "placement": "default", "host": "laptop", "workers": "pi5 pi4 jetson", "args": "-m ~/models/qwen3.8-27b-q3_k_m.gguf --rpc 192.168.10.11:50052,192.168.10.12:50052,192.168.1.114:50052 -ngl 
+19:16:32 warm {"round": 4, "placement": "default", "done_s": 65.986519}
+19:19:56 req {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792584992.346528, "events": [[113.457185, [271], 1, 0.001, 113448.218], [114.932094, [760], 2, 1474.893, 113448.218], [116.370211, [1414], 3, 2913.074,
+19:23:22 req {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792585196.976689, "events": [[114.160144, [271], 1, 0.001, 114159.159], [115.65214, [760], 2, 1491.966, 114159.159], [117.059623, [1414], 3, 2899.447, 
+19:23:26 serve stop {"round": 4, "placement": "default", "out": "stop    llama-server on laptop stopped\nstop    worker on pi5 stopped\nstop    worker on pi4 stopped\nstop    worker on jetson stopped"}
+19:23:36 serve start {"round": 5, "placement": "boards"}
+19:27:45 served {"round": 5, "placement": "boards", "host": "pi5", "workers": "jetson pi4", "args": "-m ~/models/qwen3.8-27b-q3_k_m.gguf --rpc 192.168.1.114:50052,192.168.10.12:50052 -ngl 38 -ts 14.5,23.5 -ot \"^outp
+19:29:29 warm {"round": 5, "placement": "boards", "done_s": 103.519211}
+19:34:59 req {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792585769.233798, "events": [[165.158991, [271], 1, 0.001, 165155.536], [167.76882, [760], 2, 2609.905, 165155.536], [170.370002, [1414], 3, 5211.11, 1
+19:40:29 req {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792586099.0607111, "events": [[165.550912, [271], 1, 0.001, 165550.112], [168.169833, [760], 2, 2619.06, 165550.112], [170.774024, [1414], 3, 5223.259,
+19:40:34 serve stop {"round": 5, "placement": "boards", "out": "stop    llama-server on pi5 stopped\nstop    worker on jetson stopped\nstop    worker on pi4 stopped"}
+19:40:44 serve start {"round": 5, "placement": "default"}
+19:42:01 served {"round": 5, "placement": "default", "host": "laptop", "workers": "pi5 pi4 jetson", "args": "-m ~/models/qwen3.8-27b-q3_k_m.gguf --rpc 192.168.10.11:50052,192.168.10.12:50052,192.168.1.114:50052 -ngl 
+19:43:07 warm {"round": 5, "placement": "default", "done_s": 65.625386}
+19:46:31 req {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792586587.0494885, "events": [[113.596032, [271], 1, 0.001, 113594.975], [115.083797, [760], 2, 1487.768, 113594.975], [116.530409, [1414], 3, 2934.429
+19:49:57 req {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792586791.8753326, "events": [[114.326586, [271], 1, 0.001, 114325.84], [115.812558, [760], 2, 1485.945, 114325.84], [117.244374, [1414], 3, 2917.747, 
+19:50:01 serve stop {"round": 5, "placement": "default", "out": "stop    llama-server on laptop stopped\nstop    worker on pi5 stopped\nstop    worker on pi4 stopped\nstop    worker on jetson stopped"}
+19:50:11 serve start {"round": 5, "placement": "engine"}
+19:50:26 served {"round": 5, "placement": "engine", "host": "laptop", "workers": "", "args": "-m ~/models/qwen3.8-27b-q3_k_m.gguf -ngl 0"}
+19:51:04 warm {"round": 5, "placement": "engine", "done_s": 37.504333}
+19:53:01 req {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792587064.2048051, "events": [[67.235049, [271], 1, 0.001, 67234.134], [68.043005, [760], 2, 807.97, 67234.134], [68.849029, [1414], 3, 1613.971, 67234
+19:54:58 req {"prompt_n": 128, "n_predict": 64, "sent_wall": 1792587181.2068431, "events": [[67.278694, [271], 1, 0.001, 67277.681], [68.081876, [760], 2, 803.207, 67277.681], [68.883843, [1414], 3, 1605.17, 67277
+19:54:59 serve stop {"round": 5, "placement": "engine", "out": "stop    llama-server on laptop stopped"}
+19:55:09 idle-after start {}
+19:56:09 idle-after end {}
+19:56:09 laptop poll stop {"lines": 9180}
+19:56:09 throttle poll stop {"node": "pi5", "alive": "1", "copied": true, "session": {"poll": "v2", "samples": 9764, "span_s": 9763, "max_gap_s": 1, "na_s": 0, "bad_lines": 0, "max_temp_c": "74.9", "active_s": 0, "now_bits": "0x
+19:56:10 throttle poll stop {"node": "pi4", "alive": "1", "copied": true, "session": {"poll": "v2", "samples": 9765, "span_s": 9764, "max_gap_s": 1, "na_s": 0, "bad_lines": 0, "max_temp_c": "84.2", "active_s": 207, "now_bits": "
+19:56:11 jetson clocks restore "restored"
+19:56:11 done {"out": "testbed/results/full_eval_q27bnc_fe4_20261021_20261021_170855"}
+run exit 0: testbed/results/full_eval_q27bnc_fe4_20261021_20261021_170855
+guard pid 565 stopped
+guard procs: 0
+0
+19:56:11 V=5192 I=320 P=1741 alarms=0 minV=4888 maxP=7938 pmode:0000
+place    plan                     head      P50      P95      P99           P50 CI95           P95 CI95    err% J/tok all J/tok own  thermal
+engine   laptop 65                last    795.7    846.7    897.0    [789.2, 827.03]    [810.0, 878.02]   -4.4%   35.3442   28.2357  n/a 
+default  laptop 41 + pi5 11 + pi4 10 + jetson 3 last   1453.8   1512.3   1541.7 [1437.82, 1472.03] [1497.63, 1524.63]   +0.8%   62.4424   62.4424  THROTTLED {'clean': 19, 'THROTTLED': 1}
+boards   pi5 28 + jetson 15 + pi4 22 host   2628.0   2682.7   2690.1  [2615.5, 2637.01]  [2671.7, 2685.45]  -13.9%   94.9488   40.9931  THROTTLED {'clean': 10, 'THROTTLED': 10}
+wrote testbed/results/full_eval_q27bnc_fe4_20261021_20261021_170855/summary.json
+summary exit 0
+place    plan                   head     pred     mean      P50      P95    err% J/tok all predicted  thermal
+engine   laptop 65              last    766.4    801.4    795.7    846.7   -4.4%   35.3442   31.1695  n/a
+default  laptop 41 + pi5 11 + pi4 10 + jetson 3 last   1468.8   1456.7   1453.8   1512.3   +0.8%   62.4424   47.2052  THROTTLED
+boards   pi5 28 + jetson 15 + pi4 22 host   2266.5   2633.3   2628.0   2682.7  -13.9%   94.9488   64.2473  THROTTLED
+FE-TPOT   HOLDS  {'predicted_best': 'engine', 'lowest_p50': True, 'lowest_p95': True, 'ci_gap_p50_ms': {'boards': 1788.47, 'default': 610.79}, 'ci_gap_p95_ms': {'boards': 1793.68, 'default': 619.61}, 'on_data_present': 'holds'}
+FE-ENERGY HOLDS  {'predicted_best': 'engine', 'predicted': {'engine': 31.1695, 'boards': 64.2473, 'default': 47.2052}, 'measured': {'engine': 35.3442, 'boards': 94.9488, 'default': 62.4424}, 'rounds_lowest': '5 of 5', 'on_data_present': 'holds'}
+FE-ACC    FAILS  {'on_data_present': 'fails', 'worst_pct': -13.9, 'readings_split': False}
+complete True; finished True; serve failures 0; models ok True; polls [('pi5', '1', True), ('pi4', '1', True)]; registration unchanged True; code changed []
+wrote testbed/results/full_eval_q27bnc_fe4_20261021_20261021_170855/score.json
+score exit 0
+MODEL DONE q27bnc_fe4_20261021 rc=0 2026-10-21T19:58:15+07:00
+CHAIN DONE 2026-10-21T19:58:15+07:00

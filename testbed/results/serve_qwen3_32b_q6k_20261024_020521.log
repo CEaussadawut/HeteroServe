@@ -1,0 +1,6 @@
+########## 2026-10-24T02:05:21+07:00 serve qwen3_32b_q6k, ctx 2048, clocks locked, boards pi5 pi4 jetson laptop, planned against testbed/dataset/memory_snapshot_20261024_003912.json: laptop 43 + pi5 18 + jetson 3, head on jetson; predicted decode 1682.0 ms/token (0.59 tok/s)
+hosts   laptop: fixed: laptop 43 + pi5 18 + jetson 3, head last
+draft   -md ~/models/qwen3-0.6b-q8_0.gguf --spec-type draft-simple --spec-draft-n-max 3 --spec-draft-n-min 0 --spec-draft-p-min 0 -devd none -ngld 0 (host charge +800 MiB)
+llama-server -m ~/models/qwen3-32b-q6_k.gguf --rpc 192.168.10.11:50052,192.168.1.114:50052 -ngl 22 -ts 17.5,4.5 -md ~/models/qwen3-0.6b-q8_0.gguf --spec-type draft-simple --spec-draft-n-max 3 --spec-draft-n-min 0 --spec-draft-p-min 0 -devd none -ngld 0 -c 2048 -np 1 -t 4 -lv 4 -lm none --cache-ram 0 --host 192.168.1.108 --port 8080   pin b23701f77d47dad9de834d59ebfcbe25c9e8b46f
+gate    laptop: MemAvailable 24521 MiB, the plan needs 25674 MiB with its reserve (margin at rest 377 MiB)
+REFUSED: laptop has 24521 MiB free

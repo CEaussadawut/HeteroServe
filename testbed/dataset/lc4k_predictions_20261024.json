@@ -1,0 +1,69 @@
+{
+ "registered_at": "2026-10-24T21:15:12+07:00",
+ "script": "testbed/scripts/register_lc4k_20261024.py",
+ "runner": "testbed/scripts/lc4_20261024.py",
+ "out_prefix": "lc4k",
+ "what": "lc4charb's Jetson bench repeated alone: TinyLlama Q4_K_M whole on the Jetson's GPU, decode against context depth 0-8,192; does its non-monotonic series repeat, and which slope does it give",
+ "model": "tinyllama",
+ "cold_c": {
+  "pi5": 50,
+  "pi4": 55
+ },
+ "benches": {
+  "jt": {
+   "host": "jetson",
+   "model_path": "~/models/tinyllama-1.1b-q4km.gguf",
+   "model_sha256": "9fecc3b3cd76bba89d504f29b616eedf7da85b96540e490ca5824d3f7d2776a0",
+   "args": "-ngl 99 -p 0 -n 32 -d 0,2048,4096,8192 -r 3",
+   "predicted": {
+    "ms_per_token_by_depth": {
+     "0": 86.869,
+     "2048": 112.476,
+     "4096": 104.801,
+     "8192": 121.459
+    },
+    "slope_ms_per_1k": 3.522,
+    "kv_law_slope_ms_per_1k": 1.583
+   }
+  }
+ },
+ "order": [
+  [
+   "jt"
+  ]
+ ],
+ "hypotheses": {
+  "K-REPEAT": {
+   "type": "acc_at",
+   "labels": [
+    "jt"
+   ],
+   "tol": 0.03,
+   "claim": "every depth within 3 % of lc4charb's Jetson figure (86.87, 112.48, 104.80, 121.46 ms)"
+  },
+  "K-KV": {
+   "type": "slope_near",
+   "label": "jt",
+   "value": 1.583,
+   "tol": 0.15,
+   "claim": "the slope within 15 % of the KV-byte law's 1.583 ms per 1,000 tokens"
+  },
+  "K-SAME": {
+   "type": "slope_near",
+   "label": "jt",
+   "value": 3.522,
+   "tol": 0.15,
+   "claim": "the slope within 15 % of lc4charb's 3.522 ms per 1,000 tokens"
+  }
+ },
+ "inputs_sha256": {
+  "testbed/scripts/lc4_20261024.py": "bf039569fa2a63c88ed8cba332e212ce2e48a285e2475d8d135a23442d2896b7",
+  "testbed/scripts/register_lc4k_20261024.py": "ec1b49ae55d2856dd2cb017efacf9c078ab0eeef499756bd9966439a9960aa3d",
+  "testbed/scripts/jetson_power_guard.sh": "6dafb56fef33f2bc0e070b2552dcb871053d3c0681358bd27436552f905d90de",
+  "testbed/scripts/throttle_poll.sh": "10a45258cafd9222932fe043b40eee767984412a97d5a6d69002fa60d6e48aa1",
+  "testbed/dataset/lc4charb_predictions_20261024.json": "fffb2169175a61d2d97c618fd3db00cce52b9db165648bfe4963e7af32a988c8",
+  "testbed/results/lc4charb_20261024_065032/score.json": "fb62d397273e61358eb74551df4a53a71067691bdcfb02c73abf23bddc928a6d",
+  "testbed/results/lc4j_20261024_200720/score.json": "20c4dd4fac001f8630292a00b17c93fd502a1908745db1b78c674ab8877f8648",
+  "ThinkPad/config/cluster.json": "1f0a3529dd384647ab71a0a08e2c142226ccf2b80aa5160ffc91e5e2e9485943"
+ }
+}

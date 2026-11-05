@@ -1,0 +1,146 @@
+{
+ "made": "testbed/scripts/pd_network_crossover.py",
+ "status": "MODELED from measured parts, not measured end to end",
+ "model": "a hand-off's transfer takes S / B at a link's bulk throughput B; nothing else depends on the link.\n- single user, the Pi 4 decoding: the hand-off has the Pi 4 decoding after prefill_fast + save + S/B + restore, against\n  prefill_pi4 for the Pi 4 alone, so it pays above B* = S / (prefill_pi4 - prefill_fast - save - restore);\n- two users: only user 2's decode waits for the transfer. User 1's first token in the hand-off arm (27.8-28.5 s) equals the\n  shared arm's (27.8 s), so the transfer overlapped user 1's prefill. Mean completion rises by (S/B - t0)/2 from the\n  measured mean (t0 the measured transfer), and the hand-off pays against an arm that never uses the network above\n  B* = S / (t0 + 2 (mean_arm - mean_handoff)); none, if the hand-off loses even at gigabit.",
+ "inputs_sha256": {
+  "pd_sweep_20260929_010837.log": "43dbfc2faff749d3dc6ccaecc63825b039cf1de9dd4471cf992ba210f1942082",
+  "pd_sweep_20260929_171413.log": "e58de2e2ac57413716b8063b5417f2de14f304d5c5c8f82df1328cdb5da43fb3",
+  "twouser_results_20260929.json": "4468d6954d65962c9489aafceaae9710c10ba6c9a7da252754930da44e3533c5",
+  "pd_twouser_20260929_215703.log": "17858f8e15970efafa3ef63a4e1389455f876a52c0efc6d97a41588cb7aebc9e",
+  "twouser_results_20260929_gen128b.json": "aa691a8fd597a995aefa05f8227ba3814eab1cfcf6f7c385796ecc9bcffd11c3",
+  "pd_twouser_20260929_225221.log": "ce4df46be380be740c82af4744fc0d5302c1d2ef346317a71aa4537c933f1e4f"
+ },
+ "single_user_pi4_decoding": {
+  "pi5->pi4": {
+   "128": {
+    "state_bytes": 56889664,
+    "transfer_s_at_gigabit": 0.507,
+    "goodput_at_gigabit_mbps": 898.3,
+    "prefill_pi4_s": 80.01,
+    "prefill_fast_s": 13.71,
+    "save_s": 0.032,
+    "restore_s": 0.069,
+    "crossover_goodput_mbps": 6.87
+   },
+   "256": {
+    "state_bytes": 61087552,
+    "transfer_s_at_gigabit": 0.54,
+    "goodput_at_gigabit_mbps": 905.6,
+    "prefill_pi4_s": 159.58,
+    "prefill_fast_s": 27.37,
+    "save_s": 0.032,
+    "restore_s": 0.075,
+    "crossover_goodput_mbps": 3.7
+   },
+   "512": {
+    "state_bytes": 69483328,
+    "transfer_s_at_gigabit": 0.613,
+    "goodput_at_gigabit_mbps": 906.4,
+    "prefill_pi4_s": 321.29,
+    "prefill_fast_s": 55.08,
+    "save_s": 0.04,
+    "restore_s": 0.09,
+    "crossover_goodput_mbps": 2.09
+   },
+   "1024": {
+    "state_bytes": 86274880,
+    "transfer_s_at_gigabit": 0.76,
+    "goodput_at_gigabit_mbps": 908.5,
+    "prefill_pi4_s": 648.48,
+    "prefill_fast_s": 111.5,
+    "save_s": 0.043,
+    "restore_s": 0.111,
+    "crossover_goodput_mbps": 1.29
+   }
+  },
+  "t580->pi4": {
+   "128": {
+    "state_bytes": 56889664,
+    "transfer_s_at_gigabit": 0.497,
+    "goodput_at_gigabit_mbps": 915.3,
+    "prefill_pi4_s": 80.01,
+    "prefill_fast_s": 10.83,
+    "save_s": 0.037,
+    "restore_s": 0.05,
+    "crossover_goodput_mbps": 6.59
+   },
+   "256": {
+    "state_bytes": 61087552,
+    "transfer_s_at_gigabit": 0.536,
+    "goodput_at_gigabit_mbps": 912.2,
+    "prefill_pi4_s": 159.58,
+    "prefill_fast_s": 21.1,
+    "save_s": 0.042,
+    "restore_s": 0.052,
+    "crossover_goodput_mbps": 3.53
+   },
+   "512": {
+    "state_bytes": 69483328,
+    "transfer_s_at_gigabit": 0.607,
+    "goodput_at_gigabit_mbps": 915.8,
+    "prefill_pi4_s": 321.29,
+    "prefill_fast_s": 51.31,
+    "save_s": 0.052,
+    "restore_s": 0.06,
+    "crossover_goodput_mbps": 2.06
+   },
+   "1024": {
+    "state_bytes": 86274880,
+    "transfer_s_at_gigabit": 0.754,
+    "goodput_at_gigabit_mbps": 915.8,
+    "prefill_pi4_s": 648.48,
+    "prefill_fast_s": 96.93,
+    "save_s": 0.062,
+    "restore_s": 0.076,
+    "crossover_goodput_mbps": 1.25
+   }
+  }
+ },
+ "two_users": {
+  "32": {
+   "state_bytes": 56889668,
+   "transfer_s_at_gigabit": 0.51,
+   "handoff_mean_done_s": 55.06,
+   "against": {
+    "shared": {
+     "arm_mean_done_s": 61.45,
+     "crossover_goodput_mbps": 34.2,
+     "note": ""
+    },
+    "shared_nr": {
+     "arm_mean_done_s": 65.13,
+     "crossover_goodput_mbps": 22.0,
+     "note": ""
+    },
+    "static": {
+     "arm_mean_done_s": 79.74,
+     "crossover_goodput_mbps": null,
+     "note": "the static arm uses no hand-off and its users never share a board; not a network crossover"
+    }
+   }
+  },
+  "128": {
+   "state_bytes": 56889668,
+   "transfer_s_at_gigabit": 0.51,
+   "handoff_mean_done_s": 153.71,
+   "against": {
+    "shared": {
+     "arm_mean_done_s": 158.8,
+     "crossover_goodput_mbps": 42.6,
+     "note": ""
+    },
+    "shared_nr": {
+     "arm_mean_done_s": 126.81,
+     "crossover_goodput_mbps": null,
+     "note": "the hand-off loses even at gigabit"
+    },
+    "static": {
+     "arm_mean_done_s": 179.01,
+     "crossover_goodput_mbps": null,
+     "note": "the static arm uses no hand-off and its users never share a board; not a network crossover"
+    }
+   }
+  }
+ },
+ "netshape_goodput_over_tc_rate": null
+}

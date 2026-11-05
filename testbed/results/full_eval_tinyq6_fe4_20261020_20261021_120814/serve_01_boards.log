@@ -1,0 +1,21 @@
+########## 2026-10-21T12:13:01+07:00 serve tinyllama_q6k, ctx 4096, clocks locked, boards pi5 pi4 jetson laptop, planned against testbed/dataset/memory_at_rest.json: pi4 1 + pi5 21, head on pi5; predicted decode 81.2 ms/token (12.31 tok/s)
+hosts   pi4: fixed: pi4 1 + pi5 21, head last
+llama-server -m ~/models/tinyllama-1.1b-q6_k.gguf --rpc 192.168.10.11:50052 -ngl 22  -c 4096 -np 1 -t 4 -lv 4 -lm none --host 192.168.1.110 --port 8080   pin b23701f77d47dad9de834d59ebfcbe25c9e8b46f
+gate    pi4: MemAvailable 7393 MiB, the plan needs 227 MiB with its reserve (margin at rest 7186 MiB)
+gate    pi5: MemAvailable 7599 MiB, the plan needs 1050 MiB with its reserve (margin at rest 6569 MiB)
+worker  pi5 listening on 192.168.10.11:50052 (pid 79038)
+server  starting on pi4 (pid 94764); loading streams the model from the SD card to the workers
+READY   2026-10-21T12:13:14+07:00: http://192.168.1.110:8080/ (web chat) -- health {"status":"ok"}
+0.00.411.226 I load_tensors:          CPU model buffer size =    85.74 MiB
+0.00.411.229 I load_tensors: RPC0[192.168.10.11:50052] model buffer size =   775.12 MiB
+0.07.977.811 I llama_context: n_ctx                 = 4096
+0.07.977.817 I llama_context: flash_attn            = auto
+0.07.978.304 I llama_kv_cache:        CPU KV buffer size =     4.00 MiB
+0.07.980.515 I llama_kv_cache: RPC0[192.168.10.11:50052] KV buffer size =    84.00 MiB
+0.07.980.654 I llama_kv_cache: size =   88.00 MiB (  4096 cells,  22 layers,  1/1 seqs), K (f16):   44.00 MiB, V (f16):   44.00 MiB
+0.08.003.311 I sched_reserve: RPC0[192.168.10.11:50052] compute buffer size =    45.01 MiB
+0.08.003.329 I sched_reserve:        CPU compute buffer size =    53.01 MiB
+0.08.243.059 I slot   load_model: id  0 | task -1 | new slot, n_ctx = 2048
+split   pi5: llama.cpp 775.12 MiB, planned 775.1 MiB (head on pi5)
+mem     pi4: MemAvailable 7215 MiB at READY, 7393 at the gate: the serve holds 178 MiB, charged 227 MiB
+mem     pi5: MemAvailable 6637 MiB at READY, 7599 at the gate: the serve holds 962 MiB, charged 1050 MiB

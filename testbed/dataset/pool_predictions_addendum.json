@@ -1,0 +1,43 @@
+{
+ "registered": "2026-09-27T21:39:03+07:00",
+ "base_predictions_sha256": "f997e90c04fdb5ffc5d41693c0cc1a97a89fae4665084a7b652d7a893eb202ab",
+ "configs": {
+  "mistral7b.pi5alone_refined": {
+   "model": "mistral-7b-q8_0",
+   "quant": "Q8_0",
+   "why": "ADDENDUM, registered after the campaign and before this run: the Pi 5 alone under the REFINED memory accounting derived tonight from the memory probe and ggml-rpc.cpp (host = its blocks + head if local + ~160 MiB steady overhead + the largest tensor it uploads over RPC -- none here; the mmap'd embedding is not resident). The engine's registered accounting refused this cell by 70 MiB; the refined one admits it with ~247 MiB to spare. A clean OOM kill here falsifies the refinement.",
+   "pipeline": [
+    {
+     "node": "pi5",
+     "blocks": 32
+    }
+   ],
+   "head_on": "pi5",
+   "bench": {
+    "host": "pi5",
+    "args": "-m ~/models/mistral-7b-q8_0.gguf -ngl 0"
+   },
+   "memory": {
+    "pi5": {
+     "blocks": 32,
+     "need_mib": 7366,
+     "available_mib": 7613,
+     "margin_mib": 247,
+     "accounting": "refined: blocks 7073 + head 133 + steady overhead 160"
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 620.7,
+    "decode_tok_s": 1.611,
+    "prefill_ms_per_token": 111.9,
+    "prefill_tok_s": 8.93
+   },
+   "cost_sources": {
+    "pi5": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    }
+   }
+  }
+ }
+}

@@ -1,0 +1,18 @@
+{
+  "_comment": [
+    "Post-fix fixture: what the matrix looks like after audit finding #3.",
+    "A grouped prefill/decode pair whose runs must come out interleaved, and",
+    "one deliberately fused -pg case that must report joules_per_request and",
+    "NO joules_per_token. Compare with matrix_mixed.json, which expand() now",
+    "refuses by name."
+  ],
+  "defaults": {"repetitions": 3, "threads": 4, "flash_attn": 0, "cooldown_s": 1},
+  "cases": [
+    {"id": "split_prefill", "group": "split", "model": "qwen2.5-1.5b-instruct-q4_k_m",
+     "n_gpu_layers": [0, 99], "n_prompt": [512], "n_gen": [0]},
+    {"id": "split_decode", "group": "split", "model": "qwen2.5-1.5b-instruct-q4_k_m",
+     "n_gpu_layers": [0, 99], "n_prompt": [0], "n_gen": [128]},
+    {"id": "fused_request", "model": "qwen2.5-1.5b-instruct-q4_k_m",
+     "n_gpu_layers": 99, "pg": [512, 128]}
+  ]
+}

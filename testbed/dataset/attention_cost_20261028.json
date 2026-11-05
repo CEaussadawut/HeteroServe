@@ -1,0 +1,140 @@
+{
+ "_source": "testbed/scripts/attention_cost_20261028.py (the Jetson by its attention op, lc4n); the other boards as attention_cost_20261011b.json",
+ "made": "2026-10-28T08:38:56+07:00",
+ "boards": {
+  "pi4": {
+   "law": "query_heads",
+   "ns_per_qhead_dim": 1.89395,
+   "from": "kv14b: Qwen3-14B Pi 4 27 + Jetson 13, both depths hot, 265.56 ms per 1,000 tokens, less the Jetson's share (3.74 ms) at its law",
+   "check_from_0_6b": 1.99517
+  },
+  "jetson": {
+   "law": "fa_table",
+   "table": {
+    "64x32x4": {
+     "shape": "tinyllama",
+     "layers_in_graph": 22,
+     "ms_per_layer_per_token_long": 0.0001834,
+     "ms_per_layer_per_token_short": 0.0003974,
+     "long_from_n_kv": 1280,
+     "short_n_kv": [
+      256,
+      768
+     ]
+    },
+    "128x16x8": {
+     "shape": "qwen3_0.6b",
+     "layers_in_graph": 28,
+     "ms_per_layer_per_token_long": 0.0002857,
+     "ms_per_layer_per_token_short": 0.0002911,
+     "long_from_n_kv": 1280,
+     "short_n_kv": [
+      256,
+      768
+     ]
+    },
+    "128x32x8": {
+     "shape": "qwen3_4b",
+     "layers_in_graph": 36,
+     "ms_per_layer_per_token_long": 0.0004729,
+     "ms_per_layer_per_token_short": 0.0004717,
+     "long_from_n_kv": 1280,
+     "short_n_kv": [
+      256,
+      768
+     ]
+    },
+    "128x40x8": {
+     "shape": "qwen3_14b",
+     "layers_in_graph": 40,
+     "ms_per_layer_per_token_long": 0.0005051,
+     "ms_per_layer_per_token_short": 0.0005155,
+     "long_from_n_kv": 1280,
+     "short_n_kv": [
+      256,
+      768
+     ]
+    },
+    "128x64x8": {
+     "shape": "qwen3_32b",
+     "layers_in_graph": 64,
+     "ms_per_layer_per_token_long": 0.0005148,
+     "ms_per_layer_per_token_short": 0.0005074,
+     "long_from_n_kv": 1280,
+     "short_n_kv": [
+      256,
+      768
+     ]
+    },
+    "128x32x4": {
+     "shape": "qwen3_30b_a3b",
+     "layers_in_graph": 48,
+     "ms_per_layer_per_token_long": 0.0002499,
+     "ms_per_layer_per_token_short": 0.0002548,
+     "long_from_n_kv": 1280,
+     "short_n_kv": [
+      256,
+      768
+     ]
+    },
+    "256x16x4": {
+     "shape": "qwen3.5_9b",
+     "layers_in_graph": 8,
+     "ms_per_layer_per_token_long": 0.0011262,
+     "ms_per_layer_per_token_short": 0.0011486,
+     "long_from_n_kv": 1280,
+     "short_n_kv": [
+      256,
+      768
+     ]
+    },
+    "256x16x2": {
+     "shape": "qwen3.6_35b_a3b",
+     "layers_in_graph": 10,
+     "ms_per_layer_per_token_long": 0.0004235,
+     "ms_per_layer_per_token_short": 0.0004306,
+     "long_from_n_kv": 1280,
+     "short_n_kv": [
+      256,
+      768
+     ]
+    },
+    "256x24x4": {
+     "shape": "qwen3.8_27b",
+     "layers_in_graph": 16,
+     "ms_per_layer_per_token_long": 0.0005965,
+     "ms_per_layer_per_token_short": 0.000615,
+     "long_from_n_kv": 1280,
+     "short_n_kv": [
+      256,
+      768
+     ]
+    }
+   },
+   "hybrid_attention_fraction": {
+    "qwen35": 0.25,
+    "qwen35moe": 0.25
+   },
+   "from": "fa_bench (testbed/scripts/fa_bench_20261028.cpp) on the Jetson, testbed/results/lc4nfa_20261028_081317/fa.json; the whole-model test is lc4n",
+   "why": "lc4nx (the Vulkan backend's per-op timer): of a decoded token's ops only FLASH_ATTN_EXT grows with the cache, and ggml-vulkan picks its kernel layout per shape and cache length, so no single law in the shape fits (lc4charb, lc4j, lc4k, lc4m)"
+  },
+  "laptop": {
+   "law": "query_heads",
+   "ns_per_qhead_dim": 0.54681,
+   "from": "laptop_worker_remote: Qwen3-0.6B, Pi 4 host, every layer on the laptop's worker, three runs",
+   "slope_ms_per_1k_each": [
+    31.66,
+    29.0,
+    33.41
+   ],
+   "spread_pct": 14.1,
+   "a_value_loopback": 0.71401
+  }
+ },
+ "inputs_sha256": {
+  "testbed/results/lc4nfa_20261028_081317/fa.json": "2f5eb0351dc949fefc6cb423e567717ec674bfe41435e66622dd21a505fcb528",
+  "testbed/dataset/attention_cost_20261011b.json": "9252ec7022778e9a4392acd0311bdd48e6c73f861a162cbab2726d7530e8d36f",
+  "testbed/scripts/fa_bench_20261028.cpp": "cf1fed2b923fd11116c858f30ae79a9401b35066aeedf91fe232983afaa2d646",
+  "testbed/results/lc4n_20261028_081724/score_lc4n.json": "d4c59096ac9ad5e32286ed9b5fb5cc3c6b189589ae31c5db4921f8ade8b902a0"
+ }
+}

@@ -1,0 +1,526 @@
+{
+ "registered": "2026-09-28T20:27:36+07:00",
+ "campaign": "2026-09-28 late night: the prefill size factor against the rows in use (SIZE2), and the Pi 4 host's thrash point (THRASH2)",
+ "follows": "pool_predictions_20260928b.json (sha256 ce07518c1ab2e5ef28318e754b487f3e17af659d2ab56d88b59588e6f7265338)",
+ "inputs_sha256": {
+  "characterisation.csv": "9d8504f93abcb88f3bd7ff7815c18ae56f9e2b7d65f1d9620dd2225bf1bbcb61",
+  "model_shapes.json": "0f7d5e4c4f1da7e1bf2bc640f35bc2d7afe62810603ad3167ed770cd108f2771",
+  "link.json": "e5084df7d3e62a47c7f93339ef4412c8e5f31db2d500ad5f189aafde95548ac5",
+  "memory_at_rest.json": "1ec5a19725d7c565b9b97449beb0130b179da895e2e93fdb5e36e9ea4f141589",
+  "cluster.json": "73cd9b6f2c274dd3485e110a86332f19537a56ad586f16f288faba95feeff925",
+  "protocol_ab_run.log": "e8d57f5b26deaec3f6d455ee24f2659f697747626009c298826f81a36632e976"
+ },
+ "engine_sha256": {
+  "placement.py": "b47ee0c77c51e04c8d48cdb7fb5da82d22aff3a8e034593bb818c54b82765555",
+  "gguf.py": "805ddefc0c9ef1fb1c010f052da0546d23a35d73343738c08345a339f7486330"
+ },
+ "protocol": "llama-bench -t 4 -p 64 -n 16 -r 3 -oe jsonl -v (a cell's bench.protocol overrides it); memprobe.sh v2",
+ "size_factor_char": {
+  "factor_pp": 1.0806,
+  "nemo_pp64_ms": 149.804,
+  "nemo_prefill_predicted_from_char_row_ms": 138.63,
+  "applies_to": "char_size only: the Pi 5 as host, Q4_K_M, prefill; decode and every other board, role and quant as the characterisation rows"
+ },
+ "rules": [
+  "SIZE2: char_size replaces the characterisation rows for the Pi 5 host's Q4_K_M prefill iff, over the five s.* cells, its mean |prefill error| is lower than the characterisation rows'.",
+  "THRASH2: a Pi 4 host cell thrashes if its decode is more than 1.5x its prediction, or the host's RssFile during its tg test (from test_time + 2 s to test_time + the repetitions' summed duration - 1 s, the cell's copied probe log) stays below 90 % of its blocks' bytes. Predicted: k46 does not thrash, k47 does.",
+  "ACCOUNT: a Pi 4 host's charge drops the largest-upload copy (need = its blocks + its host overhead; the copy checked against the anonymous part alone) iff k46 does not thrash."
+ ],
+ "configs": {
+  "s.qwen3_14b.p5j8": {
+   "model": "qwen3-14b-q4_k_m",
+   "quant": "Q4_K_M",
+   "why": "SIZE2: fresh split, the Jetson holds the head",
+   "pipeline": [
+    {
+     "node": "pi5",
+     "blocks": 32
+    },
+    {
+     "node": "jetson",
+     "blocks": 8
+    }
+   ],
+   "head_on": "jetson",
+   "bench": {
+    "host": "pi5",
+    "args": "-m ~/models/qwen3-14b-q4_k_m.gguf -rpc 192.168.100.111:50052 -ngl 9"
+   },
+   "memory": {
+    "pi5": {
+     "blocks": 32,
+     "need_mib": 6835,
+     "reserve_mib": 0,
+     "available_mib": 7619,
+     "margin_mib": 784
+    },
+    "jetson": {
+     "blocks": 8,
+     "need_mib": 2821,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 274
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 879.5,
+    "decode_tok_s": 1.137,
+    "prefill_ms_per_token": 172.5,
+    "prefill_tok_s": 5.8
+   },
+   "predicted_alt": {
+    "char_size": {
+     "decode_ms_per_token": 879.5,
+     "decode_tok_s": 1.137,
+     "prefill_ms_per_token": 183.3,
+     "prefill_tok_s": 5.46
+    },
+    "v3s": {
+     "decode_ms_per_token": 887.8,
+     "decode_tok_s": 1.126,
+     "prefill_ms_per_token": 188.8,
+     "prefill_tok_s": 5.3
+    }
+   },
+   "cost_sources": {
+    "pi5": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "jetson": {
+     "host": "vulkan row",
+     "worker": "vulkan row + smoke-test RPC cost"
+    }
+   },
+   "link_pairs": {
+    "jetson": "pi5-jetson"
+   }
+  },
+  "s.qwen14b.p5j8": {
+   "model": "qwen2.5-14b-instruct-q4_k_m",
+   "quant": "Q4_K_M",
+   "why": "SIZE2: fresh split, the Jetson holds the head",
+   "pipeline": [
+    {
+     "node": "pi5",
+     "blocks": 40
+    },
+    {
+     "node": "jetson",
+     "blocks": 8
+    }
+   ],
+   "head_on": "jetson",
+   "bench": {
+    "host": "pi5",
+    "args": "-m ~/models/qwen2.5-14b-instruct-q4_k_m-00001-of-00003.gguf -rpc 192.168.100.111:50052 -ngl 9"
+   },
+   "memory": {
+    "pi5": {
+     "blocks": 40,
+     "need_mib": 7068,
+     "reserve_mib": 0,
+     "available_mib": 7619,
+     "margin_mib": 551
+    },
+    "jetson": {
+     "blocks": 8,
+     "need_mib": 2577,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 518
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 864.3,
+    "decode_tok_s": 1.157,
+    "prefill_ms_per_token": 171.8,
+    "prefill_tok_s": 5.82
+   },
+   "predicted_alt": {
+    "char_size": {
+     "decode_ms_per_token": 864.3,
+     "decode_tok_s": 1.157,
+     "prefill_ms_per_token": 183.1,
+     "prefill_tok_s": 5.46
+    },
+    "v3s": {
+     "decode_ms_per_token": 873.2,
+     "decode_tok_s": 1.145,
+     "prefill_ms_per_token": 187.6,
+     "prefill_tok_s": 5.33
+    }
+   },
+   "cost_sources": {
+    "pi5": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "jetson": {
+     "host": "vulkan row",
+     "worker": "vulkan row + smoke-test RPC cost"
+    }
+   },
+   "link_pairs": {
+    "jetson": "pi5-jetson"
+   }
+  },
+  "s.nemo12b.p5j10": {
+   "model": "mistral-nemo-12b-q4_k_m",
+   "quant": "Q4_K_M",
+   "why": "SIZE2: fresh split, the Jetson holds the head",
+   "pipeline": [
+    {
+     "node": "pi5",
+     "blocks": 30
+    },
+    {
+     "node": "jetson",
+     "blocks": 10
+    }
+   ],
+   "head_on": "jetson",
+   "bench": {
+    "host": "pi5",
+    "args": "-m ~/models/mistral-nemo-12b-q4_k_m.gguf -rpc 192.168.100.111:50052 -ngl 11"
+   },
+   "memory": {
+    "pi5": {
+     "blocks": 30,
+     "need_mib": 5394,
+     "reserve_mib": 0,
+     "available_mib": 7619,
+     "margin_mib": 2225
+    },
+    "jetson": {
+     "blocks": 10,
+     "need_mib": 2695,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 400
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 747.9,
+    "decode_tok_s": 1.337,
+    "prefill_ms_per_token": 143.3,
+    "prefill_tok_s": 6.98
+   },
+   "predicted_alt": {
+    "char_size": {
+     "decode_ms_per_token": 747.9,
+     "decode_tok_s": 1.337,
+     "prefill_ms_per_token": 151.7,
+     "prefill_tok_s": 6.59
+    },
+    "v3s": {
+     "decode_ms_per_token": 754.0,
+     "decode_tok_s": 1.326,
+     "prefill_ms_per_token": 157.4,
+     "prefill_tok_s": 6.35
+    }
+   },
+   "cost_sources": {
+    "pi5": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "jetson": {
+     "host": "vulkan row",
+     "worker": "vulkan row + smoke-test RPC cost"
+    }
+   },
+   "link_pairs": {
+    "jetson": "pi5-jetson"
+   }
+  },
+  "s.qwen3_14b.p5p4": {
+   "model": "qwen3-14b-q4_k_m",
+   "quant": "Q4_K_M",
+   "why": "SIZE2: fresh split, the Pi 4 holds the head",
+   "pipeline": [
+    {
+     "node": "pi5",
+     "blocks": 26
+    },
+    {
+     "node": "pi4",
+     "blocks": 14
+    }
+   ],
+   "head_on": "pi4",
+   "bench": {
+    "host": "pi5",
+    "args": "-m ~/models/qwen3-14b-q4_k_m.gguf -rpc 192.168.10.12:50052 -ngl 15"
+   },
+   "memory": {
+    "pi5": {
+     "blocks": 26,
+     "need_mib": 5723,
+     "reserve_mib": 0,
+     "available_mib": 7619,
+     "margin_mib": 1896
+    },
+    "pi4": {
+     "blocks": 14,
+     "need_mib": 3439,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 3974
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 1418.2,
+    "decode_tok_s": 0.705,
+    "prefill_ms_per_token": 487.3,
+    "prefill_tok_s": 2.05
+   },
+   "predicted_alt": {
+    "char_size": {
+     "decode_ms_per_token": 1418.2,
+     "decode_tok_s": 0.705,
+     "prefill_ms_per_token": 496.1,
+     "prefill_tok_s": 2.02
+    },
+    "v3s": {
+     "decode_ms_per_token": 1419.9,
+     "decode_tok_s": 0.704,
+     "prefill_ms_per_token": 487.0,
+     "prefill_tok_s": 2.05
+    }
+   },
+   "cost_sources": {
+    "pi5": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "pi4": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    }
+   },
+   "link_pairs": {
+    "pi4": "pi5-pi4"
+   }
+  },
+  "s.nemo12b.p5p4": {
+   "model": "mistral-nemo-12b-q4_k_m",
+   "quant": "Q4_K_M",
+   "why": "SIZE2: fresh split, the Pi 4 holds the head",
+   "pipeline": [
+    {
+     "node": "pi5",
+     "blocks": 28
+    },
+    {
+     "node": "pi4",
+     "blocks": 12
+    }
+   ],
+   "head_on": "pi4",
+   "bench": {
+    "host": "pi5",
+    "args": "-m ~/models/mistral-nemo-12b-q4_k_m.gguf -rpc 192.168.10.12:50052 -ngl 13"
+   },
+   "memory": {
+    "pi5": {
+     "blocks": 28,
+     "need_mib": 5082,
+     "reserve_mib": 0,
+     "available_mib": 7619,
+     "margin_mib": 2537
+    },
+    "pi4": {
+     "blocks": 12,
+     "need_mib": 2598,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 4815
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 1119.0,
+    "decode_tok_s": 0.894,
+    "prefill_ms_per_token": 364.8,
+    "prefill_tok_s": 2.74
+   },
+   "predicted_alt": {
+    "char_size": {
+     "decode_ms_per_token": 1119.0,
+     "decode_tok_s": 0.894,
+     "prefill_ms_per_token": 372.6,
+     "prefill_tok_s": 2.68
+    },
+    "v3s": {
+     "decode_ms_per_token": 1121.4,
+     "decode_tok_s": 0.892,
+     "prefill_ms_per_token": 366.1,
+     "prefill_tok_s": 2.73
+    }
+   },
+   "cost_sources": {
+    "pi5": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "pi4": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    }
+   },
+   "link_pairs": {
+    "pi4": "pi5-pi4"
+   }
+  },
+  "p4.qwen14b.k46_forced": {
+   "model": "qwen2.5-14b-instruct-q4_k_m",
+   "quant": "Q4_K_M",
+   "why": "THRASH2: 46 blocks, forced past the engine's limit (42)",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 46
+    },
+    {
+     "node": "pi5",
+     "blocks": 2
+    }
+   ],
+   "head_on": "pi5",
+   "bench": {
+    "host": "pi4",
+    "args": "-m ~/models/qwen2.5-14b-instruct-q4_k_m-00001-of-00003.gguf -rpc 192.168.10.11:50052 -ngl 3",
+    "protocol": "-t 4 -p 16 -n 2 -r 3 -oe jsonl -v"
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 46,
+     "need_mib": 7967,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": -554,
+     "forced": true,
+     "gate_mib": 761,
+     "forced_reason": "registered past the engine's limit on purpose, to find the Pi 4 host's thrash point (user, 2026-09-28: 'go on' after the k45 cell); gated on the memory that can run out (the need less the mmap'd blocks)",
+     "proposed_need_mib": 7343
+    },
+    "pi5": {
+     "blocks": 2,
+     "need_mib": 1134,
+     "reserve_mib": 0,
+     "available_mib": 7619,
+     "margin_mib": 6485
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 2191.5,
+    "decode_tok_s": 0.456,
+    "prefill_ms_per_token": 1054.0,
+    "prefill_tok_s": 0.95
+   },
+   "predicted_alt": {
+    "char_size": {
+     "decode_ms_per_token": 2191.5,
+     "decode_tok_s": 0.456,
+     "prefill_ms_per_token": 1054.0,
+     "prefill_tok_s": 0.95
+    },
+    "v3s": {
+     "decode_ms_per_token": 2199.3,
+     "decode_tok_s": 0.455,
+     "prefill_ms_per_token": 1024.7,
+     "prefill_tok_s": 0.98
+    }
+   },
+   "cost_sources": {
+    "pi4": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "pi5": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    }
+   },
+   "link_pairs": {
+    "pi5": "pi5-pi4"
+   },
+   "hypothesis": "46 blocks = 7206 MiB of mmap'd weights; steady state needs blocks + 137 MiB = 7343 MiB of the 7413 MiB available at rest, so NO thrash is predicted (70 MiB spare). The protocol is short (-t 4 -p 16 -n 2 -r 3 -oe jsonl -v) so that a thrashing cell still ends inside run_pool.sh's timeout; its records are pp16 / tg2, which compare_pool.py does not score -- score_c.py reads them."
+  },
+  "p4.qwen14b.k47_forced": {
+   "model": "qwen2.5-14b-instruct-q4_k_m",
+   "quant": "Q4_K_M",
+   "why": "THRASH2: 47 blocks, forced past the engine's limit (42)",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 47
+    },
+    {
+     "node": "pi5",
+     "blocks": 1
+    }
+   ],
+   "head_on": "pi5",
+   "bench": {
+    "host": "pi4",
+    "args": "-m ~/models/qwen2.5-14b-instruct-q4_k_m-00001-of-00003.gguf -rpc 192.168.10.11:50052 -ngl 2",
+    "protocol": "-t 4 -p 16 -n 2 -r 3 -oe jsonl -v"
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 47,
+     "need_mib": 8134,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": -721,
+     "forced": true,
+     "gate_mib": 761,
+     "forced_reason": "registered past the engine's limit on purpose, to find the Pi 4 host's thrash point (user, 2026-09-28: 'go on' after the k45 cell); gated on the memory that can run out (the need less the mmap'd blocks)",
+     "proposed_need_mib": 7510
+    },
+    "pi5": {
+     "blocks": 1,
+     "need_mib": 967,
+     "reserve_mib": 0,
+     "available_mib": 7619,
+     "margin_mib": 6652
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 2225.4,
+    "decode_tok_s": 0.449,
+    "prefill_ms_per_token": 1070.5,
+    "prefill_tok_s": 0.93
+   },
+   "predicted_alt": {
+    "char_size": {
+     "decode_ms_per_token": 2225.4,
+     "decode_tok_s": 0.449,
+     "prefill_ms_per_token": 1070.5,
+     "prefill_tok_s": 0.93
+    },
+    "v3s": {
+     "decode_ms_per_token": 2233.6,
+     "decode_tok_s": 0.448,
+     "prefill_ms_per_token": 1040.8,
+     "prefill_tok_s": 0.96
+    }
+   },
+   "cost_sources": {
+    "pi4": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "pi5": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    }
+   },
+   "link_pairs": {
+    "pi5": "pi5-pi4"
+   },
+   "hypothesis": "47 blocks = 7373 MiB of mmap'd weights; steady state needs blocks + 137 MiB = 7510 MiB of the 7413 MiB available at rest, so a THRASH is predicted (97 MiB short). The protocol is short (-t 4 -p 16 -n 2 -r 3 -oe jsonl -v) so that a thrashing cell still ends inside run_pool.sh's timeout; its records are pp16 / tg2, which compare_pool.py does not score -- score_c.py reads them."
+  }
+ }
+}

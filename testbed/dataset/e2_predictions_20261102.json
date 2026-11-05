@@ -1,0 +1,267 @@
+{
+ "registered_at": "2026-11-02T04:13:57+07:00",
+ "script": "testbed/scripts/register_e2_20261102.py",
+ "session": "testbed/scripts/spec4_session_20261023.sh",
+ "scorer": "testbed/scripts/score_e2_20261102.py",
+ "tag_prefix": "e2",
+ "out_prefix": "e2",
+ "what": "the laptop's refitted power rows with the session's own laptop idle (energy_refit laptop_idle_w), on Qwen3-32B Q6_K, a model outside their fit: V4's pick and the pick with 6 GiB less on the laptop",
+ "follows": "v4a (E-REFIT failed: the fixed idle); energy_holdout_20261101 (post hoc: with each session's own idle, a median -1.2 %, 21 of 24 within 10 %)",
+ "model": "qwen3_32b_q6k",
+ "model_file": "~/models/qwen3-32b-q6_k.gguf",
+ "model_sha256": "c4c7c3cb6da260df1fe1d3cfd090a32dc7cc348f1278158be18e301f390d6f6e",
+ "ctx": 2048,
+ "nodes": [
+  "laptop",
+  "pi5",
+  "pi4",
+  "jetson"
+ ],
+ "outlets": {
+  "pi4": 0,
+  "jetson": 1,
+  "pi5": 2,
+  "laptop": 3
+ },
+ "memfile": "testbed/dataset/memory_snapshot_20261102_041245.json",
+ "reserve_mb": "",
+ "reqs": 3,
+ "n": 128,
+ "gen": 64,
+ "warm": [
+  512,
+  32
+ ],
+ "order": [
+  "E1",
+  "E2",
+  "E2",
+  "E1"
+ ],
+ "cold_c": {
+  "pi5": 50,
+  "pi4": 55
+ },
+ "arms": {
+  "E1": {
+   "what": "PLANNER_V4's pick",
+   "assign": [
+    [
+     "laptop",
+     42
+    ],
+    [
+     "pi5",
+     18
+    ],
+    [
+     "jetson",
+     4
+    ]
+   ],
+   "head": "last",
+   "place_env": {
+    "PLACE": "laptop:42,pi5:18,jetson:4",
+    "PLACE_HEAD": "last"
+   },
+   "serve_env": {
+    "SERVE_DRAFT": "none",
+    "HETEROSERVE_RESERVE_MB": "",
+    "SERVE_PLANNER": "v4"
+   },
+   "predicted": {
+    "decode_ms": 1713.3,
+    "busy_frac": {
+     "laptop": 0.47554,
+     "pi5": 0.35435,
+     "jetson": 0.16395
+    },
+    "formula": {
+     "boards_w": {
+      "pi5": 5.384607341273854,
+      "pi4": 2.390896921017403,
+      "jetson": 4.455659667329881
+     },
+     "boards_w_sum": 12.231163929621138,
+     "f_laptop": 0.4755400456913183,
+     "active_minus_idle_w": 15.272400000000001,
+     "per_token_j": 0.2166,
+     "pool_host_w": 1.6163
+    },
+    "j_per_token_all_old": 55.666,
+    "j_per_token_all_refit_fixed_idle": 71.4495,
+    "j_at_idle": {
+     "14.0": 60.3724,
+     "16.0": 63.7991,
+     "17.0": 65.5124,
+     "18.0": 67.2258,
+     "20.47": 71.4577
+    }
+   },
+   "memory": {
+    "laptop": {
+     "blocks": 42,
+     "need_mib": 17317,
+     "reserve_mib": 8192,
+     "available_mib": 25947,
+     "margin_mib": 438
+    },
+    "pi5": {
+     "blocks": 18,
+     "need_mib": 7202,
+     "reserve_mib": 0,
+     "available_mib": 7603,
+     "margin_mib": 401
+    },
+    "jetson": {
+     "blocks": 4,
+     "need_mib": 2819,
+     "reserve_mib": 450,
+     "available_mib": 3563,
+     "margin_mib": 294,
+     "weights_mib": 2134.5,
+     "weights_cap_mib": 2845,
+     "weights_margin_mib": 710
+    }
+   }
+  },
+  "E2": {
+   "what": "PLANNER_V4's pick with 6144 MiB less free on the laptop",
+   "assign": [
+    [
+     "laptop",
+     25
+    ],
+    [
+     "pi5",
+     18
+    ],
+    [
+     "pi4",
+     15
+    ],
+    [
+     "jetson",
+     6
+    ]
+   ],
+   "head": "host",
+   "place_env": {
+    "PLACE": "laptop:25,pi5:18,pi4:15,jetson:6",
+    "PLACE_HEAD": "host"
+   },
+   "serve_env": {
+    "SERVE_DRAFT": "none",
+    "HETEROSERVE_RESERVE_MB": "",
+    "SERVE_PLANNER": "v4"
+   },
+   "predicted": {
+    "decode_ms": 3092.4,
+    "busy_frac": {
+     "laptop": 0.16684,
+     "pi5": 0.19633,
+     "pi4": 0.53707,
+     "jetson": 0.0974
+    },
+    "formula": {
+     "boards_w": {
+      "pi5": 4.3293606563226525,
+      "pi4": 4.502138515378083,
+      "jetson": 3.920981278560871
+     },
+     "boards_w_sum": 12.752480450261606,
+     "f_laptop": 0.16683626463129395,
+     "active_minus_idle_w": 15.272400000000001,
+     "per_token_j": 0.2166,
+     "pool_host_w": 1.6163
+    },
+    "j_per_token_all_old": 92.2225,
+    "j_per_token_all_refit_fixed_idle": 115.8172,
+    "j_at_idle": {
+     "14.0": 95.8241,
+     "16.0": 102.0089,
+     "17.0": 105.1013,
+     "18.0": 108.1938,
+     "20.47": 115.832
+    }
+   },
+   "memory": {
+    "laptop": {
+     "blocks": 25,
+     "need_mib": 11304,
+     "reserve_mib": 8192,
+     "available_mib": 25947,
+     "margin_mib": 6451
+    },
+    "pi5": {
+     "blocks": 18,
+     "need_mib": 7202,
+     "reserve_mib": 0,
+     "available_mib": 7603,
+     "margin_mib": 401
+    },
+    "pi4": {
+     "blocks": 15,
+     "need_mib": 6001,
+     "reserve_mib": 0,
+     "available_mib": 7388,
+     "margin_mib": 1387
+    },
+    "jetson": {
+     "blocks": 6,
+     "need_mib": 2483,
+     "reserve_mib": 450,
+     "available_mib": 3563,
+     "margin_mib": 630,
+     "weights_mib": 2288.9,
+     "weights_cap_mib": 2845,
+     "weights_margin_mib": 556
+    }
+   }
+  }
+ },
+ "power_refit": {
+  "idle_w": 20.4652,
+  "active_w": 35.7376,
+  "per_token_j": 0.2166,
+  "pool_host_w": 1.6163
+ },
+ "formula": "J(T, idle_s) = T x (boards_w_sum + idle_s + active_minus_idle_w x f_laptop + pool_host_w) + per_token_j; T in s",
+ "idle_s_definition": "the laptop outlet's mean W over the session's IDLE_BEFORE window (trapezoid apower), all outlets on",
+ "hypotheses": {
+  "E2-REFIT": {
+   "tol": 0.1,
+   "claim": "each arm's J per token (all four outlets) within 10 % of J(T_pred, idle_s)"
+  },
+  "E2-POWER": {
+   "tol": 0.1,
+   "claim": "each arm's J per token within 10 % of J(T_meas, idle_s)"
+  },
+  "E2-BETTER": {
+   "claim": "J(T_pred, idle_s)'s |error| below the old model's on every arm"
+  },
+  "E2-REPEAT": {
+   "tol": 0.02,
+   "claim": "each arm's two runs within 2 % of each other (server mean TPOT)"
+  }
+ },
+ "energy_definition": "per request, the gross energy at all four outlets over its decode window (first token to last), with the session's idle-before window; summed over requests and divided by gen - 1 per request",
+ "inputs_sha256": {
+  "testbed/scripts/qr3_tpot.py": "2b44f219faa6c767e64f78d54cb7608add38cbfeb26db145335a355f490b25af",
+  "testbed/scripts/serve_pool.sh": "22a2ea20f785ad64b80d782f1df4046468abf4c885e31ebcebb1b140a043145c",
+  "testbed/scripts/serve_defaults.sh": "060fc64990a98c54e42963fc686e9a59e21f00b1867a6619e4778c8dc75c584e",
+  "testbed/scripts/serve_plan_20261101.py": "37252b755486a2fea16f77083f817fc54b5c6b1f478dadc2db2a0bc8cd979f92",
+  "testbed/scripts/predict_pool.py": "b9a8c90b4ab6626406c4ed27b543d4cfb225bfc970b8b749eba0cd6c0a0595cf",
+  "testbed/scripts/energy_model.py": "5642934ca5a4083708ad816878c60c39d44aea913e4a7843d006262a7c3f2a6c",
+  "testbed/scripts/shelly_strip.py": "b7aaa7ceb2f1e94aa3f1f46100c06ca9d6c0c3fa8764a6372239747ffc0fe5a8",
+  "testbed/scripts/full_eval.py": "cfb89e752890a8d1223b4efc2b3caa6568bb74fc86bf5e830e47e59469484e4e",
+  "testbed/scripts/spec4_session_20261023.sh": "6239f57f576f60526ff812c1e5f89215aa0c2e6ea80e7de1c0bec83e6a44c0c7",
+  "testbed/scripts/score_e2_20261102.py": "8e3294a5d13c79fec3fc7d57f994d0801d99ddb8f6141b57258d034fd69dafd0",
+  "testbed/scripts/register_e2_20261102.py": "d52981c77bdbe60535a33dd2932109ce9de0aad4571469ec6869668cc401b9fb",
+  "testbed/dataset/power_refit_20261101.json": "381cdc687871acb6da1db9baf5d48fddf6a229aea594a0d9e720c94b3facf381",
+  "testbed/dataset/model_shapes.json": "c3400b14d42e61f363f2df6e68974a12847d5cb6bd7c785f9b4ace8e3b6f5478",
+  "testbed/dataset/characterisation.csv": "183b4002fb6801f2559872cba7fbc9c7f11df9d858286dc60bf0971ddde1ad2c",
+  "ThinkPad/config/cluster.json": "1f0a3529dd384647ab71a0a08e2c142226ccf2b80aa5160ffc91e5e2e9485943",
+  "testbed/dataset/memory_snapshot_20261102_041245.json": "33c70283a8fa9e095493f5f3e695808d92fe5cacab1ca9c2eee2f23b64a31f75"
+ }
+}

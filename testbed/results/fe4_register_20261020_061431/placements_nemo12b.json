@@ -1,0 +1,129 @@
+{
+ "made": "2026-10-20T06:14:33+07:00",
+ "model": "nemo12b",
+ "nodes": [
+  "pi5",
+  "pi4",
+  "jetson",
+  "laptop"
+ ],
+ "ctx": 4096,
+ "rtt_trips": 1,
+ "reported_free_mib": {
+  "pi5": 8050,
+  "pi4": 7819,
+  "laptop": 31296,
+  "jetson": 3420
+ },
+ "placements": [
+  {
+   "label": "engine",
+   "assign": [
+    [
+     "laptop",
+     40
+    ]
+   ],
+   "head": "last",
+   "how": "plan_host_choice on ['pi5', 'pi4', 'jetson', 'laptop']",
+   "min_margin_mib": 11480,
+   "decode_ms": 364.2,
+   "prefill_ms": 122.0
+  },
+  {
+   "label": "boards",
+   "assign": [
+    [
+     "pi5",
+     36
+    ],
+    [
+     "jetson",
+     4
+    ]
+   ],
+   "head": "host",
+   "how": "plan_host_choice on ['pi5', 'pi4', 'jetson']",
+   "min_margin_mib": 305,
+   "decode_ms": 688.8,
+   "prefill_ms": 141.9
+  },
+  {
+   "label": "even",
+   "assign": [
+    [
+     "laptop",
+     10
+    ],
+    [
+     "pi5",
+     10
+    ],
+    [
+     "pi4",
+     10
+    ],
+    [
+     "jetson",
+     10
+    ]
+   ],
+   "head": "host",
+   "how": "equal blocks, order ['laptop', 'pi5', 'pi4', 'jetson'], head host",
+   "min_margin_mib": 1235,
+   "decode_ms": 942.0,
+   "prefill_ms": 353.7
+  },
+  {
+   "label": "default",
+   "assign": [
+    [
+     "laptop",
+     26
+    ],
+    [
+     "pi5",
+     6
+    ],
+    [
+     "pi4",
+     7
+    ],
+    [
+     "jetson",
+     1
+    ]
+   ],
+   "head": "last",
+   "how": "llama.cpp's split by reported free memory {'laptop': 31296, 'pi5': 8050, 'pi4': 7819, 'jetson': 3420} over ['laptop', 'pi5', 'pi4', 'jetson']; the output block falls on jetson, the last device with blocks",
+   "min_margin_mib": 1819,
+   "decode_ms": 741.2,
+   "prefill_ms": 276.4
+  }
+ ],
+ "dropped": [
+  {
+   "label": "single",
+   "why": "the same placement as engine",
+   "assign": [
+    [
+     "laptop",
+     40
+    ]
+   ],
+   "head": "last"
+  },
+  {
+   "label": "halda",
+   "why": "the same placement as engine",
+   "assign": [
+    [
+     "laptop",
+     40
+    ]
+   ],
+   "head": "last"
+  }
+ ],
+ "placements_arg": "engine,boards=pi5:36+jetson:4/host,even=laptop:10+pi5:10+pi4:10+jetson:10/host,default=laptop:26+pi5:6+pi4:7+jetson:1/last"
+}

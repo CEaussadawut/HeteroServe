@@ -1,0 +1,225 @@
+{
+ "sweep_log": "testbed/results/pool14b_20260925_025332.log",
+ "oom_log": "testbed/results/pool14b_20260920_162912.log",
+ "build_commit": "b23701f",
+ "layout": "ngl=N: Pi 4 holds the last N-1 blocks + output head; Pi 5 the first 49-N blocks + token embedding",
+ "blocks_on_pi4": [
+  5,
+  7,
+  11,
+  15,
+  19,
+  23,
+  29,
+  35
+ ],
+ "link": {
+  "measured": "2026-09-27T19:51:41+07:00",
+  "log": "testbed/results/link_20260927_195141.log",
+  "log_sha256": "0ec12e116b0225fdb5faba2614f1ca268a02074578f2a323c34a24ff4c8f3d9a",
+  "mbps": 938.0,
+  "rtt_ms": 0.233,
+  "directions": {
+   "pi4->pi5": {
+    "mbps_each": [
+     942.5,
+     942.4,
+     942.8
+    ],
+    "mbps_mean": 942.5,
+    "rtt_ms": {
+     "min": 0.205,
+     "avg": 0.231,
+     "max": 0.342,
+     "mdev": 0.024
+    }
+   },
+   "pi5->pi4": {
+    "mbps_each": [
+     937.8,
+     937.8,
+     938.5
+    ],
+    "mbps_mean": 938.0,
+    "rtt_ms": {
+     "min": 0.177,
+     "avg": 0.235,
+     "max": 0.318,
+     "mdev": 0.035
+    }
+   }
+  }
+ },
+ "predictor": "TinyLlama Q4_K_M rows, per byte (decode) / per block parameter (prefill)",
+ "decode": {
+  "measured_ms": {
+   "5": 1032.9,
+   "7": 1110.0,
+   "11": 1210.5,
+   "15": 1328.5,
+   "19": 1428.0,
+   "23": 1593.3,
+   "29": 1766.2,
+   "35": 1944.2
+  },
+  "predicted_ms": {
+   "5": 1035.4,
+   "7": 1102.8,
+   "11": 1226.2,
+   "15": 1349.6,
+   "19": 1476.7,
+   "23": 1600.1,
+   "29": 1787.1,
+   "35": 1974.1
+  },
+  "error_pct": {
+   "5": 0.2,
+   "7": -0.7,
+   "11": 1.3,
+   "15": 1.6,
+   "19": 3.4,
+   "23": 0.4,
+   "29": 1.2,
+   "35": 1.5
+  },
+  "mean_abs_error_pct": 1.3,
+  "fit": {
+   "intercept_ms": 880.8,
+   "slope_ms_per_block": 30.33,
+   "r2": 0.998
+  },
+  "predicted_fit": {
+   "intercept_ms": 882.1,
+   "slope_ms_per_block": 31.22
+  },
+  "slope_error_pct": 2.9,
+  "sensitivity_by_quant_ms_at_5_and_35_blocks": {
+   "Q4_K_M": [
+    1035.4,
+    1974.1
+   ],
+   "Q8_0": [
+    995.9,
+    1923.1
+   ],
+   "Q4_0": [
+    1053.4,
+    2001.4
+   ]
+  }
+ },
+ "prefill": {
+  "measured_ms": {
+   "5": 264.9,
+   "7": 306.9,
+   "11": 378.2,
+   "15": 453.1,
+   "19": 526.3,
+   "23": 600.7,
+   "29": 712.3,
+   "35": 834.6
+  },
+  "predicted_ms": {
+   "5": 254.4,
+   "7": 291.8,
+   "11": 366.5,
+   "15": 441.2,
+   "19": 515.9,
+   "23": 590.6,
+   "29": 702.7,
+   "35": 814.8
+  },
+  "error_pct": {
+   "5": -3.9,
+   "7": -4.9,
+   "11": -3.1,
+   "15": -2.6,
+   "19": -2.0,
+   "23": -1.7,
+   "29": -1.3,
+   "35": -2.4
+  },
+  "mean_abs_error_pct": 2.7,
+  "fit": {
+   "intercept_ms": 171.5,
+   "slope_ms_per_block": 18.79,
+   "r2": 0.9997
+  },
+  "predicted_fit": {
+   "intercept_ms": 161.0,
+   "slope_ms_per_block": 18.68
+  },
+  "slope_error_pct": -0.6,
+  "sensitivity_by_quant_ms_at_5_and_35_blocks": {
+   "Q4_K_M": [
+    254.4,
+    814.8
+   ],
+   "Q8_0": [
+    306.3,
+    865.6
+   ],
+   "Q4_0": [
+    211.9,
+    867.2
+   ]
+  }
+ },
+ "memory_caps": {
+  "2026-09-25 sweep": {
+   "mem_available_mib": {
+    "pi5": 7636,
+    "pi4": 7428
+   },
+   "pi5_first_with_embedding": 43,
+   "pi4_last_with_head": 41,
+   "old_accounting_pi5": 40,
+   "old_accounting_pi4": 39
+  },
+  "2026-09-20 run": {
+   "mem_available_mib": {
+    "pi5": 7572,
+    "pi4": 7418
+   },
+   "pi5_first_with_embedding": 43,
+   "pi4_last_with_head": 41,
+   "old_accounting_pi5": 40,
+   "old_accounting_pi4": 39
+  }
+ },
+ "memory_checks": {
+  "pi5 holds 43 blocks (ngl=6 ran)": true,
+  "pi4 holds 35 blocks + head (ngl=36 ran)": true,
+  "pi5 refuses 45 blocks (ngl=4 OOM-killed)": true
+ },
+ "engine": {
+  "pick": {
+   "order": [
+    "pi5",
+    "pi4"
+   ],
+   "blocks": {
+    "pi5": 43,
+    "pi4": 5
+   }
+  },
+  "pick_old_accounting": {
+   "order": [
+    "pi5",
+    "pi4"
+   ],
+   "blocks": {
+    "pi5": 40,
+    "pi4": 8
+   }
+  },
+  "measured_fastest": {
+   "pi5": 43,
+   "pi4": 5
+  }
+ },
+ "tpot_reduction_vs_ngl24_pct": {
+  "measured": 35.2,
+  "predicted": 35.3
+ }
+}

@@ -1,0 +1,114 @@
+===== 20:45:24 prechecks: the testbed LAN, the strip, no serve state, no shaping
+strip OK at 192.168.1.111
+UNSHAPED
+clock offset pi4: +0.088 s (ssh round trip 0.182 s)
+clock offset jetson: +0.232 s (ssh round trip 0.486 s)
+===== 20:45:25 the Jetson's guard, by its NOTE's procedure
+started
+guard procs: 2
+===== 20:45:31 register (if not yet) and run: three placements, five rounds
+engine   pi4 27 + jetson 13           head host host pi4    decode 2025.7 ms  prefill 796.0 ms  J/token 20.674 (all boards 20.674)
+p32last  pi4 32 + jetson 8            head last host pi4    decode 2077.2 ms  prefill 907.3 ms  J/token 20.944 (all boards 20.944)
+p32host  pi4 32 + jetson 8            head host host pi4    decode 2159.4 ms  prefill 908.2 ms  J/token 21.371 (all boards 21.371)
+order: [['engine', 'p32last', 'p32host'], ['p32last', 'p32host', 'engine'], ['p32host', 'engine', 'p32last'], ['engine', 'p32last', 'p32host'], ['p32last', 'p32host', 'engine']]
+registered testbed/dataset/full_eval_q14b_20261009.json at 2026-10-09T20:45:31+07:00, sha256 687d1a1c9d610612 (read-only)
+20:45:31 start {"registration": "testbed/dataset/full_eval_q14b_20261009.json", "registration_sha256": "687d1a1c9d610612b1ca8fde8627c19c87a45b063971daefca5a8d710b125488", "outlets": {"pi4": 0, "jetson": 2}, "args": 
+20:48:47 model_sha256 {"host": "pi4", "sha256": "500a8806e85ee9c83f3ae08420295592451379b4f8cf2d0f41c15dffeb6b81f0", "ok": true}
+20:48:47 jetson clocks "LOCKED"
+20:49:08 throttle poll start {"node": "pi4", "pid": "50567"}
+20:49:08 idle-before start {}
+20:52:08 idle-before end {}
+20:52:08 serve start {"round": 1, "placement": "engine"}
+20:55:41 served {"round": 1, "placement": "engine", "host": "pi4", "workers": "jetson", "args": "-m ~/models/qwen3-14b-q4_k_m.gguf --rpc 192.168.1.114:50052 -ngl 14 -ot \"^output\\.weight=CPU\""}
+20:56:47 warm {"round": 1, "placement": "engine", "done_s": 65.804194}
+20:59:29 req {"prompt_n": 128, "n_predict": 32, "sent_wall": 1791554207.1943839, "events": [[102.787306, [576], 1, 0.001, 102707.029], [104.722415, [12126], 2, 1937.941, 102707.029], [106.659538, [1265], 3, 3873.5
+21:02:14 req {"prompt_n": 128, "n_predict": 32, "sent_wall": 1791554369.8969667, "events": [[103.189373, [220], 1, 0.001, 103048.906], [105.186881, [7405], 2, 1997.575, 103048.906], [107.177756, [2704], 3, 3988.55
+21:02:18 serve stop {"round": 1, "placement": "engine", "out": "stop    llama-server on pi4 stopped\nstop    worker on jetson stopped"}
+21:02:28 serve start {"round": 1, "placement": "p32last"}
+21:06:40 served {"round": 1, "placement": "p32last", "host": "pi4", "workers": "jetson", "args": "-m ~/models/qwen3-14b-q4_k_m.gguf --rpc 192.168.1.114:50052 -ngl 9"}
+21:07:54 warm {"round": 1, "placement": "p32last", "done_s": 73.259336}
+21:10:55 req {"prompt_n": 128, "n_predict": 32, "sent_wall": 1791554874.0903897, "events": [[117.801255, [576], 1, 0.001, 117750.285], [119.872812, [1156], 2, 2071.406, 117750.285], [121.918758, [11652], 3, 4117.5
+21:13:58 req {"prompt_n": 128, "n_predict": 32, "sent_wall": 1791555055.3870173, "events": [[118.795648, [220], 1, 0.001, 118690.077], [120.881009, [7405], 2, 2085.651, 118690.077], [122.921775, [2704], 3, 4126.22
+21:14:02 serve stop {"round": 1, "placement": "p32last", "out": "stop    llama-server on pi4 stopped\nstop    worker on jetson stopped"}
+21:14:12 serve start {"round": 1, "placement": "p32host"}
+21:18:11 serve FAILED {"round": 1, "placement": "p32host", "rc": 1, "tail": " may be vulnerable to \"store now, decrypt later\" attacks.\n** The server may need to be upgraded. See https://openssh.com/pq.html\n** WARNING: 
+21:18:11 serve start {"round": 2, "placement": "p32last"}
+21:22:19 served {"round": 2, "placement": "p32last", "host": "pi4", "workers": "jetson", "args": "-m ~/models/qwen3-14b-q4_k_m.gguf --rpc 192.168.1.114:50052 -ngl 9"}
+21:23:32 warm {"round": 2, "placement": "p32last", "done_s": 72.981968}
+21:26:33 req {"prompt_n": 128, "n_predict": 32, "sent_wall": 1791555812.6874187, "events": [[117.846148, [576], 1, 0.001, 117796.278], [119.907163, [1156], 2, 2062.935, 117796.278], [121.940193, [11652], 3, 4095.9
+21:29:35 req {"prompt_n": 128, "n_predict": 32, "sent_wall": 1791555993.7348976, "events": [[118.841517, [220], 1, 0.001, 118736.979], [120.884111, [7405], 2, 2042.613, 118736.979], [122.919703, [2704], 3, 4078.25
+21:29:39 serve stop {"round": 2, "placement": "p32last", "out": "stop    llama-server on pi4 stopped\nstop    worker on jetson stopped"}
+21:29:49 serve start {"round": 2, "placement": "p32host"}
+21:33:50 serve FAILED {"round": 2, "placement": "p32host", "rc": 1, "tail": " may be vulnerable to \"store now, decrypt later\" attacks.\n** The server may need to be upgraded. See https://openssh.com/pq.html\n** WARNING: 
+21:33:50 serve start {"round": 2, "placement": "engine"}
+21:38:06 served {"round": 2, "placement": "engine", "host": "pi4", "workers": "jetson", "args": "-m ~/models/qwen3-14b-q4_k_m.gguf --rpc 192.168.1.114:50052 -ngl 14 -ot \"^output\\.weight=CPU\""}
+21:39:12 warm {"round": 2, "placement": "engine", "done_s": 65.571725}
+21:41:56 req {"prompt_n": 128, "n_predict": 32, "sent_wall": 1791556752.0250242, "events": [[102.970315, [576], 1, 0.001, 102870.626], [104.891054, [12126], 2, 1947.079, 102870.626], [106.843343, [1265], 3, 3899.4
+21:44:41 req {"prompt_n": 128, "n_predict": 32, "sent_wall": 1791556916.209933, "events": [[103.49734, [220], 1, 0.001, 103330.815], [105.523395, [7405], 2, 2028.61, 103330.815], [107.524172, [2704], 3, 4029.48, 1
+21:44:45 serve stop {"round": 2, "placement": "engine", "out": "stop    llama-server on pi4 stopped\nstop    worker on jetson stopped"}
+21:44:55 serve start {"round": 3, "placement": "p32host"}
+21:48:57 serve FAILED {"round": 3, "placement": "p32host", "rc": 1, "tail": " may be vulnerable to \"store now, decrypt later\" attacks.\n** The server may need to be upgraded. See https://openssh.com/pq.html\n** WARNING: 
+21:48:57 serve start {"round": 3, "placement": "engine"}
+21:53:13 served {"round": 3, "placement": "engine", "host": "pi4", "workers": "jetson", "args": "-m ~/models/qwen3-14b-q4_k_m.gguf --rpc 192.168.1.114:50052 -ngl 14 -ot \"^output\\.weight=CPU\""}
+21:54:18 warm {"round": 3, "placement": "engine", "done_s": 65.598908}
+21:57:03 req {"prompt_n": 128, "n_predict": 32, "sent_wall": 1791557658.8773022, "events": [[103.009859, [576], 1, 0.001, 102923.344], [104.95974, [12126], 2, 1963.931, 102923.344], [106.9499, [1265], 3, 3954.168,
+21:59:48 req {"prompt_n": 128, "n_predict": 32, "sent_wall": 1791557823.5591986, "events": [[103.617106, [220], 1, 0.001, 103472.788], [105.612506, [7405], 2, 1996.239, 103472.788], [107.603352, [2704], 3, 3986.99
+21:59:52 serve stop {"round": 3, "placement": "engine", "out": "stop    llama-server on pi4 stopped\nstop    worker on jetson stopped"}
+22:00:02 serve start {"round": 3, "placement": "p32last"}
+22:04:12 served {"round": 3, "placement": "p32last", "host": "pi4", "workers": "jetson", "args": "-m ~/models/qwen3-14b-q4_k_m.gguf --rpc 192.168.1.114:50052 -ngl 9"}
+22:05:25 warm {"round": 3, "placement": "p32last", "done_s": 72.911197}
+22:08:25 req {"prompt_n": 128, "n_predict": 32, "sent_wall": 1791558325.8466458, "events": [[117.740021, [576], 1, 0.001, 117691.369], [119.789909, [1156], 2, 2050.16, 117691.369], [121.834871, [11652], 3, 4094.83
+22:11:26 req {"prompt_n": 128, "n_predict": 32, "sent_wall": 1791558505.8272429, "events": [[117.821571, [220], 1, 0.001, 117718.733], [119.892501, [7405], 2, 2071.163, 117718.733], [121.942318, [2704], 3, 4120.98
+22:11:30 serve stop {"round": 3, "placement": "p32last", "out": "stop    llama-server on pi4 stopped\nstop    worker on jetson stopped"}
+22:11:40 serve start {"round": 4, "placement": "engine"}
+22:15:54 served {"round": 4, "placement": "engine", "host": "pi4", "workers": "jetson", "args": "-m ~/models/qwen3-14b-q4_k_m.gguf --rpc 192.168.1.114:50052 -ngl 14 -ot \"^output\\.weight=CPU\""}
+22:16:59 warm {"round": 4, "placement": "engine", "done_s": 65.715368}
+22:19:42 req {"prompt_n": 128, "n_predict": 32, "sent_wall": 1791559019.8024876, "events": [[102.156445, [576], 1, 0.001, 102077.546], [104.094892, [12126], 2, 1938.389, 102077.546], [106.027583, [1265], 3, 3871.0
+22:22:26 req {"prompt_n": 128, "n_predict": 32, "sent_wall": 1791559182.0130346, "events": [[102.412959, [220], 1, 0.001, 102271.868], [104.389365, [7405], 2, 1976.246, 102271.868], [106.387877, [2704], 3, 3974.87
+22:22:30 serve stop {"round": 4, "placement": "engine", "out": "stop    llama-server on pi4 stopped\nstop    worker on jetson stopped"}
+22:22:40 serve start {"round": 4, "placement": "p32last"}
+22:26:48 served {"round": 4, "placement": "p32last", "host": "pi4", "workers": "jetson", "args": "-m ~/models/qwen3-14b-q4_k_m.gguf --rpc 192.168.1.114:50052 -ngl 9"}
+22:28:01 warm {"round": 4, "placement": "p32last", "done_s": 72.90039}
+22:31:02 req {"prompt_n": 128, "n_predict": 32, "sent_wall": 1791559681.1298528, "events": [[118.279123, [576], 1, 0.001, 118231.115], [120.330919, [1156], 2, 2051.666, 118231.115], [122.373843, [11652], 3, 4094.7
+22:34:04 req {"prompt_n": 128, "n_predict": 32, "sent_wall": 1791559862.5431297, "events": [[118.838229, [220], 1, 0.001, 118734.425], [120.90767, [7405], 2, 2069.225, 118734.425], [122.952267, [2704], 3, 4113.888
+22:34:08 serve stop {"round": 4, "placement": "p32last", "out": "stop    llama-server on pi4 stopped\nstop    worker on jetson stopped"}
+22:34:18 serve start {"round": 4, "placement": "p32host"}
+22:38:19 serve FAILED {"round": 4, "placement": "p32host", "rc": 1, "tail": " may be vulnerable to \"store now, decrypt later\" attacks.\n** The server may need to be upgraded. See https://openssh.com/pq.html\n** WARNING: 
+22:38:19 serve start {"round": 5, "placement": "p32last"}
+22:42:31 served {"round": 5, "placement": "p32last", "host": "pi4", "workers": "jetson", "args": "-m ~/models/qwen3-14b-q4_k_m.gguf --rpc 192.168.1.114:50052 -ngl 9"}
+22:43:44 warm {"round": 5, "placement": "p32last", "done_s": 72.856931}
+22:46:45 req {"prompt_n": 128, "n_predict": 32, "sent_wall": 1791560624.5310373, "events": [[117.895826, [576], 1, 0.001, 117826.602], [119.972145, [1156], 2, 2091.709, 117826.602], [122.01388, [11652], 3, 4133.49
+22:49:47 req {"prompt_n": 128, "n_predict": 32, "sent_wall": 1791560805.7846458, "events": [[118.888984, [220], 1, 0.001, 118781.654], [120.931789, [7405], 2, 2046.976, 118781.654], [122.97088, [2704], 3, 4086.07,
+22:49:52 serve stop {"round": 5, "placement": "p32last", "out": "stop    llama-server on pi4 stopped\nstop    worker on jetson stopped"}
+22:50:02 serve start {"round": 5, "placement": "p32host"}
+22:54:04 serve FAILED {"round": 5, "placement": "p32host", "rc": 1, "tail": " may be vulnerable to \"store now, decrypt later\" attacks.\n** The server may need to be upgraded. See https://openssh.com/pq.html\n** WARNING: 
+22:54:04 serve start {"round": 5, "placement": "engine"}
+22:58:20 served {"round": 5, "placement": "engine", "host": "pi4", "workers": "jetson", "args": "-m ~/models/qwen3-14b-q4_k_m.gguf --rpc 192.168.1.114:50052 -ngl 14 -ot \"^output\\.weight=CPU\""}
+22:59:25 warm {"round": 5, "placement": "engine", "done_s": 65.435132}
+23:02:08 req {"prompt_n": 128, "n_predict": 32, "sent_wall": 1791561565.7662528, "events": [[101.618901, [576], 1, 0.001, 101543.954], [103.564602, [12126], 2, 1945.735, 101543.954], [105.510473, [1265], 3, 3891.6
+23:04:52 req {"prompt_n": 128, "n_predict": 32, "sent_wall": 1791561728.4414318, "events": [[102.186456, [220], 1, 0.001, 102046.07], [104.185512, [7405], 2, 1998.88, 102046.07], [106.175975, [2704], 3, 3989.601, 
+23:04:56 serve stop {"round": 5, "placement": "engine", "out": "stop    llama-server on pi4 stopped\nstop    worker on jetson stopped"}
+23:05:06 idle-after start {}
+23:06:06 idle-after end {}
+23:06:07 throttle poll stop {"node": "pi4", "alive": "1", "copied": true, "session": {"poll": "v2", "samples": 8200, "span_s": 8218, "max_gap_s": 6, "na_s": 0, "bad_lines": 0, "max_temp_c": "83.7", "active_s": 283, "now_bits": "
+23:06:07 jetson clocks restore "restored"
+23:06:07 done {"out": "testbed/results/full_eval_q14b_20261009_20261009_204531"}
+q14b run exit 0
+place    plan                     head      P50      P95      P99           P50 CI95           P95 CI95    err% J/tok all J/tok own  thermal
+engine   pi4 27 + jetson 13       host   1990.1   1999.9   2003.1 [1945.94, 1993.66] [1996.48, 2001.67]   +2.5%   21.1095   21.1095  THROTTLED {'clean': 4, 'THROTTLED': 6}
+p32last  pi4 32 + jetson 8        last   2042.9   2055.2   2084.4 [2037.73, 2045.52] [2049.68, 2070.67]   +1.8%   21.8607   21.8607  THROTTLED {'THROTTLED': 10}
+wrote testbed/results/full_eval_q14b_20261009_20261009_204531/summary.json
+summary exit 0
+place    plan                   head     pred     mean      P50      P95    err% J/tok all predicted  thermal
+engine   pi4 27 + jetson 13     host   2025.7   1976.5   1990.1   1999.9   +2.5%   21.1095   20.6743  THROTTLED
+p32last  pi4 32 + jetson 8      last   2077.2   2039.5   2042.9   2055.2   +1.8%   21.8607   20.9441  THROTTLED
+FE-TPOT   INCOMPLETE  {'predicted_best': 'engine', 'lowest_p50': True, 'lowest_p95': True, 'ci_gap_p50_ms': {'p32last': 44.07}, 'ci_gap_p95_ms': {'p32last': 48.01}, 'on_data_present': 'holds'}
+FE-ENERGY INCOMPLETE  {'predicted_best': 'engine', 'predicted': {'engine': 20.6743, 'p32last': 20.9441, 'p32host': 21.3714}, 'measured': {'engine': 21.1095, 'p32last': 21.8607}, 'rounds_lowest': '4 of 5', 'on_data_present': 'holds'}
+FE-ACC    INCOMPLETE  {'on_data_present': 'holds', 'worst_pct': 2.5, 'readings_split': False}
+complete False; finished True; serve failures 5; models ok True; polls [('pi4', '1', True)]; registration unchanged True; code changed []
+wrote testbed/results/full_eval_q14b_20261009_20261009_204531/score.json
+score exit 0
+===== 23:07:40 stop the Jetson's guard
+guard pid 27268 stopped
+guard procs: 0
+===== 23:07:43 done

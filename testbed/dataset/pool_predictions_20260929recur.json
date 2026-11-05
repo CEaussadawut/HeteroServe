@@ -1,0 +1,275 @@
+{
+ "registered": "2026-09-29T17:00:26+07:00",
+ "campaign": "2026-09-29: the recurrent-layer term for the qwen35 hybrids (RECUR), on fresh Pi 5 + Pi 4 splits of Qwen3.5-9B",
+ "inputs_sha256": {
+  "characterisation.csv": "adb4a04b684be60b73fb23402d5b339bab4bf0e36627baf2c162b92aee76c13c",
+  "model_shapes.json": "c92bbc0278b030d5218d7740b3fac99f146b5bdeffe684404d94a012f7232c38",
+  "link.json": "e5084df7d3e62a47c7f93339ef4412c8e5f31db2d500ad5f189aafde95548ac5",
+  "memory_at_rest.json": "1ec5a19725d7c565b9b97449beb0130b179da895e2e93fdb5e36e9ea4f141589",
+  "cluster.json": "bcb79ebabd3b679950382f2fed8dd2fcd3d98ac8b823ef7a894bc60605655346",
+  "predict_pool.py": "7d3343e388cf01d81c3a29b08aadf865d9553f8626ddf7f3a3a03eaed8d2b7d5"
+ },
+ "engine_sha256": {
+  "placement.py": "d2e9e17d547f96ce2883e0d192e3682330c8e6e144930c1474fea85503652f60",
+  "gguf.py": "805ddefc0c9ef1fb1c010f052da0546d23a35d73343738c08345a339f7486330"
+ },
+ "model": {
+  "file": "qwen3.5-9b-q4_k_m.gguf",
+  "sha256": "d784ce9eda1a5a7b51e8f705a9e6310844bf4f173654d115823c775fdea56d43",
+  "full_attention_interval": 4,
+  "recurrent_blocks": [
+   0,
+   1,
+   2,
+   4,
+   5,
+   6,
+   8,
+   9,
+   10,
+   12,
+   13,
+   14,
+   16,
+   17,
+   18,
+   20,
+   21,
+   22,
+   24,
+   25,
+   26,
+   28,
+   29,
+   30
+  ],
+  "nextn_layers": 1
+ },
+ "term": {
+  "pi5": {
+   "measured_tg16_ms": 539.701,
+   "measured_pp64_ms": 106.106,
+   "predicted_decode_ms": 466.31,
+   "predicted_prefill_ms": 95.54,
+   "recurrent_blocks": 24,
+   "term_ms_per_recurrent_block": {
+    "dec": 3.058,
+    "pre": 0.4403
+   }
+  },
+  "pi4": {
+   "measured_tg16_ms": 1515.395,
+   "measured_pp64_ms": 622.926,
+   "predicted_decode_ms": 1482.4,
+   "predicted_prefill_ms": 572.43,
+   "recurrent_blocks": 24,
+   "term_ms_per_recurrent_block": {
+    "dec": 1.3747,
+    "pre": 2.1039
+   }
+  }
+ },
+ "protocol": "llama-bench -t 4 -p 64 -n 16 -r 3 -oe jsonl -v; memprobe.sh v2 (run_pool.sh)",
+ "limitation": "the term is fitted on the 9B alone and tested on 9B splits: out of sample in splits, not in models",
+ "rules": [
+  "RECUR: adopt the recurrent-layer term if, on every r.* cell, |decode error| <= 5 % and |prefill error| <= 10 % WITH it. Each cell's error with and without the term is reported either way, and so is the mean |error| of each.",
+  "STEADY: a cell's phase is steady if its three repetitions agree within 5 %; one that is not is reported as found and still scored."
+ ],
+ "configs": {
+  "r.q9.p5h24_p4": {
+   "model": "qwen3.5-9b-q4_k_m",
+   "quant": "Q4_K_M",
+   "why": "the Pi 5 hosting most of it; the Pi 4 holds the last blocks and the head",
+   "pipeline": [
+    {
+     "node": "pi5",
+     "blocks": 24
+    },
+    {
+     "node": "pi4",
+     "blocks": 9
+    }
+   ],
+   "head_on": "pi4",
+   "bench": {
+    "host": "pi5",
+    "args": "-m ~/models/qwen3.5-9b-q4_k_m.gguf -rpc 192.168.10.12:50052 -ngl 10"
+   },
+   "memory": {
+    "pi5": {
+     "blocks": 24,
+     "need_mib": 4195,
+     "reserve_mib": 0,
+     "available_mib": 7619,
+     "margin_mib": 3424
+    },
+    "pi4": {
+     "blocks": 9,
+     "need_mib": 2317,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 5096
+    }
+   },
+   "recurrent_blocks_by_node": {
+    "pi5": 18,
+    "pi4": 6
+   },
+   "predicted": {
+    "decode_ms_per_token": 925.3,
+    "decode_tok_s": 1.081,
+    "prefill_ms_per_token": 235.2,
+    "prefill_tok_s": 4.25
+   },
+   "predicted_alt": {
+    "no_term": {
+     "decode_ms_per_token": 862.0,
+     "prefill_ms_per_token": 214.6
+    }
+   },
+   "cost_sources": {
+    "pi5": {
+     "host": "cpu row x 1.0806 prefill (SIZE2)",
+     "worker": "cpu-rpc-worker row"
+    },
+    "pi4": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    }
+   },
+   "link_pairs": {
+    "pi4": "pi5-pi4"
+   }
+  },
+  "r.q9.p4h13_p5": {
+   "model": "qwen3.5-9b-q4_k_m",
+   "quant": "Q4_K_M",
+   "why": "the reverse host order of h.q9.p5p4 (Pi 5 20 + Pi 4 13)",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 13
+    },
+    {
+     "node": "pi5",
+     "blocks": 20
+    }
+   ],
+   "head_on": "pi5",
+   "bench": {
+    "host": "pi4",
+    "args": "-m ~/models/qwen3.5-9b-q4_k_m.gguf -rpc 192.168.10.11:50052 -ngl 21"
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 13,
+     "need_mib": 1886,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 5527
+    },
+    "pi5": {
+     "blocks": 20,
+     "need_mib": 3780,
+     "reserve_mib": 0,
+     "available_mib": 7619,
+     "margin_mib": 3839
+    }
+   },
+   "recurrent_blocks_by_node": {
+    "pi4": 10,
+    "pi5": 14
+   },
+   "predicted": {
+    "decode_ms_per_token": 869.1,
+    "decode_tok_s": 1.151,
+    "prefill_ms_per_token": 351.8,
+    "prefill_tok_s": 2.84
+   },
+   "predicted_alt": {
+    "no_term": {
+     "decode_ms_per_token": 812.6,
+     "prefill_ms_per_token": 324.6
+    }
+   },
+   "cost_sources": {
+    "pi4": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "pi5": {
+     "host": "cpu row x 1.0806 prefill (SIZE2)",
+     "worker": "cpu-rpc-worker row"
+    }
+   },
+   "link_pairs": {
+    "pi5": "pi5-pi4"
+   }
+  },
+  "r.q9.p5h12_p4": {
+   "model": "qwen3.5-9b-q4_k_m",
+   "quant": "Q4_K_M",
+   "why": "the Pi 4 holding most of it, as a worker",
+   "pipeline": [
+    {
+     "node": "pi5",
+     "blocks": 12
+    },
+    {
+     "node": "pi4",
+     "blocks": 21
+    }
+   ],
+   "head_on": "pi4",
+   "bench": {
+    "host": "pi5",
+    "args": "-m ~/models/qwen3.5-9b-q4_k_m.gguf -rpc 192.168.10.12:50052 -ngl 22"
+   },
+   "memory": {
+    "pi5": {
+     "blocks": 12,
+     "need_mib": 2626,
+     "reserve_mib": 0,
+     "available_mib": 7619,
+     "margin_mib": 4993
+    },
+    "pi4": {
+     "blocks": 21,
+     "need_mib": 3887,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 3526
+    }
+   },
+   "recurrent_blocks_by_node": {
+    "pi5": 9,
+    "pi4": 15
+   },
+   "predicted": {
+    "decode_ms_per_token": 1227.2,
+    "decode_tok_s": 0.815,
+    "prefill_ms_per_token": 426.7,
+    "prefill_tok_s": 2.34
+   },
+   "predicted_alt": {
+    "no_term": {
+     "decode_ms_per_token": 1179.0,
+     "prefill_ms_per_token": 391.2
+    }
+   },
+   "cost_sources": {
+    "pi5": {
+     "host": "cpu row x 1.0806 prefill (SIZE2)",
+     "worker": "cpu-rpc-worker row"
+    },
+    "pi4": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    }
+   },
+   "link_pairs": {
+    "pi4": "pi5-pi4"
+   }
+  }
+ }
+}

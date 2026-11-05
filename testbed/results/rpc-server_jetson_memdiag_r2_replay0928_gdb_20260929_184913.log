@@ -1,0 +1,111 @@
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/aarch64-linux-gnu/libthread_db.so.1".
+ggml_vulkan: Found 1 Vulkan devices:
+ggml_vulkan: 0 = NVIDIA Tegra X1 (nvgpu) (NVIDIA) | uma: 1 | fp16: 1 | bf16: 0 | fp4: 0 | warp size: 32 | shared memory: 49152 | int dot: 0 | matrix cores: none
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+WARNING: Host ('192.168.100.111') is != '127.0.0.1'
+         Never expose the RPC server to an open network!
+         This is an experimental feature and is not secure!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+Starting RPC server v7.0.0
+  endpoint       : 192.168.100.111:50052
+  local cache    : n/a
+Devices:
+  Vulkan0: NVIDIA Tegra X1 (nvgpu) (4363 MiB, 3345 MiB free)
+  transport      : TCP
+Accepted client connection
+Client connection closed
+Accepted client connection
+Client connection closed
+Accepted client connection
+Client connection closed
+Accepted client connection
+Client connection closed
+Accepted client connection
+Client connection closed
+Accepted client connection
+Client connection closed
+Accepted client connection
+
+Thread 1 "ggml-rpc-server" received signal SIGSEGV, Segmentation fault.
+0x0000007fb0716230 in ?? () from /usr/lib/aarch64-linux-gnu/tegra/libnvidia-eglcore.so.32.7.6
+#0  0x0000007fb0716230 in ?? () from /usr/lib/aarch64-linux-gnu/tegra/libnvidia-eglcore.so.32.7.6
+#1  0x0000007fb0716a4c in ?? () from /usr/lib/aarch64-linux-gnu/tegra/libnvidia-eglcore.so.32.7.6
+#2  0x0000007fb0725760 in ?? () from /usr/lib/aarch64-linux-gnu/tegra/libnvidia-eglcore.so.32.7.6
+#3  0x0000007fb0739e18 in ?? () from /usr/lib/aarch64-linux-gnu/tegra/libnvidia-eglcore.so.32.7.6
+#4  0x0000007fb4d311bc in vkAllocateDescriptorSets () from /usr/lib/aarch64-linux-gnu/libvulkan.so.1
+#5  0x0000007fb4f4d4f0 in ggml_pipeline_allocate_descriptor_sets(ggml_backend_vk_context*) () from /home/jetson/llama.cpp/build/bin/libggml-vulkan.so.0
+#6  0x0000007fb4fa9b54 in ggml_vk_matmul(ggml_backend_vk_context*, std::shared_ptr<vk_context_struct>&, std::shared_ptr<vk_pipeline_struct>&, vk_subbuffer&&, vk_subbuffer&&, vk_subbuffer&&, vk_subbuffer&&, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int) () from /home/jetson/llama.cpp/build/bin/libggml-vulkan.so.0
+#7  0x0000007fb4fb5814 in ggml_vk_mul_mat_q_f16(ggml_backend_vk_context*, std::shared_ptr<vk_context_struct>&, ggml_tensor const*, ggml_tensor const*, ggml_tensor*, bool) () from /home/jetson/llama.cpp/build/bin/libggml-vulkan.so.0
+#8  0x0000007fb4fe8090 in ggml_vk_build_graph(ggml_backend_vk_context*, ggml_cgraph*, int, ggml_tensor*, int, bool, bool, bool) () from /home/jetson/llama.cpp/build/bin/libggml-vulkan.so.0
+#9  0x0000007fb4fe8a40 in ggml_backend_vk_graph_compute(ggml_backend*, ggml_cgraph*) () from /home/jetson/llama.cpp/build/bin/libggml-vulkan.so.0
+#10 0x0000007fb7f22274 in ggml_backend_graph_compute () from /home/jetson/llama.cpp/build/bin/libggml-base.so.0
+#11 0x0000007fb790c718 in rpc_server::graph_compute(std::vector<unsigned char, std::allocator<unsigned char> > const&) () from /home/jetson/llama.cpp/build/bin/libggml-rpc.so.0
+#12 0x0000007fb790fb1c in rpc_serve_client(std::vector<ggml_backend*, std::allocator<ggml_backend*> > const&, char const*, std::shared_ptr<socket_t>) () from /home/jetson/llama.cpp/build/bin/libggml-rpc.so.0
+#13 0x0000007fb7910474 in ggml_backend_rpc_start_server () from /home/jetson/llama.cpp/build/bin/libggml-rpc.so.0
+#14 0x000000555555a474 in main ()
+pc             0x7fb0716230	0x7fb0716230
+lr             0x7fb0716a4c	548421069388
+sp             0x7fffffd5d0	0x7fffffd5d0
+x0             0x28	40
+x1             0x1	1
+x2             0x0	0
+x3             0x0	0
+   0x7fb0716224:	mov	w13, #0xffffffff            	// #-1
+   0x7fb0716228:	mov	w0, w13
+   0x7fb071622c:	ret
+=> 0x7fb0716230:	ldr	w3, [x0, #8]
+   0x7fb0716234:	cmp	w2, w3
+   0x7fb0716238:	b.cs	0x7fb0716160  // b.hs, b.nlast
+
+Thread 5 (Thread 0x7fb16d2130 (LWP 9526)):
+#0  0x0000007fb4e372a4 in futex_wait_cancelable (private=<optimized out>, expected=0, futex_word=0x55556baf18) at ../sysdeps/unix/sysv/linux/futex-internal.h:88
+#1  __pthread_cond_wait_common (abstime=0x0, mutex=0x55556baeb8, cond=0x55556baef0) at pthread_cond_wait.c:502
+#2  __pthread_cond_wait (cond=0x55556baef0, mutex=0x55556baeb8) at pthread_cond_wait.c:655
+#3  0x0000007fb2f8c6b0 in ?? () from /usr/lib/aarch64-linux-gnu/libdrm.so.2
+#4  0x0000007fb4e31088 in start_thread (arg=0x7fffffd0df) at pthread_create.c:463
+#5  0x0000007fb7b820cc in thread_start () at ../sysdeps/unix/sysv/linux/aarch64/clone.S:78
+
+Thread 4 (Thread 0x7fb1ed3130 (LWP 9525)):
+#0  0x0000007fb4e372a4 in futex_wait_cancelable (private=<optimized out>, expected=0, futex_word=0x55556baf48) at ../sysdeps/unix/sysv/linux/futex-internal.h:88
+#1  __pthread_cond_wait_common (abstime=0x0, mutex=0x55556baeb8, cond=0x55556baf20) at pthread_cond_wait.c:502
+#2  __pthread_cond_wait (cond=0x55556baf20, mutex=0x55556baeb8) at pthread_cond_wait.c:655
+#3  0x0000007fb2f8bce0 in ?? () from /usr/lib/aarch64-linux-gnu/libdrm.so.2
+#4  0x0000007fb4e31088 in start_thread (arg=0x7fffffd0df) at pthread_create.c:463
+#5  0x0000007fb7b820cc in thread_start () at ../sysdeps/unix/sysv/linux/aarch64/clone.S:78
+
+Thread 3 (Thread 0x7fb26d4130 (LWP 9524)):
+#0  0x0000007fb4e372a4 in futex_wait_cancelable (private=<optimized out>, expected=0, futex_word=0x55556bae68) at ../sysdeps/unix/sysv/linux/futex-internal.h:88
+#1  __pthread_cond_wait_common (abstime=0x0, mutex=0x55556bae08, cond=0x55556bae40) at pthread_cond_wait.c:502
+#2  __pthread_cond_wait (cond=0x55556bae40, mutex=0x55556bae08) at pthread_cond_wait.c:655
+#3  0x0000007fb2f8c6b0 in ?? () from /usr/lib/aarch64-linux-gnu/libdrm.so.2
+#4  0x0000007fb4e31088 in start_thread (arg=0x7fffffd0df) at pthread_create.c:463
+#5  0x0000007fb7b820cc in thread_start () at ../sysdeps/unix/sysv/linux/aarch64/clone.S:78
+
+Thread 2 (Thread 0x7fb2ed5130 (LWP 9523)):
+#0  0x0000007fb4e372a4 in futex_wait_cancelable (private=<optimized out>, expected=0, futex_word=0x55556bae98) at ../sysdeps/unix/sysv/linux/futex-internal.h:88
+#1  __pthread_cond_wait_common (abstime=0x0, mutex=0x55556bae08, cond=0x55556bae70) at pthread_cond_wait.c:502
+#2  __pthread_cond_wait (cond=0x55556bae70, mutex=0x55556bae08) at pthread_cond_wait.c:655
+#3  0x0000007fb2f8bce0 in ?? () from /usr/lib/aarch64-linux-gnu/libdrm.so.2
+#4  0x0000007fb4e31088 in start_thread (arg=0x7fffffd0df) at pthread_create.c:463
+#5  0x0000007fb7b820cc in thread_start () at ../sysdeps/unix/sysv/linux/aarch64/clone.S:78
+
+Thread 1 (Thread 0x7fb7ff4b50 (LWP 9457)):
+#0  0x0000007fb0716230 in ?? () from /usr/lib/aarch64-linux-gnu/tegra/libnvidia-eglcore.so.32.7.6
+#1  0x0000007fb0716a4c in ?? () from /usr/lib/aarch64-linux-gnu/tegra/libnvidia-eglcore.so.32.7.6
+#2  0x0000007fb0725760 in ?? () from /usr/lib/aarch64-linux-gnu/tegra/libnvidia-eglcore.so.32.7.6
+#3  0x0000007fb0739e18 in ?? () from /usr/lib/aarch64-linux-gnu/tegra/libnvidia-eglcore.so.32.7.6
+#4  0x0000007fb4d311bc in vkAllocateDescriptorSets () from /usr/lib/aarch64-linux-gnu/libvulkan.so.1
+#5  0x0000007fb4f4d4f0 in ggml_pipeline_allocate_descriptor_sets(ggml_backend_vk_context*) () from /home/jetson/llama.cpp/build/bin/libggml-vulkan.so.0
+#6  0x0000007fb4fa9b54 in ggml_vk_matmul(ggml_backend_vk_context*, std::shared_ptr<vk_context_struct>&, std::shared_ptr<vk_pipeline_struct>&, vk_subbuffer&&, vk_subbuffer&&, vk_subbuffer&&, vk_subbuffer&&, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int) () from /home/jetson/llama.cpp/build/bin/libggml-vulkan.so.0
+#7  0x0000007fb4fb5814 in ggml_vk_mul_mat_q_f16(ggml_backend_vk_context*, std::shared_ptr<vk_context_struct>&, ggml_tensor const*, ggml_tensor const*, ggml_tensor*, bool) () from /home/jetson/llama.cpp/build/bin/libggml-vulkan.so.0
+#8  0x0000007fb4fe8090 in ggml_vk_build_graph(ggml_backend_vk_context*, ggml_cgraph*, int, ggml_tensor*, int, bool, bool, bool) () from /home/jetson/llama.cpp/build/bin/libggml-vulkan.so.0
+#9  0x0000007fb4fe8a40 in ggml_backend_vk_graph_compute(ggml_backend*, ggml_cgraph*) () from /home/jetson/llama.cpp/build/bin/libggml-vulkan.so.0
+#10 0x0000007fb7f22274 in ggml_backend_graph_compute () from /home/jetson/llama.cpp/build/bin/libggml-base.so.0
+#11 0x0000007fb790c718 in rpc_server::graph_compute(std::vector<unsigned char, std::allocator<unsigned char> > const&) () from /home/jetson/llama.cpp/build/bin/libggml-rpc.so.0
+#12 0x0000007fb790fb1c in rpc_serve_client(std::vector<ggml_backend*, std::allocator<ggml_backend*> > const&, char const*, std::shared_ptr<socket_t>) () from /home/jetson/llama.cpp/build/bin/libggml-rpc.so.0
+#13 0x0000007fb7910474 in ggml_backend_rpc_start_server () from /home/jetson/llama.cpp/build/bin/libggml-rpc.so.0
+#14 0x000000555555a474 in main ()
+WORKER_EXIT=0 2026-09-29T18:51:53+07:00

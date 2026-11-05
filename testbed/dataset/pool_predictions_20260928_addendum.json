@@ -1,0 +1,116 @@
+{
+ "registered": "2026-09-28T17:05:05+07:00",
+ "base_predictions": "testbed/dataset/pool_predictions_20260928.json",
+ "base_predictions_sha256": "3ddb0bbe75eb236b1e67a3d5ae8b3a0f7b53d12d03ca7994fc818a3a84054f09",
+ "inputs_sha256": {
+  "characterisation.csv": "cf181c609c9d20211fd90d35bccf9d1625d18b3721d1f0c0e71ac1cb641f58ca",
+  "model_shapes.json": "0f7d5e4c4f1da7e1bf2bc640f35bc2d7afe62810603ad3167ed770cd108f2771",
+  "link.json": "e5084df7d3e62a47c7f93339ef4412c8e5f31db2d500ad5f189aafde95548ac5",
+  "memory_at_rest.json": "1ec5a19725d7c565b9b97449beb0130b179da895e2e93fdb5e36e9ea4f141589",
+  "cluster.json": "73cd9b6f2c274dd3485e110a86332f19537a56ad586f16f288faba95feeff925"
+ },
+ "engine_sha256": {
+  "placement.py": "b47ee0c77c51e04c8d48cdb7fb5da82d22aff3a8e034593bb818c54b82765555",
+  "gguf.py": "805ddefc0c9ef1fb1c010f052da0546d23a35d73343738c08345a339f7486330"
+ },
+ "protocol": "llama-bench -t 4 -p 64 -n 16 -r 3 -oe jsonl",
+ "memory_accounting": "board-aware where cluster.json measures a board's role overheads (memory_overhead_mb, worker_repays_received_tensor), the stand-in overhead_mb otherwise (placement.memory_need_mb); plus each board's memory_reserve_mb kept free (run_pool.sh gates on need + reserve)",
+ "configs": {
+  "qwen3moe.rule_reserve": {
+   "model": "qwen3-30b-a3b-q3_k_m",
+   "quant": "Q3_K_M",
+   "why": "the rule, all three boards, hosted on the pi4; re-planned after the registered qwen3moe.rule failed on the Jetson's Vulkan allocator (2026-09-28 16:51, 108 MiB refused at ~290 MiB MemAvailable): the Jetson now keeps a 450 MiB reserve free (cluster.json memory_reserve_mb)",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 13
+    },
+    {
+     "node": "jetson",
+     "blocks": 10
+    },
+    {
+     "node": "pi5",
+     "blocks": 25
+    }
+   ],
+   "head_on": "pi5",
+   "bench": {
+    "host": "pi4",
+    "args": "-m ~/models/qwen3-30b-a3b-q3_k_m.gguf -rpc 192.168.100.111:50052,192.168.10.11:50052 -ngl 36 -ts 9.5/26.5"
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 13,
+     "need_mib": 4133,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 3280
+    },
+    "jetson": {
+     "blocks": 10,
+     "need_mib": 3007,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 88
+    },
+    "pi5": {
+     "blocks": 25,
+     "need_mib": 7512,
+     "reserve_mib": 0,
+     "available_mib": 7619,
+     "margin_mib": 107
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 266.9,
+    "decode_tok_s": 3.747,
+    "prefill_ms_per_token": 124.6,
+    "prefill_tok_s": 8.02
+   },
+   "cost_sources": {
+    "pi4": {
+     "host": "cpu row",
+     "worker": "host row (no worker row at Q3_K_M; this board never repacks)"
+    },
+    "jetson": {
+     "host": "vulkan row",
+     "worker": "vulkan row + smoke-test RPC cost"
+    },
+    "pi5": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    }
+   },
+   "link_pairs": {
+    "jetson": "pi4-jetson",
+    "pi5": "pi5-pi4"
+   },
+   "engine": {
+    "order": [
+     "pi4",
+     "jetson",
+     "pi5"
+    ],
+    "layers": {
+     "pi4": 13,
+     "jetson": 10,
+     "pi5": 25
+    },
+    "predicted_ms": 260.618,
+    "prefill_pick": {
+     "order": [
+      "pi4",
+      "jetson",
+      "pi5"
+     ],
+     "layers": {
+      "pi4": 13,
+      "jetson": 10,
+      "pi5": 25
+     }
+    }
+   }
+  }
+ }
+}

@@ -1,0 +1,175 @@
+Repeatability, 2026-10-23T02:27:36+07:00
+
+1. Within a run (llama-bench -r 3: (max - min) / mean)
+  jetson/cpu              10 rows  median  0.55 %  max  3.95 %  under 1 %:  70 %
+  jetson/cuda              6 rows  median  0.15 %  max  0.76 %  under 1 %: 100 %
+  jetson/vulkan           20 rows  median  0.09 %  max  0.93 %  under 1 %: 100 %
+  pi4/cpu                 24 rows  median  0.10 %  max  5.21 %  under 1 %:  92 %
+  pi4/cpu-rpc-worker       6 rows  median  0.12 %  max  0.81 %  under 1 %: 100 %
+  pi5/cpu                 64 rows  median  0.21 %  max  5.01 %  under 1 %:  81 %
+  pi5/cpu-rpc-worker      70 rows  median  0.08 %  max  3.71 %  under 1 %:  96 %
+  t580/cpu                52 rows  median  5.37 %  max 42.34 %  under 1 %:   8 %
+
+2. The same configuration in separate runs (max / min - 1)
+  jetson  cpu             tinyllama-1.1b-q4km.gguf   pp512  2 runs    3.63 %  [8.432, 8.739]  2026-09-25,2026-09-27
+  jetson  cpu             tinyllama-1.1b-q4km.gguf   tg128  2 runs    2.18 %  [6.327, 6.465]  2026-09-25,2026-09-27
+  jetson  cuda            tinyllama-1.1b-q4km.gguf   pp512  3 runs    0.40 %  [115.339, 115.609, 115.147]  2026-09-29
+  jetson  cuda            tinyllama-1.1b-q4km.gguf   tg128  3 runs    0.10 %  [6.148, 6.152, 6.146]  2026-09-29
+  jetson  vulkan          tinyllama-1.1b-q4km.gguf   pp512  2 runs    0.25 %  [73.016, 73.201]  2026-09-25,2026-09-29
+  jetson  vulkan          tinyllama-1.1b-q4km.gguf   tg128  2 runs    0.30 %  [11.46, 11.494]  2026-09-25,2026-09-29
+  pi5     cpu             qwen3.5-9b-q4_k_m.gguf     pp512  3 runs   10.17 %  [8.826, 8.011, 8.704]  2026-09-29,2026-10-20
+  pi5     cpu             qwen3.5-9b-q4_k_m.gguf     pp64   3 runs    4.71 %  [9.425, 9.11, 9.001]  2026-09-29,2026-10-20
+  pi5     cpu             qwen3.5-9b-q4_k_m.gguf     tg128  3 runs    7.78 %  [1.881, 1.745, 1.837]  2026-09-29,2026-10-20
+  pi5     cpu             qwen3.5-9b-q4_k_m.gguf     tg16   3 runs    2.84 %  [1.853, 1.802, 1.818]  2026-09-29,2026-10-20
+  pi5     cpu             tinyllama-1.1b-q3km.gguf   pp512  3 runs    1.01 %  [40.116, 39.715, 40.086]  2026-09-28,2026-10-20
+  pi5     cpu             tinyllama-1.1b-q3km.gguf   pp64   3 runs    0.21 %  [41.37, 41.284, 41.353]  2026-09-28,2026-10-20
+  pi5     cpu             tinyllama-1.1b-q3km.gguf   tg128  3 runs    5.75 %  [21.861, 20.672, 21.279]  2026-09-28,2026-10-20
+  pi5     cpu             tinyllama-1.1b-q3km.gguf   tg16   3 runs    5.34 %  [21.971, 20.857, 21.903]  2026-09-28,2026-10-20
+  pi5     cpu             tinyllama-1.1b-q4_0.gguf   pp512  3 runs    4.54 %  [134.509, 128.664, 130.567]  2026-09-27,2026-10-20
+  pi5     cpu             tinyllama-1.1b-q4_0.gguf   pp64   2 runs    4.30 %  [144.872, 151.106]  2026-10-20
+  pi5     cpu             tinyllama-1.1b-q4_0.gguf   tg128  3 runs    7.83 %  [18.939, 17.564, 18.841]  2026-09-27,2026-10-20
+  pi5     cpu             tinyllama-1.1b-q4_0.gguf   tg16   2 runs   12.30 %  [17.361, 19.497]  2026-10-20
+  pi5     cpu             tinyllama-1.1b-q4km.gguf   pp512  3 runs    2.73 %  [81.26, 79.104, 80.477]  2026-09-27,2026-10-20
+  pi5     cpu             tinyllama-1.1b-q4km.gguf   pp64   3 runs    3.67 %  [85.327, 82.305, 84.737]  2026-09-28,2026-10-20
+  pi5     cpu             tinyllama-1.1b-q4km.gguf   tg128  3 runs    8.20 %  [18.129, 16.755, 17.235]  2026-09-27,2026-10-20
+  pi5     cpu             tinyllama-1.1b-q4km.gguf   tg16   3 runs   11.79 %  [18.374, 16.638, 16.437]  2026-09-28,2026-10-20
+  pi5     cpu             tinyllama-1.1b-q6_k.gguf   pp512  2 runs    2.45 %  [69.507, 71.208]  2026-10-20
+  pi5     cpu             tinyllama-1.1b-q6_k.gguf   pp64   2 runs    0.81 %  [73.225, 73.817]  2026-10-20
+  pi5     cpu             tinyllama-1.1b-q6_k.gguf   tg128  2 runs    1.56 %  [12.229, 12.042]  2026-10-20
+  pi5     cpu             tinyllama-1.1b-q6_k.gguf   tg16   2 runs    1.13 %  [12.544, 12.686]  2026-10-20
+  pi5     cpu             tinyllama-1.1b-q8_0.gguf   pp512  3 runs   15.34 %  [64.376, 55.814, 56.681]  2026-09-27,2026-10-20
+  pi5     cpu             tinyllama-1.1b-q8_0.gguf   pp64   2 runs    4.88 %  [58.571, 61.426]  2026-10-20
+  pi5     cpu             tinyllama-1.1b-q8_0.gguf   tg128  3 runs   20.29 %  [11.073, 9.541, 9.205]  2026-09-27,2026-10-20
+  pi5     cpu             tinyllama-1.1b-q8_0.gguf   tg16   2 runs    4.70 %  [9.403, 9.846]  2026-10-20
+  pi5     cpu-rpc-worker  qwen3.5-9b-q4_k_m.gguf     pp64   3 runs    1.74 %  [5.508, 5.449, 5.544]  2026-09-29,2026-10-20
+  pi5     cpu-rpc-worker  qwen3.5-9b-q4_k_m.gguf     tg16   3 runs    5.01 %  [1.845, 1.788, 1.757]  2026-09-29,2026-10-20
+  pi5     cpu-rpc-worker  tinyllama-1.1b-q3km.gguf   pp1    3 runs   12.26 %  [23.029, 20.514, 22.835]  2026-09-28,2026-10-20
+  pi5     cpu-rpc-worker  tinyllama-1.1b-q3km.gguf   pp16   3 runs    1.01 %  [36.942, 36.575, 36.917]  2026-09-28,2026-10-20
+  pi5     cpu-rpc-worker  tinyllama-1.1b-q3km.gguf   pp256  3 runs    1.45 %  [36.666, 36.285, 36.81]  2026-09-28,2026-10-20
+  pi5     cpu-rpc-worker  tinyllama-1.1b-q3km.gguf   pp4    3 runs    1.28 %  [33.682, 33.291, 33.717]  2026-09-28,2026-10-20
+  pi5     cpu-rpc-worker  tinyllama-1.1b-q3km.gguf   pp512  3 runs    1.83 %  [36.198, 35.57, 36.221]  2026-09-28,2026-10-20
+  pi5     cpu-rpc-worker  tinyllama-1.1b-q3km.gguf   pp64   3 runs    0.17 %  [37.246, 37.183, 37.188]  2026-09-28,2026-10-20
+  pi5     cpu-rpc-worker  tinyllama-1.1b-q3km.gguf   tg128  3 runs   11.37 %  [22.327, 20.048, 21.84]  2026-09-28,2026-10-20
+  pi5     cpu-rpc-worker  tinyllama-1.1b-q3km.gguf   tg16   3 runs    9.88 %  [22.712, 20.674, 22.717]  2026-09-28,2026-10-20
+  pi5     cpu-rpc-worker  tinyllama-1.1b-q4_0.gguf   pp512  3 runs    0.72 %  [52.352, 51.976, 52.228]  2026-09-27,2026-10-20
+  pi5     cpu-rpc-worker  tinyllama-1.1b-q4_0.gguf   pp64   2 runs    1.03 %  [54.297, 54.855]  2026-10-20
+  pi5     cpu-rpc-worker  tinyllama-1.1b-q4_0.gguf   tg128  3 runs   17.82 %  [19.748, 16.761, 19.266]  2026-09-27,2026-10-20
+  pi5     cpu-rpc-worker  tinyllama-1.1b-q4_0.gguf   tg16   2 runs   16.15 %  [17.241, 20.026]  2026-10-20
+  pi5     cpu-rpc-worker  tinyllama-1.1b-q4km.gguf   pp512  3 runs    2.46 %  [46.268, 45.158, 46.228]  2026-09-27,2026-10-20
+  pi5     cpu-rpc-worker  tinyllama-1.1b-q4km.gguf   pp64   3 runs    0.84 %  [47.916, 47.518, 47.84]  2026-09-28,2026-10-20
+  pi5     cpu-rpc-worker  tinyllama-1.1b-q4km.gguf   tg128  3 runs   16.67 %  [18.856, 16.161, 18.312]  2026-09-27,2026-10-20
+  pi5     cpu-rpc-worker  tinyllama-1.1b-q4km.gguf   tg16   3 runs   15.45 %  [19.069, 16.517, 19.059]  2026-09-28,2026-10-20
+  pi5     cpu-rpc-worker  tinyllama-1.1b-q6_k.gguf   pp512  2 runs    0.90 %  [25.693, 25.926]  2026-10-20
+  pi5     cpu-rpc-worker  tinyllama-1.1b-q6_k.gguf   pp64   2 runs    0.75 %  [26.238, 26.434]  2026-10-20
+  pi5     cpu-rpc-worker  tinyllama-1.1b-q6_k.gguf   tg128  2 runs   17.13 %  [11.928, 13.97]  2026-10-20
+  pi5     cpu-rpc-worker  tinyllama-1.1b-q6_k.gguf   tg16   2 runs   17.27 %  [12.385, 14.524]  2026-10-20
+  pi5     cpu-rpc-worker  tinyllama-1.1b-q8_0.gguf   pp512  3 runs    1.12 %  [54.228, 53.629, 53.965]  2026-09-27,2026-10-20
+  pi5     cpu-rpc-worker  tinyllama-1.1b-q8_0.gguf   pp64   2 runs    2.23 %  [53.453, 54.644]  2026-10-20
+  pi5     cpu-rpc-worker  tinyllama-1.1b-q8_0.gguf   tg128  3 runs    6.84 %  [10.094, 9.448, 9.883]  2026-09-27,2026-10-20
+  pi5     cpu-rpc-worker  tinyllama-1.1b-q8_0.gguf   tg16   2 runs    6.76 %  [9.621, 10.271]  2026-10-20
+  t580    cpu             tinyllama-1.1b-q3km.gguf   pp512  3 runs   11.21 %  [47.667, 49.556, 53.011]  2026-09-29,2026-10-20
+  t580    cpu             tinyllama-1.1b-q3km.gguf   pp64   3 runs    6.66 %  [68.705, 66.28, 70.694]  2026-09-29,2026-10-20
+  t580    cpu             tinyllama-1.1b-q3km.gguf   tg128  3 runs   15.85 %  [26.891, 27.453, 31.154]  2026-09-29,2026-10-20
+  t580    cpu             tinyllama-1.1b-q3km.gguf   tg16   3 runs    6.80 %  [35.565, 34.749, 37.111]  2026-09-29,2026-10-20
+  t580    cpu             tinyllama-1.1b-q4_0.gguf   pp512  3 runs   14.49 %  [74.672, 75.032, 85.489]  2026-09-29,2026-10-20
+  t580    cpu             tinyllama-1.1b-q4_0.gguf   pp64   3 runs    6.97 %  [94.608, 89.201, 95.42]  2026-09-29,2026-10-20
+  t580    cpu             tinyllama-1.1b-q4_0.gguf   tg128  3 runs   17.68 %  [29.974, 27.958, 32.901]  2026-09-29,2026-10-20
+  t580    cpu             tinyllama-1.1b-q4_0.gguf   tg16   3 runs    5.51 %  [36.165, 34.763, 36.678]  2026-09-29,2026-10-20
+  t580    cpu             tinyllama-1.1b-q4km.gguf   pp512  3 runs    6.93 %  [93.204, 87.162, 92.32]  2026-09-29,2026-10-20
+  t580    cpu             tinyllama-1.1b-q4km.gguf   pp64   3 runs   71.86 %  [102.543, 63.686, 109.452]  2026-09-29,2026-10-20
+  t580    cpu             tinyllama-1.1b-q4km.gguf   tg128  3 runs    9.60 %  [29.617, 28.189, 30.895]  2026-09-29,2026-10-20
+  t580    cpu             tinyllama-1.1b-q4km.gguf   tg16   3 runs   22.91 %  [34.693, 28.227, 34.007]  2026-09-29,2026-10-20
+  t580    cpu             tinyllama-1.1b-q8_0.gguf   pp512  3 runs   10.07 %  [61.77, 61.479, 67.671]  2026-09-29,2026-10-20
+  t580    cpu             tinyllama-1.1b-q8_0.gguf   pp64   3 runs    4.51 %  [79.619, 78.063, 81.584]  2026-09-29,2026-10-20
+  t580    cpu             tinyllama-1.1b-q8_0.gguf   tg128  3 runs    9.66 %  [18.07, 18.599, 19.816]  2026-09-29,2026-10-20
+  t580    cpu             tinyllama-1.1b-q8_0.gguf   tg16   3 runs    5.39 %  [21.833, 20.728, 21.845]  2026-09-29,2026-10-20
+
+3. Across rounds of a served evaluation (each round reloads the model)
+  full_eval_moeq3_fe4_20261020_20261021_022834 engine   5 rounds  TPOT P50 spread  4.60 % (CV 1.83 %)  J/token spread 2.58 % (CV 0.96 %)
+  full_eval_moeq3_fe4_20261020_20261021_022834 boards   5 rounds  TPOT P50 spread  0.25 % (CV 0.11 %)  J/token spread 1.71 % (CV 0.67 %)
+  full_eval_moeq3_fe4_20261020_20261021_022834 default  5 rounds  TPOT P50 spread  1.54 % (CV 0.64 %)  J/token spread 3.07 % (CV 1.4 %)
+  full_eval_moeq6_fe4_20261020_20261021_020202 default  5 rounds  TPOT P50 spread  0.77 % (CV 0.31 %)  J/token spread 2.23 % (CV 0.95 %)
+  full_eval_moeq6b_fe4_20261021_20261021_131716 engine   5 rounds  TPOT P50 spread  3.88 % (CV 1.53 %)  J/token spread 2.37 % (CV 1.01 %)
+  full_eval_moeq6b_fe4_20261021_20261021_131716 default  5 rounds  TPOT P50 spread  2.08 % (CV 0.84 %)  J/token spread 10.05 % (CV 3.94 %)
+  full_eval_moeq6b_fe4_20261021_20261021_131716 lap_pi4  5 rounds  TPOT P50 spread  3.18 % (CV 1.35 %)  J/token spread 10.87 % (CV 4.29 %)
+  full_eval_nemo_fe4_20261020_20261021_045420  engine   5 rounds  TPOT P50 spread  0.28 % (CV 0.11 %)  J/token spread 1.19 % (CV 0.43 %)
+  full_eval_nemo_fe4_20261020_20261021_045420  boards   5 rounds  TPOT P50 spread  5.82 % (CV 2.31 %)  J/token spread 5.12 % (CV 2.07 %)
+  full_eval_nemo_fe4_20261020_20261021_045420  even     5 rounds  TPOT P50 spread  0.44 % (CV 0.17 %)  J/token spread 1.41 % (CV 0.57 %)
+  full_eval_nemo_fe4_20261020_20261021_045420  default  5 rounds  TPOT P50 spread  0.29 % (CV 0.10 %)  J/token spread 1.56 % (CV 0.58 %)
+  full_eval_q14b_20261009_20261009_204531      engine   5 rounds  TPOT P50 spread  2.06 % (CV 0.86 %)  J/token spread 12.92 % (CV 4.59 %)
+  full_eval_q14b_20261009_20261009_204531      p32last  5 rounds  TPOT P50 spread  1.43 % (CV 0.57 %)  J/token spread 7.37 % (CV 2.84 %)
+  full_eval_q14b_fe4_20261020_20261020_222013  engine   5 rounds  TPOT P50 spread  0.55 % (CV 0.20 %)  J/token spread 1.35 % (CV 0.52 %)
+  full_eval_q14b_fe4_20261020_20261020_222013  boards   5 rounds  TPOT P50 spread  0.26 % (CV 0.09 %)  J/token spread 5.94 % (CV 2.35 %)
+  full_eval_q14b_fe4_20261020_20261020_222013  even     5 rounds  TPOT P50 spread  0.90 % (CV 0.33 %)  J/token spread 4.24 % (CV 1.68 %)
+  full_eval_q14b_fe4_20261020_20261020_222013  default  5 rounds  TPOT P50 spread  0.50 % (CV 0.22 %)  J/token spread 2.38 % (CV 0.93 %)
+  full_eval_q14b_fe4_20261020_20261020_222013  lap39    5 rounds  TPOT P50 spread  3.01 % (CV 1.18 %)  J/token spread 4.93 % (CV 1.77 %)
+  full_eval_q14b_fe4_20261020_20261020_222013  served1009 4 rounds  TPOT P50 spread  2.96 % (CV 1.23 %)  J/token spread 2.27 % (CV 0.98 %)
+  full_eval_q27b_fe4_20261020_20261021_035044  engine   5 rounds  TPOT P50 spread  0.73 % (CV 0.27 %)  J/token spread 1.35 % (CV 0.56 %)
+  full_eval_q27bnc_fe4_20261021_20261021_170855 engine   5 rounds  TPOT P50 spread  6.22 % (CV 2.58 %)  J/token spread 7.66 % (CV 3.29 %)
+  full_eval_q27bnc_fe4_20261021_20261021_170855 boards   5 rounds  TPOT P50 spread  1.14 % (CV 0.49 %)  J/token spread 7.18 % (CV 2.63 %)
+  full_eval_q27bnc_fe4_20261021_20261021_170855 default  5 rounds  TPOT P50 spread  2.92 % (CV 1.13 %)  J/token spread 5.17 % (CV 2.14 %)
+  full_eval_q9b_fe4_20261020_20261021_062243   engine   5 rounds  TPOT P50 spread  1.82 % (CV 0.83 %)  J/token spread 1.51 % (CV 0.55 %)
+  full_eval_q9b_fe4_20261020_20261021_062243   boards   5 rounds  TPOT P50 spread  2.30 % (CV 0.94 %)  J/token spread 4.48 % (CV 2.07 %)
+  full_eval_q9b_fe4_20261020_20261021_062243   even     5 rounds  TPOT P50 spread  1.25 % (CV 0.49 %)  J/token spread 2.43 % (CV 0.99 %)
+  full_eval_q9b_fe4_20261020_20261021_062243   default  5 rounds  TPOT P50 spread  0.76 % (CV 0.32 %)  J/token spread 4.01 % (CV 1.51 %)
+  full_eval_q9b_fe4_20261020_20261021_062243   pi4alone 5 rounds  TPOT P50 spread  0.70 % (CV 0.26 %)  J/token spread 2.78 % (CV 0.98 %)
+  full_eval_tiny_pilot_20261009_20261009_190242 engine   5 rounds  TPOT P50 spread  0.11 % (CV 0.05 %)  J/token spread 4.28 % (CV 1.76 %)
+  full_eval_tiny_pilot_20261009_20261009_190242 pooled   5 rounds  TPOT P50 spread  0.18 % (CV 0.07 %)  J/token spread 1.23 % (CV 0.5 %)
+  full_eval_tiny_pilot_20261009_20261009_190242 halda    5 rounds  TPOT P50 spread  0.49 % (CV 0.21 %)  J/token spread 1.94 % (CV 0.78 %)
+  full_eval_tiny_pilot_20261009_20261009_190242 even     5 rounds  TPOT P50 spread  1.78 % (CV 0.82 %)  J/token spread 4.84 % (CV 2.0 %)
+  full_eval_tinyq3_fe4_20261020_20261021_111154 engine   5 rounds  TPOT P50 spread  0.74 % (CV 0.29 %)  J/token spread 0.94 % (CV 0.35 %)
+  full_eval_tinyq3_fe4_20261020_20261021_111154 boards   5 rounds  TPOT P50 spread  0.53 % (CV 0.26 %)  J/token spread 3.45 % (CV 1.56 %)
+  full_eval_tinyq3_fe4_20261020_20261021_111154 even     5 rounds  TPOT P50 spread  0.64 % (CV 0.24 %)  J/token spread 3.5 % (CV 1.26 %)
+  full_eval_tinyq3_fe4_20261020_20261021_111154 default  5 rounds  TPOT P50 spread  0.89 % (CV 0.43 %)  J/token spread 2.23 % (CV 0.88 %)
+  full_eval_tinyq3_fe4_20261020_20261021_111154 pi4alone 5 rounds  TPOT P50 spread  1.02 % (CV 0.37 %)  J/token spread 0.64 % (CV 0.26 %)
+  full_eval_tinyq3_fe4_20261020_20261021_111154 jetsonalone 5 rounds  TPOT P50 spread  0.12 % (CV 0.05 %)  J/token spread 2.44 % (CV 1.02 %)
+  full_eval_tinyq40_fe4_20261020_20261021_101903 engine   5 rounds  TPOT P50 spread  0.51 % (CV 0.22 %)  J/token spread 3.99 % (CV 1.57 %)
+  full_eval_tinyq40_fe4_20261020_20261021_101903 boards   5 rounds  TPOT P50 spread  2.46 % (CV 1.11 %)  J/token spread 3.62 % (CV 1.54 %)
+  full_eval_tinyq40_fe4_20261020_20261021_101903 even     5 rounds  TPOT P50 spread  1.43 % (CV 0.55 %)  J/token spread 1.58 % (CV 0.65 %)
+  full_eval_tinyq40_fe4_20261020_20261021_101903 default  5 rounds  TPOT P50 spread  1.95 % (CV 0.69 %)  J/token spread 2.83 % (CV 1.01 %)
+  full_eval_tinyq40_fe4_20261020_20261021_101903 pi4alone 5 rounds  TPOT P50 spread  2.61 % (CV 0.97 %)  J/token spread 4.63 % (CV 1.92 %)
+  full_eval_tinyq40_fe4_20261020_20261021_101903 jetsonalone 5 rounds  TPOT P50 spread  0.14 % (CV 0.06 %)  J/token spread 4.39 % (CV 1.62 %)
+  full_eval_tinyq4km_fe4_20261020_20261021_082119 engine   5 rounds  TPOT P50 spread  0.11 % (CV 0.04 %)  J/token spread 1.53 % (CV 0.64 %)
+  full_eval_tinyq4km_fe4_20261020_20261021_082119 boards   5 rounds  TPOT P50 spread  1.60 % (CV 0.68 %)  J/token spread 3.26 % (CV 1.28 %)
+  full_eval_tinyq4km_fe4_20261020_20261021_082119 even     5 rounds  TPOT P50 spread  0.53 % (CV 0.21 %)  J/token spread 10.05 % (CV 4.19 %)
+  full_eval_tinyq4km_fe4_20261020_20261021_082119 default  5 rounds  TPOT P50 spread  1.04 % (CV 0.43 %)  J/token spread 2.73 % (CV 1.03 %)
+  full_eval_tinyq4km_fe4_20261020_20261021_082119 pi4alone 5 rounds  TPOT P50 spread  3.29 % (CV 1.15 %)  J/token spread 1.4 % (CV 0.59 %)
+  full_eval_tinyq4km_fe4_20261020_20261021_082119 jetsonalone 5 rounds  TPOT P50 spread  0.10 % (CV 0.04 %)  J/token spread 3.38 % (CV 1.33 %)
+  full_eval_tinyq6_fe4_20261020_20261021_120814 engine   5 rounds  TPOT P50 spread  2.41 % (CV 0.93 %)  J/token spread 2.36 % (CV 0.91 %)
+  full_eval_tinyq6_fe4_20261020_20261021_120814 boards   5 rounds  TPOT P50 spread  0.25 % (CV 0.10 %)  J/token spread 1.82 % (CV 0.7 %)
+  full_eval_tinyq6_fe4_20261020_20261021_120814 even     5 rounds  TPOT P50 spread  0.58 % (CV 0.26 %)  J/token spread 3.2 % (CV 1.2 %)
+  full_eval_tinyq6_fe4_20261020_20261021_120814 default  5 rounds  TPOT P50 spread  1.20 % (CV 0.63 %)  J/token spread 2.29 % (CV 0.96 %)
+  full_eval_tinyq6_fe4_20261020_20261021_120814 pi4alone 5 rounds  TPOT P50 spread  3.02 % (CV 1.11 %)  J/token spread 3.98 % (CV 1.49 %)
+  full_eval_tinyq6_fe4_20261020_20261021_120814 jetsonalone 5 rounds  TPOT P50 spread  0.07 % (CV 0.03 %)  J/token spread 3.6 % (CV 1.28 %)
+  full_eval_tinyq8_fe4_20261020_20261021_091335 engine   5 rounds  TPOT P50 spread  0.33 % (CV 0.12 %)  J/token spread 1.67 % (CV 0.71 %)
+  full_eval_tinyq8_fe4_20261020_20261021_091335 boards   5 rounds  TPOT P50 spread  1.13 % (CV 0.48 %)  J/token spread 2.21 % (CV 0.88 %)
+  full_eval_tinyq8_fe4_20261020_20261021_091335 even     5 rounds  TPOT P50 spread  0.72 % (CV 0.29 %)  J/token spread 1.48 % (CV 0.61 %)
+  full_eval_tinyq8_fe4_20261020_20261021_091335 default  5 rounds  TPOT P50 spread  0.63 % (CV 0.27 %)  J/token spread 3.66 % (CV 1.31 %)
+  full_eval_tinyq8_fe4_20261020_20261021_091335 pi4alone 5 rounds  TPOT P50 spread  0.26 % (CV 0.10 %)  J/token spread 1.8 % (CV 0.7 %)
+  full_eval_tinyq8_fe4_20261020_20261021_091335 jetsonalone 5 rounds  TPOT P50 spread  0.06 % (CV 0.02 %)  J/token spread 4.77 % (CV 1.8 %)
+
+4. Across sessions of one served plan
+  spec_serve_20261010_024045                   spec_serve base (no draft), before and after: {'0': 1910.7, '3': 1923.1}, drift 0.65 %
+  testbed/dataset/power_modes_predictions_20261010.json power modes' prior: the 14B plan, two sessions: {'0': 1908.3, '4': 1898.0}, drift 0.54 %
+
+5. Energy per token across the three invocations of a phase run (spread %)
+  energy_phase_jetson_cpu_q4km_20261005_210401   pp t/s 0.88  J trap 8.73  ctr 9.32 | tg t/s 0.03  J trap 6.10  ctr 5.94
+  energy_phase_jetson_vk_q3km_20261005_204148    pp t/s 0.16  J trap 5.50  ctr 5.27 | tg t/s 0.06  J trap 1.48  ctr 1.56
+  energy_phase_jetson_vk_q4_0_20261005_195748    pp t/s 0.18  J trap 5.39  ctr 5.79 | tg t/s 0.08  J trap 1.18  ctr 0.89
+  energy_phase_jetson_vk_q4km_20261005_193558    pp t/s 0.57  J trap 6.07  ctr 6.27 | tg t/s 0.03  J trap 0.48  ctr 0.44
+  energy_phase_jetson_vk_q8_0_20261005_201929    pp t/s 0.16  J trap 5.85  ctr 5.13 | tg t/s 0.06  J trap 1.36  ctr 1.87
+  energy_phase_pi4_q3km_20261005_190417          pp t/s 0.91  J trap 3.36  ctr 2.74 | tg t/s 2.08  J trap 2.44  ctr 3.41
+  energy_phase_pi4_q4_0_20261005_181655          pp t/s 0.91  J trap 1.77  ctr 1.83 | tg t/s 3.63  J trap 2.26  ctr 1.75
+  energy_phase_pi4_q4km_20261005_175259          pp t/s 2.80  J trap 2.46  ctr 2.59 | tg t/s 1.53  J trap 1.75  ctr 1.68
+  energy_phase_pi4_q8_0_20261005_184101          pp t/s 0.88  J trap 1.05  ctr 2.15 | tg t/s 0.77  J trap 1.10  ctr 1.81
+  energy_phase_pi5_20261005_145817               pp t/s 0.16  J trap 4.50  ctr 4.97 | tg t/s 0.98  J trap 0.85  ctr 1.47
+  energy_phase_pi5b_q4km_20261020_012156         pp t/s 0.50  J trap 6.13  ctr 6.60 | tg t/s 0.86  J trap 1.54  ctr 1.28
+  energy_phase_pi5fw_q3km_20261020_043652        pp t/s 0.08  J trap 7.66  ctr 7.28 | tg t/s 0.97  J trap 0.91  ctr 1.17
+  energy_phase_pi5fw_q4_0_20261020_035316        pp t/s 0.88  J trap 7.90  ctr 7.51 | tg t/s 1.58  J trap 1.97  ctr 1.31
+  energy_phase_pi5fw_q4km_20261020_032819        pp t/s 0.15  J trap 8.73  ctr 8.93 | tg t/s 0.67  J trap 0.32  ctr 0.20
+  energy_phase_pi5fw_q6k_20261020_045906         pp t/s 1.25  J trap 9.36  ctr 10.39 | tg t/s 0.97  J trap 4.85  ctr 3.79
+  energy_phase_pi5fw_q8_0_20261020_041459        pp t/s 6.48  J trap 4.37  ctr 3.63 | tg t/s 0.45  J trap 2.42  ctr 1.50
+
+6. Across units of one board model
+  testbed/results/pi5b_session_20261020_000050: {"RB-PP": {"verdict": "FAILS", "max_abs_diff_pct": 13.300318908162845, "mean_abs_diff_pct": 3.14414640151513, "diff_pct": null}, "RB-TG": {"verdict": "FAILS", "max_abs_diff_pct": 15.125812119892434, "mean_abs_diff_pct": 8.672195810422473, "diff_pct": null}, "RB-MEM": {"verdict": "HOLDS", "max_abs_diff_pct": null, "mean_abs_diff_pct": null, "diff_pct": 0.2887518046987836}, "RB-E": {"verdict": "FAILS", "max_abs_diff_pct": null, "mean_abs_diff_pct": null, "diff_pct": null}}
+  testbed/results/pi5b_fw_session_20261020_015217: {"RB-PP": {"verdict": "FAILS", "max_abs_diff_pct": 11.953386282754884, "mean_abs_diff_pct": 1.35719519978851, "diff_pct": null}, "RB-TG": {"verdict": "FAILS", "max_abs_diff_pct": 16.869417576562164, "mean_abs_diff_pct": 3.6299197096921745, "diff_pct": null}, "RB-MEM": {"verdict": "HOLDS", "max_abs_diff_pct": null, "mean_abs_diff_pct": null, "diff_pct": -0.013125082031761881}, "RB-E": {"verdict": "FAILS", "max_abs_diff_pct": null, "mean_abs_diff_pct": null, "diff_pct": null}}

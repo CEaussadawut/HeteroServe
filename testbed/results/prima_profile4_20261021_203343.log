@@ -1,0 +1,20 @@
+########## 2026-10-21T20:33:43+07:00 prima.cpp four-node profile, ring laptop pi5 pi4 jetson, models/tinyllama-1.1b-q4km.gguf
+ok      laptop: idle, models/tinyllama-1.1b-q4km.gguf sha256 9fecc3b3cd76bba8, MemAvailable 26260 MiB
+ok      pi5: idle, models/tinyllama-1.1b-q4km.gguf sha256 9fecc3b3cd76bba8, MemAvailable 7531 MiB
+ok      pi4: idle, models/tinyllama-1.1b-q4km.gguf sha256 9fecc3b3cd76bba8, MemAvailable 7374 MiB
+ok      jetson: idle, models/tinyllama-1.1b-q4km.gguf sha256 9fecc3b3cd76bba8, MemAvailable 3517 MiB
+guard started
+start   rank 3 jetson: ./llama-cli -m ~/models/tinyllama-1.1b-q4km.gguf -t 4 --world 4 --rank 3 --master 192.168.1.108 --next 192.168.1.108 --prefetch
+start   rank 2 pi4: ./llama-cli -m ~/models/tinyllama-1.1b-q4km.gguf -t 4 --world 4 --rank 2 --master 192.168.1.108 --next 192.168.1.114 --prefetch
+start   rank 1 pi5: ./llama-cli -m ~/models/tinyllama-1.1b-q4km.gguf -t 4 --world 4 --rank 1 --master 192.168.1.108 --next 192.168.1.110 --prefetch
+start   rank 0 laptop: ./llama-cli -m ~/models/tinyllama-1.1b-q4km.gguf -t 4 --world 4 --rank 0 --master 192.168.1.108 --next 192.168.1.122 --prefetch -c 1024 -n 16 -p 'The capital of France is' (2026-10-21T20:34:12+07:00)
+fio     laptop: /home/aun/.local/fio-3.41/bin/fio fio-3.41
+rank 0 exit 0 (2026-10-21T20:35:23+07:00)
+rank 1 pi5: Using window size: 21, GPU layers: 0 
+stopped rank 1 pid 119275 on pi5
+rank 2 pi4: No layer is assigned to me, exit. 
+rank 3 jetson: No layer is assigned to me, exit. 
+guard pid 27406 stopped
+TRIP lines: 0
+Using window size: 1, GPU layers: 0
+PROFILE DONE 2026-10-21T20:35:33+07:00

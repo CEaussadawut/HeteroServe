@@ -1,0 +1,209 @@
+{
+ "registered_at": "2026-10-28T08:17:14+07:00",
+ "script": "testbed/scripts/register_lc4n_20261028.py",
+ "runner": "testbed/scripts/lc4_20261024.py",
+ "scorer": "testbed/scripts/score_lc4n_20261028.py",
+ "out_prefix": "lc4n",
+ "what": "the Jetson's long-context cost is its flash-attention op's: whole-model decode against depth on three models (four files), predicted from fa_bench, the op timed alone with no model loaded",
+ "cold_c": {
+  "pi5": 50,
+  "pi4": 55
+ },
+ "pad": 256,
+ "gen": 32,
+ "exploration": "testbed/results/lc4nx_20261028_080414 (GGML_VK_PERF_LOGGER; not registered, not reported as figures)",
+ "fa_bench": {
+  "file": "testbed/results/lc4nfa_20261028_081317/fa.json",
+  "source": "testbed/scripts/fa_bench_20261028.cpp",
+  "source_sha256": "cf1fed2b923fd11116c858f30ae79a9401b35066aeedf91fe232983afaa2d646",
+  "stamp": "20261028_081317",
+  "v1_not_used": "testbed/results/lc4nfa_20261028_080922 (fa_bench v1, sha256 138b5dd4...: the ops unchained, so ggml-vulkan overlapped them; Qwen3-0.6B's slope came 4 % under the in-model timer's. v2 chains them as a model's layers are; only v2's table is used here)"
+ },
+ "benches": {
+  "tq": {
+   "host": "jetson",
+   "model_path": "~/models/tinyllama-1.1b-q4km.gguf",
+   "model_sha256": "9fecc3b3cd76bba89d504f29b616eedf7da85b96540e490ca5824d3f7d2776a0",
+   "shape": "tinyllama",
+   "args": "-ngl 99 -p 0 -n 32 -d 0,256,384,512,768,1024,2048,4096 -r 3",
+   "predicted": {
+    "n_kv_by_depth": {
+     "0": 256,
+     "256": 512,
+     "384": 512,
+     "512": 768,
+     "768": 1024,
+     "1024": 1280,
+     "2048": 2304,
+     "4096": 4352
+    },
+    "fa_ms_per_token_by_depth": {
+     "0": 2.1358,
+     "256": 4.2845,
+     "384": 4.2845,
+     "512": 6.6119,
+     "768": 5.0772,
+     "1024": 6.1451,
+     "2048": 10.2771,
+     "4096": 18.5418
+    },
+    "long_slope_ms_per_1k": 4.0354,
+    "long_depths": [
+     1024,
+     2048,
+     4096
+    ],
+    "delta_768_minus_512_ms": -1.5347
+   }
+  },
+  "t8": {
+   "host": "jetson",
+   "model_path": "~/models/tinyllama-1.1b-q8_0.gguf",
+   "model_sha256": "a4c9bb1dbaa372f6381a035fa5c02ef087aaa1ff1f843a56a22328114f03fc59",
+   "shape": "tinyllama",
+   "args": "-ngl 99 -p 0 -n 32 -d 0,256,384,512,768,1024,2048,4096 -r 3",
+   "predicted": {
+    "n_kv_by_depth": {
+     "0": 256,
+     "256": 512,
+     "384": 512,
+     "512": 768,
+     "768": 1024,
+     "1024": 1280,
+     "2048": 2304,
+     "4096": 4352
+    },
+    "fa_ms_per_token_by_depth": {
+     "0": 2.1358,
+     "256": 4.2845,
+     "384": 4.2845,
+     "512": 6.6119,
+     "768": 5.0772,
+     "1024": 6.1451,
+     "2048": 10.2771,
+     "4096": 18.5418
+    },
+    "long_slope_ms_per_1k": 4.0354,
+    "long_depths": [
+     1024,
+     2048,
+     4096
+    ],
+    "delta_768_minus_512_ms": -1.5347
+   }
+  },
+  "q6": {
+   "host": "jetson",
+   "model_path": "~/models/qwen3-0.6b-q8_0.gguf",
+   "model_sha256": "9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031",
+   "shape": "qwen3_0.6b",
+   "args": "-ngl 99 -p 0 -n 32 -d 0,256,384,512,768,1024,2048,4096 -r 3",
+   "predicted": {
+    "n_kv_by_depth": {
+     "0": 256,
+     "256": 512,
+     "384": 512,
+     "512": 768,
+     "768": 1024,
+     "1024": 1280,
+     "2048": 2304,
+     "4096": 4352
+    },
+    "fa_ms_per_token_by_depth": {
+     "0": 2.2891,
+     "256": 4.3947,
+     "384": 4.3947,
+     "512": 6.463,
+     "768": 8.5034,
+     "1024": 10.5494,
+     "2048": 18.5969,
+     "4096": 35.0798
+    },
+    "long_slope_ms_per_1k": 7.9942,
+    "long_depths": [
+     1024,
+     2048,
+     4096
+    ],
+    "delta_768_minus_512_ms": 2.0404
+   }
+  },
+  "q4": {
+   "host": "jetson",
+   "model_path": "~/models/qwen3-4b-q4_k_m.gguf",
+   "model_sha256": "7485fe6f11af29433bc51cab58009521f205840f5b4ae3a32fa7f92e8534fdf5",
+   "shape": "qwen3_4b",
+   "args": "-ngl 99 -ub 128 -p 0 -n 32 -d 0,256,384,512,768 -r 3",
+   "predicted": {
+    "n_kv_by_depth": {
+     "0": 256,
+     "256": 512,
+     "384": 512,
+     "512": 768,
+     "768": 1024
+    },
+    "fa_ms_per_token_by_depth": {
+     "0": 3.4126,
+     "256": 7.858,
+     "384": 7.858,
+     "512": 12.1065,
+     "768": 16.3652
+    },
+    "long_slope_ms_per_1k": 16.6156,
+    "long_depths": [
+     256,
+     512,
+     768
+    ],
+    "delta_768_minus_512_ms": 4.2587
+   }
+  }
+ },
+ "order": [
+  [
+   "tq"
+  ],
+  [
+   "t8"
+  ],
+  [
+   "q6"
+  ],
+  [
+   "q4"
+  ]
+ ],
+ "hypotheses": {},
+ "hypotheses_lc4n": {
+  "J5-FA": {
+   "tol": 0.1,
+   "claim": "each bench's slope over its long range (tq, t8, q6: depths 1,024-4,096; q4: 256-768) within 10 % of fa_bench's slope over the same cache lengths"
+  },
+  "J5-SWITCH": {
+   "claim": "TinyLlama (tq, t8) decodes faster at depth 768 than at 512; Qwen3-0.6B (q6) slower"
+  },
+  "J5-STAIR": {
+   "tol": 0.005,
+   "claim": "depths 256 and 384 (both 512 padded cells) within 0.5 % on every bench"
+  },
+  "J5-QUANT": {
+   "tol": 0.05,
+   "claim": "t8's long-range slope within 5 % of tq's"
+  },
+  "J5-REPEAT": {
+   "tol": 0.02,
+   "claim": "every bench and depth: the three repetitions within 2 %"
+  }
+ },
+ "inputs_sha256": {
+  "testbed/scripts/lc4_20261024.py": "bf039569fa2a63c88ed8cba332e212ce2e48a285e2475d8d135a23442d2896b7",
+  "testbed/scripts/register_lc4n_20261028.py": "2f5a15d79c2dd5479b5b04f46e64b7857aba19d0bd650fefb17fed7f9b1bfdcb",
+  "testbed/scripts/score_lc4n_20261028.py": "6c6b7f6fbff56ed412193f3d68b8ce5e6ba32760d8bba4a8f64bff957a9cad9a",
+  "testbed/scripts/fa_bench_20261028.cpp": "cf1fed2b923fd11116c858f30ae79a9401b35066aeedf91fe232983afaa2d646",
+  "testbed/scripts/lc4n_fa_20261028.py": "016157cd1ac65834307045507ede8ec9816b8e0a038f5c4478acfeb2b3b4979d",
+  "testbed/scripts/jetson_power_guard.sh": "6dafb56fef33f2bc0e070b2552dcb871053d3c0681358bd27436552f905d90de",
+  "testbed/scripts/throttle_poll.sh": "10a45258cafd9222932fe043b40eee767984412a97d5a6d69002fa60d6e48aa1",
+  "testbed/results/lc4nfa_20261028_081317/fa.json": "2f5eb0351dc949fefc6cb423e567717ec674bfe41435e66622dd21a505fcb528",
+  "ThinkPad/config/cluster.json": "1f0a3529dd384647ab71a0a08e2c142226ccf2b80aa5160ffc91e5e2e9485943"
+ }
+}

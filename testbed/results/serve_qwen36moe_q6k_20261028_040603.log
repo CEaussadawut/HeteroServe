@@ -1,0 +1,67 @@
+########## 2026-10-28T04:06:03+07:00 serve qwen36moe_q6k, ctx 4096, clocks locked, boards pi5 pi4 jetson laptop, planned against testbed/dataset/memory_snapshot_20261028_033438.json: laptop 25 + pi5 10 + jetson 3 + pi4 3, head on pi4; predicted decode 306.0 ms/token (3.27 tok/s)
+hosts   laptop: fixed: laptop 25 + pi5 10 + jetson 3 + pi4 3, head last
+llama-server -m ~/models/qwen3.6-35b-a3b-q6_k.gguf --rpc 192.168.10.11:50052,192.168.1.114:50052,192.168.10.12:50052 -ngl 17 -ts 9.5,3,4.5  -c 4096 -np 1 -t 4 -lv 4 -lm none --cache-ram 0 --host 192.168.1.108 --port 8080   pin b23701f77d47dad9de834d59ebfcbe25c9e8b46f
+gate    laptop: MemAvailable 27166 MiB, the plan needs 26452 MiB with its reserve (margin at rest 651 MiB)
+gate    pi5: MemAvailable 7598 MiB, the plan needs 7174 MiB with its reserve (margin at rest 421 MiB)
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+gate    jetson: MemAvailable 3555 MiB, the plan needs 2971 MiB with its reserve (margin at rest 585 MiB)
+gate    pi4: MemAvailable 7425 MiB, the plan needs 2892 MiB with its reserve (margin at rest 4531 MiB)
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+jetson  GATE ok: pmode:0000, guard live and un-tripped, eth0 is the only interface on the router LAN
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+jetson  clocks: LOCKED
+worker  pi5 listening on 192.168.10.11:50052 (pid 4364)
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+worker  jetson listening on 192.168.1.114:50052 (pid 18953)
+worker  pi4 listening on 192.168.10.12:50052 (pid 4717)
+server  starting on laptop (pid 119326); loading streams the model from the SD card to the workers
+READY   2026-10-28T04:08:41+07:00: http://192.168.1.108:8080/ (web chat) -- health {"status":"ok"}
+0.03.198.744 I load_tensors:          CPU model buffer size = 17710.15 MiB
+0.03.198.766 I load_tensors: RPC0[192.168.1.114:50052] model buffer size =  2180.76 MiB
+0.03.198.767 I load_tensors: RPC0[192.168.10.11:50052] model buffer size =  6903.31 MiB
+0.03.198.768 I load_tensors: RPC0[192.168.10.12:50052] model buffer size =  1852.60 MiB
+2.28.948.621 I llama_context: n_ctx                 = 4096
+2.28.948.623 I llama_context: flash_attn            = auto
+2.28.948.819 I llama_kv_cache:        CPU KV buffer size =    48.00 MiB
+2.28.985.353 I llama_kv_cache: RPC0[192.168.1.114:50052] KV buffer size =     8.00 MiB
+2.28.986.072 I llama_kv_cache: RPC0[192.168.10.11:50052] KV buffer size =    16.00 MiB
+2.28.987.166 I llama_kv_cache: RPC0[192.168.10.12:50052] KV buffer size =     8.00 MiB
+2.28.987.309 I llama_kv_cache: size =   80.00 MiB (  4096 cells,  10 layers,  1/1 seqs), K (f16):   40.00 MiB, V (f16):   40.00 MiB
+2.29.131.390 I sched_reserve: RPC0[192.168.10.11:50052] compute buffer size =    86.10 MiB
+2.29.131.395 I sched_reserve: RPC0[192.168.1.114:50052] compute buffer size =    86.11 MiB
+2.29.131.395 I sched_reserve: RPC0[192.168.10.12:50052] compute buffer size =    69.02 MiB
+2.29.131.396 I sched_reserve:        CPU compute buffer size =    76.02 MiB
+2.30.199.983 I slot   load_model: id  0 | task -1 | new slot, n_ctx = 4096
+split   pi5: llama.cpp 6903.31 MiB, planned 6903.3 MiB (head on pi4)
+split   jetson: llama.cpp 2180.76 MiB, planned 2180.8 MiB (head on pi4)
+split   pi4: llama.cpp 1852.60 MiB, planned 1852.6 MiB (head on pi4)
+mem     laptop: MemAvailable 9230 MiB at READY, 27166 at the gate: the serve holds 17936 MiB, charged 18260 MiB
+mem     pi5: MemAvailable 502 MiB at READY, 7598 at the gate: the serve holds 7096 MiB, charged 7174 MiB
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+mem     jetson: MemAvailable 1234 MiB at READY, 3555 at the gate: the serve holds 2321 MiB, charged 2521 MiB
+mem     pi4: MemAvailable 5481 MiB at READY, 7425 at the gate: the serve holds 1944 MiB, charged 2892 MiB

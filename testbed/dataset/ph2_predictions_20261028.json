@@ -1,0 +1,237 @@
+{
+ "registered_at": "2026-10-28T12:17:00+07:00",
+ "script": "testbed/scripts/register_ph2_20261028.py",
+ "runner": "testbed/scripts/phase_study_20261028.py",
+ "out_prefix": "ph2",
+ "follows": "ph1 (testbed/results/ph1_20261028_090849)",
+ "model": "Qwen3-0.6B Q8_0",
+ "model_sha256": "9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031",
+ "what": "per-model power rows (with the laptop's turbo burst) and 60 s between requests, on held-out prompt lengths: the scheduler's energy and its hand-off's first token",
+ "costs": {
+  "file": "testbed/dataset/phase_costs_20261028.json",
+  "sha256": "6f903f08ab01e63f265d355418489f285d274f6ab841b755aceb051671ea631f"
+ },
+ "power_rows": {
+  "file": "testbed/dataset/phase_power_20261028.json",
+  "sha256": "535060758a6b475610af5852188a907cd708ce919d6f9739ee61901b0dd0c092",
+  "rows": {
+   "laptop": {
+    "idle": 17.069920105054646,
+    "pp_burst": 40.51901665275878,
+    "pp": 30.58116152704561,
+    "burst_s": 20.4,
+    "tg_burst": 35.63390265236945,
+    "tg": 33.116147889730215,
+    "handoff": 24.38768046503867
+   },
+   "jetson": {
+    "idle": 3.1837196684037523,
+    "pp": 8.259028132829828,
+    "tg": 9.387865202520178,
+    "handoff": 4.229102693299843
+   },
+   "pi5": {
+    "idle": 2.874994058185778
+   },
+   "pi4": {
+    "idle": 2.484510936789987
+   }
+  }
+ },
+ "power_table": {
+  "pi5": {
+   "idle": 3.0183277591973243,
+   "pp": 11.28765331186967,
+   "tg": 9.696049271076996,
+   "source": "testbed/dataset/energy_results_20261020_pi5fw_q4km.json",
+   "sha256": "44eed747b5cd19c0"
+  },
+  "pi4": {
+   "idle": 2.390896921017403,
+   "pp": 7.462781757353395,
+   "tg": 6.3219096642345205,
+   "source": "testbed/dataset/energy_results_20261005_pi4_q4km.json",
+   "sha256": "9c946768787cc0e7"
+  },
+  "jetson": {
+   "idle": 3.1383277591973244,
+   "pp": 8.893831082803821,
+   "tg": 11.173527822798489,
+   "source": "testbed/dataset/energy_results_20261005_jetson_vk_q4km.json",
+   "sha256": "102bfb16db360832"
+  },
+  "laptop": {
+   "idle": 14.054983277591974,
+   "pp": 29.33976692499638,
+   "tg": 32.12029854570033,
+   "source": "testbed/dataset/energy_results_20261006_laptop_q4km.json",
+   "sha256": "26856942a7d72a74"
+  }
+ },
+ "outlets": {
+  "pi4": 0,
+  "jetson": 1,
+  "pi5": 2,
+  "laptop": 3
+ },
+ "pause_s": 60,
+ "question_tokens_assumed": 12,
+ "arms": {
+  "n1536_L": {
+   "n": 1536,
+   "gen": 256,
+   "plan": "L",
+   "predicted": {
+    "ttft_s": 12.3873,
+    "decode_s": 19.8271,
+    "total_s": 32.2143,
+    "handoff_s": 0.0,
+    "energy_j": 1453.9,
+    "energy_j_table": 1275.64,
+    "prefill_node": "laptop",
+    "decode_node": "laptop"
+   }
+  },
+  "n1536_J": {
+   "n": 1536,
+   "gen": 256,
+   "plan": "J",
+   "predicted": {
+    "ttft_s": 13.7548,
+    "decode_s": 28.6798,
+    "total_s": 42.4346,
+    "handoff_s": 0.0,
+    "energy_j": 1334.63,
+    "energy_j_table": 1268.74,
+    "prefill_node": "jetson",
+    "decode_node": "jetson"
+   }
+  },
+  "n1536_H": {
+   "n": 1536,
+   "gen": 256,
+   "plan": "H",
+   "predicted": {
+    "ttft_s": 12.3873,
+    "decode_s": 28.6798,
+    "total_s": 43.8052,
+    "handoff_s": 2.7381,
+    "energy_j": 1613.29,
+    "energy_j_table": 1409.89,
+    "prefill_node": "laptop",
+    "decode_node": "jetson"
+   }
+  },
+  "n6144_L": {
+   "n": 6144,
+   "gen": 256,
+   "plan": "L",
+   "predicted": {
+    "ttft_s": 91.9287,
+    "decode_s": 56.1734,
+    "total_s": 148.1021,
+    "handoff_s": 0.0,
+    "energy_j": 6139.53,
+    "energy_j_table": 5767.38,
+    "prefill_node": "laptop",
+    "decode_node": "laptop"
+   }
+  },
+  "n6144_J": {
+   "n": 6144,
+   "gen": 256,
+   "plan": "J",
+   "predicted": {
+    "ttft_s": 89.5546,
+    "decode_s": 38.1348,
+    "total_s": 127.6894,
+    "handoff_s": 0.0,
+    "energy_j": 3961.64,
+    "energy_j_table": 3707.96,
+    "prefill_node": "jetson",
+    "decode_node": "jetson"
+   }
+  },
+  "n6144_H": {
+   "n": 6144,
+   "gen": 256,
+   "plan": "H",
+   "predicted": {
+    "ttft_s": 91.9287,
+    "decode_s": 38.1348,
+    "total_s": 139.4771,
+    "handoff_s": 9.4136,
+    "energy_j": 5332.57,
+    "energy_j_table": 4864.07,
+    "prefill_node": "laptop",
+    "decode_node": "jetson"
+   }
+  }
+ },
+ "order": [
+  "n1536_L",
+  "n1536_J",
+  "n1536_H",
+  "n6144_H",
+  "n6144_L",
+  "n6144_J",
+  "n6144_J",
+  "n6144_L",
+  "n6144_H",
+  "n1536_H",
+  "n1536_J",
+  "n1536_L"
+ ],
+ "picks": {
+  "energy": {
+   "1536": "J",
+   "6144": "J"
+  },
+  "time": {
+   "1536": "L",
+   "6144": "J"
+  }
+ },
+ "hypotheses": {
+  "PH-PICK-E": {
+   "claim": "at each n, the least predicted energy (rows) is the least measured (mean of two)"
+  },
+  "PH-PICK-T": {
+   "claim": "at each n, the least predicted total time is the least measured"
+  },
+  "PH-TIME": {
+   "tol": 0.1,
+   "claim": "every arm's mean total time within 10 % of its prediction"
+  },
+  "PH-ENERGY": {
+   "tol": 0.07,
+   "claim": "every arm's mean energy within 7 % of the rows' prediction"
+  },
+  "PH-BETTER": {
+   "claim": "the rows' |error| below the TinyLlama table's on every arm"
+  },
+  "PH-TTFT": {
+   "tol": 0.03,
+   "claim": "at each n, H's time to first token within 3 % of L's, 60 s between requests"
+  },
+  "PH-REPEAT": {
+   "tol": 0.03,
+   "claim": "every arm's two total times within 3 % of each other"
+  }
+ },
+ "inputs_sha256": {
+  "testbed/scripts/register_ph2_20261028.py": "7dc4de0bd6418853c300c121b02d46dca479267db02cb7a9d43e6f8691f12162",
+  "testbed/scripts/phase_study_20261028.py": "3998345c56503665e24aa9e9d60977f25a117d723ee6ec6f78f3aaa078e25fef",
+  "testbed/scripts/phase_serve_20261028.py": "9484d42a2b7eb564b1441ec59754a2b6a85d0410f45103896d9bab49c7cd54f3",
+  "testbed/scripts/phase_plan_20261028.py": "e937db1ef591178fab6436ef96cb1bb1833542623570d9453e473a9004d07f04",
+  "testbed/scripts/phase_power_20261028.py": "bae2e02c7018d663bbbec6934ae18ada42585827b57e7714b39d5c8e40dab977",
+  "testbed/scripts/jetson_proc_20261028.py": "ae6e7f9684015dda252fb0869830a3801c904732c11a19b4849f61aa42663b08",
+  "testbed/scripts/pd_handoff.py": "8eb365ac261ac0238fd19922f38ded8040c36c8212928e267dde2eb5ef3450a2",
+  "testbed/scripts/energy_model.py": "10bf9f5771f693845872a45c12b154395005af8064fccdcffcac5d4563223d63",
+  "testbed/scripts/shelly_strip.py": "b7aaa7ceb2f1e94aa3f1f46100c06ca9d6c0c3fa8764a6372239747ffc0fe5a8",
+  "testbed/scripts/jetson_power_guard.sh": "6dafb56fef33f2bc0e070b2552dcb871053d3c0681358bd27436552f905d90de",
+  "testbed/dataset/phase_costs_20261028.json": "6f903f08ab01e63f265d355418489f285d274f6ab841b755aceb051671ea631f",
+  "testbed/dataset/phase_power_20261028.json": "535060758a6b475610af5852188a907cd708ce919d6f9739ee61901b0dd0c092",
+  "ThinkPad/config/cluster.json": "1f0a3529dd384647ab71a0a08e2c142226ccf2b80aa5160ffc91e5e2e9485943"
+ }
+}

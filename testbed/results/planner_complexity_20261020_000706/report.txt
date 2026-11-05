@@ -1,0 +1,48 @@
+planner complexity, 2026-10-20T00:07:06+07:00, Intel(R) Core(TM) i5-8350U CPU @ 1.70GHz, Python 3.14.4, median of 5 calls
+
+analytic: N boards -> ordered subsets / (order, head) pairs / orders checked under the 5,000 cap
+  N=1       1       1      1
+  N=2       4       6      4
+  N=3      15      27     15
+  N=4      64     124     64
+  N=5     325     645    325
+  N=6    1956    3906   1956
+  N=7   13699   27391   5000
+  N=8  109600  219192   5000
+
+real cluster: plan_host_choice wall time (ms)
+  tinyllama   L=22  pi4+jetson                       3.86 ms  pick jetson 22 (host jetson, 2 candidates)
+  tinyllama   L=22  pi5+pi4+jetson                   6.03 ms  pick pi4 1 + pi5 21 (host pi4, 2 candidates)
+  tinyllama   L=22  pi5+pi4+jetson+laptop           18.08 ms  pick laptop 22 (host laptop, 3 candidates)
+  qwen35_9b   L=33  pi4+jetson                       3.34 ms  pick pi4 16 + jetson 17 (host pi4, 1 candidates)
+  qwen35_9b   L=33  pi5+pi4+jetson                   5.56 ms  pick pi4 1 + pi5 32 (host pi4, 1 candidates)
+  qwen35_9b   L=33  pi5+pi4+jetson+laptop           31.22 ms  pick laptop 33 (host laptop, 2 candidates)
+  qwen3_14b   L=40  pi4+jetson                       3.56 ms  pick pi4 27 + jetson 13 (host pi4, 1 candidates)
+  qwen3_14b   L=40  pi5+pi4+jetson                   6.35 ms  pick pi4 1 + jetson 7 + pi5 32 (host pi4, 1 candidates)
+  qwen3_14b   L=40  pi5+pi4+jetson+laptop           54.39 ms  pick laptop 40 (host laptop, 2 candidates)
+  nemo12b     L=?   pi4+jetson                   error: no host gives a feasible plan for nemo12b on ['pi4', 'jetson']: [('pi5', "not among the boards ['pi4', 'jetson']")]
+  nemo12b     L=40  pi5+pi4+jetson                  10.67 ms  pick pi5 36 + jetson 4 (host pi5, 1 candidates)
+  nemo12b     L=40  pi5+pi4+jetson+laptop           30.93 ms  pick laptop 40 (host laptop, 1 candidates)
+  qwen3moe    L=?   pi4+jetson                   error: no host gives a feasible plan for qwen3moe on ['pi4', 'jetson']: [('pi4', 'infeasible: no subset of the cluster can hold qwen3-30b-a3b-q3_k_m: it needs 48 layer
+  qwen3moe    L=48  pi5+pi4+jetson                   9.57 ms  pick pi4 16 + jetson 9 + pi5 23 (host pi4, 1 candidates)
+  qwen3moe    L=48  pi5+pi4+jetson+laptop           11.33 ms  pick pi4 16 + jetson 9 + pi5 23 (host pi4, 1 candidates)
+  qwen38_27b  L=?   pi4+jetson                   error: no host gives a feasible plan for qwen38_27b on ['pi4', 'jetson']: [('pi4', 'infeasible: no subset of the cluster can hold qwen3.8-27b-q3_k_m: it needs 65 layer
+  qwen38_27b  L=65  pi5+pi4+jetson                  16.68 ms  pick pi4 12 + pi5 39 + jetson 14 (host pi4, 1 candidates)
+  qwen38_27b  L=65  pi5+pi4+jetson+laptop           15.88 ms  pick pi4 12 + pi5 39 + jetson 14 (host pi4, 1 candidates)
+
+synthetic N (Qwen3-14B, L=40): plan_optimal wall time
+  N=1        0.34 ms  orders checked     1
+  N=2        2.95 ms  orders checked     4
+  N=3       17.50 ms  orders checked    15
+  N=4       97.93 ms  orders checked    64
+  N=5      858.55 ms  orders checked   325
+  N=6     2765.44 ms  orders checked  1956
+  N=7     5326.76 ms  orders checked  5000  (capped)
+  N=8     4754.63 ms  orders checked  5000  (capped)
+
+synthetic L (TinyLlama blocks repeated, 4 real boards): plan_optimal wall time
+  L=22        15.43 ms
+  L=44        55.59 ms
+  L=88       214.04 ms
+  L=176      792.17 ms
+  L=352     2630.56 ms

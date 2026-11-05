@@ -1,0 +1,121 @@
+{
+ "registered_at": "2026-10-28T01:52:39+07:00",
+ "script": "testbed/scripts/rpc9b_char_20261028.py",
+ "out_prefix": "rpc9bchar",
+ "follows": "rpc9 (rpc9char_predictions_20261025.json): R9-REPEAT failed at 1.24 %, the first deep repetition low; rpc9b adds a 16-token warm-up completion of the long prompt before any measurement, nothing else changed",
+ "what": "the RPC term's attention mask on a middle worker: TinyLlama Q4_0 on laptop 4 + Pi 5 6 + Jetson 6 + Pi 4 6, a short and a long prompt, bytes per decoded token per worker against predict_pool.rpc_bytes()",
+ "model": "tinyllama_q4_0",
+ "place": "laptop:4,pi5:6,jetson:6,pi4:6",
+ "ctx": 2048,
+ "arms": {
+  "S3": {
+   "prompt": "The quick brown fox jumps over the lazy dog. Summarise this sentence in five words.",
+   "depth": 100
+  },
+  "D3": {
+   "prompt": "The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. Summarise this text in five words.",
+   "depth": 850
+  }
+ },
+ "short": 16,
+ "long": 144,
+ "reps": 3,
+ "memfile": "testbed/dataset/memory_snapshot_20261028_015156.json",
+ "rpc_msg": {
+  "base": 1924,
+  "mask": 2,
+  "kv_pad": 256,
+  "first": 314,
+  "last": 318,
+  "back": 8,
+  "hdr": 66,
+  "mss": 1448,
+  "msgs": 10.0,
+  "bs_in": 1917,
+  "bs_out": 48,
+  "bs_msgs": 17.4,
+  "arch": true,
+  "rs_copy": 318,
+  "pos_extra": 12
+ },
+ "predicted": {
+  "S3": {
+   "pi5": {
+    "to": 19134,
+    "back": 8200,
+    "place": 1,
+    "of": 3,
+    "depth": 100
+   },
+   "jetson": {
+    "to": 10628,
+    "back": 8200,
+    "place": 2,
+    "of": 3,
+    "depth": 100
+   },
+   "pi4": {
+    "to": 10946,
+    "back": 8200,
+    "place": 3,
+    "of": 3,
+    "depth": 100
+   }
+  },
+  "D3": {
+   "pi5": {
+    "to": 20670,
+    "back": 8200,
+    "place": 1,
+    "of": 3,
+    "depth": 850
+   },
+   "jetson": {
+    "to": 12164,
+    "back": 8200,
+    "place": 2,
+    "of": 3,
+    "depth": 850
+   },
+   "pi4": {
+    "to": 12482,
+    "back": 8200,
+    "place": 3,
+    "of": 3,
+    "depth": 850
+   }
+  }
+ },
+ "conditions": "2026-10-28 (the user: let's do 4 and 1): the laptop on its charger; the links unshaped; TinyLlama Q4_0 on laptop 4 + Pi 5 6 + Jetson 6 + Pi 4 6; bytes are counted, so the laptop's load does not enter a reported figure.",
+ "hypotheses": {
+  "R9-MID": {
+   "worker": "jetson",
+   "tol": 0.005,
+   "claim": "the middle worker receives its predicted bytes within 0.5 % in both arms (D3 12,164 B; without the growth 10,628)"
+  },
+  "R9-ALL": {
+   "tol": 0.005,
+   "claim": "all six figures within 0.5 %"
+  },
+  "R9-BACK": {
+   "tol": 0.005,
+   "claim": "every worker returns the hidden state plus 8 B within 0.5 %"
+  },
+  "R9-REPEAT": {
+   "tol": 0.01,
+   "claim": "each figure repeats within 1 % across the three repetitions"
+  }
+ },
+ "inputs_sha256": {
+  "testbed/scripts/rpc9b_char_20261028.py": "d31a13f1f63c73f36f518acb848812155785b476e2fcf603c0b5b5d57ee7eb14",
+  "testbed/scripts/rpc9_char_20261025.py": "2c6768ea6461ca8227d04be9dbbf0de94f31aaa6a50ac3a97d18b90997b7eb2f",
+  "testbed/results/rpc9char_20261025_031402/score.json": "15fff598a165b9e5ed1cb08df7a4af3b5e078bbdd9feeb77fc3a2142c2c8a019",
+  "testbed/scripts/predict_pool.py": "58df0c3af31146da37e46d57d93db4280f0b48726cc2e5bbb3350df7bbc442a2",
+  "testbed/scripts/serve_pool.sh": "d199519ed12d319bf79dfcdd412edcd64a3ceaffceae9f947d43d7e042958ea8",
+  "testbed/scripts/serve_defaults.sh": "cba0c3262d99ee59d5b44c1e50064dcf06e25e9d98ce94efbcefc5d5cac765fd",
+  "ThinkPad/config/cluster.json": "1f0a3529dd384647ab71a0a08e2c142226ccf2b80aa5160ffc91e5e2e9485943",
+  "testbed/dataset/model_shapes.json": "c3400b14d42e61f363f2df6e68974a12847d5cb6bd7c785f9b4ace8e3b6f5478",
+  "testbed/results/rpc6char_20261024_171408/score.json": "05f5ff44ef48ebefe8fa60fe75bd7aee120580b5858d8833f4f0ced36aff0eaf",
+  "testbed/dataset/memory_snapshot_20261028_015156.json": "6b4fdcd41c88fc9ae1978423f925cacaf61bb6e3b41b7930d8092ebda695eb6e"
+ }
+}

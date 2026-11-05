@@ -1,0 +1,128 @@
+{
+ "made": "2026-10-20T00:17:29+07:00",
+ "nodes": {
+  "laptop": {
+   "title": "ThinkPad T580",
+   "cpu": "i5-8350U, 4C/8T",
+   "role": "control + CPU node",
+   "mem_available_mib": null,
+   "mem_total_mib": null,
+   "outlet": "3"
+  },
+  "jetson": {
+   "title": "Jetson Nano",
+   "cpu": "128-core Maxwell GPU",
+   "role": "Vulkan GPU worker",
+   "mem_available_mib": 3557,
+   "mem_total_mib": 3963,
+   "outlet": "1"
+  },
+  "pi5": {
+   "title": "Raspberry Pi 5",
+   "cpu": "4x Cortex-A76 2.4 GHz",
+   "role": "CPU",
+   "mem_available_mib": 7641,
+   "mem_total_mib": 8050,
+   "outlet": "2"
+  },
+  "pi4": {
+   "title": "Raspberry Pi 4",
+   "cpu": "4x Cortex-A72 1.8 GHz",
+   "role": "CPU",
+   "mem_available_mib": 7436,
+   "mem_total_mib": 7819,
+   "outlet": "0"
+  }
+ },
+ "pairs": [
+  {
+   "pair": "laptop-jetson",
+   "mbps": 934.0,
+   "rtt_ms": 1.224,
+   "measured": "2026-10-11T04:19:01+07:00"
+  },
+  {
+   "pair": "pi4-jetson",
+   "mbps": 938.8,
+   "rtt_ms": 1.081,
+   "measured": "2026-10-08T18:05:05+07:00"
+  },
+  {
+   "pair": "pi4-laptop",
+   "mbps": 934.0,
+   "rtt_ms": 0.801,
+   "measured": "2026-10-11T04:17:42+07:00"
+  },
+  {
+   "pair": "pi5-jetson",
+   "mbps": 904.6,
+   "rtt_ms": 1.139,
+   "measured": "2026-10-19T23:56:29+07:00"
+  },
+  {
+   "pair": "pi5-laptop",
+   "mbps": 934.2,
+   "rtt_ms": 0.935,
+   "measured": "2026-10-19T23:57:55+07:00"
+  },
+  {
+   "pair": "pi5-pi4",
+   "mbps": 936.4,
+   "rtt_ms": 0.752,
+   "measured": "2026-10-19T23:55:03+07:00"
+  }
+ ],
+ "plans": [
+  {
+   "label": "qwen3_14b engine",
+   "assign": [
+    [
+     "pi4",
+     27
+    ],
+    [
+     "jetson",
+     13
+    ]
+   ],
+   "head": "host",
+   "n_layers": 40,
+   "source": "testbed/dataset/full_eval_q14b_20261009.json"
+  },
+  {
+   "label": "qwen3_14b p32last",
+   "assign": [
+    [
+     "pi4",
+     32
+    ],
+    [
+     "jetson",
+     8
+    ]
+   ],
+   "head": "last",
+   "n_layers": 40,
+   "source": "testbed/dataset/full_eval_q14b_20261009.json"
+  },
+  {
+   "label": "qwen3_14b p32host",
+   "assign": [
+    [
+     "pi4",
+     32
+    ],
+    [
+     "jetson",
+     8
+    ]
+   ],
+   "head": "host",
+   "n_layers": 40,
+   "source": "testbed/dataset/full_eval_q14b_20261009.json"
+  }
+ ],
+ "memory_from": "testbed/dataset/memory_snapshot_20261020_000052.json",
+ "link_from": "testbed/dataset/link.json",
+ "outlets_from": "testbed/energy/strip.json"
+}

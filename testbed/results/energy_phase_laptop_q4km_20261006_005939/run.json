@@ -1,0 +1,102 @@
+{
+ "started": "2026-10-06T00:59:39+07:00",
+ "args": {
+  "node": "laptop",
+  "outlet": 1,
+  "outlet_name": "laptop",
+  "model": "/opt/heteroserve/models/tinyllama-1.1b-q4km.gguf",
+  "sha256": "9fecc3b3cd76bba89d504f29b616eedf7da85b96540e490ca5824d3f7d2776a0",
+  "llama_dir": "/opt/heteroserve/llama.cpp",
+  "bench": "./build/bin/llama-bench",
+  "threads": 4,
+  "pp": "512:22",
+  "tg": "128:28",
+  "cycles": 3,
+  "idle_before": 300.0,
+  "idle_after": 120.0,
+  "settle": 30.0,
+  "gap": 10.0,
+  "tail": 5.0,
+  "hz": 5.0,
+  "local": true,
+  "bench_args": "",
+  "require_guard": false,
+  "jetson_clocks": false,
+  "out": "testbed/results/energy_phase_laptop_q4km_20261006_005939"
+ },
+ "out": "testbed/results/energy_phase_laptop_q4km_20261006_005939",
+ "invocations": [
+  {
+   "label": "pp1",
+   "phase": "pp",
+   "n": 512,
+   "reps": 22,
+   "cmd": "cd /opt/heteroserve/llama.cpp && exec stdbuf -oL -eL ./build/bin/llama-bench -m /opt/heteroserve/models/tinyllama-1.1b-q4km.gguf -t 4 -p 512 -n 0 -r 22 --progress -oe jsonl 2>&1",
+   "exit": 0
+  },
+  {
+   "label": "tg1",
+   "phase": "tg",
+   "n": 128,
+   "reps": 28,
+   "cmd": "cd /opt/heteroserve/llama.cpp && exec stdbuf -oL -eL ./build/bin/llama-bench -m /opt/heteroserve/models/tinyllama-1.1b-q4km.gguf -t 4 -p 0 -n 128 -r 28 --progress -oe jsonl 2>&1",
+   "exit": 0
+  },
+  {
+   "label": "pp2",
+   "phase": "pp",
+   "n": 512,
+   "reps": 22,
+   "cmd": "cd /opt/heteroserve/llama.cpp && exec stdbuf -oL -eL ./build/bin/llama-bench -m /opt/heteroserve/models/tinyllama-1.1b-q4km.gguf -t 4 -p 512 -n 0 -r 22 --progress -oe jsonl 2>&1",
+   "exit": 0
+  },
+  {
+   "label": "tg2",
+   "phase": "tg",
+   "n": 128,
+   "reps": 28,
+   "cmd": "cd /opt/heteroserve/llama.cpp && exec stdbuf -oL -eL ./build/bin/llama-bench -m /opt/heteroserve/models/tinyllama-1.1b-q4km.gguf -t 4 -p 0 -n 128 -r 28 --progress -oe jsonl 2>&1",
+   "exit": 0
+  },
+  {
+   "label": "pp3",
+   "phase": "pp",
+   "n": 512,
+   "reps": 22,
+   "cmd": "cd /opt/heteroserve/llama.cpp && exec stdbuf -oL -eL ./build/bin/llama-bench -m /opt/heteroserve/models/tinyllama-1.1b-q4km.gguf -t 4 -p 512 -n 0 -r 22 --progress -oe jsonl 2>&1",
+   "exit": 0
+  },
+  {
+   "label": "tg3",
+   "phase": "tg",
+   "n": 128,
+   "reps": 28,
+   "cmd": "cd /opt/heteroserve/llama.cpp && exec stdbuf -oL -eL ./build/bin/llama-bench -m /opt/heteroserve/models/tinyllama-1.1b-q4km.gguf -t 4 -p 0 -n 128 -r 28 --progress -oe jsonl 2>&1",
+   "exit": 0
+  }
+ ],
+ "preflight": {
+  "at": "2026-10-06T00:59:39+07:00",
+  "strip_outlet_name": "laptop",
+  "strip_json_map": "laptop",
+  "node_state": [
+   "aun-ThinkPad-T580",
+   "0.36 0.50 0.78 1/1232 240651",
+   "Mem:           31296        5724        8581         786       18594       25572",
+   "no llama process"
+  ],
+  "llama_cpp": [
+   "b23701f77d47dad9de834d59ebfcbe25c9e8b46f",
+   "0",
+   "version: 0.4.1-dev (build 11047, commit b23701f77)",
+   "built with GNU 13.3.0 for Linux x86_64"
+  ],
+  "model_sha256": "9fecc3b3cd76bba89d504f29b616eedf7da85b96540e490ca5824d3f7d2776a0",
+  "model_sha256_ok": true
+ },
+ "postflight_node_state": [
+  "aun-ThinkPad-T580",
+  "0.87 2.79 2.48 1/1225 247707"
+ ],
+ "finished": "2026-10-06T01:21:07+07:00"
+}

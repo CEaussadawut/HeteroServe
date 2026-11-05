@@ -1,0 +1,190 @@
+{
+ "registered": "2026-09-28T11:00:43+07:00",
+ "purpose": "memory-accounting validation: out-of-sample cells, predictions registered before any run",
+ "protocol": "run_pool.sh as on 09-27: llama-bench -t 4 -p 64 -n 16 -r 3 -oe jsonl -v, 1 Hz memprobe on every board",
+ "scoring": "measured drop = STATE-before memavail_mib - MEMPROBE min_avail_mib, per node; errors = predicted - measured",
+ "decision": "adopt the accounting with the smallest max |error| that is never optimistic by more than 100 MiB; else keep standin",
+ "inputs_sha256": {
+  "model_shapes.json": "e038be4acc347202651b3c6ce968c774c2869c224fba2753550606aafd8ed413",
+  "memory_at_rest.json": "1ec5a19725d7c565b9b97449beb0130b179da895e2e93fdb5e36e9ea4f141589"
+ },
+ "in_sample": "testbed/results/pool_*_20260927_*.log MEMPROBE lines (the 09-27 campaign)",
+ "model_sha256_checked_today": "2026-09-28 10:5x: Pi 4 qwen14b x3 + tinyllama-1.1b-q8_0 sha256sum -c OK against testbed/models.md",
+ "configs": {
+  "memval.tinyllama_q8.pi4alone": {
+   "model": "tinyllama-1.1b-q8_0",
+   "quant": "Q8_0",
+   "why": "Pi 4 alone: does a host that maps its weights (no repack) pay for them? v2 says ~137 MiB, refined ~1.2 GB.",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 22
+    }
+   ],
+   "head_on": "pi4",
+   "bench": {
+    "host": "pi4",
+    "args": "-m ~/models/tinyllama-1.1b-q8_0.gguf -ngl 0"
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 22,
+     "blocks_mib": 982,
+     "holds_head": true,
+     "predicted_drop_mib": {
+      "standin": 1465,
+      "refined": 1209,
+      "v2": 137
+     },
+     "need_mib": 1465,
+     "available_mib": 7413,
+     "margin_mib": 5948
+    }
+   }
+  },
+  "memval.mistral7b.pi5_20_pi4_12": {
+   "model": "mistral-7b-q8_0",
+   "quant": "Q8_0",
+   "why": "Pi 5 host uploading the 133 MiB head; Pi 4 CPU worker holding it. New split of an in-sample model.",
+   "pipeline": [
+    {
+     "node": "pi5",
+     "blocks": 20
+    },
+    {
+     "node": "pi4",
+     "blocks": 12
+    }
+   ],
+   "head_on": "pi4",
+   "bench": {
+    "host": "pi5",
+    "args": "-m ~/models/mistral-7b-q8_0.gguf -rpc 192.168.10.12:50052 -ngl 13"
+   },
+   "memory": {
+    "pi5": {
+     "blocks": 20,
+     "blocks_mib": 4421,
+     "holds_head": false,
+     "predicted_drop_mib": {
+      "standin": 4903,
+      "refined": 4713,
+      "v2": 4771
+     },
+     "need_mib": 4903,
+     "available_mib": 7619,
+     "margin_mib": 2716
+    },
+    "pi4": {
+     "blocks": 12,
+     "blocks_mib": 2652,
+     "holds_head": true,
+     "predicted_drop_mib": {
+      "standin": 3135,
+      "refined": 2985,
+      "v2": 2944
+     },
+     "need_mib": 3135,
+     "available_mib": 7413,
+     "margin_mib": 4278
+    }
+   }
+  },
+  "memval.qwen14b.pi4host20": {
+   "model": "qwen2.5-14b-instruct-q4_k_m",
+   "quant": "Q4_K_M",
+   "why": "Pi 4 hosts 20 blocks (mapped): v2 predicts the same drop as with 6 blocks (~746), refined/standin ~4 GB.",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 20
+    },
+    {
+     "node": "pi5",
+     "blocks": 28
+    }
+   ],
+   "head_on": "pi5",
+   "bench": {
+    "host": "pi4",
+    "args": "-m ~/models/qwen2.5-14b-instruct-q4_k_m-00001-of-00003.gguf -rpc 192.168.10.11:50052 -ngl 29"
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 20,
+     "blocks_mib": 3141,
+     "holds_head": false,
+     "predicted_drop_mib": {
+      "standin": 3909,
+      "refined": 3910,
+      "v2": 746
+     },
+     "need_mib": 3910,
+     "available_mib": 7413,
+     "margin_mib": 3503
+    },
+    "pi5": {
+     "blocks": 28,
+     "blocks_mib": 4398,
+     "holds_head": true,
+     "predicted_drop_mib": {
+      "standin": 5357,
+      "refined": 5207,
+      "v2": 5198
+     },
+     "need_mib": 5357,
+     "available_mib": 7619,
+     "margin_mib": 2262
+    }
+   }
+  },
+  "memval.qwen14b.pi5_40_jetson_8": {
+   "model": "qwen2.5-14b-instruct-q4_k_m",
+   "quant": "Q4_K_M",
+   "why": "Jetson worker holding the 609 MiB head with 8 blocks: does it pay the largest received tensor again?",
+   "pipeline": [
+    {
+     "node": "pi5",
+     "blocks": 40
+    },
+    {
+     "node": "jetson",
+     "blocks": 8
+    }
+   ],
+   "head_on": "jetson",
+   "bench": {
+    "host": "pi5",
+    "args": "-m ~/models/qwen2.5-14b-instruct-q4_k_m-00001-of-00003.gguf -rpc 192.168.100.111:50052 -ngl 9"
+   },
+   "memory": {
+    "pi5": {
+     "blocks": 40,
+     "blocks_mib": 6227,
+     "holds_head": false,
+     "predicted_drop_mib": {
+      "standin": 6994,
+      "refined": 6996,
+      "v2": 7004
+     },
+     "need_mib": 7004,
+     "available_mib": 7619,
+     "margin_mib": 615
+    },
+    "jetson": {
+     "blocks": 8,
+     "blocks_mib": 1313,
+     "holds_head": true,
+     "predicted_drop_mib": {
+      "standin": 2272,
+      "refined": 2122,
+      "v2": 2560
+     },
+     "need_mib": 2560,
+     "available_mib": 3545,
+     "margin_mib": 985
+    }
+   }
+  }
+ }
+}

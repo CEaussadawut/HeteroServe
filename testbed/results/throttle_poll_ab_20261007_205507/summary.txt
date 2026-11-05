@@ -1,0 +1,22 @@
+throttle_poll_ab_pi4.sh, 2026-10-07 20:55-21:35, Pi 4 alone, TinyLlama Q4_K_M, -t 4 -p 64 -n 128 -r 5 -oe jsonl.
+Stopped by SIGTERM at 21:35:02 after round 2 (user: "stop after finish latest round"); round 3 never started, so the
+script's own SUMMARY step did not run. This summary was computed from run.log afterwards, with the same arithmetic
+(ms/token = 1000 / mean of the five samples' t/s; change against the same round's R).
+
+order: round 1 R V1 V2, round 2 V2 V1 R; cold gate 55 C (waited 15-420 s); every arm started at 54.0-54.5 C, ended 70.6-73.0 C.
+polled arms: every THROTTLE line clean (active_s=0, sticky_new=0x0), max 75.4-76.4 C.
+
+decode (tg128)                         round 1     round 2     pooled vs R
+  R   nothing beside llama-bench       176.01      176.37      (R's rounds differ by 0.21 %)
+  V1  throttle_poll_v1.sh (5 starts/s) 178.76      179.70      +1.73 %   (+1.56, +1.89 per round)
+  V2  throttle_poll.sh v2 (1 start/s)  175.78      177.65      +0.30 %   (-0.13, +0.73 per round)
+prefill (pp64)
+  R                                     77.52       77.60
+  V1                                    78.10       78.19      +0.75 %   (+0.74, +0.76)
+  V2                                    77.66       77.61      +0.10 %   (+0.18, +0.01)
+
+per-repetition decode, ms/token:
+  R_r1  [175.5, 176.2, 176.4, 176.1, 175.9]     R_r2  [176.1, 176.8, 176.3, 176.3, 176.3]
+  V1_r1 [178.5, 178.3, 179.1, 178.4, 179.5]     V1_r2 [179.8, 179.5, 180.2, 179.7, 179.3]
+  V2_r1 [175.4, 175.2, 175.2, 175.4, 177.8]     V2_r2 [176.7, 177.0, 176.6, 177.3, 180.7]
+Both V2 arms end with one slow repetition that no R or V1 arm shows; unexplained (a third round would help).

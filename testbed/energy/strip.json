@@ -1,0 +1,22 @@
+{
+ "_what": "HeteroServe's energy instrument for Project 1: a Shelly Power Strip Gen4, read ONLY by testbed/scripts/shelly_strip.py (read-only by construction). Method, results and the user's setup checklist: testbed/energy.md.",
+ "host": "192.168.1.111",
+ "_host_note": "2026-10-05 ~14:12: the strip joined the T628L's Wi-Fi \"WIFI-B\" (set by the user as Wi-Fi 1) and took 192.168.100.34 by DHCP. NOT RESERVED YET: make a reservation for this MAC inside the pool .33-.120 on the T628L (keeping .34 avoids any change), then keep this field equal to it. Until 2026-10-05 it was 10.67.218.193 on the phone hotspot \"aun\". mDNS name shellypstripg4-e8f60a62b7c0.local also resolves on this LAN. --host overrides it. 2026-10-08 ~01:15: the lease had moved to 192.168.100.33 (found by its MAC in the neighbour table after a ping sweep, and confirmed by Shelly.GetDeviceInfo: id shellypstripg4-e8f60a62b7c0); this field was corrected. Still not reserved. 2026-10-08 18:16: the lease had moved from 192.168.100.33 to 192.168.1.111 (found by its MAC after a ping sweep, testbed/scripts/find_strip.py; MAC and device id match); this field was corrected. Still not reserved. 2026-10-09 19:09: RESERVED on the home router (DHCP Binding \"strip\", E8:F6:0A:62:B7:C0 -> 192.168.1.111), read back from the router's rule table.",
+ "device_id": "shellypstripg4-e8f60a62b7c0",
+ "mac": "E8F60A62B7C0",
+ "model": "S4PL-00416EU",
+ "gen": 4,
+ "app": "PowerStrip",
+ "firmware_seen": {
+  "ver": "2.0.1",
+  "fw_id": "20260923-075623/2.0.1-ge1a198b",
+  "read": "2026-10-04T20:22:55+07:00",
+  "note": "stable 2.0.1, installed 2026-10-04 20:12-20:14 by the main session with the user's go-ahead. As found at 20:05 it was 2.0.1-beta3 (20260917-100656/2.0.1-beta3-g31658db). Keep it pinned: every log's meta file records the firmware, and a change during a log is flagged."
+ },
+ "outlets": {"0": "pi4", "1": "jetson", "2": "pi5", "3": "laptop"},
+ "_outlets_note": "The user's outlet map. 2026-10-04: 0 pi5, 1 pi4. 2026-10-05 14:03: 0 pi4, 1 pi5 (confirmed by load 14:27). 2026-10-05 ~17:45: the Pi 5 was returned and the user plugged the LAPTOP (ThinkPad T580, the control and prefill node) into outlet 1, renamed laptop on the strip at the same time. The strip's own outlet names match; shelly_strip.py flags any difference. The laptop's figure is its charger at the wall: valid only while the battery reads fully-charged (energy-rate 0 W). 2026-10-08 ~18:10: the strip was factory reset while being joined to the home router's Wi-Fi (WIFI-A, now 192.168.1.111): names cleared and every outlet's initial_state back to off, so it powered the boards off until its buttons were pressed (~18:15). With the user's yes, initial_state is on again for all four outlets and the names are restored, outlet 3 as unused (testbed/energy/strip_config_20261008.json). Its setup AP was left on (not approved to change). 2026-10-19 ~23:30: the Pi 5 came back (a replacement board, the old SD card) and the plugs were moved: measured by load bursts (the Pi 4, the Pi 5, the laptop; the Jetson by elimination, idle 1.8 W) as 0 Pi 4, 1 Jetson, 2 Pi 5, 3 laptop (+ its USB-C hub). No run had used the strip since 10-11, so no recorded energy is affected. With the user's yes (~23:35) the strip's names were set to match (testbed/energy/strip_config_20261019.json; nothing switched). The map before is kept read-only as strip.20261019_before_pi5_back.json. Runs pass --outlets pi4=0,jetson=1,pi5=2,laptop=3.",
+ "do_not_switch_off": {
+  "3": "since 2026-10-19 outlet 3 feeds the LAPTOP (the control node, which also runs every harness and the energy logger) and its USB-C hub: never switch it off remotely. Before that (retired 2026-10-08) it fed the T628L router."
+ },
+ "auth_file_hint": "auth is off on the strip (auth_en false, 2026-10-04). If a password is set, it goes in ~/.config/heteroserve/shelly.auth (chmod 600), never in the repo; pass --auth-file or set SHELLY_AUTH_FILE."
+}

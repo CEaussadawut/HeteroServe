@@ -1,0 +1,557 @@
+{
+ "registered": "2026-09-28T16:13:30+07:00",
+ "inputs_sha256": {
+  "characterisation.csv": "cf181c609c9d20211fd90d35bccf9d1625d18b3721d1f0c0e71ac1cb641f58ca",
+  "model_shapes.json": "0f7d5e4c4f1da7e1bf2bc640f35bc2d7afe62810603ad3167ed770cd108f2771",
+  "link.json": "e5084df7d3e62a47c7f93339ef4412c8e5f31db2d500ad5f189aafde95548ac5",
+  "memory_at_rest.json": "1ec5a19725d7c565b9b97449beb0130b179da895e2e93fdb5e36e9ea4f141589",
+  "cluster.json": "bce258d7191444dffbf6eca25278f9cab2fcbecce6d85491f8a6bc9086742000"
+ },
+ "engine_sha256": {
+  "placement.py": "8c5735a694cecba4782ba0a7c6cb312e19d5be9d85b67c5c0d9b66acd7c1b00b",
+  "gguf.py": "805ddefc0c9ef1fb1c010f052da0546d23a35d73343738c08345a339f7486330"
+ },
+ "protocol": "llama-bench -t 4 -p 64 -n 16 -r 3 -oe jsonl",
+ "overhead_mb": 350.0,
+ "memory_accounting": "board-aware where cluster.json measures a board's role overheads (memory_overhead_mb, worker_repays_received_tensor), the stand-in overhead_mb otherwise (placement.memory_need_mb)",
+ "configs": {
+  "nemo12b.rule": {
+   "model": "mistral-nemo-12b-q4_k_m",
+   "quant": "Q4_K_M",
+   "why": "the rule, all three boards, hosted on the pi5; the rule's pick IS the pi5 alone",
+   "pipeline": [
+    {
+     "node": "pi5",
+     "blocks": 40
+    }
+   ],
+   "head_on": "pi5",
+   "bench": {
+    "host": "pi5",
+    "args": "-m ~/models/mistral-nemo-12b-q4_k_m.gguf -ngl 0"
+   },
+   "memory": {
+    "pi5": {
+     "blocks": 40,
+     "need_mib": 6996,
+     "available_mib": 7619,
+     "margin_mib": 623
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 620.7,
+    "decode_tok_s": 1.611,
+    "prefill_ms_per_token": 138.6,
+    "prefill_tok_s": 7.21
+   },
+   "cost_sources": {
+    "pi5": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    }
+   },
+   "link_pairs": {},
+   "engine": {
+    "order": [
+     "pi5"
+    ],
+    "layers": {
+     "pi5": 40
+    },
+    "predicted_ms": 620.718,
+    "prefill_pick": {
+     "order": [
+      "pi5"
+     ],
+     "layers": {
+      "pi5": 40
+     }
+    }
+   }
+  },
+  "nemo12b.even": {
+   "model": "mistral-nemo-12b-q4_k_m",
+   "quant": "Q4_K_M",
+   "why": "even split over all three boards, order pi5/pi4/jetson (the cluster's own order)",
+   "pipeline": [
+    {
+     "node": "pi5",
+     "blocks": 14
+    },
+    {
+     "node": "pi4",
+     "blocks": 13
+    },
+    {
+     "node": "jetson",
+     "blocks": 13
+    }
+   ],
+   "head_on": "jetson",
+   "bench": {
+    "host": "pi5",
+    "args": "-m ~/models/mistral-nemo-12b-q4_k_m.gguf -rpc 192.168.10.12:50052,192.168.100.111:50052 -ngl 27 -ts 12.5/14.5"
+   },
+   "memory": {
+    "pi5": {
+     "blocks": 14,
+     "need_mib": 2952,
+     "available_mib": 7619,
+     "margin_mib": 4667
+    },
+    "pi4": {
+     "blocks": 13,
+     "need_mib": 2142,
+     "available_mib": 7413,
+     "margin_mib": 5271
+    },
+    "jetson": {
+     "blocks": 13,
+     "need_mib": 3155,
+     "available_mib": 3545,
+     "margin_mib": 390
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 1175.7,
+    "decode_tok_s": 0.851,
+    "prefill_ms_per_token": 388.9,
+    "prefill_tok_s": 2.57
+   },
+   "cost_sources": {
+    "pi5": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "pi4": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "jetson": {
+     "host": "vulkan row",
+     "worker": "vulkan row + smoke-test RPC cost"
+    }
+   },
+   "link_pairs": {
+    "pi4": "pi5-pi4",
+    "jetson": "pi5-jetson"
+   },
+   "engine": {
+    "order": [
+     "pi5",
+     "pi4",
+     "jetson"
+    ],
+    "layers": {
+     "pi5": 14,
+     "pi4": 13,
+     "jetson": 13
+    },
+    "predicted_ms": 1178.055
+   }
+  },
+  "qwen3_14b.rule": {
+   "model": "qwen3-14b-q4_k_m",
+   "quant": "Q4_K_M",
+   "why": "the rule, all three boards, hosted on the pi5",
+   "pipeline": [
+    {
+     "node": "pi5",
+     "blocks": 35
+    },
+    {
+     "node": "jetson",
+     "blocks": 5
+    }
+   ],
+   "head_on": "jetson",
+   "bench": {
+    "host": "pi5",
+    "args": "-m ~/models/qwen3-14b-q4_k_m.gguf -rpc 192.168.100.111:50052 -ngl 6"
+   },
+   "memory": {
+    "pi5": {
+     "blocks": 35,
+     "need_mib": 7391,
+     "available_mib": 7619,
+     "margin_mib": 228
+    },
+    "jetson": {
+     "blocks": 5,
+     "need_mib": 2265,
+     "available_mib": 3545,
+     "margin_mib": 1280
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 847.8,
+    "decode_tok_s": 1.18,
+    "prefill_ms_per_token": 170.9,
+    "prefill_tok_s": 5.85
+   },
+   "cost_sources": {
+    "pi5": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "jetson": {
+     "host": "vulkan row",
+     "worker": "vulkan row + smoke-test RPC cost"
+    }
+   },
+   "link_pairs": {
+    "jetson": "pi5-jetson"
+   },
+   "engine": {
+    "order": [
+     "pi5",
+     "jetson"
+    ],
+    "layers": {
+     "pi5": 35,
+     "jetson": 5
+    },
+    "predicted_ms": 838.386,
+    "prefill_pick": {
+     "order": [
+      "pi5",
+      "jetson"
+     ],
+     "layers": {
+      "pi5": 35,
+      "jetson": 5
+     }
+    }
+   }
+  },
+  "qwen3_14b.pi5alone": {
+   "model": "qwen3-14b-q4_k_m",
+   "quant": "Q4_K_M",
+   "why": "pi5 alone (baseline; infeasible = do not run)",
+   "pipeline": [
+    {
+     "node": "pi5",
+     "blocks": 40
+    }
+   ],
+   "head_on": "pi5",
+   "bench": {
+    "host": "pi5",
+    "args": "-m ~/models/qwen3-14b-q4_k_m.gguf -ngl 0"
+   },
+   "memory": {
+    "pi5": {
+     "blocks": 40,
+     "need_mib": 8394,
+     "available_mib": 7619,
+     "margin_mib": -775
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 749.1,
+    "decode_tok_s": 1.335,
+    "prefill_ms_per_token": 168.0,
+    "prefill_tok_s": 5.95
+   },
+   "cost_sources": {
+    "pi5": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    }
+   },
+   "link_pairs": {}
+  },
+  "qwen3_14b.even": {
+   "model": "qwen3-14b-q4_k_m",
+   "quant": "Q4_K_M",
+   "why": "even split over all three boards, order pi5/jetson/pi4 (not the cluster's order, which leaves -210 MiB on the tightest board)",
+   "pipeline": [
+    {
+     "node": "pi5",
+     "blocks": 14
+    },
+    {
+     "node": "jetson",
+     "blocks": 13
+    },
+    {
+     "node": "pi4",
+     "blocks": 13
+    }
+   ],
+   "head_on": "pi4",
+   "bench": {
+    "host": "pi5",
+    "args": "-m ~/models/qwen3-14b-q4_k_m.gguf -rpc 192.168.100.111:50052,192.168.10.12:50052 -ngl 27 -ts 12.5/14.5"
+   },
+   "memory": {
+    "pi5": {
+     "blocks": 14,
+     "need_mib": 3500,
+     "available_mib": 7619,
+     "margin_mib": 4119
+    },
+    "jetson": {
+     "blocks": 13,
+     "need_mib": 2515,
+     "available_mib": 3545,
+     "margin_mib": 1030
+    },
+    "pi4": {
+     "blocks": 13,
+     "need_mib": 3261,
+     "available_mib": 7413,
+     "margin_mib": 4152
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 1520.5,
+    "decode_tok_s": 0.658,
+    "prefill_ms_per_token": 471.9,
+    "prefill_tok_s": 2.12
+   },
+   "cost_sources": {
+    "pi5": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "jetson": {
+     "host": "vulkan row",
+     "worker": "vulkan row + smoke-test RPC cost"
+    },
+    "pi4": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    }
+   },
+   "link_pairs": {
+    "jetson": "pi5-jetson",
+    "pi4": "pi5-pi4"
+   },
+   "engine": {
+    "order": [
+     "pi5",
+     "jetson",
+     "pi4"
+    ],
+    "layers": {
+     "pi5": 14,
+     "jetson": 13,
+     "pi4": 13
+    },
+    "predicted_ms": 1510.956
+   }
+  },
+  "qwen3moe.rule": {
+   "model": "qwen3-30b-a3b-q3_k_m",
+   "quant": "Q3_K_M",
+   "why": "the rule, all three boards, hosted on the pi4",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 12
+    },
+    {
+     "node": "jetson",
+     "blocks": 11
+    },
+    {
+     "node": "pi5",
+     "blocks": 25
+    }
+   ],
+   "head_on": "pi5",
+   "bench": {
+    "host": "pi4",
+    "args": "-m ~/models/qwen3-30b-a3b-q3_k_m.gguf -rpc 192.168.100.111:50052,192.168.10.11:50052 -ngl 37 -ts 10.5/26.5"
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 12,
+     "need_mib": 3850,
+     "available_mib": 7413,
+     "margin_mib": 3563
+    },
+    "jetson": {
+     "blocks": 11,
+     "need_mib": 3290,
+     "available_mib": 3545,
+     "margin_mib": 255
+    },
+    "pi5": {
+     "blocks": 25,
+     "need_mib": 7512,
+     "available_mib": 7619,
+     "margin_mib": 107
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 265.8,
+    "decode_tok_s": 3.762,
+    "prefill_ms_per_token": 119.7,
+    "prefill_tok_s": 8.35
+   },
+   "cost_sources": {
+    "pi4": {
+     "host": "cpu row",
+     "worker": "host row (no worker row at Q3_K_M; this board never repacks)"
+    },
+    "jetson": {
+     "host": "vulkan row",
+     "worker": "vulkan row + smoke-test RPC cost"
+    },
+    "pi5": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    }
+   },
+   "link_pairs": {
+    "jetson": "pi4-jetson",
+    "pi5": "pi5-pi4"
+   },
+   "engine": {
+    "order": [
+     "pi4",
+     "jetson",
+     "pi5"
+    ],
+    "layers": {
+     "pi4": 12,
+     "jetson": 11,
+     "pi5": 25
+    },
+    "predicted_ms": 259.512,
+    "prefill_pick": {
+     "order": [
+      "pi4",
+      "jetson",
+      "pi5"
+     ],
+     "layers": {
+      "pi4": 12,
+      "jetson": 11,
+      "pi5": 25
+     }
+    }
+   }
+  },
+  "qwen3moe.pi4alone": {
+   "model": "qwen3-30b-a3b-q3_k_m",
+   "quant": "Q3_K_M",
+   "why": "pi4 alone (baseline; infeasible = do not run)",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 48
+    }
+   ],
+   "head_on": "pi4",
+   "bench": {
+    "host": "pi4",
+    "args": "-m ~/models/qwen3-30b-a3b-q3_k_m.gguf -ngl 0"
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 48,
+     "need_mib": 14042,
+     "available_mib": 7413,
+     "margin_mib": -6629
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 464.0,
+    "decode_tok_s": 2.155,
+    "prefill_ms_per_token": 277.3,
+    "prefill_tok_s": 3.61
+   },
+   "cost_sources": {
+    "pi4": {
+     "host": "cpu row",
+     "worker": "host row (no worker row at Q3_K_M; this board never repacks)"
+    }
+   },
+   "link_pairs": {}
+  },
+  "qwen3moe.even": {
+   "model": "qwen3-30b-a3b-q3_k_m",
+   "quant": "Q3_K_M",
+   "why": "even split over all three boards, order pi4/jetson/pi5 (not the cluster's order, which leaves -1516 MiB on the tightest board)",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 16
+    },
+    {
+     "node": "jetson",
+     "blocks": 16
+    },
+    {
+     "node": "pi5",
+     "blocks": 16
+    }
+   ],
+   "head_on": "pi5",
+   "bench": {
+    "host": "pi4",
+    "args": "-m ~/models/qwen3-30b-a3b-q3_k_m.gguf -rpc 192.168.100.111:50052,192.168.10.11:50052 -ngl 33 -ts 15.5/17.5"
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 16,
+     "need_mib": 4982,
+     "available_mib": 7413,
+     "margin_mib": 2431
+    },
+    "jetson": {
+     "blocks": 16,
+     "need_mib": 4706,
+     "available_mib": 3545,
+     "margin_mib": -1161
+    },
+    "pi5": {
+     "blocks": 16,
+     "need_mib": 4964,
+     "available_mib": 7619,
+     "margin_mib": 2655
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 311.4,
+    "decode_tok_s": 3.211,
+    "prefill_ms_per_token": 132.5,
+    "prefill_tok_s": 7.55
+   },
+   "cost_sources": {
+    "pi4": {
+     "host": "cpu row",
+     "worker": "host row (no worker row at Q3_K_M; this board never repacks)"
+    },
+    "jetson": {
+     "host": "vulkan row",
+     "worker": "vulkan row + smoke-test RPC cost"
+    },
+    "pi5": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    }
+   },
+   "link_pairs": {
+    "jetson": "pi4-jetson",
+    "pi5": "pi5-pi4"
+   },
+   "engine": {
+    "order": [
+     "pi4",
+     "jetson",
+     "pi5"
+    ],
+    "layers": {
+     "pi4": 16,
+     "jetson": 16,
+     "pi5": 16
+    },
+    "predicted_ms": 305.268
+   }
+  }
+ }
+}

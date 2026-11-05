@@ -1,0 +1,125 @@
+{
+ "registered_at": "2026-10-20T06:14:47+07:00",
+ "script": "testbed/scripts/register_prima_energy_20261020.py",
+ "model": "qwen3_14b",
+ "ctx": 4096,
+ "boards": [
+  "pi5",
+  "pi4"
+ ],
+ "outlets": {
+  "pi4": 0,
+  "jetson": 1,
+  "pi5": 2,
+  "laptop": 3
+ },
+ "arms": {
+  "A": {
+   "engine": "llama.cpp b23701f7 (serve_pool.sh)",
+   "assign": [
+    [
+     "pi5",
+     29
+    ],
+    [
+     "pi4",
+     11
+    ]
+   ],
+   "head": "host",
+   "place_env": {
+    "PLACE": "pi5:29,pi4:11",
+    "PLACE_HEAD": "host"
+   },
+   "predicted": {
+    "decode_ms": 1206.7,
+    "prefill_ms": 419.6,
+    "decode_gross_j_per_token_plan_boards": 12.8705
+   }
+  },
+  "B": {
+   "engine": "prima.cpp 288df6a2 + qwen3 port (qr3_tpot.py --engine prima)",
+   "split": "Halda's, at start (logged)"
+  }
+ },
+ "order": [
+  "A",
+  "B",
+  "A",
+  "B"
+ ],
+ "reqs": 6,
+ "n": 128,
+ "gen": 64,
+ "cold_c": 50,
+ "power_table": {
+  "pi5": {
+   "idle": 3.0183277591973243,
+   "pp": 11.28765331186967,
+   "tg": 9.696049271076996,
+   "source": "testbed/dataset/energy_results_20261020_pi5fw_q4km.json",
+   "sha256": "44eed747b5cd19c0"
+  },
+  "pi4": {
+   "idle": 2.390896921017403,
+   "pp": 7.462781757353395,
+   "tg": 6.3219096642345205,
+   "source": "testbed/dataset/energy_results_20261005_pi4_q4km.json",
+   "sha256": "9c946768787cc0e7"
+  },
+  "jetson": {
+   "idle": 3.1383277591973244,
+   "pp": 8.893831082803821,
+   "tg": 11.173527822798489,
+   "source": "testbed/dataset/energy_results_20261005_jetson_vk_q4km.json",
+   "sha256": "102bfb16db360832"
+  },
+  "laptop": {
+   "idle": 14.054983277591974,
+   "pp": 29.33976692499638,
+   "tg": 32.12029854570033,
+   "source": "testbed/dataset/energy_results_20261006_laptop_q4km.json",
+   "sha256": "26856942a7d72a74"
+  }
+ },
+ "prior_20260930": {
+  "A_client_mean_ms": 1188.62,
+  "B_client_mean_ms": 1339.0,
+  "ratio": 1.127,
+  "A_log": "testbed/results/qr3_primacmpA_qwen3_14b_20260930_053423.log",
+  "B_log": "testbed/results/qr3_primacmpB_qwen3_14b_20260930_061646.log"
+ },
+ "hypotheses": {
+  "PE-TPOT": {
+   "claim": "A's client TPOT P50 below B's"
+  },
+  "PE-ENERGY": {
+   "claim": "A's gross J per decoded token at the Pi 5 + Pi 4 outlets below B's"
+  },
+  "PE-FOLLOW": {
+   "tol": 0.05,
+   "claim": "B/A in J per token within 0.05 of B/A in client TPOT P50"
+  },
+  "PE-REPL": {
+   "tol": 0.05,
+   "expected": 1.127,
+   "claim": "B/A in client TPOT P50 within 0.05 of 2026-09-30's ratio"
+  }
+ },
+ "energy_definition": "gross J per decoded token: the strip's trapezoid energy over each request's decode window (its first token's event to its last), summed over the Pi 5 and Pi 4 outlets, over the request's gen - 1 token gaps (full_eval.py's definition); the all-outlets figure reported beside it",
+ "inputs_sha256": {
+  "testbed/scripts/register_prima_energy_20261020.py": "56cf2056108b7a6b88754c87dafdd5edaec11d1dff43d4a6d42664ea58ccdc5a",
+  "testbed/scripts/prima_energy_20261020.sh": "a22c19e4d9ad5cfd9e5a59d755cf875e2acfac2b5322f51309f05d85125996c3",
+  "testbed/scripts/score_prima_energy_20261020.py": "5a86b9b9aec22ba5d2ce261973b0e20ceefe1d29547ce9dc08c0c08b16a15c7f",
+  "testbed/scripts/qr3_tpot.py": "fa454fbce8fd89cc9c549434efd096c91dea603a2923fadc034a2febb5512c97",
+  "testbed/scripts/serve_pool.sh": "0edd55f3edc0ec5d2ec25fdd25e4609a38588ceb6a7417164a45c02903fb5424",
+  "testbed/scripts/predict_pool.py": "f6e636e42b2b1978e71c1c5d592caf9812c580c94afe8635bfbe56d8fd385ff5",
+  "testbed/scripts/energy_model.py": "10bf9f5771f693845872a45c12b154395005af8064fccdcffcac5d4563223d63",
+  "testbed/scripts/shelly_strip.py": "b7aaa7ceb2f1e94aa3f1f46100c06ca9d6c0c3fa8764a6372239747ffc0fe5a8",
+  "testbed/dataset/memory_at_rest.json": "46f5cf132f2fc5dd1f2b095ecce4129843fb9908a3b15a70cd6c1c3c3e200de8",
+  "testbed/dataset/characterisation.csv": "183b4002fb6801f2559872cba7fbc9c7f11df9d858286dc60bf0971ddde1ad2c",
+  "testbed/dataset/link.json": "61915f41652f22063ac9a43d43a511a1c797ae28dd158cbb185df04a4d4c8a0e",
+  "testbed/results/qr3_primacmpA_qwen3_14b_20260930_053423.log": "ce4c87462662ae2c3efcd019de0b7d530ccf5a1f0499c52d9ca1f0068cb00cca",
+  "testbed/results/qr3_primacmpB_qwen3_14b_20260930_061646.log": "c3a51d1f342169403e6539d8a5a346470880eb1bb2ab619abea0ef9d45713adb"
+ }
+}

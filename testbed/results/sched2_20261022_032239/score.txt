@@ -1,0 +1,17 @@
+scheduler v2 (V: qwen3_32b_q6k laptop:46,jetson:2,pi5:16) against v1 (A: qwen3_32b_q8 laptop:35,pi5:14,jetson:5,pi4:10), ctx 2048; code changed since registration: none
+
+Q6-KLD     FAILS      {'q6_k': 0.011832}
+Q6-TOP     HOLDS      {'q6_k': 99.412}
+Q6-PPL     HOLDS      {'ratio': 1.006231}
+Q-ORDER    HOLDS      {'q6_k': 0.011832, 'q4_k_m': 0.094961}
+S2-TPOT    HOLDS      {'A_p50': 3384.02, 'V_p50': 1505.99, 'speedup': 2.247, 'predicted': 2.197}
+S2-ACC     HOLDS      {'A': {'server_mean': 3384.06, 'predicted': 3506.7, 'err_pct': -3.5}, 'V': {'server_mean': 1498.46, 'predicted': 1596.3, 'err_pct': -6.1}}
+S2-TTFT    HOLDS      {'A': 124529.0, 'V': 92203.6}
+S2-ENERGY  HOLDS      {'A': 117.6676, 'V': 64.224}
+
+run 1 A rc 0: 5 requests, client TPOT P50 3468.68 ms, server mean 3462.62, TTFT P50 124926.9 ms, J/token all 120.8054 {'pi4': 14.7833, 'jetson': 13.2284, 'pi5': 16.0536, 'laptop': 76.7401}
+run 2 V rc 0: 5 requests, client TPOT P50 1507.87 ms, server mean 1499.23, TTFT P50 93302.7 ms, J/token all 63.2383 {'pi4': 3.7914, 'jetson': 5.7803, 'pi5': 9.7221, 'laptop': 43.9445}
+run 3 A rc 0: 5 requests, client TPOT P50 3311.28 ms, server mean 3305.51, TTFT P50 123978.8 ms, J/token all 114.5298 {'pi4': 14.2612, 'jetson': 12.6486, 'pi5': 15.1721, 'laptop': 72.4479}
+run 4 V rc 0: 5 requests, client TPOT P50 1505.8 ms, server mean 1497.7, TTFT P50 91585.0 ms, J/token all 65.2098 {'pi4': 3.7078, 'jetson': 5.4775, 'pi5': 9.3799, 'laptop': 46.6445}
+quality q6_k: PPL ratio 1.006231, mean KLD 0.011832, same top 99.412 %
+quality q4_k_m: PPL ratio 1.078779, mean KLD 0.094961, same top 97.157 %

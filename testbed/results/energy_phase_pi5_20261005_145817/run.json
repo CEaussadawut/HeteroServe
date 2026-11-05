@@ -1,0 +1,101 @@
+{
+ "started": "2026-10-05T14:58:17+07:00",
+ "args": {
+  "node": "pi5",
+  "outlet": 1,
+  "outlet_name": "pi5",
+  "model": "~/models/tinyllama-1.1b-q4km.gguf",
+  "sha256": "9fecc3b3cd76bba89d504f29b616eedf7da85b96540e490ca5824d3f7d2776a0",
+  "llama_dir": "~/llama.cpp",
+  "bench": "./build/bin/llama-bench",
+  "threads": 4,
+  "pp": "512:20",
+  "tg": "128:17",
+  "cycles": 3,
+  "idle_before": 300.0,
+  "idle_after": 300.0,
+  "settle": 30.0,
+  "gap": 10.0,
+  "hz": 5.0,
+  "out": null
+ },
+ "out": "testbed/results/energy_phase_pi5_20261005_145817",
+ "invocations": [
+  {
+   "label": "pp1",
+   "phase": "pp",
+   "n": 512,
+   "reps": 20,
+   "cmd": "cd ~/llama.cpp && exec stdbuf -oL -eL ./build/bin/llama-bench -m ~/models/tinyllama-1.1b-q4km.gguf -t 4 -p 512 -n 0 -r 20 --progress -oe jsonl 2>&1",
+   "exit": 0
+  },
+  {
+   "label": "tg1",
+   "phase": "tg",
+   "n": 128,
+   "reps": 17,
+   "cmd": "cd ~/llama.cpp && exec stdbuf -oL -eL ./build/bin/llama-bench -m ~/models/tinyllama-1.1b-q4km.gguf -t 4 -p 0 -n 128 -r 17 --progress -oe jsonl 2>&1",
+   "exit": 0
+  },
+  {
+   "label": "pp2",
+   "phase": "pp",
+   "n": 512,
+   "reps": 20,
+   "cmd": "cd ~/llama.cpp && exec stdbuf -oL -eL ./build/bin/llama-bench -m ~/models/tinyllama-1.1b-q4km.gguf -t 4 -p 512 -n 0 -r 20 --progress -oe jsonl 2>&1",
+   "exit": 0
+  },
+  {
+   "label": "tg2",
+   "phase": "tg",
+   "n": 128,
+   "reps": 17,
+   "cmd": "cd ~/llama.cpp && exec stdbuf -oL -eL ./build/bin/llama-bench -m ~/models/tinyllama-1.1b-q4km.gguf -t 4 -p 0 -n 128 -r 17 --progress -oe jsonl 2>&1",
+   "exit": 0
+  },
+  {
+   "label": "pp3",
+   "phase": "pp",
+   "n": 512,
+   "reps": 20,
+   "cmd": "cd ~/llama.cpp && exec stdbuf -oL -eL ./build/bin/llama-bench -m ~/models/tinyllama-1.1b-q4km.gguf -t 4 -p 512 -n 0 -r 20 --progress -oe jsonl 2>&1",
+   "exit": 0
+  },
+  {
+   "label": "tg3",
+   "phase": "tg",
+   "n": 128,
+   "reps": 17,
+   "cmd": "cd ~/llama.cpp && exec stdbuf -oL -eL ./build/bin/llama-bench -m ~/models/tinyllama-1.1b-q4km.gguf -t 4 -p 0 -n 128 -r 17 --progress -oe jsonl 2>&1",
+   "exit": 0
+  }
+ ],
+ "preflight": {
+  "at": "2026-10-05T14:58:17+07:00",
+  "strip_outlet_name": "pi5",
+  "strip_json_map": "pi5",
+  "node_state": [
+   "hs-pi5",
+   "0.10 0.08 0.05 1/294 2195",
+   "Mem:            8062         431        6392          33        1348        7630",
+   "throttled=0x0",
+   "temp=45.0'C",
+   "no llama process"
+  ],
+  "llama_cpp": [
+   "b23701f77d47dad9de834d59ebfcbe25c9e8b46f",
+   "0",
+   "version: 0.4.1-dev (build 200, commit b23701f)",
+   "built with GNU 14.2.0 for Linux aarch64"
+  ],
+  "model_sha256": "9fecc3b3cd76bba89d504f29b616eedf7da85b96540e490ca5824d3f7d2776a0",
+  "model_sha256_ok": true
+ },
+ "postflight_node_state": [
+  "hs-pi5",
+  "0.02 1.25 1.60 1/296 4709",
+  "throttled=0x0",
+  "temp=46.1'C"
+ ],
+ "finished": "2026-10-05T15:22:49+07:00"
+}

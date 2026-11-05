@@ -1,0 +1,311 @@
+{
+ "registered": "2026-09-28T22:04:51+07:00",
+ "campaign": "2026-09-28 late night: MoE prefill priced at the per-expert batch (MOEPRE)",
+ "inputs_sha256": {
+  "characterisation.csv": "fccefe2d88e14bcf3652f879726edf655f75f120a968518e58f51f174d2283ed",
+  "model_shapes.json": "0f7d5e4c4f1da7e1bf2bc640f35bc2d7afe62810603ad3167ed770cd108f2771",
+  "link.json": "e5084df7d3e62a47c7f93339ef4412c8e5f31db2d500ad5f189aafde95548ac5",
+  "memory_at_rest.json": "1ec5a19725d7c565b9b97449beb0130b179da895e2e93fdb5e36e9ea4f141589",
+  "cluster.json": "cbbb5c7de787536a5e406c52cefabf921013ddd5be8c986f5b46c0bf7f69fdb1",
+  "predict_pool.py": "4552b17d0e3dc01c7bbe75ad0c14b079b06a23e472f5ba4484d847130f6e716b"
+ },
+ "engine_sha256": {
+  "placement.py": "d848339f33aba6f53a2e6830ba28b9b3832aa3de96891d362e143e3a2a389177",
+  "gguf.py": "805ddefc0c9ef1fb1c010f052da0546d23a35d73343738c08345a339f7486330"
+ },
+ "protocol": "-t 4 -p 512,16,64,256 -n 16 -r 3 -oe jsonl -v (pp512 first: an unscored warm-up; pp16 / pp64 / pp256 and tg16 scored); memprobe.sh v2",
+ "rules": [
+  "MOEPRE: the batch-aware MoE prefill pricing (predict_pool.moe_prefill, batch_aware=True) replaces the active-parameter pricing (batch_aware=False) iff, over the six (cell, prompt length) pairs m.a / m.b x pp16 / pp64 / pp256, its mean |prefill error| is lower.",
+  "STEADY: a (cell, length) figure is steady if its three repetitions agree within 5 %; a pair that is not steady is reported as found and still scored."
+ ],
+ "configs": {
+  "m.a": {
+   "model": "qwen3-30b-a3b-q3_k_m",
+   "quant": "Q3_K_M",
+   "why": "fresh MoE split: the engine's serving plan at 4096 tokens",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 15
+    },
+    {
+     "node": "jetson",
+     "blocks": 9
+    },
+    {
+     "node": "pi5",
+     "blocks": 24
+    }
+   ],
+   "head_on": "pi5",
+   "bench": {
+    "host": "pi4",
+    "args": "-m ~/models/qwen3-30b-a3b-q3_k_m.gguf -rpc 192.168.100.111:50052,192.168.10.11:50052 -ngl 34 -ts 8.5/25.5",
+    "protocol": "-t 4 -p 512,16,64,256 -n 16 -r 3 -oe jsonl -v"
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 15,
+     "need_mib": 4469,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 2944
+    },
+    "jetson": {
+     "blocks": 9,
+     "need_mib": 2732,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 363
+    },
+    "pi5": {
+     "blocks": 24,
+     "need_mib": 7250,
+     "reserve_mib": 0,
+     "available_mib": 7619,
+     "margin_mib": 369
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 273.7,
+    "decode_tok_s": 3.654,
+    "prefill_ms_per_token": 159.3,
+    "prefill_tok_s": 6.28
+   },
+   "predicted_alt": {
+    "active": {
+     "decode_ms_per_token": 273.7,
+     "prefill_ms_per_token": 132.0
+    }
+   },
+   "prefill_by_prompt": {
+    "16": {
+     "batch_aware": 224.8,
+     "active": 155.3
+    },
+    "64": {
+     "batch_aware": 159.3,
+     "active": 132.0
+    },
+    "256": {
+     "batch_aware": 146.8,
+     "active": 131.7
+    }
+   },
+   "curves_ms_per_bparam": {
+    "pi4": {
+     "host": {
+      "1": 153.04,
+      "4": 104.962,
+      "16": 99.751,
+      "64": 99.001,
+      "256": 100.021,
+      "512": 101.374
+     },
+     "worker": {
+      "1": 153.04,
+      "4": 104.962,
+      "16": 99.751,
+      "64": 99.001,
+      "256": 100.021,
+      "512": 101.374
+     }
+    },
+    "jetson": {
+     "host": {
+      "1": 129.469,
+      "4": 79.601,
+      "16": 59.523,
+      "64": 17.828,
+      "256": 14.803,
+      "512": 15.026
+     },
+     "worker": {
+      "1": 131.022,
+      "4": 80.556,
+      "16": 60.237,
+      "64": 18.042,
+      "256": 14.981,
+      "512": 15.207
+     }
+    },
+    "pi5": {
+     "host": {
+      "64": 24.946,
+      "512": 25.726
+     },
+     "worker": {
+      "1": 44.814,
+      "4": 30.64,
+      "16": 27.936,
+      "64": 27.708,
+      "256": 28.146,
+      "512": 28.511
+     }
+    }
+   },
+   "cost_sources": {
+    "pi4": {
+     "host": "cpu row",
+     "worker": "host row (no worker row at Q3_K_M; this board never repacks)"
+    },
+    "jetson": {
+     "host": "vulkan row",
+     "worker": "vulkan row + smoke-test RPC cost"
+    },
+    "pi5": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    }
+   },
+   "link_pairs": {
+    "jetson": "pi4-jetson",
+    "pi5": "pi5-pi4"
+   }
+  },
+  "m.b": {
+   "model": "qwen3-30b-a3b-q3_k_m",
+   "quant": "Q3_K_M",
+   "why": "fresh MoE split: more on the Pi 4 host",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 18
+    },
+    {
+     "node": "jetson",
+     "blocks": 8
+    },
+    {
+     "node": "pi5",
+     "blocks": 22
+    }
+   ],
+   "head_on": "pi5",
+   "bench": {
+    "host": "pi4",
+    "args": "-m ~/models/qwen3-30b-a3b-q3_k_m.gguf -rpc 192.168.100.111:50052,192.168.10.11:50052 -ngl 31 -ts 7.5/23.5",
+    "protocol": "-t 4 -p 512,16,64,256 -n 16 -r 3 -oe jsonl -v"
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 18,
+     "need_mib": 5321,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 2092
+    },
+    "jetson": {
+     "blocks": 8,
+     "need_mib": 2448,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 647
+    },
+    "pi5": {
+     "blocks": 22,
+     "need_mib": 6682,
+     "reserve_mib": 0,
+     "available_mib": 7619,
+     "margin_mib": 937
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 286.1,
+    "decode_tok_s": 3.495,
+    "prefill_ms_per_token": 170.1,
+    "prefill_tok_s": 5.88
+   },
+   "predicted_alt": {
+    "active": {
+     "decode_ms_per_token": 286.1,
+     "prefill_ms_per_token": 144.7
+    }
+   },
+   "prefill_by_prompt": {
+    "16": {
+     "batch_aware": 237.3,
+     "active": 165.7
+    },
+    "64": {
+     "batch_aware": 170.1,
+     "active": 144.7
+    },
+    "256": {
+     "batch_aware": 158.0,
+     "active": 144.7
+    }
+   },
+   "curves_ms_per_bparam": {
+    "pi4": {
+     "host": {
+      "1": 153.04,
+      "4": 104.962,
+      "16": 99.751,
+      "64": 99.001,
+      "256": 100.021,
+      "512": 101.374
+     },
+     "worker": {
+      "1": 153.04,
+      "4": 104.962,
+      "16": 99.751,
+      "64": 99.001,
+      "256": 100.021,
+      "512": 101.374
+     }
+    },
+    "jetson": {
+     "host": {
+      "1": 129.469,
+      "4": 79.601,
+      "16": 59.523,
+      "64": 17.828,
+      "256": 14.803,
+      "512": 15.026
+     },
+     "worker": {
+      "1": 131.022,
+      "4": 80.556,
+      "16": 60.237,
+      "64": 18.042,
+      "256": 14.981,
+      "512": 15.207
+     }
+    },
+    "pi5": {
+     "host": {
+      "64": 24.946,
+      "512": 25.726
+     },
+     "worker": {
+      "1": 44.814,
+      "4": 30.64,
+      "16": 27.936,
+      "64": 27.708,
+      "256": 28.146,
+      "512": 28.511
+     }
+    }
+   },
+   "cost_sources": {
+    "pi4": {
+     "host": "cpu row",
+     "worker": "host row (no worker row at Q3_K_M; this board never repacks)"
+    },
+    "jetson": {
+     "host": "vulkan row",
+     "worker": "vulkan row + smoke-test RPC cost"
+    },
+    "pi5": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    }
+   },
+   "link_pairs": {
+    "jetson": "pi4-jetson",
+    "pi5": "pi5-pi4"
+   }
+  }
+ }
+}

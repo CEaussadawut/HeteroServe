@@ -1,0 +1,19 @@
+[Unit]
+Description=HeteroServe - apply the fixed measurement state (governor, swap, link)
+After=multi-user.target
+Wants=multi-user.target
+# Nothing may take a measurement before the measurement state is applied. Pi5's equivalent
+# unit (Pi5/systemd/heteroserve-prepare.service) already orders itself this way and its rpc
+# unit matches; this node was the only one without it, so the rpc server and the agent could
+# start while the governor was still 'ondemand' and swap was still on. The agent blocks on
+# both, so today the symptom is a refusal rather than a bad row -- but relying on a
+# downstream gate to cover an ordering bug is how a silent version of this appears later.
+Before=heteroserve-rpc.service heteroserve-agent.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/opt/heteroserve/Pi4/scripts/01_system_tune.sh
+
+[Install]
+WantedBy=multi-user.target

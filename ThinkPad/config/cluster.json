@@ -1,0 +1,204 @@
+{
+  "_comment": [
+    "HeteroServe cluster definition. The control node reads this; nothing else does.",
+    "Node ids MUST match NODE_ID in each node's own node.env, and ina_channel MUST match",
+    "the DAQ wiring, because the energy join is done on those two keys alone.",
+    "power_idle_w is filled in from a measured idle run, not from a datasheet - see",
+    "docs/03_energy_collector.md. Leave null until measured; the analysis will then refuse",
+    "to report marginal energy rather than invent a baseline."
+  ],
+  "cluster": {
+    "name": "HeteroServe testbed",
+    "subnet": "192.168.10.0/24",
+    "control_node": "t580",
+    "ntp_server": "192.168.10.5",
+    "_network_note": "Corrected 2026-09-29 from the proposal's 192.168.50.0/24, which no machine uses (user: laptop-driven heteroctl runs). subnet is the wired overlay, which carries the RPC traffic between the laptop and the Pis (link.json): laptop 192.168.10.5, Pi 5 .11, Pi 4 .12. The router LAN 192.168.100.0/24 carries ssh aliases, HTTP and the Jetson, which has no overlay address. ntp_server is the laptop's LAN address, the Pis' first timesyncd server; 192.168.10.5 is their second. The laptop's chrony serves both subnets (/etc/chrony/conf.d/heteroserve-lan.conf, 2026-09-26). 2026-10-08: the T628L was replaced by the home router (192.168.1.1; its LAN and Wi-Fi are bridged, and it has internet). The router LAN is now 192.168.1.0/24: the Pi 4's eth0 192.168.1.110, the Jetson's 192.168.1.109, the laptop's 192.168.1.108 (DHCP leases, to be reserved). The boards' Wi-Fi is off, so each has one interface on it. ntp_server is now the laptop's overlay address, which the Pi 4 syncs to; the Jetson syncs to public NTP. The user accepted the home network for the cluster (the topic form's isolated-network limitation is recorded as a deviation). 2026-10-09: the Jetson's lease moved to 192.168.1.114 on a power cycle; from 19:10 all four addresses are DHCP reservations on the router (DHCP Binding: laptop .108, Pi 4 .110, strip .111, Jetson .114). 2026-10-19: the Pi 5 is back, a REPLACEMENT board (eth0 MAC 2c:cf:67:b2:af:52; the old board 88:a2:9e:f0:e7:8a) running the old SD card: overlay 192.168.10.11 unchanged, router LAN 192.168.1.122, a DHCP reservation since 2026-10-20 21:3x (the router's DHCP Binding \"pi5\", 2c:cf:67:b2:af:52; entered by Claude in the router's page after the user signed in). Its Wi-Fi had joined a foreign network and took its replies there; it is off (the user's yes), so it too has one interface on 192.168.1.x."
+  },
+  "nodes": [
+    {
+      "id": "t580",
+      "planner_id": "laptop",
+      "planner_id_note": "The name testbed/scripts give this node (predict_pool.HOST_DEV, serve_pool.sh, measure_link.sh, the strip's outlet 3 since 2026-10-19, outlet 1 from 2026-10-05). Its characterisation rows keep the id t580.",
+      "role": "control",
+      "description": "ThinkPad T580, i5-8350U (AVX2), 32 GB - cluster manager, placement engine, harness, energy collector; since 2026-10-11 also a compute node (an RPC worker or the host)",
+      "host": "192.168.10.5",
+      "ssh_user": null,
+      "agent_port": null,
+      "rpc_port": 50052,
+      "ina_channel": null,
+      "enabled": true,
+      "serves_rpc": true,
+      "usable_mem_mb": 28000,
+      "memory_reserve_mb": 8192,
+      "memory_reserve_source": "MiB kept free for the desktop: the T580 is also the user's desktop. Set 2026-10-11 with the user's decision to make it a node; the long-context registrations of that night kept the same 8 GiB. With the usual apps open (a browser, an IDE, the Claude app) MemAvailable fell from about 27 to 17 GiB, so 8 GiB is a floor, not an estimate of every session.",
+      "power_idle_w": null,
+      "notes": "A compute node since 2026-10-11 (the user: \"make it as one of the node\"): an RPC worker (ggml-rpc-server -H 192.168.1.108 -p 50053 -t 4, /opt/heteroserve/llama.cpp at the pin) or the host, as testbed/scripts/serve_pool.sh serves it, and the planner's board \"laptop\". Its consumption is now INSIDE the measurement boundary: the strip's outlet 3 (outlet 1 until 2026-10-19) meters it together with the USB-C hub its charger feeds (testbed/energy.md); a figure from it is valid only while no battery charges. The INA226 DAQ was never bought, so ina_channel stays null. Before 2026-10-11: Not on the DAQ: only four INA226 channels exist and they belong to the four measured compute nodes. The T580's own consumption is out of the measurement boundary; say so in the report. serves_rpc=true additionally runs a local rpc-server so the control node can act as the prefill node in the disaggregation experiment.",
+      "script_dir": "/opt/heteroserve/ThinkPad"
+    },
+    {
+      "id": "pi5",
+      "role": "worker",
+      "description": "Raspberry Pi 5 8GB (Cortex-A76, dotprod, no i8mm) - strong CPU worker",
+      "host": "192.168.10.11",
+      "ssh_user": "pi5",
+      "agent_port": 9410,
+      "rpc_port": 50052,
+      "ina_channel": 1,
+      "enabled": true,
+      "serves_rpc": true,
+      "usable_mem_mb": 7619,
+      "memory_overhead_mb": {"host": 220, "worker": 191},
+      "memory_overhead_source": "MemAvailable lost beyond the node's blocks and a head it holds (a host also pays the largest tensor it uploads), fitted on the 2026-09-27 pool probes and validated out of sample 2026-09-28 (testbed/dataset/memval_results.json); each figure is the largest fitted for this board and role. host 220 (fitted 7B 218, 14B 143-187; the Pi 5 repacks, so its blocks are anonymous memory); worker 191 (14B; out of sample 81).",
+      "power_idle_w": null,
+      "notes": "usable_mem_mb is MemAvailable at rest, measured 2026-09-27 (testbed/dataset/memory_at_rest.json); the engine subtracts the node's measured role overhead on top (memory_overhead_mb; ModelProfile.runtime_overhead_mb for a role that is not measured). It replaced 7000, a figure with no recorded source. 2026-10-05: the board was returned (its data stands). 2026-10-19: back as a REPLACEMENT board (serial b8ed9049ada12a03, eth0 MAC 2c:cf:67:b2:af:52) with the old SD card (hostname hs-pi5, the same host keys, llama.cpp at the pin); every figure here is the OLD board's until the new one is characterised and compared (the user, 2026-10-19: re-characterise before merging rows). The strip meters it on outlet 2.",
+      "script_dir": "/opt/heteroserve/Pi5"
+    },
+    {
+      "id": "pi4",
+      "role": "worker-straggler",
+      "description": "Raspberry Pi 4B 8GB (Cortex-A72, no dotprod/i8mm) - deliberate straggler; the board on the bench is the 8 GB variant, measured MemAvailable 7373 MiB 2026-09-20",
+      "host": "192.168.10.12",
+      "ssh_user": "aun",
+      "agent_port": 9410,
+      "rpc_port": 50052,
+      "ina_channel": 2,
+      "enabled": true,
+      "serves_rpc": true,
+      "usable_mem_mb": 7413,
+      "memory_overhead_mb": {"host": 137, "worker": 159},
+      "memory_overhead_source": "MemAvailable lost beyond the node's blocks and a head it holds (a host also pays the largest tensor it uploads), fitted on the 2026-09-27 pool probes and validated out of sample 2026-09-28 (testbed/dataset/memval_results.json); each figure is the largest fitted for this board and role. host 137 (14B pi4_host cell; the Pi 4 does not repack, so its weights stay mmap'd and cost no MemAvailable, but they are read every token and must stay resident, so the engine still charges them; out of sample: 686 = 609 + 77 with 20 blocks, 31 alone); worker 159 (7B; in-sample 27-159, out of sample 74).",
+      "host_weights_mapped": true,
+      "host_weights_mapped_source": "As a host the Pi 4 does not repack: its blocks stay CPU_Mapped from the mmap'd file, so they must stay resident in page cache but cost no MemAvailable, and the largest-upload copy only lives while it loads. Registered rule ACCOUNT, testbed/dataset/pool_predictions_20260928c.json (2026-09-28 late night): Qwen2.5-14B ran at normal speed with 46 host blocks and 17.6x slower at 47, where blocks + host overhead pass MemAvailable.",
+      "power_idle_w": null,
+      "notes": "The node QR8 asks about: reduce its load or drop it entirely. usable_mem_mb is MemAvailable at rest, measured 2026-09-27 (testbed/dataset/memory_at_rest.json); the engine subtracts the node's measured role overhead on top (memory_overhead_mb; ModelProfile.runtime_overhead_mb for a role that is not measured). It replaced 2600, which mirrored the node's deliberate NODE_USABLE_MB slack.",
+      "script_dir": "/opt/heteroserve/Pi4"
+    },
+    {
+      "id": "jetson",
+      "role": "worker-gpu",
+      "description": "Jetson Nano B01 4GB (128-core Maxwell, CUDA 10.2, FP16) - GPU node",
+      "host": "192.168.50.15",
+      "_host_note": "NOT corrected yet: the Jetson is at 192.168.1.114 on the router LAN since 2026-10-09 (its DHCP lease moved on a power cycle; 192.168.1.109 on 2026-10-08; reserved on the router from 2026-10-09 19:06) (192.168.100.111 on the T628L before; ssh alias jetson). 192.168.50.15 is kept until Jetson/config/node.env ETH_ADDR is corrected with it, because test_repo_hygiene cross-checks the two and that file is the Jetson's own (flagged 2026-09-29 in .handoff/nodes/Jetson/).",
+      "ssh_user": "jetson",
+      "agent_port": 9410,
+      "rpc_port": 50052,
+      "ina_channel": 3,
+      "enabled": true,
+      "serves_rpc": true,
+      "usable_mem_mb": 3545,
+      "memory_overhead_mb": {"worker": 44},
+      "worker_repays_received_tensor": true,
+      "memory_reserve_mb": 450,
+      "memory_reserve_source": "MiB kept free on top of what the node is charged. The Jetson's Vulkan0 worker refused a 108 MiB allocation (ErrorOutOfDeviceMemory) with about 290 MiB MemAvailable, in the pre-registered qwen3moe.rule cell, 2026-09-28 (testbed/benchmarks.md); the accounting had its usage right (3,273 MiB dropped against 3,290 charged). 450 = the lowest MemAvailable at which a Jetson pool cell has run (nemo12b.even, 2026-09-28). The true threshold lies between about 180 and 450 MiB; the Vulkan free figure the RPC server prints at start is not it (2,457 MiB held with 1,426 reported free, 2026-09-27). UPDATE 2026-09-29 evening: that failure is explained by max_weights_mb instead (its 11 blocks were a 3,112 MiB model buffer); a passing share has since run with 423 MiB MemAvailable (registered rule GPU_CAP). The reserve is kept as headroom; it no longer explains a failure.",
+      "max_weights_mb": 2845,
+      "max_weights_source": "The most model-buffer MiB (its blocks + a head it holds) this node may be given as an RPC worker, in every role and on either backend. Every Jetson share with a model buffer up to 2,829.46 MiB has run: 23 of the 25 pooled cells of 2026-09-27..29 (21 on Vulkan0, 2 on CUDA0; six models, four architectures; the largest: Qwen3-30B-A3B, 10 blocks), and every qwen35 diagnostic share up to 2,759 MiB. Two failed: 2,922.05 MiB (Qwen3.8-27B, 17 blocks: SIGSEGV inside NVIDIA's Tegra Vulkan driver, vkAllocateDescriptorSets, 4 of 4 runs) and 3,112.41 MiB (the MoE's 11 blocks: ErrorOutOfDeviceMemory at upload). MemAvailable is not the cause: the passing 16-block 27B share ran with 423 MiB free, and a 17-block 9B share (2,214.6 MiB) ran. Registered rule GPU_CAP (testbed/dataset/jetson_graph_limit_20260929_addendum.json) set the cap at 2,845 MiB, the figure registered for the largest share that ran (from the MoE's average block; the logs give 2,829.46): 77 MiB below the first failure. The CUDA worker's own limit is not measured; the cap applies to it too.",
+      "memory_overhead_source": "MemAvailable lost beyond the node's blocks and a head it holds, fitted on the 2026-09-27 pool probes and validated out of sample 2026-09-28 (testbed/dataset/memval_results.json). worker 44 = the largest fitted Jetson worker figure (17-44), on top of the largest tensor it receives, which its Vulkan0 worker pays a second time (+643 MiB holding the 14B's 609 MiB head; out of sample within +19 of that model). No host figure: the Jetson hosts only in its standalone bench, where the stand-in applies.",
+      "power_idle_w": null,
+      "notes": "Powered via J25 barrel jack with J48 fitted; the micro-USB input caps at 2A and would force 5W mode, distorting both performance and energy. usable_mem_mb is MemAvailable at rest, measured 2026-09-27 (testbed/dataset/memory_at_rest.json); the engine subtracts the node's measured role overhead on top (memory_overhead_mb; ModelProfile.runtime_overhead_mb for a role that is not measured). It replaced 2800, an estimate.",
+      "script_dir": "/opt/heteroserve/Jetson"
+    },
+    {
+      "id": "orangepi-rv2",
+      "role": "worker-riscv",
+      "description": "Orange Pi RV2 8GB (Ky X1, RVV 1.0) - RISC-V node, stretch scope",
+      "host": "192.168.50.16",
+      "ssh_user": "orangepi",
+      "agent_port": 9410,
+      "rpc_port": 50052,
+      "ina_channel": 4,
+      "enabled": false,
+      "serves_rpc": true,
+      "usable_mem_mb": 7000,
+      "power_idle_w": null,
+      "notes": "enabled=false until the main cluster produces stable measurements (stretch scope).",
+      "script_dir": "/opt/heteroserve/OrangePi"
+    }
+  ],
+  "link_tiers": [
+    {
+      "id": "gbe",
+      "kind": "real",
+      "nominal_mbps": 1000,
+      "note": "TL-SG108E managed switch, Cat 6"
+    },
+    {
+      "id": "wifi",
+      "kind": "real",
+      "nominal_mbps": 80,
+      "note": "existing AP, 5 GHz; record channel and distance"
+    },
+    {
+      "id": "shaped-10",
+      "kind": "netem",
+      "nominal_mbps": 10,
+      "delay_ms": 1.0
+    },
+    {
+      "id": "shaped-25",
+      "kind": "netem",
+      "nominal_mbps": 25,
+      "delay_ms": 1.0
+    },
+    {
+      "id": "shaped-50",
+      "kind": "netem",
+      "nominal_mbps": 50,
+      "delay_ms": 0.5
+    },
+    {
+      "id": "shaped-100",
+      "kind": "netem",
+      "nominal_mbps": 100,
+      "delay_ms": 0.5
+    },
+    {
+      "id": "shaped-300",
+      "kind": "netem",
+      "nominal_mbps": 300,
+      "delay_ms": 0.2
+    }
+  ],
+  "daq": {
+    "port": "/dev/ttyACM0",
+    "baud": 921600,
+    "sample_hz": 28,
+    "channels": {
+      "1": {
+        "node": "pi5",
+        "i2c_addr": "0x40",
+        "shunt_ohms": 0.01,
+        "rail": "5V USB-C"
+      },
+      "2": {
+        "node": "pi4",
+        "i2c_addr": "0x41",
+        "shunt_ohms": 0.01,
+        "rail": "5V USB-C"
+      },
+      "3": {
+        "node": "jetson",
+        "i2c_addr": "0x44",
+        "shunt_ohms": 0.01,
+        "rail": "5V barrel jack (J25)"
+      },
+      "4": {
+        "node": "orangepi-rv2",
+        "i2c_addr": "0x45",
+        "shunt_ohms": 0.01,
+        "rail": "5V DC"
+      }
+    }
+  },
+  "paths": {
+    "llama_src": "/opt/heteroserve/llama.cpp",
+    "llama_bin": "/opt/heteroserve/llama.cpp/build/bin",
+    "models": "/opt/heteroserve/models",
+    "data": "/opt/heteroserve/data"
+  },
+  "llama": {
+    "pin_sha": "b23701f77d47dad9de834d59ebfcbe25c9e8b46f",
+    "_pin_note": "b23701f77d47dad9de834d59ebfcbe25c9e8b46f (2026-09-19), set 2026-09-20 by the user. THIS IS THE REVISION THE MEASUREMENTS WERE TAKEN ON: it is what is compiled on Pi 5 and Pi 4 and what produced every figure in testbed/benchmarks.md, so the pin now follows the evidence rather than the other way round. The SAME value must appear as LLAMA_PIN_SHA in Pi4/ and Pi5/ config/node.env and as LLAMA_CPP_REF in Jetson/config/node.env and node.env.example - three spellings, one value; ThinkPad/tests/test_repo_hygiene.py asserts it. WHAT THIS COSTS - THE JETSON. The previous pin b5050 = 23106f94ea2bc3da929afb7330655fd5515d08dc (2025-04-04) was chosen because the Jetson's CUDA 10.2 is the binding constraint: the unpatched window is EMPTY (b4419, 2025-01-06, adds #include <cuda_bf16.h> to ggml-cuda/vendors/cuda.h, which common.cuh pulls into every CUDA translation unit, and CUDA 10.2 has no such header - so the last stock-buildable ref is b4418, nine days BEFORE the -no-cnv floor at b4475), and b5050 was the newest ref with a dated reproducible on-device Nano recipe (kreier/llama.cpp-jetson). b23701f7 will NOT build the CUDA backend on JetPack 4.6.x. So the Jetson must now either (a) build CPU-only, BUILD_CUDA=0, which keeps ONE revision across the cluster but gives up the FP16 GPU role that is the entire reason that node is in the study, or (b) run its own older ref for CUDA, which means a two-revision cluster that must be reported as such. NOT DECIDED. MIXING IS SAFER THAN IT WAS: the old note warned that a mixed cluster silently misexecutes because the RPC opcode enum shifted between b4475 and b5050 and the RPC_CMD_HELLO version handshake only lands 2025-04-18. b23701f7 is long after that, so a node on a different ref is now REFUSED at the handshake instead of silently misexecuting - a real argument for moving forward, though not a licence to mix. WRITE-UP OBLIGATION unchanged: classify every patch applied on the Jetson; build/toolchain-only is a footnote, anything touching kernel math or precision is a declared threat to validity and wants a CPU-backend parity check on the same node. UPDATE 2026-09-29: with testbed/patches/jetpack46-cuda102-b23701f.patch (v2) the pin DOES build the CUDA backend on JetPack 4.6.x, and the Jetson's llama.exceptions entry is retired (see _exceptions_note).",
+    "exceptions": {},
+    "_exceptions_note": "RETIRED 2026-09-29 (user: \"finish all the Next CUDA steps\"): the cluster is ONE revision again. The declared two-revision split of 2026-09-20 (the Jetson on b5050 = 23106f94ea2bc3da929afb7330655fd5515d08dc for CUDA/FP16) met its own dissolving condition, a CUDA-10.2-buildable ref after 2025-04-18: the pin b23701f7 plus testbed/patches/jetpack46-cuda102-b23701f.patch (v2, sha256 1f43a3e4a5762e97a49c6d3f4982c6a899671c785257080bd34dc9de9a2283c6) builds the CUDA backend on JetPack 4.6 (L4T 32.7.6, CUDA 10.2, sm_53) and runs it -- one clean testbed/scripts/jetson_build_llama_cuda.sh run, 2026-09-29. Evidence (testbed/benchmarks.md, 2026-09-29): CPU-backend parity on the same node (TinyLlama Q4_K_M, GPL-3 text, 8 x 512): CUDA PPL/PPL(cpu) 0.9982 +/- 0.0047, mean KLD 0.0148, same top token 95.3 %, the same drift as the UNPATCHED Vulkan backend (1.0005, 0.0149, 95.7 %); and pooled RPC runs with the Jetson as a CUDA worker (Pi 5 35 + Jetson 5, Qwen3-14B: 3 of 3 cells exit 0). The Jetson's Vulkan build is the unpatched pin. llama.exceptions stays, empty, for any future DECLARED split. WRITE-UP OBLIGATION that remains: the Jetson's CUDA build is the pin PLUS a patch that touches CUDA kernel code, so every Jetson CUDA figure names patch v2; its Vulkan figures are the stock pin."
+  }
+}

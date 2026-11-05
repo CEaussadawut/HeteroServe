@@ -1,0 +1,27 @@
+2026-11-03 16:41 (written by the session, not by the runner): sp10 was stopped (systemctl --user stop heteroserve-sp10) during
+P1's MTP 2 serve, and the pool stopped with serve_pool.sh stop.
+
+Two serves hung, both with the MTP block on the Pi 5 (the last worker of P2 and of P1) and two or more drafted tokens:
+- P2 MTP 3: request 1 normal (249 ms/token), request 2 slow (955 ms/token), request 3 hung at its first decode (the server's
+  log stops 15:41:40). The Pi 5's RPC server saw "recv failed (bytes_recv=0, size_to_recv=1)" at 15:57:21. The server aborted
+  at 16:07:34 on its next send ("ggml-rpc.cpp:569: Remote RPC server crashed or returned malformed response") and hung on
+  exit until killed by PID (16:09). The session then went on to P1.
+- P1 MTP 2: the first request after the warm-up hung at its first decode (the server's log stops 16:20:52, after "created
+  context checkpoint 1 of 32"). At 16:36:34 the Pi 5's RPC server again saw "recv failed (bytes_recv=0, size_to_recv=1)".
+  While it hung, the laptop held the connection ESTABLISHED with nothing queued (Send-Q 0, Recv-Q 0, all its bytes acked).
+  The Pi 5 had no connection on :50052 and sat in accept().
+- The Pi 5's kernel counts TcpExtTCPAbortOnTimeout 2 since boot: it abandoned both connections after 15.7 minutes of
+  unacknowledged retransmission (tcp_retries2 15). So the Pi 5's replies did not reach the laptop's socket.
+- The laptop runs ufw with nf_conntrack_tcp_be_liberal=0. ufw's stock rules drop packets that connection tracking marks
+  INVALID. This is a hypothesis, unconfirmed: confirming it needs root (conntrack -S), and the firewall is the owner's
+  to change.
+- Found nothing on: kernel messages on either end, interface errors (0), the link (never down), the Pi 5's memory (922 MiB
+  free at READY under P2's MTP; 6,033 under P1's), its temperature (43-54 C, throttled=0x0), the Jetson guard (0 trips).
+- In the exploration (explspec_20261103_143210) the MTP block sat on the Pi 4, and MTP 1-3 and n-gram all completed.
+Raw logs copied here: server_P1_mtp2.log (the laptop's llama-server), pi5_rpc_P2_mtp3.log and pi5_rpc_P1_mtp2.log (the
+Pi 5's RPC server). results.json has no record of P1's MTP 2 or MTP 3: the runner writes one after a serve ends.
+
+2026-11-03 19:45, correction: the hypothesis above (the laptop's ufw dropping INVALID packets) is withdrawn. ufw is disabled
+(/etc/ufw/ufw.conf ENABLED=no). A deliberate reproduction (testbed/results/pi5_tx_stall_20261103/NOTE.md), inspected live,
+showed the cause on the Pi 5 itself. Its network driver (macb, hardware TSO on) held the reply. TCP found the segment "still
+in the host queue" at every timeout and never resent it (TcpExtTCPSpuriousRtxHostQueues 41 -> 62 during that hang).

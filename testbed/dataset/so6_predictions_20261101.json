@@ -1,0 +1,120 @@
+{
+ "registered_at": "2026-11-01T07:39:41+07:00",
+ "script": "testbed/scripts/so6_trial_20261101.py",
+ "out_prefix": "so6",
+ "what": "every idle board switched off, live: serve_pool.sh as a person serves (SERVE_SWITCH=on, SERVE_PLANNER=v4), a plan on the laptop alone (the three boards shut down and cut after serving), then a plan that needs all four (the three powered up first, the Jetson's guard started)",
+ "arms": {
+  "A": {
+   "SERVE_SWITCH": "on",
+   "SERVE_PLANNER": "v4",
+   "NODES": "laptop pi5 pi4 jetson",
+   "SERVE_DRAFT": "none",
+   "HETEROSERVE_RESERVE_MB": "",
+   "CTX": "4096",
+   "MEMFILE": "",
+   "PLACE": "",
+   "PLAN_DEPTH": "",
+   "MODEL": "qwen3moe"
+  },
+  "B": {
+   "SERVE_SWITCH": "on",
+   "SERVE_PLANNER": "v4",
+   "NODES": "laptop pi5 pi4 jetson",
+   "SERVE_DRAFT": "none",
+   "HETEROSERVE_RESERVE_MB": "",
+   "CTX": "4096",
+   "MEMFILE": "",
+   "PLACE": "",
+   "PLAN_DEPTH": "",
+   "MODEL": "qwen36moe_q6k"
+  }
+ },
+ "plans_at_registration": {
+  "A": {
+   "members": [
+    "laptop"
+   ],
+   "assign": [
+    [
+     "laptop",
+     48
+    ]
+   ],
+   "head_at": null,
+   "decode_ms": 99.8,
+   "memory_source": {
+    "laptop": "live",
+    "pi5": "live",
+    "pi4": "live",
+    "jetson": "live"
+   }
+  },
+  "B": {
+   "members": [
+    "laptop",
+    "jetson",
+    "pi5",
+    "pi4"
+   ],
+   "assign": [
+    [
+     "laptop",
+     24
+    ],
+    [
+     "jetson",
+     2
+    ],
+    [
+     "pi5",
+     9
+    ],
+    [
+     "pi4",
+     6
+    ]
+   ],
+   "head_at": 0,
+   "decode_ms": 280.1,
+   "memory_source": {
+    "laptop": "live",
+    "pi5": "live",
+    "pi4": "live",
+    "jetson": "live"
+   }
+  }
+ },
+ "prompt": "The quick brown fox jumps over the lazy dog. Summarise this sentence in five words.",
+ "n_tokens": 32,
+ "a_requests": 3,
+ "hypotheses": {
+  "SO6-PLAN": {
+   "claim": "A's served plan is the laptop alone; B's served plan holds all four nodes"
+  },
+  "SO6-OFF": {
+   "max_w": 0.1,
+   "claim": "after A's start the switch log reads 'outlet off' for the Pi 4, the Pi 5 and the Jetson, and every strip sample of outlets 0-2 during A's completions reads off at <= 0.1 W"
+  },
+  "SO6-SERVE": {
+   "claim": "all three of A's completions return 32 tokens with the three boards off, and B's one"
+  },
+  "SO6-UP": {
+   "claim": "B's start powers all three up before serving: 'back' for each, and the Jetson's guard 'ok'"
+  },
+  "SO6-LAPTOP": {
+   "claim": "outlet 3 reads on in every strip sample of the trial"
+  }
+ },
+ "inputs_sha256": {
+  "testbed/scripts/so6_trial_20261101.py": "0bb4d8f49031044c943691d2c895435936c73823f8315d2d77b9cbd9cb3f061e",
+  "testbed/scripts/strip_switch_20261101.py": "3acaab729e7c56c1ae2507ad5c8c58b5a71bba81992b3e46b28138fd1fe7f858",
+  "testbed/scripts/serve_pool.sh": "033ff0715f0cafe419f1d0720245ae844ec2a369839d78a36cb2d0fa87ee0fcf",
+  "testbed/scripts/serve_defaults.sh": "060fc64990a98c54e42963fc686e9a59e21f00b1867a6619e4778c8dc75c584e",
+  "testbed/scripts/serve_plan_20261101.py": "37252b755486a2fea16f77083f817fc54b5c6b1f478dadc2db2a0bc8cd979f92",
+  "testbed/scripts/predict_pool.py": "b9a8c90b4ab6626406c4ed27b543d4cfb225bfc970b8b749eba0cd6c0a0595cf",
+  "testbed/scripts/shelly_strip.py": "b7aaa7ceb2f1e94aa3f1f46100c06ca9d6c0c3fa8764a6372239747ffc0fe5a8",
+  "testbed/scripts/jetson_power_guard.sh": "6dafb56fef33f2bc0e070b2552dcb871053d3c0681358bd27436552f905d90de",
+  "testbed/energy/strip.json": "5fd4deb6a49db3954735d59aea99d10b09d38d0de969d61f198688607d196c3f",
+  "ThinkPad/config/cluster.json": "1f0a3529dd384647ab71a0a08e2c142226ccf2b80aa5160ffc91e5e2e9485943"
+ }
+}

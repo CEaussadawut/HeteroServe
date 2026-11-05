@@ -1,0 +1,151 @@
+########## 2026-10-08T01:46:02+07:00 cell eh.tiny.engine: host pi4, workers [jetson], llama-bench -m ~/models/tinyllama-1.1b-q4km.gguf -rpc 192.168.100.111:50052 -ngl 22   pin b23701f77d47dad9de834d59ebfcbe25c9e8b46f
+protocol -t 4 -p 512 -n 128 -r 14 --progress -oe jsonl
+backend jetson=vulkan (tree ~/llama.cpp, -d Vulkan0)
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+gate    every board idle, every tree at the pin and clean
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+jetson  GATE ok: pmode:0000, guard live and un-tripped, eth0 is the only interface on the router LAN
+gate    pi4: 56 C after 0 s (threshold 60 C); MemAvailable 7403 MiB after 0 s, the cell needs 164 MiB + a 0 MiB reserve
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+gate    jetson: 44 C after 30 s (threshold 45 C); MemAvailable 3552 MiB after 0 s, the cell needs 671 MiB + a 450 MiB reserve
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+jetson  clocks: ALREADY_LOCKED
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+worker  jetson listening on 192.168.100.111:50052 (pid 22120):          This is an experimental feature and is not secure! !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+probes  pi4:23103 jetson:22402   throttle polls pi4:23127
+STATE before pi4 2026-10-08T01:46:38+07:00 temp=55.0'C throttled=0x80000 memavail_mib=7396 load=0.58
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+STATE before jetson 2026-10-08T01:46:39+07:00 pmode:0000 CPU=44C GPU=44C cpu0=1479000/1479000 gpu=921600000/921600000 swap_used_kB=2872 memavail_mib=3531 eth0_rx=34540453148 eth0_tx=698650401 trips=0
+##### bench eh.tiny.engine on pi4
+llama-bench: benchmark 1/2: starting
+llama-bench: benchmark 1/2: warmup prompt run
+llama-bench: benchmark 1/2: prompt run 1/14
+llama-bench: benchmark 1/2: prompt run 2/14
+llama-bench: benchmark 1/2: prompt run 3/14
+llama-bench: benchmark 1/2: prompt run 4/14
+llama-bench: benchmark 1/2: prompt run 5/14
+llama-bench: benchmark 1/2: prompt run 6/14
+llama-bench: benchmark 1/2: prompt run 7/14
+llama-bench: benchmark 1/2: prompt run 8/14
+llama-bench: benchmark 1/2: prompt run 9/14
+llama-bench: benchmark 1/2: prompt run 10/14
+llama-bench: benchmark 1/2: prompt run 11/14
+llama-bench: benchmark 1/2: prompt run 12/14
+llama-bench: benchmark 1/2: prompt run 13/14
+llama-bench: benchmark 1/2: prompt run 14/14
+| model                          |       size |     params | backend    | ngl |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | --------------: | -------------------: |
+| llama 1B Q4_K - Medium         | 636.18 MiB |     1.10 B | RPC        |  22 |           pp512 |         57.75 ± 0.13 |
+{"build_commit": "b23701f", "build_number": 200, "cpu_info": "CPU", "gpu_info": "192.168.100.111:50052", "backends": "RPC", "model_filename": "/home/aun/models/tinyllama-1.1b-q4km.gguf", "model_type": "llama 1B Q4_K - Medium", "model_size": 667078656, "model_n_params": 1100048384, "n_batch": 2048, "n_ubatch": 512, "n_threads": 4, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "f16", "type_v": "f16", "n_gpu_layers": 22, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": -1, "devices": "auto", "tensor_split": "0.00", "tensor_buft_overrides": "none", "load_mode": "auto", "lazy_mode": "auto", "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "n_prompt": 512, "n_gen": 0, "n_depth": 0, "test_time": "2026-10-07T18:46:45Z", "avg_ns": 8865795358, "stddev_ns": 19210438, "avg_ts": 57.750288, "stddev_ts": 0.125295, "samples_ns": [ 8892520290, 8880376599, 8846659462, 8864306384, 8870921484, 8880177635, 8865103495, 8875007860, 8832836274, 8878153973, 8843279290, 8881793396, 8876777803, 8833221077 ],"samples_ts": [ 57.5765, 57.6552, 57.875, 57.7597, 57.7167, 57.6565, 57.7545, 57.6901, 57.9655, 57.6696, 57.8971, 57.646, 57.6786, 57.963 ]}
+llama-bench: benchmark 2/2: starting
+llama-bench: benchmark 2/2: warmup generation run
+llama-bench: benchmark 2/2: generation run 1/14
+llama-bench: benchmark 2/2: generation run 2/14
+llama-bench: benchmark 2/2: generation run 3/14
+llama-bench: benchmark 2/2: generation run 4/14
+llama-bench: benchmark 2/2: generation run 5/14
+llama-bench: benchmark 2/2: generation run 6/14
+llama-bench: benchmark 2/2: generation run 7/14
+llama-bench: benchmark 2/2: generation run 8/14
+llama-bench: benchmark 2/2: generation run 9/14
+llama-bench: benchmark 2/2: generation run 10/14
+llama-bench: benchmark 2/2: generation run 11/14
+llama-bench: benchmark 2/2: generation run 12/14
+llama-bench: benchmark 2/2: generation run 13/14
+llama-bench: benchmark 2/2: generation run 14/14
+| llama 1B Q4_K - Medium         | 636.18 MiB |     1.10 B | RPC        |  22 |           tg128 |         10.46 ± 0.09 |
+{"build_commit": "b23701f", "build_number": 200, "cpu_info": "CPU", "gpu_info": "192.168.100.111:50052", "backends": "RPC", "model_filename": "/home/aun/models/tinyllama-1.1b-q4km.gguf", "model_type": "llama 1B Q4_K - Medium", "model_size": 667078656, "model_n_params": 1100048384, "n_batch": 2048, "n_ubatch": 512, "n_threads": 4, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "f16", "type_v": "f16", "n_gpu_layers": 22, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": -1, "devices": "auto", "tensor_split": "0.00", "tensor_buft_overrides": "none", "load_mode": "auto", "lazy_mode": "auto", "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "n_prompt": 0, "n_gen": 128, "n_depth": 0, "test_time": "2026-10-07T18:48:58Z", "avg_ns": 12243572967, "stddev_ns": 103381730, "avg_ts": 10.455156, "stddev_ts": 0.088130, "samples_ns": [ 12209762495, 12158649747, 12227079314, 12182503111, 12400851185, 12218843852, 12275085642, 12114549597, 12109767609, 12374469279, 12314024847, 12118378292, 12308527978, 12397528593 ],"samples_ts": [ 10.4834, 10.5275, 10.4686, 10.5069, 10.3219, 10.4756, 10.4276, 10.5658, 10.57, 10.3439, 10.3947, 10.5625, 10.3993, 10.3246 ]}
+
+build: b23701f (200)
+EXIT_BENCH=0
+STATE after pi4 2026-10-08T01:51:50+07:00 temp=56.0'C throttled=0x80000 memavail_mib=7398 load=0.46
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+STATE after jetson 2026-10-08T01:51:50+07:00 pmode:0000 CPU=50C GPU=49C cpu0=1479000/1479000 gpu=921600000/921600000 swap_used_kB=2872 memavail_mib=3511 eth0_rx=35351020173 eth0_tx=932765565 trips=0
+THROTTLE pi4 poll=v2 samples=314 span_s=313 max_gap_s=1 na_s=0 bad_lines=0 max_temp_c=66.2 active_s=0 now_bits=0x0 sticky_first=0x80000 sticky_new=0x0 active_min_clock_mhz=- min_clock_mhz=600 below_1750mhz_s=103 clock=governor alive=1 verdict=clean
+MEMPROBE pi4 samples=306 min_avail_mib=7319 max_VmRSS_mib=708 max_RssShmem_mib=0 max_RssFile_mib=647 max_RssAnon_mib=63
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+MEMPROBE jetson samples=307 min_avail_mib=2858 max_RssFile_mib=633 max_VmRSS_mib=654 max_RssAnon_mib=62 max_RssShmem_mib=0
+--- worker log jetson ---
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+  local cache    : n/a
+Devices:
+  Vulkan0: NVIDIA Tegra X1 (nvgpu) (4363 MiB, 3277 MiB free)
+  transport      : TCP
+Accepted client connection
+Client connection closed
+Accepted client connection
+Client connection closed
+Accepted client connection
+Client connection closed
+Accepted client connection
+Client connection closed
+Accepted client connection
+Client connection closed
+Accepted client connection
+Client connection closed
+Accepted client connection
+Client connection closed
+Accepted client connection
+Client connection closed
+CELL DONE eh.tiny.engine 2026-10-08T01:51:53+07:00
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+** WARNING: connection is not using a post-quantum key exchange algorithm.
+** This session may be vulnerable to "store now, decrypt later" attacks.
+** The server may need to be upgraded. See https://openssh.com/pq.html
+cleanup worker on jetson stopped

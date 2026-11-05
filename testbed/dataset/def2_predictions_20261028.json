@@ -1,0 +1,290 @@
+{
+ "registered_at": "2026-10-28T03:35:30+07:00",
+ "script": "testbed/scripts/register_def2_20261028.py",
+ "session": "testbed/scripts/spec4_session_20261023.sh",
+ "scorer": "testbed/scripts/score_def2_20261028.py",
+ "tag_prefix": "d2",
+ "out_prefix": "def2",
+ "what": "the per-board multipliers on the blocks only (node_mult measured_blocks) against measured, on three new head-last Qwen3.6-35B-A3B placements, four nodes",
+ "follows": "def1 (def1_predictions_20261028.json): D1-V3 failed on H3 (head on the Pi 4, -6.3 %); the blocks-only rule was found after that data",
+ "node_mult_table": {
+  "laptop": 1.1717,
+  "jetson": 1.2782,
+  "pi5": 1.3436,
+  "pi4": 1.1517
+ },
+ "model": "qwen36moe_q6k",
+ "model_file": "~/models/qwen3.6-35b-a3b-q6_k.gguf",
+ "model_sha256": "a97ef79439194d8ec722bc0b6c316f0c41c0b477b35bbae8177c772ecbb0eb91",
+ "ctx": 4096,
+ "nodes": [
+  "pi5",
+  "pi4",
+  "jetson",
+  "laptop"
+ ],
+ "outlets": {
+  "pi4": 0,
+  "jetson": 1,
+  "pi5": 2,
+  "laptop": 3
+ },
+ "memfile": "testbed/dataset/memory_snapshot_20261028_033438.json",
+ "reserve_mb": "",
+ "reqs": 5,
+ "n": 128,
+ "gen": 64,
+ "warm": [
+  512,
+  32
+ ],
+ "order": [
+  "L1",
+  "L2",
+  "L3",
+  "L3",
+  "L2",
+  "L1"
+ ],
+ "conditions": "2026-10-28 03:3x (the user: let's do 4 and 1; continued after a usage-limit reset): the laptop on its charger, Wi-Fi off, no working apps; Claude stays idle during the session (text edits only, the 24 Oct rule); aunsync.timer every 16 min (~20 s).",
+ "cold_c": {
+  "pi5": 50,
+  "pi4": 55
+ },
+ "arms": {
+  "L1": {
+   "what": "the head on the Pi 5",
+   "assign": [
+    [
+     "laptop",
+     25
+    ],
+    [
+     "jetson",
+     3
+    ],
+    [
+     "pi4",
+     4
+    ],
+    [
+     "pi5",
+     9
+    ]
+   ],
+   "head": "last",
+   "place_env": {
+    "PLACE": "laptop:25,jetson:3,pi4:4,pi5:9",
+    "PLACE_HEAD": "last"
+   },
+   "serve_env": {
+    "SERVE_DRAFT": "none",
+    "HETEROSERVE_RESERVE_MB": ""
+   },
+   "predicted": {
+    "measured_decode_ms": 301.9,
+    "blocks_decode_ms": 289.9,
+    "shipped_decode_ms": 247.3
+   },
+   "memory": {
+    "laptop": {
+     "blocks": 25,
+     "need_mib": 18260,
+     "reserve_mib": 8192,
+     "available_mib": 27103,
+     "margin_mib": 651
+    },
+    "jetson": {
+     "blocks": 3,
+     "need_mib": 2399,
+     "reserve_mib": 450,
+     "available_mib": 3556,
+     "margin_mib": 707,
+     "weights_mib": 2058.7,
+     "weights_cap_mib": 2845,
+     "weights_margin_mib": 786
+    },
+    "pi4": {
+     "blocks": 4,
+     "need_mib": 2974,
+     "reserve_mib": 0,
+     "available_mib": 7423,
+     "margin_mib": 4449
+    },
+    "pi5": {
+     "blocks": 9,
+     "need_mib": 7215,
+     "reserve_mib": 0,
+     "available_mib": 7595,
+     "margin_mib": 380
+    }
+   }
+  },
+  "L2": {
+   "what": "the head on the Jetson",
+   "assign": [
+    [
+     "laptop",
+     25
+    ],
+    [
+     "pi5",
+     10
+    ],
+    [
+     "pi4",
+     4
+    ],
+    [
+     "jetson",
+     2
+    ]
+   ],
+   "head": "last",
+   "place_env": {
+    "PLACE": "laptop:25,pi5:10,pi4:4,jetson:2",
+    "PLACE_HEAD": "last"
+   },
+   "serve_env": {
+    "SERVE_DRAFT": "none",
+    "HETEROSERVE_RESERVE_MB": ""
+   },
+   "predicted": {
+    "measured_decode_ms": 317.7,
+    "blocks_decode_ms": 303.1,
+    "shipped_decode_ms": 261.2
+   },
+   "memory": {
+    "laptop": {
+     "blocks": 25,
+     "need_mib": 18260,
+     "reserve_mib": 8192,
+     "available_mib": 27103,
+     "margin_mib": 651
+    },
+    "pi5": {
+     "blocks": 10,
+     "need_mib": 7174,
+     "reserve_mib": 0,
+     "available_mib": 7595,
+     "margin_mib": 421
+    },
+    "pi4": {
+     "blocks": 4,
+     "need_mib": 3102,
+     "reserve_mib": 0,
+     "available_mib": 7423,
+     "margin_mib": 4321
+    },
+    "jetson": {
+     "blocks": 2,
+     "need_mib": 2437,
+     "reserve_mib": 450,
+     "available_mib": 3556,
+     "margin_mib": 669,
+     "weights_mib": 1979.1,
+     "weights_cap_mib": 2845,
+     "weights_margin_mib": 866
+    }
+   }
+  },
+  "L3": {
+   "what": "the head on the Pi 4, a new order",
+   "assign": [
+    [
+     "laptop",
+     25
+    ],
+    [
+     "pi5",
+     10
+    ],
+    [
+     "jetson",
+     3
+    ],
+    [
+     "pi4",
+     3
+    ]
+   ],
+   "head": "last",
+   "place_env": {
+    "PLACE": "laptop:25,pi5:10,jetson:3,pi4:3",
+    "PLACE_HEAD": "last"
+   },
+   "serve_env": {
+    "SERVE_DRAFT": "none",
+    "HETEROSERVE_RESERVE_MB": ""
+   },
+   "predicted": {
+    "measured_decode_ms": 364.6,
+    "blocks_decode_ms": 347.1,
+    "shipped_decode_ms": 306.0
+   },
+   "memory": {
+    "laptop": {
+     "blocks": 25,
+     "need_mib": 18260,
+     "reserve_mib": 8192,
+     "available_mib": 27103,
+     "margin_mib": 651
+    },
+    "pi5": {
+     "blocks": 10,
+     "need_mib": 7174,
+     "reserve_mib": 0,
+     "available_mib": 7595,
+     "margin_mib": 421
+    },
+    "jetson": {
+     "blocks": 3,
+     "need_mib": 2521,
+     "reserve_mib": 450,
+     "available_mib": 3556,
+     "margin_mib": 585,
+     "weights_mib": 2180.8,
+     "weights_cap_mib": 2845,
+     "weights_margin_mib": 664
+    },
+    "pi4": {
+     "blocks": 3,
+     "need_mib": 2892,
+     "reserve_mib": 0,
+     "available_mib": 7423,
+     "margin_mib": 4531
+    }
+   }
+  }
+ },
+ "hypotheses": {
+  "D2-BLOCKS": {
+   "tol": 0.03,
+   "claim": "every arm's server mean TPOT within 3 % of its measured_blocks prediction"
+  },
+  "D2-BETTER": {
+   "claim": "measured_blocks' |error| is below measured's on every arm"
+  },
+  "D2-REPEAT": {
+   "tol": 0.02,
+   "claim": "each arm's two runs within 2 % of each other (server mean TPOT)"
+  }
+ },
+ "energy_definition": "per request, the gross energy at all four outlets over its decode window (first token to last), with the session's idle-before window; summed over requests and divided by gen - 1 per request",
+ "inputs_sha256": {
+  "testbed/scripts/qr3_tpot.py": "2b44f219faa6c767e64f78d54cb7608add38cbfeb26db145335a355f490b25af",
+  "testbed/scripts/serve_pool.sh": "d199519ed12d319bf79dfcdd412edcd64a3ceaffceae9f947d43d7e042958ea8",
+  "testbed/scripts/serve_defaults.sh": "cba0c3262d99ee59d5b44c1e50064dcf06e25e9d98ce94efbcefc5d5cac765fd",
+  "testbed/scripts/predict_pool.py": "4f6e2022fb74fbd83529bf17b42d8134ef4898669a8d757e3708af0a81c78dc9",
+  "testbed/scripts/energy_model.py": "10bf9f5771f693845872a45c12b154395005af8064fccdcffcac5d4563223d63",
+  "testbed/scripts/shelly_strip.py": "b7aaa7ceb2f1e94aa3f1f46100c06ca9d6c0c3fa8764a6372239747ffc0fe5a8",
+  "testbed/scripts/full_eval.py": "cfb89e752890a8d1223b4efc2b3caa6568bb74fc86bf5e830e47e59469484e4e",
+  "testbed/scripts/spec4_session_20261023.sh": "6239f57f576f60526ff812c1e5f89215aa0c2e6ea80e7de1c0bec83e6a44c0c7",
+  "testbed/scripts/score_def2_20261028.py": "6bef6988105a9b01e4becc8ee0e54a08739fa1f110ace0ad6bec6ac705df979e",
+  "testbed/scripts/register_def2_20261028.py": "33d3cc4c72589692ce57c78ae21b08e79bab2b9862b56391a156dce9c66efbdd",
+  "testbed/dataset/model_shapes.json": "c3400b14d42e61f363f2df6e68974a12847d5cb6bd7c785f9b4ace8e3b6f5478",
+  "testbed/dataset/characterisation.csv": "183b4002fb6801f2559872cba7fbc9c7f11df9d858286dc60bf0971ddde1ad2c",
+  "ThinkPad/config/cluster.json": "1f0a3529dd384647ab71a0a08e2c142226ccf2b80aa5160ffc91e5e2e9485943",
+  "testbed/dataset/memory_snapshot_20261028_033438.json": "1af4ef7accf6c92fbbe114df378228659565ad214854a45b815240155dbc7b53"
+ }
+}

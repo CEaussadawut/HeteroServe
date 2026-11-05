@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+# A 4.7 GB model must never end up in the history. Models are fetched by
+# scripts/03_fetch_models.sh and checksummed into data/models.sha256; the checksum
+# is the reproducibility artifact, not the weights.
+*.gguf
+# Run output lives in /opt/heteroserve/{data,results} on the node and is archived from
+# there. results/ and telemetry/ here are mount points kept by .gitkeep.
+results/*
+telemetry/*
+!results/.gitkeep
+!telemetry/.gitkeep
+# Upstream sources pulled down while checking a flag or a JSON field are evidence for
+# one question, not part of this node's tree. Keep them in a scratch directory.
+*.cpp

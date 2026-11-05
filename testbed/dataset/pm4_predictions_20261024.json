@@ -1,0 +1,284 @@
+{
+ "registered_at": "2026-10-24T04:50:51+07:00",
+ "script": "testbed/scripts/register_pm4_20261024.py",
+ "session": "testbed/scripts/ab_session_20261024.sh",
+ "scorer": "testbed/scripts/ab_score_20261024.py",
+ "scorer_extra": "testbed/scripts/pm4_extra_20261024.py",
+ "tag_prefix": "pm4",
+ "out_prefix": "pm4",
+ "check": "python3 testbed/scripts/pm4_mode_20261024.py store",
+ "what": "the Jetson's power mode (locked, governors free, 5 W) on the engine's four-node 35B plan, energy at the wall",
+ "model": "qwen36moe_q6k",
+ "model_file": "~/models/qwen3.6-35b-a3b-q6_k.gguf",
+ "model_sha256": "a97ef79439194d8ec722bc0b6c316f0c41c0b477b35bbae8177c772ecbb0eb91",
+ "ctx": 4096,
+ "nodes": [
+  "laptop",
+  "jetson",
+  "pi5",
+  "pi4"
+ ],
+ "outlets": {
+  "pi4": 0,
+  "jetson": 1,
+  "pi5": 2,
+  "laptop": 3
+ },
+ "memfile": "testbed/dataset/memory_snapshot_20261024_045009.json",
+ "memory": {
+  "laptop": {
+   "blocks": 25,
+   "need_mib": 18658,
+   "reserve_mib": 8192,
+   "available_mib": 27871,
+   "margin_mib": 1021
+  },
+  "jetson": {
+   "blocks": 3,
+   "need_mib": 2399,
+   "reserve_mib": 450,
+   "available_mib": 3533,
+   "margin_mib": 684,
+   "weights_mib": 2058.7,
+   "weights_cap_mib": 2845,
+   "weights_margin_mib": 786
+  },
+  "pi5": {
+   "blocks": 10,
+   "need_mib": 7296,
+   "reserve_mib": 0,
+   "available_mib": 7585,
+   "margin_mib": 289
+  },
+  "pi4": {
+   "blocks": 3,
+   "need_mib": 2494,
+   "reserve_mib": 0,
+   "available_mib": 7407,
+   "margin_mib": 4913
+  }
+ },
+ "reqs": 6,
+ "n": 128,
+ "gen": 64,
+ "warm": [
+  512,
+  32
+ ],
+ "order": [
+  "L",
+  "U",
+  "W",
+  "W",
+  "U",
+  "L"
+ ],
+ "conditions": "2026-10-24, after the four-node chain: the laptop on its charger, battery full, Wi-Fi off, no working apps; one Claude desktop app open (this session's); Claude works on the laptop during the session (text files, light load, no LibreOffice renders), the laptop's load logged; aunsync.timer every 16 min (~20 s).",
+ "cold_c": {
+  "pi5": 50,
+  "pi4": 55
+ },
+ "informed_by": {
+  "characterisation": "testbed/results/c35_20261024_025725",
+  "A_server_mean_ms": 246.15,
+  "A_j_per_token_all": 9.3422,
+  "k_jetson": 1.2782,
+  "jetson_share_s": 0.04552,
+  "E_other_j": 8.4168,
+  "modes_10_10": {
+   "L": {
+    "Pw": 3.2076,
+    "A": 2.9849,
+    "dT": 0.0
+   },
+   "U": {
+    "Pw": 3.3114,
+    "A": 2.5899,
+    "dT": 0.014638396747022943
+   },
+   "W": {
+    "Pw": 2.9679,
+    "A": 2.0287,
+    "dT": 0.25202229967405687
+   }
+  },
+  "fwd_locked_ms": 619.74
+ },
+ "arms": {
+  "L": {
+   "what": "the Jetson locked (MAXN + jetson_clocks), serve_pool.sh's own lock",
+   "assign": [
+    [
+     "laptop",
+     25
+    ],
+    [
+     "jetson",
+     3
+    ],
+    [
+     "pi5",
+     10
+    ],
+    [
+     "pi4",
+     3
+    ]
+   ],
+   "head": "host",
+   "place_env": {
+    "PLACE": "laptop:25,jetson:3,pi5:10,pi4:3",
+    "PLACE_HEAD": "host"
+   },
+   "serve_env": {
+    "SERVE_DRAFT": "none"
+   },
+   "qr3_args": "--clocks locked",
+   "pre": "python3 testbed/scripts/pm4_mode_20261024.py set unlocked",
+   "post": "python3 testbed/scripts/pm4_mode_20261024.py set unlocked",
+   "predicted": {
+    "server_mean_ms": 246.15,
+    "mean_ms_per_token": 246.15,
+    "j_per_token_all": 9.3422
+   }
+  },
+  "U": {
+   "what": "the Jetson in MAXN with its governors free (as found)",
+   "assign": [
+    [
+     "laptop",
+     25
+    ],
+    [
+     "jetson",
+     3
+    ],
+    [
+     "pi5",
+     10
+    ],
+    [
+     "pi4",
+     3
+    ]
+   ],
+   "head": "host",
+   "place_env": {
+    "PLACE": "laptop:25,jetson:3,pi5:10,pi4:3",
+    "PLACE_HEAD": "host"
+   },
+   "serve_env": {
+    "SERVE_DRAFT": "none"
+   },
+   "qr3_args": "--clocks asfound",
+   "pre": "python3 testbed/scripts/pm4_mode_20261024.py set unlocked",
+   "post": "python3 testbed/scripts/pm4_mode_20261024.py set unlocked",
+   "predicted": {
+    "server_mean_ms": 246.56,
+    "mean_ms_per_token": 246.56,
+    "j_per_token_all": 9.3653
+   }
+  },
+  "W": {
+   "what": "the Jetson in its 5 W mode (nvpmodel -m 1, jetson_clocks at its maxima), switched once the server is healthy",
+   "assign": [
+    [
+     "laptop",
+     25
+    ],
+    [
+     "jetson",
+     3
+    ],
+    [
+     "pi5",
+     10
+    ],
+    [
+     "pi4",
+     3
+    ]
+   ],
+   "head": "host",
+   "place_env": {
+    "PLACE": "laptop:25,jetson:3,pi5:10,pi4:3",
+    "PLACE_HEAD": "host"
+   },
+   "serve_env": {
+    "SERVE_DRAFT": "none"
+   },
+   "qr3_args": "--clocks asfound",
+   "pre": "nohup python3 testbed/scripts/pm4_mode_20261024.py set-when-served 5w --log \"$OUT/pm4_switch.log\" >> \"$OUT/pm4_switch.out\" 2>&1 &",
+   "post": "[ -f \"$OUT/pm4_switch.log.pid\" ] && kill $(cat \"$OUT/pm4_switch.log.pid\") 2>/dev/null; python3 testbed/scripts/pm4_mode_20261024.py restore",
+   "predicted": {
+    "server_mean_ms": 253.26,
+    "mean_ms_per_token": 253.26,
+    "j_per_token_all": 9.5039
+   }
+  }
+ },
+ "hypotheses": {
+  "PM4-T5": {
+   "type": "lower",
+   "metric": "server_mean_ms",
+   "a": "L",
+   "b": "W",
+   "claim": "the 5 W mode slows the token: L's server mean below W's (predicted 246.2 against 253.3 ms)"
+  },
+  "PM4-TU": {
+   "type": "ratio",
+   "metric": "server_mean_ms",
+   "a": "U",
+   "b": "L",
+   "lo": 0.98,
+   "hi": 1.02,
+   "claim": "freeing the governors moves the token's time by less than 2 %"
+  },
+  "PM4-E5": {
+   "type": "ratio",
+   "metric": "j_per_token_all",
+   "a": "W",
+   "b": "L",
+   "lo": 0.99,
+   "hi": 10.0,
+   "claim": "the 5 W mode does not save more than 1 % of the cluster's energy per token (predicted W/L 1.0173)"
+  },
+  "PM4-ACC": {
+   "type": "acc",
+   "metric": "server_mean_ms",
+   "tol": 0.05,
+   "claim": "each arm's server mean within 5 % of its prediction"
+  },
+  "PM4-EACC": {
+   "type": "acc",
+   "metric": "j_per_token_all",
+   "tol": 0.05,
+   "claim": "each arm's gross J per decoded token within 5 % of its prediction"
+  }
+ },
+ "hypotheses_extra": {
+  "PM4-SWITCH": {
+   "claim": "in every W arm-run the 5 W mode was verified before its first scored request"
+  }
+ },
+ "inputs_sha256": {
+  "testbed/scripts/qr3_tpot.py": "2b44f219faa6c767e64f78d54cb7608add38cbfeb26db145335a355f490b25af",
+  "testbed/scripts/serve_pool.sh": "647f03b3eefa90cf562d23d1dedb04be729abe83283646c1dfe51cea8b221354",
+  "testbed/scripts/serve_defaults.sh": "4fdedec2da1479d577117606f3d810e313ef4483a71be6c9787895133a66a095",
+  "testbed/scripts/predict_pool.py": "1e932a5012ed8d2d902e4d4a87d7d54f8e27f83169a9331c881b6bbec2f51821",
+  "testbed/scripts/shelly_strip.py": "b7aaa7ceb2f1e94aa3f1f46100c06ca9d6c0c3fa8764a6372239747ffc0fe5a8",
+  "testbed/scripts/full_eval.py": "cfb89e752890a8d1223b4efc2b3caa6568bb74fc86bf5e830e47e59469484e4e",
+  "testbed/scripts/ab_session_20261024.sh": "92b7d9fc118d3c5ec21237e8355c96c3cde74fe31e60049fbbbebf21e4b021e2",
+  "testbed/scripts/ab_score_20261024.py": "775905ce9d250c15833d0264d90d68c26e7a9d5dfad8e2ac56f814a0d1703cae",
+  "testbed/scripts/pm4_extra_20261024.py": "479ab999b21f82632a728b27354ee24455ba40d5ec7c6ba7c4ffacbb36510d2f",
+  "testbed/scripts/pm4_mode_20261024.py": "a4f3b66341ed8bc9e7d78aae407c2df9a2b8e7d3f8a530564a24d558d2260155",
+  "testbed/scripts/power_modes_char_20261010.py": "26ecb152cf574d17192deea9542dd9c769fc4c34c37cae43e1639f15ff98b6d4",
+  "testbed/scripts/spec_serve_20261010.py": "f924a491b47ab3b775c95d5ca8738da7c0bfea8c95305dbd7d3cd78e5b6f8bec",
+  "testbed/scripts/register_pm4_20261024.py": "65687be83f00b0099866b82088ca9524ac0388789a02fc5d919013bd9dd458e7",
+  "testbed/scripts/score_prima4_20261021.py": "136121efb41ebc88455c8eb0ecf8bcf6904799937fe03cfdfb938a1988284f6b",
+  "testbed/dataset/power_modes_predictions_20261010.json": "6f219e447a374cf78b38923eaf616da61ba7f18dc38e44c23f88357b45c63b34",
+  "testbed/results/c35_20261024_025725/score.json": "1363c0083b8c9ba537774558fd6507d9d3ef2bb307d97616ca639a54b9e82783",
+  "ThinkPad/config/cluster.json": "1f0a3529dd384647ab71a0a08e2c142226ccf2b80aa5160ffc91e5e2e9485943",
+  "testbed/dataset/memory_snapshot_20261024_045009.json": "2903f34438aec2201e70e69f9a27352d6f0f13a84bb70ba3e35e7d5e9bb5194e"
+ }
+}

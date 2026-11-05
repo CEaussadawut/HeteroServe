@@ -1,0 +1,221 @@
+{
+ "registered_at": "2026-10-21T22:09:44+07:00",
+ "script": "testbed/scripts/register_prima4_20261021.py",
+ "session": "testbed/scripts/prima4_session_20261021.sh",
+ "what": "the engine (A) against prima.cpp + Halda (B) on all four nodes (user, 2026-10-21: 'I want a model that will do with prima cpp and halda to our engine and it use full nodes'); energy at the wall, all four outlets",
+ "model": "qwen3_32b_q8",
+ "model_file": "~/models/qwen3-32b-q8_0.gguf",
+ "model_sha256": "2c50eb8aad05047dbf24fa014eb621adf552e14176cabe0c5db4ef38c91e2169",
+ "ctx": 2048,
+ "ctx_why": "prima.cpp's Halda has no in-memory plan for this model at ctx 4096 (its budgets, MemAvailable x 0.8, hold 62 of 64 blocks) and its disk-offload path cannot engage: every board's disk is under its 100 MB/s floor, so all are forced into M4, and its first solve's rollback asserts (testbed/results/prima_run4_q32decide_20261021_210111_rank0.log, common.cpp:1435). At 2048 it decides 39/11/10/4.",
+ "reserve": "cluster.json's: the laptop keeps its 8 GiB desktop reserve (the user's 2026-10-21 permission for 7 GiB is not needed at ctx 2048); prima.cpp keeps its own 20 % of MemAvailable on every node",
+ "nodes": [
+  "pi5",
+  "pi4",
+  "jetson",
+  "laptop"
+ ],
+ "outlets": {
+  "pi4": 0,
+  "jetson": 1,
+  "pi5": 2,
+  "laptop": 3
+ },
+ "memfile": "testbed/dataset/memory_snapshot_20261021_220902.json",
+ "reqs": 5,
+ "n": 128,
+ "gen": 64,
+ "warm": [
+  512,
+  32
+ ],
+ "order": [
+  "A",
+  "B",
+  "A",
+  "B"
+ ],
+ "cold_c": {
+  "pi5": 50,
+  "pi4": 55
+ },
+ "arms": {
+  "A": {
+   "what": "the engine's pick, llama.cpp at the pin",
+   "assign": [
+    [
+     "laptop",
+     32
+    ],
+    [
+     "pi4",
+     13
+    ],
+    [
+     "pi5",
+     14
+    ],
+    [
+     "jetson",
+     5
+    ]
+   ],
+   "head": "host",
+   "place_env": {
+    "PLACE": "laptop:32,pi4:13,pi5:14,jetson:5",
+    "PLACE_HEAD": "host"
+   },
+   "predicted": {
+    "decode_ms": 3666.8,
+    "prefill_ms": 932.9,
+    "decode_gross_j_all": 111.8511
+   },
+   "memory": {
+    "laptop": {
+     "blocks": 32,
+     "need_mib": 17994,
+     "reserve_mib": 8192,
+     "available_mib": 26452,
+     "margin_mib": 266
+    },
+    "pi4": {
+     "blocks": 13,
+     "need_mib": 6686,
+     "reserve_mib": 0,
+     "available_mib": 7384,
+     "margin_mib": 698
+    },
+    "pi5": {
+     "blocks": 14,
+     "need_mib": 7220,
+     "reserve_mib": 0,
+     "available_mib": 7575,
+     "margin_mib": 355
+    },
+    "jetson": {
+     "blocks": 5,
+     "need_mib": 2687,
+     "reserve_mib": 450,
+     "available_mib": 3519,
+     "margin_mib": 382,
+     "weights_mib": 2470.5,
+     "weights_cap_mib": 2845,
+     "weights_margin_mib": 374
+    }
+   },
+   "considered": [
+    [
+     "laptop",
+     "laptop 32 + pi4 13 + pi5 14 + jetson 5: decode 3666.8 ms, prefill 932.9 ms"
+    ]
+   ]
+  },
+  "B": {
+   "what": "prima.cpp @ 288df6a2 + the Qwen3 port (+ the gcc-8 NEON patch on the Jetson), Halda deciding at start, ring laptop (rank 0) -> pi5 -> pi4 -> jetson, the boards on partial copies",
+   "copies": "testbed/dataset/prima_copies_qwen3-32b-q8_0.json",
+   "copies_sha256": "9fb230d44404e38d2308775e1e65590ce560ea1553d5fc0fda2063eca3b46d7c",
+   "expected_windows": {
+    "laptop": 39,
+    "pi5": 11,
+    "pi4": 10,
+    "jetson": 4
+   },
+   "expected_layers": {
+    "laptop": [
+     25,
+     63
+    ],
+    "pi5": [
+     0,
+     10
+    ],
+    "pi4": [
+     11,
+     20
+    ],
+    "jetson": [
+     21,
+     24
+    ]
+   },
+   "predicted": {
+    "decode_ms": 3346.9,
+    "prefill_ms": 1140.1,
+    "decode_gross_j_all": 105.656,
+    "decode_ms_if_the_jetson_used_vulkan": 3195.0
+   },
+   "jetson_cpu": {
+    "bench": "testbed/results/jetson_prima_cpu_bench_20261021_220227.log",
+    "runs_tg_pp_ms_per_token": [
+     [
+      231.04,
+      167.78
+     ],
+     [
+      231.88,
+      167.88
+     ],
+     [
+      231.54,
+      167.83
+     ]
+    ],
+    "median_tg_ms": 231.54,
+    "median_pp_ms": 167.83,
+    "unit_per_byte_per_param": [
+     2.1059809816219477e-07,
+     1.7320376171448984e-07
+    ]
+   },
+   "energy_note": "the Jetson's power-table figures are its Vulkan ones; no CPU-only power figure exists"
+  }
+ },
+ "prior": {
+  "20260930": "Pi 5 + Pi 4, Qwen3-14B: B/A client TPOT 1.127 (A faster); Halda memory-bound",
+  "20261020": "prima_energy_predictions_20261020.json, the same pair with energy"
+ },
+ "hypotheses": {
+  "P4-ALL": {
+   "claim": "in every B arm-run Halda gives each of the four nodes a window, every rank's layers inside its partial copy"
+  },
+  "P4-TPOT": {
+   "predicted_lower": "B",
+   "claim": "the arm predicted faster (B: A 3666.8, B 3346.9 ms) has the lower client TPOT P50"
+  },
+  "P4-ENERGY": {
+   "predicted_lower": "B",
+   "claim": "the arm predicted cheaper (B: A 111.85, B 105.66 J/token) has the lower gross J per decoded token at all four outlets"
+  },
+  "P4-FOLLOW": {
+   "tol": 0.05,
+   "claim": "B/A in J per token within 0.05 of B/A in client TPOT P50"
+  },
+  "P4-ACC": {
+   "tol": 0.1,
+   "claim": "A's server mean TPOT within 10 % of its predicted decode"
+  },
+  "P4-CORRECT": {
+   "claim": "request 0's first 16 tokens of text (greedy) are the same in every A and B run; the other requests recorded. Caveat (2026-10-21 TinyLlama check): on this x86 + ARM ring a different split can change greedy text, so a FAIL here is read with the runs' windows"
+  }
+ },
+ "energy_definition": "per request, the gross energy at all four outlets over its decode window (first token to last), with the session's idle-before window; summed over requests and divided by gen - 1 per request",
+ "inputs_sha256": {
+  "testbed/scripts/qr3_tpot.py": "675e2a33f440781cd9abf7b85be1a945c482148e687f01e167adea86d4cc2628",
+  "testbed/scripts/serve_pool.sh": "647f03b3eefa90cf562d23d1dedb04be729abe83283646c1dfe51cea8b221354",
+  "testbed/scripts/predict_pool.py": "ebdd72873b5ba5b5830c1156eab0f1b1bbfe328295010f93a2dfe1e10f03b614",
+  "testbed/scripts/energy_model.py": "10bf9f5771f693845872a45c12b154395005af8064fccdcffcac5d4563223d63",
+  "testbed/scripts/shelly_strip.py": "b7aaa7ceb2f1e94aa3f1f46100c06ca9d6c0c3fa8764a6372239747ffc0fe5a8",
+  "testbed/scripts/full_eval.py": "cfb89e752890a8d1223b4efc2b3caa6568bb74fc86bf5e830e47e59469484e4e",
+  "testbed/scripts/prima4_session_20261021.sh": "0628329cd9af75a212ec6d5d5ff50c6faa337847320d7b691ff45661610a4b19",
+  "testbed/scripts/score_prima4_20261021.py": "9aacc4709f75cd6df59460d88ec04607cdd1ab54c114022777b34793d31729b7",
+  "testbed/scripts/prima_partial_20261021.py": "58028db7941dd6f1b772cb0531c8f3025fd0020c0b09fd6609623a676011607f",
+  "testbed/scripts/register_prima4_20261021.py": "2580322997ba913c6544608d7abdeec2ce0fad71907365e86ad4748bd6f79011",
+  "testbed/patches/prima-288df6a-qwen3-v1.patch": "b8359f2f56534193545f5117f7e8557c5089dcf9ac558f61dfcbc3f425b2909a",
+  "testbed/patches/prima-288df6a-gcc8-neon-v1.patch": "73925debd66521b7551ef453298c4e8fc7b43595d378f86c054a8350a3f7d75e",
+  "testbed/dataset/model_shapes.json": "37efccb746f180b046c0ecabaa42a5ce480bf95fb89630a1b7e14bfbbc0e81e4",
+  "testbed/dataset/characterisation.csv": "183b4002fb6801f2559872cba7fbc9c7f11df9d858286dc60bf0971ddde1ad2c",
+  "ThinkPad/config/cluster.json": "1f0a3529dd384647ab71a0a08e2c142226ccf2b80aa5160ffc91e5e2e9485943",
+  "testbed/dataset/prima_copies_qwen3-32b-q8_0.json": "9fb230d44404e38d2308775e1e65590ce560ea1553d5fc0fda2063eca3b46d7c",
+  "testbed/dataset/memory_snapshot_20261021_220902.json": "12881a17266a61f14fe9a28f1b809f263823b3c286f6282184c7767761c566eb"
+ }
+}

@@ -1,0 +1,55 @@
+{
+ "status": "DOWNLOADED 2026-09-28 (user: 'let's download all the aimed model'), every file size- and sha256-verified on the laptop and re-hashed on its board(s); see testbed/models.md. Approved 2026-09-27: 'don't download yet just save the picks'",
+ "saved": "2026-09-27T22:23:37+07:00",
+ "total_bytes": 31741627680,
+ "fetch_to": "~/.cache/heteroserve-models/ on the laptop over the hotspot (the boards have no internet); verify the sha256 there, then copy over the wired LAN and re-verify on each board (copy_model_between_boards.sh pattern)",
+ "storage": "Pi 5 has ~30 GB free, Pi 4 ~35 GB. The three large files total ~31.2 GB, so they do not all fit on the Pi 5; no file will be deleted to make room. Default: the Pi 5 holds and hosts Mistral-Nemo and Qwen3-14B (16.5 GB, the Q4_K_M models that gain from its repacked kernels); the MoE goes on the Pi 4 (the engine's host_candidates), unless the user frees space on the Pi 5.",
+ "before_running": [
+  "measure the TinyLlama Q3_K_M rows (Pi 5 and Pi 4 host, Pi 5 worker, Jetson vulkan + cpu)",
+  "extend gguf.shape / predict_pool.py for mixture-of-experts: decode bytes read per token = attention + router + (expert_used_count / expert_count) x expert tensors; memory still counts every expert",
+  "read each model's tensor table into model_shapes.json, then pre-register the predictions"
+ ],
+ "files": [
+  {
+   "repo": "bartowski/Mistral-Nemo-Instruct-2407-GGUF",
+   "revision": "a2dd64a0a76ea1bdb2bb6ab6fa5496b003c7c908",
+   "file": "Mistral-Nemo-Instruct-2407-Q4_K_M.gguf",
+   "size": 7477208192,
+   "sha256": "7c1a10d202d8788dbe5628dc962254d10654c853cae6aaeca0618f05490d4a46",
+   "licence": "apache-2.0",
+   "purpose": "a new architecture (Mistral-Nemo 12B, 128k vocabulary), just too big for one Pi 5, so it must pool; uses the Q4_K_M rows",
+   "url": "https://huggingface.co/bartowski/Mistral-Nemo-Instruct-2407-GGUF/resolve/a2dd64a0a76ea1bdb2bb6ab6fa5496b003c7c908/Mistral-Nemo-Instruct-2407-Q4_K_M.gguf"
+  },
+  {
+   "repo": "Qwen/Qwen3-14B-GGUF",
+   "revision": "530227a7d994db8eca5ab5ced2fb692b614357fd",
+   "file": "Qwen3-14B-Q4_K_M.gguf",
+   "size": 9001752960,
+   "sha256": "500a8806e85ee9c83f3ae08420295592451379b4f8cf2d0f41c15dffeb6b81f0",
+   "licence": "apache-2.0",
+   "purpose": "the Qwen3 architecture at the same size and quantisation as the validated Qwen2.5-14B Q4_K_M; needs two or more boards",
+   "url": "https://huggingface.co/Qwen/Qwen3-14B-GGUF/resolve/530227a7d994db8eca5ab5ced2fb692b614357fd/Qwen3-14B-Q4_K_M.gguf"
+  },
+  {
+   "repo": "unsloth/Qwen3-30B-A3B-Instruct-2507-GGUF",
+   "revision": "eea7b2be5805a5f151f8847ede8e5f9a9284bf77",
+   "file": "Qwen3-30B-A3B-Instruct-2507-Q3_K_M.gguf",
+   "size": 14711847328,
+   "sha256": "e145c9d2f5d11c9583eb099aa75100b7ab943e77d5240c9a2cd936f81c89ef43",
+   "licence": "apache-2.0",
+   "purpose": "a mixture-of-experts model (8 of 128 experts active per token): too big for two boards, fits three, so the rule must keep the straggler; decode reads only the active experts, so the engine needs an active-bytes extension before it can predict it",
+   "url": "https://huggingface.co/unsloth/Qwen3-30B-A3B-Instruct-2507-GGUF/resolve/eea7b2be5805a5f151f8847ede8e5f9a9284bf77/Qwen3-30B-A3B-Instruct-2507-Q3_K_M.gguf"
+  },
+  {
+   "repo": "TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF",
+   "revision": "52e7645ba7c309695bec7ac98f4f005b139cf465",
+   "file": "tinyllama-1.1b-chat-v1.0.Q3_K_M.gguf",
+   "size": 550819200,
+   "sha256": "ec461c4d2b60896152bca3978aa49cd70edad7298715e4222e12af1eefea2125",
+   "licence": "apache-2.0",
+   "purpose": "the Q3_K_M characterisation row the MoE's prediction needs (same revision as the other TinyLlama rows)",
+   "url": "https://huggingface.co/TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF/resolve/52e7645ba7c309695bec7ac98f4f005b139cf465/tinyllama-1.1b-chat-v1.0.Q3_K_M.gguf"
+  }
+ ],
+ "superseded": "the picks made first the same evening -- Qwen2.5-14B Q8_0 (15.70 GB), Qwen2.5-32B Q2_K (12.31 GB), TinyLlama Q2_K -- were replaced once Qwen3 was considered (user's choice)"
+}

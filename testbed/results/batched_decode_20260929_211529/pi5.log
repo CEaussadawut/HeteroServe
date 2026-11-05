@@ -1,0 +1,88 @@
+pgrep: pattern that searches for process name longer than 15 characters will result in zero matches
+Try `pgrep -f' option to match against the complete command line.
+##### pi5 build b23701f77d47dad9de834d59ebfcbe25c9e8b46f, model sha256 ok, -npp 128 -ntg 32 -npl 1,2,4 -c 4096 -t 4 --no-repack
+===== pi5 round 1  cold gate: waited 0s, now 35 C (threshold 50 C)
+STATE_BEFORE pi5 2026-09-29T21:16:56+07:00 temp=37.3'C throttled=0x0 arm=1600023552 load=0.80
+0.00.803.671 W model has unused tensor blk.32.attn_norm.weight (size = 16384 bytes) -- ignoring
+0.00.803.684 W model has unused tensor blk.32.post_attention_norm.weight (size = 16384 bytes) -- ignoring
+0.00.803.699 W model has unused tensor blk.32.attn_q.weight (size = 35651584 bytes) -- ignoring
+0.00.803.705 W model has unused tensor blk.32.attn_k.weight (size = 4456448 bytes) -- ignoring
+0.00.803.710 W model has unused tensor blk.32.attn_v.weight (size = 4456448 bytes) -- ignoring
+0.00.803.732 W model has unused tensor blk.32.attn_output.weight (size = 17825792 bytes) -- ignoring
+0.00.803.739 W model has unused tensor blk.32.attn_q_norm.weight (size = 1024 bytes) -- ignoring
+0.00.803.745 W model has unused tensor blk.32.attn_k_norm.weight (size = 1024 bytes) -- ignoring
+0.00.803.752 W model has unused tensor blk.32.ffn_gate.weight (size = 53477376 bytes) -- ignoring
+0.00.803.758 W model has unused tensor blk.32.ffn_down.weight (size = 53477376 bytes) -- ignoring
+0.00.803.765 W model has unused tensor blk.32.ffn_up.weight (size = 53477376 bytes) -- ignoring
+0.00.803.772 W model has unused tensor blk.32.nextn.eh_proj.weight (size = 35651584 bytes) -- ignoring
+0.00.803.779 W model has unused tensor blk.32.nextn.enorm.weight (size = 16384 bytes) -- ignoring
+0.00.803.787 W model has unused tensor blk.32.nextn.hnorm.weight (size = 16384 bytes) -- ignoring
+0.00.803.804 W model has unused tensor blk.32.nextn.shared_head_norm.weight (size = 16384 bytes) -- ignoring
+
+llama_batched_bench: n_kv_max = 4096, n_batch = 2048, n_ubatch = 512, flash_attn = -1, is_pp_shared = 0, is_tg_separate = 0, n_gpu_layers = -1, n_threads = 4, n_threads_batch = 4
+
+|    PP |     TG |    B |   N_KV |   T_PP s | S_PP t/s |   T_TG s | S_TG t/s |      T s |    S t/s |
+|-------|--------|------|--------|----------|----------|----------|----------|----------|----------|
+|   128 |     32 |    1 |    160 |   22.479 |     5.69 |   16.165 |     1.98 |   38.644 |     4.14 |
+|   128 |     32 |    2 |    320 |   44.793 |     5.72 |   20.715 |     3.09 |   65.509 |     4.88 |
+|   128 |     32 |    4 |    640 |   89.455 |     5.72 |   37.409 |     3.42 |  126.864 |     5.04 |
+
+EXIT_pi5_r1=0
+STATE_AFTER pi5 2026-09-29T21:20:58+07:00 temp=53.2'C throttled=0x0 arm=2400027136 load=3.92
+===== pi5 round 2  cold gate: waited 15s, now 44 C (threshold 50 C)
+STATE_BEFORE pi5 2026-09-29T21:21:14+07:00 temp=45.0'C throttled=0x0 arm=1600017024 load=3.05
+0.00.770.315 W model has unused tensor blk.32.attn_norm.weight (size = 16384 bytes) -- ignoring
+0.00.770.329 W model has unused tensor blk.32.post_attention_norm.weight (size = 16384 bytes) -- ignoring
+0.00.770.344 W model has unused tensor blk.32.attn_q.weight (size = 35651584 bytes) -- ignoring
+0.00.770.349 W model has unused tensor blk.32.attn_k.weight (size = 4456448 bytes) -- ignoring
+0.00.770.355 W model has unused tensor blk.32.attn_v.weight (size = 4456448 bytes) -- ignoring
+0.00.770.377 W model has unused tensor blk.32.attn_output.weight (size = 17825792 bytes) -- ignoring
+0.00.770.383 W model has unused tensor blk.32.attn_q_norm.weight (size = 1024 bytes) -- ignoring
+0.00.770.390 W model has unused tensor blk.32.attn_k_norm.weight (size = 1024 bytes) -- ignoring
+0.00.770.397 W model has unused tensor blk.32.ffn_gate.weight (size = 53477376 bytes) -- ignoring
+0.00.770.403 W model has unused tensor blk.32.ffn_down.weight (size = 53477376 bytes) -- ignoring
+0.00.770.409 W model has unused tensor blk.32.ffn_up.weight (size = 53477376 bytes) -- ignoring
+0.00.770.417 W model has unused tensor blk.32.nextn.eh_proj.weight (size = 35651584 bytes) -- ignoring
+0.00.770.424 W model has unused tensor blk.32.nextn.enorm.weight (size = 16384 bytes) -- ignoring
+0.00.770.432 W model has unused tensor blk.32.nextn.hnorm.weight (size = 16384 bytes) -- ignoring
+0.00.770.449 W model has unused tensor blk.32.nextn.shared_head_norm.weight (size = 16384 bytes) -- ignoring
+
+llama_batched_bench: n_kv_max = 4096, n_batch = 2048, n_ubatch = 512, flash_attn = -1, is_pp_shared = 0, is_tg_separate = 0, n_gpu_layers = -1, n_threads = 4, n_threads_batch = 4
+
+|    PP |     TG |    B |   N_KV |   T_PP s | S_PP t/s |   T_TG s | S_TG t/s |      T s |    S t/s |
+|-------|--------|------|--------|----------|----------|----------|----------|----------|----------|
+|   128 |     32 |    1 |    160 |   22.521 |     5.68 |   15.903 |     2.01 |   38.425 |     4.16 |
+|   128 |     32 |    2 |    320 |   45.549 |     5.62 |   20.477 |     3.13 |   66.026 |     4.85 |
+|   128 |     32 |    4 |    640 |   89.779 |     5.70 |   36.914 |     3.47 |  126.693 |     5.05 |
+
+EXIT_pi5_r2=0
+STATE_AFTER pi5 2026-09-29T21:25:13+07:00 temp=53.8'C throttled=0x0 arm=2400030464 load=3.99
+===== pi5 round 3  cold gate: waited 15s, now 44 C (threshold 50 C)
+STATE_BEFORE pi5 2026-09-29T21:25:29+07:00 temp=45.0'C throttled=0x0 arm=1600020224 load=3.10
+0.00.835.802 W model has unused tensor blk.32.attn_norm.weight (size = 16384 bytes) -- ignoring
+0.00.835.816 W model has unused tensor blk.32.post_attention_norm.weight (size = 16384 bytes) -- ignoring
+0.00.835.831 W model has unused tensor blk.32.attn_q.weight (size = 35651584 bytes) -- ignoring
+0.00.835.836 W model has unused tensor blk.32.attn_k.weight (size = 4456448 bytes) -- ignoring
+0.00.835.842 W model has unused tensor blk.32.attn_v.weight (size = 4456448 bytes) -- ignoring
+0.00.835.861 W model has unused tensor blk.32.attn_output.weight (size = 17825792 bytes) -- ignoring
+0.00.835.868 W model has unused tensor blk.32.attn_q_norm.weight (size = 1024 bytes) -- ignoring
+0.00.835.875 W model has unused tensor blk.32.attn_k_norm.weight (size = 1024 bytes) -- ignoring
+0.00.835.882 W model has unused tensor blk.32.ffn_gate.weight (size = 53477376 bytes) -- ignoring
+0.00.835.888 W model has unused tensor blk.32.ffn_down.weight (size = 53477376 bytes) -- ignoring
+0.00.835.894 W model has unused tensor blk.32.ffn_up.weight (size = 53477376 bytes) -- ignoring
+0.00.835.902 W model has unused tensor blk.32.nextn.eh_proj.weight (size = 35651584 bytes) -- ignoring
+0.00.835.909 W model has unused tensor blk.32.nextn.enorm.weight (size = 16384 bytes) -- ignoring
+0.00.835.916 W model has unused tensor blk.32.nextn.hnorm.weight (size = 16384 bytes) -- ignoring
+0.00.835.933 W model has unused tensor blk.32.nextn.shared_head_norm.weight (size = 16384 bytes) -- ignoring
+
+llama_batched_bench: n_kv_max = 4096, n_batch = 2048, n_ubatch = 512, flash_attn = -1, is_pp_shared = 0, is_tg_separate = 0, n_gpu_layers = -1, n_threads = 4, n_threads_batch = 4
+
+|    PP |     TG |    B |   N_KV |   T_PP s | S_PP t/s |   T_TG s | S_TG t/s |      T s |    S t/s |
+|-------|--------|------|--------|----------|----------|----------|----------|----------|----------|
+|   128 |     32 |    1 |    160 |   22.448 |     5.70 |   15.941 |     2.01 |   38.389 |     4.17 |
+|   128 |     32 |    2 |    320 |   44.759 |     5.72 |   20.427 |     3.13 |   65.186 |     4.91 |
+|   128 |     32 |    4 |    640 |   89.424 |     5.73 |   36.844 |     3.47 |  126.267 |     5.07 |
+
+EXIT_pi5_r3=0
+STATE_AFTER pi5 2026-09-29T21:29:26+07:00 temp=53.2'C throttled=0x0 arm=2400020480 load=3.99
+STATE_END pi5 2026-09-29T21:29:56+07:00 temp=41.7'C throttled=0x0 arm=1600020224 load=2.41

@@ -1,0 +1,131 @@
+{
+ "started": "2026-10-05T22:37:29+07:00",
+ "args": {
+  "node": "jetson",
+  "outlet": 2,
+  "outlet_name": "jetson",
+  "model": "~/models/tinyllama-1.1b-q4km.gguf",
+  "sha256": "9fecc3b3cd76bba89d504f29b616eedf7da85b96540e490ca5824d3f7d2776a0",
+  "llama_dir": "~/llama.cpp",
+  "bench": "./build/bin/llama-bench",
+  "threads": 4,
+  "pp": "512:3",
+  "tg": "128:6",
+  "cycles": 3,
+  "idle_before": 300.0,
+  "idle_after": 120.0,
+  "settle": 30.0,
+  "gap": 10.0,
+  "tail": 5.0,
+  "hz": 5.0,
+  "local": false,
+  "bench_args": "-ngl 0 -dev none",
+  "require_guard": true,
+  "jetson_clocks": true,
+  "out": null
+ },
+ "out": "testbed/results/energy_phase_jetson_20261005_223729",
+ "invocations": [
+  {
+   "label": "pp1",
+   "phase": "pp",
+   "n": 512,
+   "reps": 3,
+   "cmd": "cd ~/llama.cpp && exec stdbuf -oL -eL ./build/bin/llama-bench -m ~/models/tinyllama-1.1b-q4km.gguf -t 4 -p 512 -n 0 -r 3 -ngl 0 -dev none --progress -oe jsonl 2>&1",
+   "exit": 0
+  },
+  {
+   "label": "tg1",
+   "phase": "tg",
+   "n": 128,
+   "reps": 6,
+   "cmd": "cd ~/llama.cpp && exec stdbuf -oL -eL ./build/bin/llama-bench -m ~/models/tinyllama-1.1b-q4km.gguf -t 4 -p 0 -n 128 -r 6 -ngl 0 -dev none --progress -oe jsonl 2>&1",
+   "exit": 0
+  },
+  {
+   "label": "pp2",
+   "phase": "pp",
+   "n": 512,
+   "reps": 3,
+   "cmd": "cd ~/llama.cpp && exec stdbuf -oL -eL ./build/bin/llama-bench -m ~/models/tinyllama-1.1b-q4km.gguf -t 4 -p 512 -n 0 -r 3 -ngl 0 -dev none --progress -oe jsonl 2>&1",
+   "exit": 0
+  },
+  {
+   "label": "tg2",
+   "phase": "tg",
+   "n": 128,
+   "reps": 6,
+   "cmd": "cd ~/llama.cpp && exec stdbuf -oL -eL ./build/bin/llama-bench -m ~/models/tinyllama-1.1b-q4km.gguf -t 4 -p 0 -n 128 -r 6 -ngl 0 -dev none --progress -oe jsonl 2>&1",
+   "exit": 0
+  },
+  {
+   "label": "pp3",
+   "phase": "pp",
+   "n": 512,
+   "reps": 3,
+   "cmd": "cd ~/llama.cpp && exec stdbuf -oL -eL ./build/bin/llama-bench -m ~/models/tinyllama-1.1b-q4km.gguf -t 4 -p 512 -n 0 -r 3 -ngl 0 -dev none --progress -oe jsonl 2>&1",
+   "exit": 0
+  },
+  {
+   "label": "tg3",
+   "phase": "tg",
+   "n": 128,
+   "reps": 6,
+   "cmd": "cd ~/llama.cpp && exec stdbuf -oL -eL ./build/bin/llama-bench -m ~/models/tinyllama-1.1b-q4km.gguf -t 4 -p 0 -n 128 -r 6 -ngl 0 -dev none --progress -oe jsonl 2>&1",
+   "exit": 0
+  }
+ ],
+ "preflight": {
+  "at": "2026-10-05T22:37:29+07:00",
+  "strip_outlet_name": "jetson",
+  "strip_json_map": "jetson",
+  "node_state": [
+   "jetson-desktop",
+   "0.62 0.25 0.09 1/269 5561",
+   "Mem:           3963         248        3303          21         412        3546",
+   "no llama process"
+  ],
+  "guard": [
+   "guard=up",
+   "pmode:0000 fmode:fanNull",
+   "22:37:29 V=5216 I=224 P=1208 alarms=0 minV=5136 maxP=2793 pmode:0000"
+  ],
+  "guard_trips": 0,
+  "llama_cpp": [
+   "b23701f77d47dad9de834d59ebfcbe25c9e8b46f",
+   "0",
+   "ggml_vulkan: Found 1 Vulkan devices:",
+   "ggml_vulkan: 0 = NVIDIA Tegra X1 (nvgpu) (NVIDIA) | uma: 1 | fp16: 1 | bf16: 0 | fp4: 0 | warp size: 32 | shared memory: 49152 | int dot: 0 | matrix cores: none"
+  ],
+  "model_sha256": "9fecc3b3cd76bba89d504f29b616eedf7da85b96540e490ca5824d3f7d2776a0",
+  "model_sha256_ok": true
+ },
+ "jetson_clocks": {
+  "store": "~/heteroserve/logs/jetson_clocks.stored.20261005_223739",
+  "out": [
+   "LOCKED",
+   "** WARNING: connection is not using a post-quantum key exchange algorithm.",
+   "** This session may be vulnerable to \"store now, decrypt later\" attacks.",
+   "** The server may need to be upgraded. See https://openssh.com/pq.html"
+  ],
+  "restore": [
+   "RESTORED",
+   "** WARNING: connection is not using a post-quantum key exchange algorithm.",
+   "** This session may be vulnerable to \"store now, decrypt later\" attacks.",
+   "** The server may need to be upgraded. See https://openssh.com/pq.html"
+  ]
+ },
+ "postflight_node_state": [
+  "jetson-desktop",
+  "0.47 2.51 2.46 1/247 25805",
+  "[    1.913289] tegra_throttle_probe: probe successful. #cdevs=4",
+  "[    4.183981] cpu-throttle-alert cooling device registered.",
+  "[    4.184136] gpu-throttle-alert cooling device registered."
+ ],
+ "postflight_guard": [
+  "guard=up",
+  "pmode:0000 fmode:fanNull",
+  "0"
+ ],
+ "finished": "2026-10-05T23:04:06+07:00"
+}

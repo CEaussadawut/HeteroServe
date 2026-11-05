@@ -1,0 +1,49 @@
+{
+ "registered": "2026-09-29T19:11:55+07:00",
+ "question": "Why does the Jetson's Vulkan RPC worker die on 17 blocks of a qwen35 hybrid but not on 16?",
+ "evidence_before": {
+  "crash": "SIGSEGV (apport signal 11; WORKER_EXIT 139) on every 17-block middle share of Qwen3.8-27B Q3_K_M (blocks 10-26, 2,922 MiB, no head), 4 of 4: the 2026-09-28 cell (Pi 4 host), r1 (laptop host, Pi 5 tail), r2 (under gdb), b1 (laptop-loopback tail). pp16/tg4.",
+  "backtrace": "r2 under gdb: libnvidia-eglcore.so.32.7.6 (NVIDIA Tegra Vulkan driver) <- vkAllocateDescriptorSets <- ggml_pipeline_allocate_descriptor_sets <- ggml_vk_matmul <- ggml_vk_mul_mat_q_f16 <- ggml_vk_build_graph <- ggml_backend_vk_graph_compute <- rpc_server::graph_compute; faulting load from x0+8, x0 = 0x28",
+  "runs": {
+   "k12": "ran, min MemAvailable 1,332 MiB",
+   "k14": "ran, 996",
+   "k15": "ran, 831",
+   "k16": "ran, 663",
+   "k17": "SIGSEGV, 497 (b1), 485-515 in the others"
+  },
+  "memory_accounting": "Jetson drop = its model buffer + 88-106 MiB at k = 12-17; the engine charges blocks + 44 MiB + one repaid block tensor (58 MiB) + KV"
+ },
+ "hypotheses": {
+  "GRAPH": "a limit on the number of descriptor sets one graph needs (ggml-vulkan grows pools of 256 sets as a graph is built): it depends on the number of qwen35 blocks in the Jetson's graph, not on memory",
+  "MEMORY": "the driver's own allocation for a descriptor pool fails when free memory is low (~500 MiB), and it segfaults instead of returning an error: it depends on MemAvailable, not on the graph"
+ },
+ "cells": {
+  "m1_9b_k17": {
+   "what": "Qwen3.5-9B Q4_K_M, the Jetson holds blocks 10-26 (17 qwen35 blocks, the same indices and layer kinds as the crashing 27B cell) = 2,214.6 MiB; laptop host (blocks 0-9), laptop-loopback tail (27-32 + head)",
+   "args": "MODEL=/opt/heteroserve/models/qwen3.5-9b-q4_k_m.gguf NGL=24 TS=16.5/7.5 WORKERS='jetson t580' P=16 N=4",
+   "expected_min_memavailable_mib": "~1,200 (about 700 more than the crashing 27B cell)",
+   "GRAPH_predicts": "SIGSEGV",
+   "MEMORY_predicts": "runs"
+  },
+  "m2_27b_k16_hog": {
+   "what": "Qwen3.8-27B Q3_K_M, the Jetson holds blocks 10-25 (16 blocks: the passing graph), with a 160 MiB resident filler process on the Jetson started before the worker, so the lowest MemAvailable lands where k17 crashed (~497 MiB)",
+   "args": "NGL=56 TS=15.5/40.5 WORKERS='jetson t580' P=16 N=4 HOG_MIB=160",
+   "expected_min_memavailable_mib": "~490-500",
+   "GRAPH_predicts": "runs",
+   "MEMORY_predicts": "SIGSEGV (or a Vulkan allocation error)"
+  }
+ },
+ "rules": [
+  "GRAPH is supported if m1 dies of SIGSEGV and m2 runs; MEMORY if m1 runs and m2 dies. Any other outcome supports neither alone and is reported as found. A cell 'runs' when llama-bench exits 0 with its result rows and the worker is alive until it is stopped.",
+  "The fix follows the supported hypothesis: GRAPH -> a per-architecture cap on the Jetson Vulkan worker's blocks (16 for qwen35 at the pin); MEMORY -> a larger Jetson reserve. Neither is applied before this is scored."
+ ],
+ "instrument_sha256": {
+  "testbed/scripts/jetson_rpc_memdiag.sh": "04a139d454950b1371e374d147d0245203fc5aee7487bf29a463745d782e6b93",
+  "testbed/scripts/memprobe_tegra.sh": "f94b5a95f9e0f300961bf9cd3d9ab69df468b9c93216313cbbba44dc278b82f3"
+ },
+ "model_sha256": {
+  "qwen3.5-9b-q4_k_m.gguf": "d784ce9eda1a5a7b51e8f705a9e6310844bf4f173654d115823c775fdea56d43",
+  "qwen3.8-27b-q3_k_m.gguf": "14865aaef0b6c26a013538782d366443c7298b11d5df9f0fb829d34d1963f869"
+ },
+ "pin": "b23701f77d47dad9de834d59ebfcbe25c9e8b46f (Jetson ~/llama.cpp, Vulkan, unpatched)"
+}

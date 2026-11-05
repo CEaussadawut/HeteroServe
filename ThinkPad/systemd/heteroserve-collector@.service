@@ -1,0 +1,22 @@
+[Unit]
+Description=HeteroServe - energy collector (Pico 2 DAQ -> power CSV)
+Documentation=file:///opt/heteroserve/ThinkPad/docs/03_energy_collector.md
+After=network.target chrony.service
+Wants=chrony.service
+
+[Service]
+Type=simple
+User=%i
+WorkingDirectory=/opt/heteroserve/ThinkPad
+ExecStart=/opt/heteroserve/ThinkPad/.venv/bin/python -m control.cli daq record
+Restart=always
+RestartSec=5
+
+# A restart re-syncs the Pico clock, so a dropped USB link costs a gap in the trace but
+# never a wrong timestamp. The gap is visible in the analysis; a silent re-offset would
+# not be.
+StandardOutput=append:/opt/heteroserve/data/logs/collector.log
+StandardError=append:/opt/heteroserve/data/logs/collector.log
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,93 @@
+{
+ "registered_at": "2026-10-25T03:32:09+07:00",
+ "script": "testbed/scripts/register_lc4m_20261025.py",
+ "runner": "testbed/scripts/lc4_20261024.py",
+ "out_prefix": "lc4m",
+ "what": "the Jetson's attention law against a third model: Qwen3-4B Q4_K_M whole on the Jetson's GPU, decode against context depth 0-1,024, the slope tested against three candidate laws",
+ "model": "qwen3-4b",
+ "cold_c": {
+  "pi5": 50,
+  "pi4": 55
+ },
+ "smokes_before_registration": {
+  "d0,3072": "OOM-killed at 3,072",
+  "ub128 d0,2048": "3.05 then 0.10 tokens/s",
+  "ub128 d0,512,1024,1536": "3.05, 2.95, 2.85, 0.24 tokens/s (single runs, -r 1; roughly 22.5 ms per 1,000 tokens over 0-1,024)"
+ },
+ "shape": {
+  "n_layers": 36,
+  "n_head": 32,
+  "n_head_kv": 8,
+  "head_dim": 128,
+  "kv_bytes_per_layer_per_token": 4096
+ },
+ "calibration": {
+  "qwen3_0.6b_slope_ms_per_1k": 8.18,
+  "tinyllama_slope_ms_per_1k": 4.221,
+  "kv_law": {
+   "law": "kv_bytes",
+   "ns_per_kv_byte": 0.070251,
+   "from": "kv_depth: Qwen3-0.6B whole on the Jetson (Vulkan), 2 query heads per KV head; its scaling with query heads is not measured"
+  },
+  "two_term": {
+   "a_ms_per_1k_per_layer_per_query_dim": 7.73619284361472e-05,
+   "b_ms_per_1k_per_layer_per_kv_byte": 3.264297551406926e-05
+  },
+  "from": [
+   "testbed/results/lc4j_20261024_200720/score.json",
+   "testbed/results/lc4k_20261024_211512/score.json",
+   "testbed/dataset/attention_cost_20261011b.json"
+  ]
+ },
+ "benches": {
+  "jq4": {
+   "host": "jetson",
+   "model_path": "~/models/qwen3-4b-q4_k_m.gguf",
+   "model_sha256": "7485fe6f11af29433bc51cab58009521f205840f5b4ae3a32fa7f92e8534fdf5",
+   "args": "-ngl 99 -ub 128 -p 0 -n 32 -d 0,256,512,768,1024 -r 3",
+   "predicted": {
+    "slope_ms_per_1k": 16.221,
+    "kv_law": 10.359,
+    "query_width": 21.034
+   }
+  }
+ },
+ "order": [
+  [
+   "jq4"
+  ]
+ ],
+ "hypotheses": {
+  "J4-KV": {
+   "type": "slope_near",
+   "label": "jq4",
+   "value": 10.359,
+   "tol": 0.1,
+   "claim": "the cost follows the KV bytes (the 11 October law): 10.359 ms per 1,000 tokens within 10 %"
+  },
+  "J4-QW": {
+   "type": "slope_near",
+   "label": "jq4",
+   "value": 21.034,
+   "tol": 0.1,
+   "claim": "it follows the query dims, per layer as Qwen3-0.6B's: 21.034 ms per 1,000 tokens within 10 %"
+  },
+  "J4-TWO": {
+   "type": "slope_near",
+   "label": "jq4",
+   "value": 16.221,
+   "tol": 0.1,
+   "claim": "per layer a x query dims + b x KV bytes, fitted on lc4j and lc4k: 16.221 ms per 1,000 tokens within 10 %"
+  }
+ },
+ "inputs_sha256": {
+  "testbed/scripts/lc4_20261024.py": "bf039569fa2a63c88ed8cba332e212ce2e48a285e2475d8d135a23442d2896b7",
+  "testbed/scripts/register_lc4m_20261025.py": "80dffbec7d9385c8fdd67ef2ffb955f9cf6c7e24ff7c8a5a00cda25ecfdcd017",
+  "testbed/scripts/jetson_power_guard.sh": "6dafb56fef33f2bc0e070b2552dcb871053d3c0681358bd27436552f905d90de",
+  "testbed/scripts/throttle_poll.sh": "10a45258cafd9222932fe043b40eee767984412a97d5a6d69002fa60d6e48aa1",
+  "testbed/dataset/attention_cost_20261011b.json": "9252ec7022778e9a4392acd0311bdd48e6c73f861a162cbab2726d7530e8d36f",
+  "testbed/results/lc4j_20261024_200720/score.json": "20c4dd4fac001f8630292a00b17c93fd502a1908745db1b78c674ab8877f8648",
+  "testbed/results/lc4k_20261024_211512/score.json": "6c212dadcdb53634624b61cc0454f5dd6c7db870ce584c80742f07c98b47546b",
+  "ThinkPad/config/cluster.json": "1f0a3529dd384647ab71a0a08e2c142226ccf2b80aa5160ffc91e5e2e9485943"
+ }
+}

@@ -1,0 +1,77 @@
+{
+ "registered_at": "2026-10-24T14:25:30+07:00",
+ "script": "testbed/scripts/rpc4_char_20261024.py",
+ "out_prefix": "rpc4char",
+ "what": "the Pi 4's RPC link, bytes per decoded token by direction, measured with the laptop's TCP counters, for TinyLlama Q4_0 on laptop 11 + Pi 4 11 with the head on the host (H), last (L), and last with backend sampling (LB); unshaped",
+ "model": "tinyllama_q4_0",
+ "ctx": 2048,
+ "place": "laptop:11,pi4:11",
+ "plans": {
+  "H": {
+   "PLACE_HEAD": "host"
+  },
+  "L": {
+   "PLACE_HEAD": "last"
+  },
+  "LB": {
+   "PLACE_HEAD": "last",
+   "SERVE_EXTRA": "--backend-sampling"
+  }
+ },
+ "peer": "192.168.10.12:50052",
+ "prompt": "The quick brown fox jumps over the lazy dog. Summarise this sentence in five words.",
+ "short": 16,
+ "long": 144,
+ "reps": 3,
+ "memfile": "testbed/dataset/memory_snapshot_20261024_142448.json",
+ "counted_by_predictor": {
+  "H": {
+   "in": 8192,
+   "out": 8192
+  },
+  "L": {
+   "in": 8192,
+   "out": 128000
+  },
+  "LB": {
+   "in": 8192,
+   "out": 4
+  }
+ },
+ "probe_disclosed": {
+  "when": "2026-10-24T14:20+07:00",
+  "plan": "H",
+  "laptop_to_pi4_B_per_token": 19452,
+  "pi4_to_laptop_B_per_token": 8200,
+  "reps": 2
+ },
+ "conditions": "2026-10-24 afternoon: the laptop on its charger, battery full, Wi-Fi off, no working apps; one Claude desktop app open (this session's); Claude works on the laptop during the session (text files, light load, no LibreOffice renders), the laptop's load logged; aunsync.timer every 16 min (~20 s).",
+ "hypotheses": {
+  "RC-REPEAT": {
+   "tol": 0.01,
+   "claim": "each plan's per-token payload in each direction is the same within 1 % across its three repetitions"
+  },
+  "RC-LOGITS": {
+   "expected": 119808,
+   "tol": 0.01,
+   "claim": "L's Pi 4 -> laptop payload a token exceeds H's by 119808 B within 1 %"
+  },
+  "RC-LB": {
+   "below": 1000,
+   "claim": "LB's Pi 4 -> laptop payload a token is below 1,000 B"
+  },
+  "RC-EXTRA": {
+   "lo": 8000,
+   "hi": 16000,
+   "claim": "in every plan the laptop -> Pi 4 payload a token exceeds the 8,192-byte hidden state by 8-16 KB"
+  }
+ },
+ "inputs_sha256": {
+  "testbed/scripts/rpc4_char_20261024.py": "321fd5191a2625aeb28d783133dbe76a902f3a43a1560e01b3e5fbd011dd035b",
+  "testbed/scripts/serve_pool.sh": "9f315d70ab3404e9d73b9901508b7f53e96da590fc2527f5d62061ecae37a07f",
+  "testbed/scripts/serve_defaults.sh": "4fdedec2da1479d577117606f3d810e313ef4483a71be6c9787895133a66a095",
+  "testbed/scripts/netshape.sh": "1b7ac69b554c6aa25cf03e8c9c09f8f9abe247326a1e95f1c4fae4839ab48332",
+  "ThinkPad/config/cluster.json": "1f0a3529dd384647ab71a0a08e2c142226ccf2b80aa5160ffc91e5e2e9485943",
+  "testbed/dataset/memory_snapshot_20261024_142448.json": "9bd61c44359fbf86e871113110f361ebcb2b95c2d92a39d357a208c98d8d4bf9"
+ }
+}

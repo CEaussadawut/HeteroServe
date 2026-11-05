@@ -1,0 +1,30 @@
+[Unit]
+Description=HeteroServe - node agent (inventory / readiness / rpc control)
+# time-sync.target, not chrony.service: the latter is ordering against chrony having been
+# STARTED, which says nothing about the clock having been stepped. The Pi 4 has no RTC, so
+# at boot its clock is arbitrary -- and this agent stamps phase markers that the control
+# node joins against the power stream. A marker written before the step is unjoinable.
+After=network-online.target time-sync.target heteroserve-tune.service
+Wants=network-online.target time-sync.target
+
+[Service]
+Type=simple
+User=pi
+Group=pi
+WorkingDirectory=/opt/heteroserve/Pi4
+# NOTE: StandardOutput=append: below needs /opt/heteroserve/data/logs to exist, and an
+# ExecStartPre cannot create it -- systemd opens the service's stdio BEFORE running any
+# Exec* line, so the unit fails first and the failure is visible only in the journal.
+# `make install` and `make bootstrap` create the directory; `make journal` recovers the
+# evidence if a unit ever does fail this way.
+ExecStart=/usr/bin/python3 /opt/heteroserve/Pi4/node/node_agent.py
+Restart=always
+RestartSec=3
+
+# The agent starts and stops the rpc-server unit on the control node's behalf.
+# This is the only privilege it needs; see systemd/heteroserve-agent.sudoers.
+StandardOutput=append:/opt/heteroserve/data/logs/agent.log
+StandardError=append:/opt/heteroserve/data/logs/agent.log
+
+[Install]
+WantedBy=multi-user.target

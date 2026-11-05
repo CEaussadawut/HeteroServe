@@ -1,0 +1,129 @@
+{
+ "registered_at": "2026-11-01T07:10:03+07:00",
+ "script": "testbed/scripts/register_v4d_20261101.py",
+ "runner": "testbed/scripts/lc4_20261024.py",
+ "out_prefix": "v4d",
+ "what": "the scheduler review's item 4: context depth priced by default (PLANNER_V4 at half the context), on serve_pool.sh's default model at a moderate depth -- the plan without the term against the plan with it",
+ "follows": "lc4planb (testbed/dataset/lc4planb_predictions_20261024.json; TinyLlama at 8,192, all three held)",
+ "model": "qwen3moe",
+ "ctx": 8192,
+ "plan_depth": 4096,
+ "cold_c": {
+  "pi5": 50,
+  "pi4": 55
+ },
+ "memfile": "testbed/dataset/memory_snapshot_20261101_070855.json",
+ "laptop_law_slope_ms_per_1k": 107.507,
+ "benches": {
+  "A": {
+   "host": "laptop",
+   "model_path": "~/models/qwen3-30b-a3b-q3_k_m.gguf",
+   "model_sha256": "e145c9d2f5d11c9583eb099aa75100b7ab943e77d5240c9a2cd936f81c89ef43",
+   "args": "-ngl 0 -t 4 -p 0 -n 32 -d 0,4096 -r 3",
+   "assign": [
+    [
+     "laptop",
+     48
+    ]
+   ],
+   "head_at": null,
+   "servers": [],
+   "predicted": {
+    "ms_per_token_by_depth": {
+     "0": 99.8,
+     "4096": 540.15
+    }
+   }
+  },
+  "B": {
+   "host": "laptop",
+   "model_path": "~/models/qwen3-30b-a3b-q3_k_m.gguf",
+   "model_sha256": "e145c9d2f5d11c9583eb099aa75100b7ab943e77d5240c9a2cd936f81c89ef43",
+   "args": "-rpc 192.168.1.114:50052 -ngl 9 -ot \"^output\\.weight=CPU\" -t 4 -p 0 -n 32 -d 0,4096 -r 3",
+   "assign": [
+    [
+     "laptop",
+     40
+    ],
+    [
+     "jetson",
+     8
+    ]
+   ],
+   "head_at": 0,
+   "servers": [
+    {
+     "node": "jetson",
+     "ip": "192.168.1.114",
+     "port": 50052,
+     "extra": "-d Vulkan0"
+    }
+   ],
+   "predicted": {
+    "ms_per_token_by_depth": {
+     "0": 145.14,
+     "4096": 520.35
+    }
+   }
+  }
+ },
+ "order": [
+  [
+   "A"
+  ],
+  [
+   "B"
+  ],
+  [
+   "B"
+  ],
+  [
+   "A"
+  ]
+ ],
+ "hypotheses": {
+  "D4-SHORT": {
+   "type": "faster_at",
+   "a": "A",
+   "b": "B",
+   "depth": 0,
+   "claim": "at depth 0, A is faster than B (predicted 99.8 against 145.1 ms)"
+  },
+  "D4-LONG": {
+   "type": "faster_at",
+   "a": "B",
+   "b": "A",
+   "depth": 4096,
+   "claim": "at 4,096 tokens of depth, B is faster than A (predicted 520.4 against 540.1 ms)"
+  },
+  "D4-ACC": {
+   "type": "acc_at",
+   "labels": [
+    "A",
+    "B"
+   ],
+   "tol": 0.15,
+   "claim": "every bench within 15 % of its prediction at both depths"
+  },
+  "D4-LAW": {
+   "type": "slope_near",
+   "label": "A",
+   "value": 107.507,
+   "tol": 0.15,
+   "claim": "A's slope within 15 % of the laptop's law for this shape (107.5 ms per 1,000 tokens)"
+  }
+ },
+ "inputs_sha256": {
+  "testbed/scripts/lc4_20261024.py": "bf039569fa2a63c88ed8cba332e212ce2e48a285e2475d8d135a23442d2896b7",
+  "testbed/scripts/register_v4d_20261101.py": "eef6b19abd2a599563137c4203f865fb825dc018973596f926b605e031089413",
+  "testbed/scripts/predict_pool.py": "df322f7bef8f059e9498d4f14a62bd1f413fde33371e73d01b140223f1252e61",
+  "testbed/scripts/serve_plan_20261101.py": "e99d0b3adef930b908d2f2e40780a50cad06f34020ef0a144e2e83bb1c871502",
+  "testbed/dataset/attention_cost_20261101.json": "f47aa041c378a6f58db95dcd4dc5a3d1ed845420c6e6166e6becd08d80486b20",
+  "testbed/dataset/hybrid_shapes_20261101.json": "edde431a99d8a801d6c486b285b7d6340de12fdd1f90b50d162333f7dafd3352",
+  "testbed/dataset/model_shapes.json": "c3400b14d42e61f363f2df6e68974a12847d5cb6bd7c785f9b4ace8e3b6f5478",
+  "testbed/dataset/characterisation.csv": "183b4002fb6801f2559872cba7fbc9c7f11df9d858286dc60bf0971ddde1ad2c",
+  "testbed/dataset/link.json": "61915f41652f22063ac9a43d43a511a1c797ae28dd158cbb185df04a4d4c8a0e",
+  "ThinkPad/config/cluster.json": "1f0a3529dd384647ab71a0a08e2c142226ccf2b80aa5160ffc91e5e2e9485943",
+  "testbed/dataset/memory_snapshot_20261101_070855.json": "67ca6ec78af67b7b9994baedb6b5b63500e5b4a0cb26cfcedbcac4382b280467"
+ }
+}

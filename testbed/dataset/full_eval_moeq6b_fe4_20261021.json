@@ -1,0 +1,273 @@
+{
+ "registered": "2026-10-21T13:15:54+07:00",
+ "name": "moeq6b_fe4_20261021",
+ "model": "qwen3moe_q6k",
+ "nodes": [
+  "pi5",
+  "pi4",
+  "jetson",
+  "laptop"
+ ],
+ "ctx": 4096,
+ "rounds": 5,
+ "reqs": 2,
+ "n": 128,
+ "gen": 64,
+ "rtt_trips": 1,
+ "warm_n": 64,
+ "warm_gen": 8,
+ "load_mode": "none",
+ "memfile": "testbed/dataset/memory_snapshot_20261021_131439.json",
+ "note": "Registration b of the 30B MoE at Q6_K in the four-node full evaluation (2026-10-21), after its first run (testbed/results/full_eval_moeq6_fe4_20261020_20261021_020202): serve_pool.sh's memory gate refused the engine's plan and lap_pi4 in all five rounds (the laptop had 26,495 MiB free at run time; the registration had planned on memory_at_rest.json's 27,785, margin 394 MiB). This one plans against a snapshot of all four nodes taken with the laptop as it runs (testbed/dataset/memory_snapshot_20261021_131439.json: laptop 26,356 MiB), and the run serves with the same file (MEMFILE), so the engine's plan at run time is this one. Placements and why each was kept or dropped: testbed/results/fe4_register_20261021_131553/placements_qwen3moe_q6k.json (sha256 f3317646db9e6ad0); lap_pi4 mirrors the engine's split with the Pi 4 in place of the Pi 5 (the first registration's board swap). The first run's default data stand as measured. Outlets at run: pi4=0, jetson=1, pi5=2, laptop=3 (the laptop's outlet includes its USB-C hub).",
+ "order": [
+  [
+   "engine",
+   "default",
+   "lap_pi4"
+  ],
+  [
+   "default",
+   "lap_pi4",
+   "engine"
+  ],
+  [
+   "lap_pi4",
+   "engine",
+   "default"
+  ],
+  [
+   "engine",
+   "default",
+   "lap_pi4"
+  ],
+  [
+   "default",
+   "lap_pi4",
+   "engine"
+  ]
+ ],
+ "configs": {
+  "engine": {
+   "assign": [
+    [
+     "laptop",
+     34
+    ],
+    [
+     "pi5",
+     14
+    ]
+   ],
+   "head": "host",
+   "host": "laptop",
+   "place_env": null,
+   "predicted": {
+    "decode_ms": 147.9,
+    "prefill_ms": 69.3,
+    "decode_gross_j_plan_boards": 4.5385,
+    "decode_gross_j_all_boards": 5.3562
+   },
+   "predicted_rtt_alt": {
+    "rtt_trips": 2,
+    "decode_ms": 148.8,
+    "prefill_ms": 69.3
+   },
+   "memory": {
+    "laptop": {
+     "blocks": 34,
+     "need_mib": 17710,
+     "reserve_mib": 8192,
+     "available_mib": 26356,
+     "margin_mib": 454
+    },
+    "pi5": {
+     "blocks": 14,
+     "need_mib": 7139,
+     "reserve_mib": 0,
+     "available_mib": 7606,
+     "margin_mib": 467
+    }
+   },
+   "considered": [
+    [
+     "laptop",
+     "laptop 34 + pi5 14: decode 147.9 ms, prefill 69.3 ms"
+    ]
+   ]
+  },
+  "default": {
+   "assign": [
+    [
+     "laptop",
+     31
+    ],
+    [
+     "pi5",
+     8
+    ],
+    [
+     "pi4",
+     7
+    ],
+    [
+     "jetson",
+     2
+    ]
+   ],
+   "head": "last",
+   "host": "laptop",
+   "place_env": "laptop:31,pi5:8,pi4:7,jetson:2",
+   "predicted": {
+    "decode_ms": 248.0,
+    "prefill_ms": 98.4,
+    "decode_gross_j_plan_boards": 7.8256,
+    "decode_gross_j_all_boards": 7.8256
+   },
+   "predicted_rtt_alt": {
+    "rtt_trips": 2,
+    "decode_ms": 251.0,
+    "prefill_ms": 98.4
+   },
+   "memory": {
+    "laptop": {
+     "blocks": 31,
+     "need_mib": 15978,
+     "reserve_mib": 8192,
+     "available_mib": 26356,
+     "margin_mib": 2186
+    },
+    "pi5": {
+     "blocks": 8,
+     "need_mib": 4161,
+     "reserve_mib": 0,
+     "available_mib": 7606,
+     "margin_mib": 3445
+    },
+    "pi4": {
+     "blocks": 7,
+     "need_mib": 3633,
+     "reserve_mib": 0,
+     "available_mib": 7399,
+     "margin_mib": 3766
+    },
+    "jetson": {
+     "blocks": 2,
+     "need_mib": 1523,
+     "reserve_mib": 450,
+     "available_mib": 3534,
+     "margin_mib": 1561,
+     "weights_mib": 1220.0,
+     "weights_cap_mib": 2845,
+     "weights_margin_mib": 1625
+    }
+   },
+   "considered": [
+    [
+     "laptop",
+     "fixed: laptop 31 + pi5 8 + pi4 7 + jetson 2, head last"
+    ]
+   ]
+  },
+  "lap_pi4": {
+   "assign": [
+    [
+     "laptop",
+     34
+    ],
+    [
+     "pi4",
+     14
+    ]
+   ],
+   "head": "host",
+   "host": "laptop",
+   "place_env": "laptop:34,pi4:14",
+   "predicted": {
+    "decode_ms": 275.8,
+    "prefill_ms": 125.5,
+    "decode_gross_j_plan_boards": 6.8984,
+    "decode_gross_j_all_boards": 8.5964
+   },
+   "predicted_rtt_alt": {
+    "rtt_trips": 2,
+    "decode_ms": 276.6,
+    "prefill_ms": 125.5
+   },
+   "memory": {
+    "laptop": {
+     "blocks": 34,
+     "need_mib": 17710,
+     "reserve_mib": 8192,
+     "available_mib": 26356,
+     "margin_mib": 454
+    },
+    "pi4": {
+     "blocks": 14,
+     "need_mib": 7107,
+     "reserve_mib": 0,
+     "available_mib": 7399,
+     "margin_mib": 292
+    }
+   },
+   "considered": [
+    [
+     "laptop",
+     "fixed: laptop 34 + pi4 14, head host"
+    ]
+   ]
+  }
+ },
+ "power_table": {
+  "pi5": {
+   "idle": 3.0183277591973243,
+   "pp": 11.28765331186967,
+   "tg": 9.696049271076996,
+   "source": "testbed/dataset/energy_results_20261020_pi5fw_q4km.json",
+   "sha256": "44eed747b5cd19c0"
+  },
+  "pi4": {
+   "idle": 2.390896921017403,
+   "pp": 7.462781757353395,
+   "tg": 6.3219096642345205,
+   "source": "testbed/dataset/energy_results_20261005_pi4_q4km.json",
+   "sha256": "9c946768787cc0e7"
+  },
+  "jetson": {
+   "idle": 3.1383277591973244,
+   "pp": 8.893831082803821,
+   "tg": 11.173527822798489,
+   "source": "testbed/dataset/energy_results_20261005_jetson_vk_q4km.json",
+   "sha256": "102bfb16db360832"
+  },
+  "laptop": {
+   "idle": 14.054983277591974,
+   "pp": 29.33976692499638,
+   "tg": 32.12029854570033,
+   "source": "testbed/dataset/energy_results_20261006_laptop_q4km.json",
+   "sha256": "26856942a7d72a74"
+  }
+ },
+ "inputs_sha256": {
+  "full_eval.py": "34ecf0ec753a9d4348bac8389493a1b727bd478be25e5bc1e472c4d06bed33d4",
+  "serve_pool.sh": "e4f5af8fd376c8fd22536837fa238597a75499f8402060663eab7b5bf91c946a",
+  "predict_pool.py": "f6e636e42b2b1978e71c1c5d592caf9812c580c94afe8635bfbe56d8fd385ff5",
+  "energy_model.py": "10bf9f5771f693845872a45c12b154395005af8064fccdcffcac5d4563223d63",
+  "qr3_tpot.py": "fa454fbce8fd89cc9c549434efd096c91dea603a2923fadc034a2febb5512c97",
+  "shelly_strip.py": "b7aaa7ceb2f1e94aa3f1f46100c06ca9d6c0c3fa8764a6372239747ffc0fe5a8",
+  "laptop_poll.sh": "4ee7e6220edc1da39d24e2ed602827674ecfe2c429b0d12e4e4d1ba47766b9ae"
+ },
+ "hypotheses": [
+  {
+   "id": "FE-TPOT",
+   "claim": "the placement with the lowest predicted decode has the lowest server TPOT P50 and P95, its 95 % CI clear of every other placement's"
+  },
+  {
+   "id": "FE-ENERGY",
+   "claim": "the placement with the lowest predicted gross J/token (every pool board powered) measures the lowest"
+  },
+  {
+   "id": "FE-ACC",
+   "claim": "every placement's measured mean server TPOT within 10 % of its predicted decode ms"
+  }
+ ]
+}

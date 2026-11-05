@@ -1,0 +1,29 @@
+########## 2026-09-29T19:43:45+07:00 thermal/clock probe on pi4, load: llama-bench TinyLlama Q4_K_M -p 512 -n 0 -r 12 -t 4
+config: temp_soft_limit=0 temp_limit=0 arm_freq=1800 arm_freq_min=0
+governor ondemand, now temp=49.6'C throttled=0x80000 arm=frequency(48)=1200287104
+probe pid 7307
+| model                          |       size |     params | backend    | threads |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | ------: | --------------: | -------------------: |
+| llama 1B Q4_K - Medium         | 636.18 MiB |     1.10 B | CPU        |       4 |           pp512 |         12.42 ± 0.01 |
+{"build_commit": "b23701f", "build_number": 200, "cpu_info": "CPU", "gpu_info": "", "backends": "CPU", "model_filename": "/home/aun/models/tinyllama-1.1b-q4km.gguf", "model_type": "llama 1B Q4_K - Medium", "model_size": 667078656, "model_n_params": 1100048384, "n_batch": 2048, "n_ubatch": 512, "n_threads": 4, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "f16", "type_v": "f16", "n_gpu_layers": -1, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": -1, "devices": "auto", "tensor_split": "0.00", "tensor_buft_overrides": "none", "load_mode": "auto", "lazy_mode": "auto", "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "n_prompt": 512, "n_gen": 0, "n_depth": 0, "test_time": "2026-09-29T12:44:22Z", "avg_ns": 41236520237, "stddev_ns": 26156544, "avg_ts": 12.416183, "stddev_ts": 0.007876, "samples_ns": [ 41252889161, 41270362530, 41225566537, 41218364123, 41270025958, 41249250173, 41211183964, 41236977066, 41264856431, 41193723682, 41241347226, 41203696004 ],"samples_ts": [ 12.4113, 12.406, 12.4195, 12.4216, 12.4061, 12.4123, 12.4238, 12.416, 12.4077, 12.4291, 12.4147, 12.4261 ]}
+
+build: b23701f (200)
+EXIT_BENCH=0
+===== samples: epoch, temp (tenths of a degree C), ARM clock (Hz), get_throttled -- summarised by temperature band
+   48-50  C     5 s  ARM mean  620 MHz (min  600, max  700)  throttled seen: 0x80000
+   50-52  C    30 s  ARM mean  844 MHz (min  600, max 1800)  throttled seen: 0x80000
+   54-56  C     7 s  ARM mean  772 MHz (min  600, max 1800)  throttled seen: 0x80000
+   56-58  C    15 s  ARM mean  600 MHz (min  600, max  600)  throttled seen: 0x80000
+   58-60  C    18 s  ARM mean  734 MHz (min  600, max 1800)  throttled seen: 0x80000
+   60-62  C     8 s  ARM mean  913 MHz (min  600, max 1800)  throttled seen: 0x80000
+   62-64  C     6 s  ARM mean 1000 MHz (min  600, max 1800)  throttled seen: 0x80000
+   64-66  C    11 s  ARM mean 1255 MHz (min  600, max 1800)  throttled seen: 0x80000
+   66-68  C     6 s  ARM mean 1400 MHz (min  600, max 1800)  throttled seen: 0x80000
+   68-70  C    12 s  ARM mean 1700 MHz (min  600, max 1800)  throttled seen: 0x80000
+   70-72  C    14 s  ARM mean 1800 MHz (min 1800, max 1800)  throttled seen: 0x80000
+   72-74  C    30 s  ARM mean 1800 MHz (min 1800, max 1800)  throttled seen: 0x80000
+   74-76  C    82 s  ARM mean 1800 MHz (min 1800, max 1800)  throttled seen: 0x80000
+   76-78  C   136 s  ARM mean 1800 MHz (min 1800, max 1800)  throttled seen: 0x80000
+   78-80  C   207 s  ARM mean 1800 MHz (min 1800, max 1800)  throttled seen: 0x80000
+   80-82  C    25 s  ARM mean 1800 MHz (min 1800, max 1800)  throttled seen: 0x80000
+log: testbed/results/thermal_clock_pi4_20260929_194345.log

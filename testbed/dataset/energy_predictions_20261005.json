@@ -1,0 +1,66 @@
+{
+ "registered": "2026-10-05T14:26:38+07:00",
+ "campaign": "2026-10-05: the first energy run at home (testbed/energy.md, 'First run at home' 1-2). A: the outlet map checked by load. B: the idle floors per outlet.",
+ "inputs_sha256": {
+  "testbed/scripts/energy_mapcheck_idle.sh": "a38b8979e41a0e81df178a92cc530082bb0305105a01c17b503155afee8ac1e5",
+  "testbed/scripts/shelly_strip.py": "b7aaa7ceb2f1e94aa3f1f46100c06ca9d6c0c3fa8764a6372239747ffc0fe5a8",
+  "testbed/energy/strip.json": "ffa5b0730d2255ba7decc47d957144dc38600cab61c0ef41ddaab808d091240d",
+  "testbed/scripts/jetson_power_guard.sh": "6dafb56fef33f2bc0e070b2552dcb871053d3c0681358bd27436552f905d90de"
+ },
+ "conditions": {
+  "strip": "Shelly Power Strip Gen4 shellypstripg4-e8f60a62b7c0, fw 2.0.1 (20260923-075623/2.0.1-ge1a198b), on the T628L Wi-Fi 'WIFI-B' at 192.168.100.34 (DHCP, not reserved), RSSI about -9 dBm; auth off; SNTP server set to 192.168.100.105 but pending a strip restart (restart_required true), last sync 13:54:53 over the hotspot, clock equal to the laptop's at 14:17",
+  "logger": "shelly_strip.py log at 5 Hz on the laptop, over Ethernet (enp0s31f6, 192.168.100.105) to the T628L, then Wi-Fi to the strip. The strip's web UI was left open in the Claude browser pane",
+  "boards": "all three booted ~13:46 by the strip's power-up (initial_state on); idle, load average ~0 at 14:19; Pis throttled=0x0; clocks synced to the laptop (Pis 14:17, Jetson 14:21 after a timesyncd restart)",
+  "jetson": "MAXN (pmode:0000) on micro-USB; power guard restarted 14:21:33 (sha256 matches the repo); light load only",
+  "measurement": "AC wall power per outlet, each board including its adapter's loss; the laptop is not metered; meter readings refresh at 1 Hz per outlet (2026-10-04)"
+ },
+ "A_map_check": {
+  "map_under_test": {
+   "0": "pi4",
+   "1": "pi5",
+   "2": "jetson",
+   "3": "router"
+  },
+  "loads": [
+   {
+    "board": "pi5",
+    "cores": 4,
+    "seconds": 60
+   },
+   {
+    "board": "pi4",
+    "cores": 4,
+    "seconds": 60
+   },
+   {
+    "board": "jetson",
+    "cores": 2,
+    "seconds": 45
+   }
+  ],
+  "load_kind": "timeout-bounded bash busy loops, one per core; not an LLM workload",
+  "windows": {
+   "baseline": "[A logger start + 5 s, first load start - 2 s]",
+   "load": "[load start mark + 10 s, load end mark - 2 s]",
+   "clock": "laptop marks (markers.tsv) against the log's sample time (wall_time + rtt_s/2)"
+  },
+  "rule": "For each loaded board, take each board outlet's (0-2) mean apower over the load window minus its baseline mean. The map is CONFIRMED for that board if the largest rise is on its mapped outlet, is >= 0.5 W, and both other board outlets move by < 0.3 W (absolute). The router outlet (3) is reported, not scored. The map is confirmed only if all three boards pass.",
+  "if_not_confirmed": "stop: report as found and ask the user; no energy figure is attributed to a board until the map is confirmed"
+ },
+ "B_idle_floors": {
+  "window": "[B logger start + 30 s, B logger start + 330 s] (300 s), nothing started on any board",
+  "computed": [
+   "per outlet: mean / min / max apower and the fresh-reading rate",
+   "energy over the window by the strip's counter (aenergy.total) and by trapezoid integration of apower, and their gap, both as shelly_strip.py summarise reports them",
+   "by_minute (complete minutes inside the log) against the aenergy.total delta over the same minutes",
+   "request RTT and failures on the router's Wi-Fi",
+   "outlet 2 (AC) against the Jetson guard's 1 Hz INA3221 input-rail power (DC, module input only) over the same window"
+  ],
+  "expectations_not_blind": "Status reads at 13:59-14:13 already showed outlet 0 2.3-2.4 W, outlet 1 2.3 W, outlet 2 1.8-2.1 W, outlet 3 8.0 W, so these are not blind predictions: board outlets within 1.5-3.5 W, router 7-9 W; outlet 2 AC mean above the guard's DC mean (~1.25 W at 14:21).",
+  "no_decision": "The counter-vs-trapezoid gap is reported as found. Which method to quote stays an open question for the user and the advisor (handoff 2026-10-04, open question 4)."
+ },
+ "not_reportable": [
+  "any phase-A figure as board power under load (busy loops are not LLM work)",
+  "any energy per token (none is measured here)"
+ ]
+}

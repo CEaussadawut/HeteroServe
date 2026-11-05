@@ -1,0 +1,229 @@
+{
+ "registered": "2026-10-10T02:40:39+07:00",
+ "name": "spec_serve_20261010",
+ "campaign": "scheduler upgrade 1, step 3: speculative decoding served on Pi 4 + Jetson, the drafter placed by prediction",
+ "survey": "Documents/HeteroServe_Scheduler_Research.html, upgrade 1 (2026-10-10)",
+ "model": "qwen3_14b",
+ "ctx": 1024,
+ "place": "pi4:27,jetson:13",
+ "place_head": "host",
+ "n_predict": 64,
+ "host_url": "http://192.168.1.110:8080",
+ "outlets": {
+  "pi4": 0,
+  "laptop": 1,
+  "jetson": 2
+ },
+ "chat_format": "<|im_start|>user\n%s<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n",
+ "sampling": {
+  "temperature": 0,
+  "top_k": 1,
+  "cache_prompt": false
+ },
+ "warmup_prompt": "Say hello in one sentence.",
+ "prompts": [
+  {
+   "id": "e01",
+   "category": "explain",
+   "lang": "en",
+   "text": "Explain how a refrigerator keeps food cold."
+  },
+  {
+   "id": "h02",
+   "category": "howto",
+   "lang": "en",
+   "text": "How do I make a simple tomato pasta sauce?"
+  },
+  {
+   "id": "c01",
+   "category": "code",
+   "lang": "en",
+   "text": "Write a Python function that returns the n-th Fibonacci number iteratively."
+  },
+  {
+   "id": "m01",
+   "category": "math",
+   "lang": "en",
+   "text": "A train travels 180 km in 2.5 hours. What is its average speed? Show the steps."
+  },
+  {
+   "id": "w01",
+   "category": "writing",
+   "lang": "en",
+   "text": "Write a short, polite email asking my professor for a meeting next week."
+  },
+  {
+   "id": "t02",
+   "category": "technical",
+   "lang": "en",
+   "text": "Explain what a large language model is in simple terms."
+  },
+  {
+   "id": "th01",
+   "category": "explain",
+   "lang": "th",
+   "text": "อธิบายว่าทำไมท้องฟ้าจึงเป็นสีฟ้า"
+  },
+  {
+   "id": "th03",
+   "category": "writing",
+   "lang": "th",
+   "text": "เขียนอีเมลสั้น ๆ ถึงอาจารย์เพื่อขอนัดพบในสัปดาห์หน้า"
+  }
+ ],
+ "idle_before_s": 120,
+ "idle_after_s": 60,
+ "laptop_rpc_server": "/opt/heteroserve/llama.cpp/build/bin/ggml-rpc-server",
+ "models_on_host": {
+  "~/models/qwen3-14b-q4_k_m.gguf": "500a8806e85ee9c83f3ae08420295592451379b4f8cf2d0f41c15dffeb6b81f0",
+  "~/models/qwen3-0.6b-q8_0.gguf": "9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031"
+ },
+ "arms": {
+  "base": {
+   "board": null,
+   "d": 0,
+   "laptop_rpc": null,
+   "env": {}
+  },
+  "lapd1": {
+   "board": "laptop",
+   "d": 1,
+   "laptop_rpc": "192.168.1.108:50053",
+   "env": {
+    "SERVE_DRAFT": "-md ~/models/qwen3-0.6b-q8_0.gguf --spec-type draft-simple --spec-draft-n-max 1 --spec-draft-n-min 0 --spec-draft-p-min 0 -devd RPC1 -ngld 99",
+    "DRAFT_HOST_MIB": "160",
+    "SERVE_RPC_EXTRA": "192.168.1.108:50053"
+   }
+  },
+  "pi4d1": {
+   "board": "pi4",
+   "d": 1,
+   "laptop_rpc": null,
+   "env": {
+    "SERVE_DRAFT": "-md ~/models/qwen3-0.6b-q8_0.gguf --spec-type draft-simple --spec-draft-n-max 1 --spec-draft-n-min 0 --spec-draft-p-min 0 -ngld 0",
+    "DRAFT_HOST_MIB": "800"
+   }
+  }
+ },
+ "order": [
+  "base",
+  "pi4d1",
+  "lapd1",
+  "base"
+ ],
+ "base_arm": "base",
+ "engine_choice": "lapd1",
+ "predicted": {
+  "pi4d1": {
+   "board": "pi4",
+   "d": 1,
+   "tau": 1.7281,
+   "draft_step_ms": 172.8,
+   "speedup": 1.292,
+   "draft_ingest_ms_per_request": 1454.0,
+   "speedup_without_ingest": 1.312,
+   "ms_per_token_vs_T1": 1492.9
+  },
+  "lapd1": {
+   "board": "laptop",
+   "d": 1,
+   "tau": 1.7281,
+   "draft_step_ms": 37.0,
+   "speedup": 1.381,
+   "draft_ingest_ms_per_request": 297.5,
+   "speedup_without_ingest": 1.386,
+   "ms_per_token_vs_T1": 1396.0
+  }
+ },
+ "model_parts": {
+  "T_ms": {
+   "1": 1928.4,
+   "2": 2367.2,
+   "3": 3416.3,
+   "4": 4472.7,
+   "5": 5566.6
+  },
+  "tau": {
+   "1": 1.7281,
+   "2": 2.2795,
+   "3": 2.7037,
+   "4": 3.0362
+  },
+  "draft_step_bytes": 633495552.0,
+  "per_byte_ms_q8": {
+   "pi4": 2.7283704893114473e-07,
+   "laptop": 4.89039817909939e-08
+  },
+  "per_param_ms_q8": {
+   "pi4": 8.375866829975567e-08,
+   "laptop": 1.6786822308573503e-08
+  },
+  "draft_step_ms": {
+   "pi4": 172.84,
+   "laptop": 37.05
+  },
+  "mean_prompt_tokens": 29.12,
+  "draft_ingest_ms": {
+   "pi4": 1454.0,
+   "laptop": 297.5
+  },
+  "laptop_rtt_ms_from_pi4": 0.853,
+  "bw_bytes_per_ms": 117350.0,
+  "n_vocab": 151937,
+  "S_all": {
+   "d1_laptop": 1.381,
+   "d1_pi4": 1.292,
+   "d2_laptop": 1.256,
+   "d2_pi4": 1.152,
+   "d3_laptop": 1.134,
+   "d3_pi4": 1.032,
+   "d4_laptop": 1.022,
+   "d4_pi4": 0.925
+  },
+  "memory_ctx1024": {
+   "pi4": {
+    "need_mib": 6334,
+    "available_mib": 7413,
+    "margin_mib": 1079
+   },
+   "jetson": {
+    "need_mib": 2655,
+    "available_mib": 3545,
+    "margin_mib": 440
+   }
+  },
+  "pi4_margin_with_draft_mib": 279,
+  "jetson_draft_candidate": "no: 440 MiB to spare, a 0.6B draft needs ~800"
+ },
+ "sources": {
+  "step1": "testbed/results/spec_pass_20261010_011447/score.json",
+  "step1_sha256": "316886dba90bd8ed8cf29cb9a7d389edfd6ac745797cb320fea0942b6d6d5924",
+  "step2": "testbed/results/spec_accept_20261010_013837/score.json",
+  "step2_sha256": "65ba59ce950467af8f57370fa7c095148286774f3394da559785c3101c1ae5f8"
+ },
+ "inputs_sha256": {
+  "spec_serve_20261010.py": "f924a491b47ab3b775c95d5ca8738da7c0bfea8c95305dbd7d3cd78e5b6f8bec",
+  "serve_pool.sh": "7b02dba9fb636ca150b4521fd39f4aeb4bcfdb97f26afc35f0d7b35321dcdacf",
+  "predict_pool.py": "b36fde31eb760256164bed95fa199f31bd90a191dfce24ded7210dec36d779ea",
+  "register_spec_serve_20261010.py": "09df784045ca1981694f256f95ed72a0d29358dd090f3659773a3aade76752a1"
+ },
+ "moe_note": "Qwen3-30B-A3B (14.7 GB) does not fit Pi 4 + Jetson (about 10.9 GB free): the survey's MoE leg needs the Pi 5",
+ "hypotheses": [
+  {
+   "id": "SS-BAR",
+   "claim": "the engine's choice is at least 1.30x the base arm (decode ms per token)"
+  },
+  {
+   "id": "SS-ACC",
+   "claim": "every draft arm's measured speedup within 10 % of its prediction"
+  },
+  {
+   "id": "SS-ORDER",
+   "claim": "the draft arm predicted faster is measured faster"
+  },
+  {
+   "id": "SS-MOE",
+   "claim": "not testable on these boards (moe_note)"
+  }
+ ]
+}

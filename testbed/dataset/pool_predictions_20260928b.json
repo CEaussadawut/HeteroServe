@@ -1,0 +1,634 @@
+{
+ "registered": "2026-09-28T19:02:33+07:00",
+ "campaign": "2026-09-28 night: the predictor's fix re-tested, the Pi 4 host sweep, the MoE warm",
+ "inputs_sha256": {
+  "characterisation.csv": "9d8504f93abcb88f3bd7ff7815c18ae56f9e2b7d65f1d9620dd2225bf1bbcb61",
+  "model_shapes.json": "0f7d5e4c4f1da7e1bf2bc640f35bc2d7afe62810603ad3167ed770cd108f2771",
+  "link.json": "e5084df7d3e62a47c7f93339ef4412c8e5f31db2d500ad5f189aafde95548ac5",
+  "memory_at_rest.json": "1ec5a19725d7c565b9b97449beb0130b179da895e2e93fdb5e36e9ea4f141589",
+  "cluster.json": "73cd9b6f2c274dd3485e110a86332f19537a56ad586f16f288faba95feeff925",
+  "protocol_ab_run.log": "e8d57f5b26deaec3f6d455ee24f2659f697747626009c298826f81a36632e976"
+ },
+ "engine_sha256": {
+  "placement.py": "b47ee0c77c51e04c8d48cdb7fb5da82d22aff3a8e034593bb818c54b82765555",
+  "gguf.py": "805ddefc0c9ef1fb1c010f052da0546d23a35d73343738c08345a339f7486330"
+ },
+ "protocol": "llama-bench -t 4 -p 64 -n 16 -r 3 -oe jsonl -v (a cell's bench.protocol overrides it); the probe is memprobe.sh v2",
+ "row_tests": {
+  "predicted": [
+   "pp64",
+   "tg16"
+  ],
+  "char_rows": [
+   "pp512",
+   "tg128"
+  ],
+  "v3s": [
+   "pp64",
+   "tg16"
+  ]
+ },
+ "size_factors": {
+  "model": "mistral-nemo-12b-q4_k_m against tinyllama-1.1b-q4km, the Pi 5 host, Q4_K_M, condition P of testbed/results/protocol_ab_20260928_174753/run.log",
+  "tinyllama_ms": {
+   "pp": 11.744,
+   "tg": 54.643
+  },
+  "nemo_ms": {
+   "pp": 149.804,
+   "tg": 634.832
+  },
+  "nemo_predicted_from_tinyllama_ms": {
+   "tg": 614.9,
+   "pp": 132.3
+  },
+  "factor": {
+   "tg": 1.0324,
+   "pp": 1.1323
+  },
+  "applies_to": "v3s only: the Pi 5 as host at Q4_K_M; every other board, role and quant as v3"
+ },
+ "rules": [
+  "FIX, per phase: the pooled-protocol rows replace the characterisation rows for a phase iff, over the four v3.* cells, v3's mean |error| in that phase is lower than char_rows'.",
+  "SIZE: v3s replaces v3 for the Pi 5 host's Q4_K_M costs, per phase, iff its mean |error| over v3.qwen3_14b.rule and v3.qwen14b.rule (Pi 5-hosted Q4_K_M models other than the factors' own) is lower than v3's.",
+  "THRASH: a Pi 4 host cell thrashes if its decode is more than 1.5x its v3 prediction, or the host's peak RssFile during the cell stays below 90 % of its blocks' bytes.",
+  "MOE WARM: the warm-up worked if the host's RssFile reached 90 % of its 13 blocks' bytes before the scored pp64 test began, and the three pp64 repetitions agree within 5 %."
+ ],
+ "configs": {
+  "v3.nemo12b.rule": {
+   "model": "mistral-nemo-12b-q4_k_m",
+   "quant": "Q4_K_M",
+   "why": "validation: nemo12b.rule re-run (the Pi 5 alone, 0 hops; the size factors' own model: in-sample for v3s)",
+   "pipeline": [
+    {
+     "node": "pi5",
+     "blocks": 40
+    }
+   ],
+   "head_on": "pi5",
+   "bench": {
+    "host": "pi5",
+    "args": "-m ~/models/mistral-nemo-12b-q4_k_m.gguf -ngl 0"
+   },
+   "memory": {
+    "pi5": {
+     "blocks": 40,
+     "need_mib": 6996,
+     "reserve_mib": 0,
+     "available_mib": 7619,
+     "margin_mib": 623
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 612.4,
+    "decode_tok_s": 1.633,
+    "prefill_ms_per_token": 132.0,
+    "prefill_tok_s": 7.57
+   },
+   "predicted_alt": {
+    "char_rows": {
+     "decode_ms_per_token": 620.7,
+     "decode_tok_s": 1.611,
+     "prefill_ms_per_token": 138.6,
+     "prefill_tok_s": 7.21
+    },
+    "v3s": {
+     "decode_ms_per_token": 632.3,
+     "decode_tok_s": 1.582,
+     "prefill_ms_per_token": 149.5,
+     "prefill_tok_s": 6.69
+    }
+   },
+   "cost_sources": {
+    "pi5": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    }
+   },
+   "link_pairs": {}
+  },
+  "v3.qwen3_14b.rule": {
+   "model": "qwen3-14b-q4_k_m",
+   "quant": "Q4_K_M",
+   "why": "validation: qwen3_14b.rule re-run (1 hop, the Jetson holds the head)",
+   "pipeline": [
+    {
+     "node": "pi5",
+     "blocks": 35
+    },
+    {
+     "node": "jetson",
+     "blocks": 5
+    }
+   ],
+   "head_on": "jetson",
+   "bench": {
+    "host": "pi5",
+    "args": "-m ~/models/qwen3-14b-q4_k_m.gguf -rpc 192.168.100.111:50052 -ngl 6"
+   },
+   "memory": {
+    "pi5": {
+     "blocks": 35,
+     "need_mib": 7391,
+     "reserve_mib": 0,
+     "available_mib": 7619,
+     "margin_mib": 228
+    },
+    "jetson": {
+     "blocks": 5,
+     "need_mib": 2265,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 830
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 838.3,
+    "decode_tok_s": 1.193,
+    "prefill_ms_per_token": 167.5,
+    "prefill_tok_s": 5.97
+   },
+   "predicted_alt": {
+    "char_rows": {
+     "decode_ms_per_token": 847.8,
+     "decode_tok_s": 1.18,
+     "prefill_ms_per_token": 170.9,
+     "prefill_tok_s": 5.85
+    },
+    "v3s": {
+     "decode_ms_per_token": 857.6,
+     "decode_tok_s": 1.166,
+     "prefill_ms_per_token": 186.0,
+     "prefill_tok_s": 5.38
+    }
+   },
+   "cost_sources": {
+    "pi5": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "jetson": {
+     "host": "vulkan row",
+     "worker": "vulkan row + smoke-test RPC cost"
+    }
+   },
+   "link_pairs": {
+    "jetson": "pi5-jetson"
+   }
+  },
+  "v3.qwen14b.rule": {
+   "model": "qwen2.5-14b-instruct-q4_k_m",
+   "quant": "Q4_K_M",
+   "why": "validation: qwen14b.rule (2026-09-27) re-run (1 hop, the Jetson holds the head)",
+   "pipeline": [
+    {
+     "node": "pi5",
+     "blocks": 43
+    },
+    {
+     "node": "jetson",
+     "blocks": 5
+    }
+   ],
+   "head_on": "jetson",
+   "bench": {
+    "host": "pi5",
+    "args": "-m ~/models/qwen2.5-14b-instruct-q4_k_m-00001-of-00003.gguf -rpc 192.168.100.111:50052 -ngl 6"
+   },
+   "memory": {
+    "pi5": {
+     "blocks": 43,
+     "need_mib": 7550,
+     "reserve_mib": 0,
+     "available_mib": 7619,
+     "margin_mib": 69
+    },
+    "jetson": {
+     "blocks": 5,
+     "need_mib": 2096,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 999
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 827.4,
+    "decode_tok_s": 1.209,
+    "prefill_ms_per_token": 166.3,
+    "prefill_tok_s": 6.01
+   },
+   "predicted_alt": {
+    "char_rows": {
+     "decode_ms_per_token": 836.9,
+     "decode_tok_s": 1.195,
+     "prefill_ms_per_token": 170.5,
+     "prefill_tok_s": 5.87
+    },
+    "v3s": {
+     "decode_ms_per_token": 847.1,
+     "decode_tok_s": 1.181,
+     "prefill_ms_per_token": 185.3,
+     "prefill_tok_s": 5.4
+    }
+   },
+   "cost_sources": {
+    "pi5": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "jetson": {
+     "host": "vulkan row",
+     "worker": "vulkan row + smoke-test RPC cost"
+    }
+   },
+   "link_pairs": {
+    "jetson": "pi5-jetson"
+   }
+  },
+  "v3.qwen3_14b.even": {
+   "model": "qwen3-14b-q4_k_m",
+   "quant": "Q4_K_M",
+   "why": "validation: qwen3_14b.even re-run (2 hops, the Pi 4 holds the head). nemo12b.even was the first choice, but under the Jetson's 450 MiB reserve (added 2026-09-28 17:0x) its head-on-the-Jetson split has a -60 MiB margin: not run",
+   "pipeline": [
+    {
+     "node": "pi5",
+     "blocks": 14
+    },
+    {
+     "node": "jetson",
+     "blocks": 13
+    },
+    {
+     "node": "pi4",
+     "blocks": 13
+    }
+   ],
+   "head_on": "pi4",
+   "bench": {
+    "host": "pi5",
+    "args": "-m ~/models/qwen3-14b-q4_k_m.gguf -rpc 192.168.100.111:50052,192.168.10.12:50052 -ngl 27 -ts 12.5/14.5"
+   },
+   "memory": {
+    "pi5": {
+     "blocks": 14,
+     "need_mib": 3500,
+     "reserve_mib": 0,
+     "available_mib": 7619,
+     "margin_mib": 4119
+    },
+    "jetson": {
+     "blocks": 13,
+     "need_mib": 2515,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 580
+    },
+    "pi4": {
+     "blocks": 13,
+     "need_mib": 3261,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 4152
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 1508.8,
+    "decode_tok_s": 0.663,
+    "prefill_ms_per_token": 470.2,
+    "prefill_tok_s": 2.13
+   },
+   "predicted_alt": {
+    "char_rows": {
+     "decode_ms_per_token": 1520.5,
+     "decode_tok_s": 0.658,
+     "prefill_ms_per_token": 471.9,
+     "prefill_tok_s": 2.12
+    },
+    "v3s": {
+     "decode_ms_per_token": 1516.6,
+     "decode_tok_s": 0.659,
+     "prefill_ms_per_token": 477.6,
+     "prefill_tok_s": 2.09
+    }
+   },
+   "cost_sources": {
+    "pi5": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "jetson": {
+     "host": "vulkan row",
+     "worker": "vulkan row + smoke-test RPC cost"
+    },
+    "pi4": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    }
+   },
+   "link_pairs": {
+    "jetson": "pi5-jetson",
+    "pi4": "pi5-pi4"
+   }
+  },
+  "p4.qwen14b.k28": {
+   "model": "qwen2.5-14b-instruct-q4_k_m",
+   "quant": "Q4_K_M",
+   "why": "Pi 4 host sweep: 28 blocks, ~70 % of the engine's limit (42)",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 28
+    },
+    {
+     "node": "pi5",
+     "blocks": 20
+    }
+   ],
+   "head_on": "pi5",
+   "bench": {
+    "host": "pi4",
+    "args": "-m ~/models/qwen2.5-14b-instruct-q4_k_m-00001-of-00003.gguf -rpc 192.168.10.11:50052 -ngl 21"
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 28,
+     "need_mib": 5134,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 2279
+    },
+    "pi5": {
+     "blocks": 20,
+     "need_mib": 3966,
+     "reserve_mib": 0,
+     "available_mib": 7619,
+     "margin_mib": 3653
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 1617.7,
+    "decode_tok_s": 0.618,
+    "prefill_ms_per_token": 735.3,
+    "prefill_tok_s": 1.36
+   },
+   "predicted_alt": {
+    "char_rows": {
+     "decode_ms_per_token": 1616.1,
+     "decode_tok_s": 0.619,
+     "prefill_ms_per_token": 757.1,
+     "prefill_tok_s": 1.32
+    },
+    "v3s": {
+     "decode_ms_per_token": 1617.7,
+     "decode_tok_s": 0.618,
+     "prefill_ms_per_token": 735.3,
+     "prefill_tok_s": 1.36
+    }
+   },
+   "cost_sources": {
+    "pi4": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "pi5": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    }
+   },
+   "link_pairs": {
+    "pi5": "pi5-pi4"
+   },
+   "hypothesis": "Pi 4 host, 28 blocks = 4379 MiB of mmap'd weights that decode reads on every token. The engine charges 5134 MiB (blocks + 137 MiB host overhead + the largest tensor it uploads, a load-time copy freed before decoding). Steady state needs blocks + overhead = 4516 MiB of the 7413 MiB available at rest, so NO thrash is predicted."
+  },
+  "p4.qwen14b.k40": {
+   "model": "qwen2.5-14b-instruct-q4_k_m",
+   "quant": "Q4_K_M",
+   "why": "Pi 4 host sweep: 40 blocks, ~95 % of the engine's limit (42)",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 40
+    },
+    {
+     "node": "pi5",
+     "blocks": 8
+    }
+   ],
+   "head_on": "pi5",
+   "bench": {
+    "host": "pi4",
+    "args": "-m ~/models/qwen2.5-14b-instruct-q4_k_m-00001-of-00003.gguf -rpc 192.168.10.11:50052 -ngl 9"
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 40,
+     "need_mib": 6985,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 428
+    },
+    "pi5": {
+     "blocks": 8,
+     "need_mib": 2115,
+     "reserve_mib": 0,
+     "available_mib": 7619,
+     "margin_mib": 5504
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 1997.8,
+    "decode_tok_s": 0.501,
+    "prefill_ms_per_token": 928.2,
+    "prefill_tok_s": 1.08
+   },
+   "predicted_alt": {
+    "char_rows": {
+     "decode_ms_per_token": 1992.1,
+     "decode_tok_s": 0.502,
+     "prefill_ms_per_token": 955.0,
+     "prefill_tok_s": 1.05
+    },
+    "v3s": {
+     "decode_ms_per_token": 1997.8,
+     "decode_tok_s": 0.501,
+     "prefill_ms_per_token": 928.2,
+     "prefill_tok_s": 1.08
+    }
+   },
+   "cost_sources": {
+    "pi4": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "pi5": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    }
+   },
+   "link_pairs": {
+    "pi5": "pi5-pi4"
+   },
+   "hypothesis": "Pi 4 host, 40 blocks = 6227 MiB of mmap'd weights that decode reads on every token. The engine charges 6985 MiB (blocks + 137 MiB host overhead + the largest tensor it uploads, a load-time copy freed before decoding). Steady state needs blocks + overhead = 6364 MiB of the 7413 MiB available at rest, so NO thrash is predicted."
+  },
+  "p4.qwen14b.k45_forced": {
+   "model": "qwen2.5-14b-instruct-q4_k_m",
+   "quant": "Q4_K_M",
+   "why": "Pi 4 host sweep: 45 blocks, FORCED past the engine's limit (42)",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 45
+    },
+    {
+     "node": "pi5",
+     "blocks": 3
+    }
+   ],
+   "head_on": "pi5",
+   "bench": {
+    "host": "pi4",
+    "args": "-m ~/models/qwen2.5-14b-instruct-q4_k_m-00001-of-00003.gguf -rpc 192.168.10.11:50052 -ngl 4"
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 45,
+     "need_mib": 7800,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": -387,
+     "forced": true,
+     "gate_mib": 760,
+     "forced_reason": "registered past the engine's limit on purpose (user, 2026-09-28: sweep the Pi 4 host 'up to the limit and past it'); gated on the memory that can run out (the need less the mmap'd blocks, which the kernel can always reclaim)"
+    },
+    "pi5": {
+     "blocks": 3,
+     "need_mib": 1300,
+     "reserve_mib": 0,
+     "available_mib": 7619,
+     "margin_mib": 6319
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 2165.1,
+    "decode_tok_s": 0.462,
+    "prefill_ms_per_token": 1008.6,
+    "prefill_tok_s": 0.99
+   },
+   "predicted_alt": {
+    "char_rows": {
+     "decode_ms_per_token": 2157.6,
+     "decode_tok_s": 0.463,
+     "prefill_ms_per_token": 1037.5,
+     "prefill_tok_s": 0.96
+    },
+    "v3s": {
+     "decode_ms_per_token": 2165.1,
+     "decode_tok_s": 0.462,
+     "prefill_ms_per_token": 1008.6,
+     "prefill_tok_s": 0.99
+    }
+   },
+   "cost_sources": {
+    "pi4": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "pi5": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    }
+   },
+   "link_pairs": {
+    "pi5": "pi5-pi4"
+   },
+   "hypothesis": "Pi 4 host, 45 blocks = 7040 MiB of mmap'd weights that decode reads on every token. The engine charges 7800 MiB (blocks + 137 MiB host overhead + the largest tensor it uploads, a load-time copy freed before decoding). Steady state needs blocks + overhead = 7177 MiB of the 7413 MiB available at rest, so NO thrash is predicted -- although the cell is past the engine's limit, which is conservative by the upload copy."
+  },
+  "moe.rule_reserve_warm": {
+   "model": "qwen3-30b-a3b-q3_k_m",
+   "quant": "Q3_K_M",
+   "why": "the MoE's registered qwen3moe.rule_reserve split, with an unscored pp512 test before the scored pp64 / tg16",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 13
+    },
+    {
+     "node": "jetson",
+     "blocks": 10
+    },
+    {
+     "node": "pi5",
+     "blocks": 25
+    }
+   ],
+   "head_on": "pi5",
+   "bench": {
+    "host": "pi4",
+    "args": "-m ~/models/qwen3-30b-a3b-q3_k_m.gguf -rpc 192.168.100.111:50052,192.168.10.11:50052 -ngl 36 -ts 9.5/26.5",
+    "protocol": "-t 4 -p 512,64 -n 16 -r 3 -oe jsonl -v"
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 13,
+     "need_mib": 4133,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 3280
+    },
+    "jetson": {
+     "blocks": 10,
+     "need_mib": 3007,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 88
+    },
+    "pi5": {
+     "blocks": 25,
+     "need_mib": 7512,
+     "reserve_mib": 0,
+     "available_mib": 7619,
+     "margin_mib": 107
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 263.3,
+    "decode_tok_s": 3.797,
+    "prefill_ms_per_token": 123.3,
+    "prefill_tok_s": 8.11
+   },
+   "predicted_alt": {
+    "char_rows": {
+     "decode_ms_per_token": 266.9,
+     "decode_tok_s": 3.747,
+     "prefill_ms_per_token": 124.6,
+     "prefill_tok_s": 8.02
+    },
+    "v3s": {
+     "decode_ms_per_token": 263.3,
+     "decode_tok_s": 3.797,
+     "prefill_ms_per_token": 123.3,
+     "prefill_tok_s": 8.11
+    }
+   },
+   "cost_sources": {
+    "pi4": {
+     "host": "cpu row",
+     "worker": "host row (no worker row at Q3_K_M; this board never repacks)"
+    },
+    "jetson": {
+     "host": "vulkan row",
+     "worker": "vulkan row + smoke-test RPC cost"
+    },
+    "pi5": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    }
+   },
+   "link_pairs": {
+    "jetson": "pi4-jetson",
+    "pi5": "pi5-pi4"
+   },
+   "hypothesis": "with the pp512 test first, the Pi 4 host's own 13 blocks (3751 MiB) are back in its page cache before the scored pp64 test, so its repetitions are steady (see rules: MOE WARM)"
+  }
+ }
+}

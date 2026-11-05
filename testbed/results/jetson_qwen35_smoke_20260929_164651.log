@@ -1,0 +1,33 @@
+########## 2026-09-29T16:46:51+07:00 Jetson qwen35 RPC smoke (laptop host, -ngl 9, cases vulkan), model qwen3.8-27b-q3_k_m.gguf 14865aaef0b6c26a
+jetson memavail 3546 MiB
+
+===== vulkan worker (~/llama.cpp/build/bin, -d Vulkan0)
+before: 16:47:26 V=5152 I=504 P=2633 alarms=0 minV=4840 maxP=8828 pmode:0000
+worker pid 29637
+probe pid 29833
+| model                          |       size |     params | backend    | ngl |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | --------------: | -------------------: |
+| qwen35 27B Q3_K - Medium       |  12.47 GiB |    27.32 B | RPC        |   9 |            pp64 |          1.95 ± 0.00 |
+{"build_commit": "b23701f77", "build_number": 11047, "cpu_info": "Intel(R) Core(TM) i5-8350U CPU @ 1.70GHz", "gpu_info": "192.168.100.111:50052", "backends": "RPC", "model_filename": "/opt/heteroserve/models/qwen3.8-27b-q3_k_m.gguf", "model_type": "qwen35 27B Q3_K - Medium", "model_size": 13393055744, "model_n_params": 27320697856, "n_batch": 2048, "n_ubatch": 512, "n_threads": 4, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "f16", "type_v": "f16", "n_gpu_layers": 9, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": -1, "devices": "auto", "tensor_split": "0.00", "tensor_buft_overrides": "none", "load_mode": "auto", "lazy_mode": "auto", "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "n_prompt": 64, "n_gen": 0, "n_depth": 0, "test_time": "2026-09-29T09:48:00Z", "avg_ns": 32789297485, "stddev_ns": 0, "avg_ts": 1.951856, "stddev_ts": 0.000000, "samples_ns": [ 32789297485 ],"samples_ts": [ 1.95186 ]}
+| qwen35 27B Q3_K - Medium       |  12.47 GiB |    27.32 B | RPC        |   9 |            tg16 |          0.79 ± 0.00 |
+{"build_commit": "b23701f77", "build_number": 11047, "cpu_info": "Intel(R) Core(TM) i5-8350U CPU @ 1.70GHz", "gpu_info": "192.168.100.111:50052", "backends": "RPC", "model_filename": "/opt/heteroserve/models/qwen3.8-27b-q3_k_m.gguf", "model_type": "qwen35 27B Q3_K - Medium", "model_size": 13393055744, "model_n_params": 27320697856, "n_batch": 2048, "n_ubatch": 512, "n_threads": 4, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "f16", "type_v": "f16", "n_gpu_layers": 9, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": -1, "devices": "auto", "tensor_split": "0.00", "tensor_buft_overrides": "none", "load_mode": "auto", "lazy_mode": "auto", "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "n_prompt": 0, "n_gen": 16, "n_depth": 0, "test_time": "2026-09-29T09:49:04Z", "avg_ns": 20184622230, "stddev_ns": 0, "avg_ts": 0.792683, "stddev_ts": 0.000000, "samples_ns": [ 20184622230 ],"samples_ts": [ 0.792683 ]}
+
+build: b23701f77 (11047)
+EXIT_BENCH_vulkan=0
+worker alive after: yes
+MEMPROBE vulkan: min MemAvailable 600 MiB, peak worker VmRSS 2183 MiB, RssAnon 844 MiB (114 samples)
+--- worker log tail
+Accepted client connection
+Client connection closed
+Accepted client connection
+Client connection closed
+Accepted client connection
+Client connection closed
+Accepted client connection
+Client connection closed
+after: 16:49:27 V=5160 I=464 P=2390 alarms=0 minV=4840 maxP=8828 pmode:0000
+[18118.608574] systemd[1]: Starting Journal Service...
+[18118.830547] systemd-journald[25224]: File /run/log/journal/a3d9197b765643568af09eb2bd3e5ce7/system.journal corrupted or uncleanly shut down, renaming and replacing.
+[18118.882439] systemd[1]: Started Journal Service.
+worker stopped
+log: testbed/results/jetson_qwen35_smoke_20260929_164651.log

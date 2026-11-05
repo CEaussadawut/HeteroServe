@@ -1,0 +1,267 @@
+{
+ "registered": "2026-10-10T12:55:33+07:00",
+ "name": "spec_shape_20261010",
+ "question": "where the draft belongs as the Pi 4 <-> laptop link slows (the user: \"Draft under shaping\")",
+ "model": "qwen3_14b",
+ "ctx": 1024,
+ "place": "pi4:27,jetson:13",
+ "place_head": "host",
+ "n_predict": 64,
+ "host_url": "http://192.168.1.110:8080",
+ "outlets": {
+  "pi4": 0,
+  "laptop": 1,
+  "jetson": 2
+ },
+ "chat_format": "<|im_start|>user\n%s<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n",
+ "sampling": {
+  "temperature": 0,
+  "top_k": 1,
+  "cache_prompt": false
+ },
+ "warmup_prompt": "Say hello in one sentence.",
+ "prompts": [
+  {
+   "id": "e01",
+   "category": "explain",
+   "lang": "en",
+   "text": "Explain how a refrigerator keeps food cold."
+  },
+  {
+   "id": "c01",
+   "category": "code",
+   "lang": "en",
+   "text": "Write a Python function that returns the n-th Fibonacci number iteratively."
+  },
+  {
+   "id": "w01",
+   "category": "writing",
+   "lang": "en",
+   "text": "Write a short, polite email asking my professor for a meeting next week."
+  },
+  {
+   "id": "th01",
+   "category": "explain",
+   "lang": "th",
+   "text": "อธิบายว่าทำไมท้องฟ้าจึงเป็นสีฟ้า"
+  }
+ ],
+ "idle_before_s": 120,
+ "idle_after_s": 60,
+ "laptop_rpc_server": "/opt/heteroserve/llama.cpp/build/bin/ggml-rpc-server",
+ "models_on_host": {
+  "~/models/qwen3-14b-q4_k_m.gguf": "500a8806e85ee9c83f3ae08420295592451379b4f8cf2d0f41c15dffeb6b81f0",
+  "~/models/qwen3-0.6b-q8_0.gguf": "9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031"
+ },
+ "arms": {
+  "base": {
+   "env": {
+    "SERVE_DRAFT": "none"
+   }
+  },
+  "pi4d1": {
+   "board": "pi4",
+   "d": 1,
+   "laptop_rpc": null,
+   "env": {
+    "SERVE_DRAFT": "-md ~/models/qwen3-0.6b-q8_0.gguf --spec-type draft-simple --spec-draft-n-max 1 --spec-draft-n-min 0 --spec-draft-p-min 0 -ngld 0",
+    "DRAFT_HOST_MIB": "800"
+   }
+  },
+  "lapd1": {
+   "board": "laptop",
+   "d": 1,
+   "laptop_rpc": "192.168.1.108:50053",
+   "env": {
+    "SERVE_DRAFT": "-md ~/models/qwen3-0.6b-q8_0.gguf --spec-type draft-simple --spec-draft-n-max 1 --spec-draft-n-min 0 --spec-draft-p-min 0 -devd RPC1 -ngld 99",
+    "DRAFT_HOST_MIB": "160",
+    "SERVE_RPC_EXTRA": "192.168.1.108:50053"
+   }
+  }
+ },
+ "order": [
+  "base",
+  "pi4d1",
+  "lapd1",
+  "pi4d1",
+  "base"
+ ],
+ "shaped_arm": "lapd1",
+ "settings": [
+  {
+   "id": "s0",
+   "rate_mbit": null
+  },
+  {
+   "id": "b100",
+   "rate_mbit": 100
+  },
+  {
+   "id": "b50",
+   "rate_mbit": 50
+  },
+  {
+   "id": "b35",
+   "rate_mbit": 35
+  },
+  {
+   "id": "b25",
+   "rate_mbit": 25
+  },
+  {
+   "id": "b15",
+   "rate_mbit": 15
+  },
+  {
+   "id": "s0r",
+   "rate_mbit": null
+  }
+ ],
+ "shaping": {
+  "peer": "192.168.1.108",
+  "ports": "50053,5202",
+  "measure_port": 5202,
+  "netshape": "NETSHAPE_PEER=192.168.1.108 NETSHAPE_PORT=50053,5202 netshape.sh apply <rate> 0",
+  "measure": "PAIR=\"pi4 laptop\" MEASURE_PORT=5202 MIB=max(16, rate) REPS=3 measure_link.sh"
+ },
+ "model_parts": {
+  "T1": 1928.4,
+  "T2": 2367.2,
+  "tau1": 1.7281,
+  "n": 64,
+  "c_lap": 30.98045493968363,
+  "t_pi4": 172.84,
+  "q_lap": 10.007181242857683,
+  "q_pi4": 49.93131868131868,
+  "H": 4096.0,
+  "V": 607748.0,
+  "P": 26.25,
+  "prompt_ids": [
+   "e01",
+   "c01",
+   "w01",
+   "th01"
+  ],
+  "prompt_n": {
+   "e01": 21,
+   "c01": 26,
+   "w01": 27,
+   "th01": 31
+  },
+  "rtt_registered": 0.853,
+  "bw_gigabit": 117350.0,
+  "draft_params": 596133148.9013697
+ },
+ "predicted_nominal": {
+  "s0": {
+   "rate_mbit_nominal": null,
+   "goodput_mbit": 938.8,
+   "lapd1": 1.3818,
+   "pi4d1": 1.2937,
+   "gap_pct": -6.38,
+   "faster": "lapd1",
+   "t_lap_ms": 37.05
+  },
+  "b100": {
+   "rate_mbit_nominal": 100,
+   "goodput_mbit": 95.64,
+   "lapd1": 1.3552,
+   "pi4d1": 1.2937,
+   "gap_pct": -4.54,
+   "faster": "lapd1",
+   "t_lap_ms": 83.01
+  },
+  "b50": {
+   "rate_mbit_nominal": 50,
+   "goodput_mbit": 47.82,
+   "lapd1": 1.3267,
+   "pi4d1": 1.2937,
+   "gap_pct": -2.49,
+   "faster": "lapd1",
+   "t_lap_ms": 134.19
+  },
+  "b35": {
+   "rate_mbit_nominal": 35,
+   "goodput_mbit": 33.47,
+   "lapd1": 1.3032,
+   "pi4d1": 1.2937,
+   "gap_pct": -0.73,
+   "faster": "lapd1",
+   "t_lap_ms": 178.06
+  },
+  "b25": {
+   "rate_mbit_nominal": 25,
+   "goodput_mbit": 23.91,
+   "lapd1": 1.2731,
+   "pi4d1": 1.2937,
+   "gap_pct": 1.61,
+   "faster": "pi4d1",
+   "t_lap_ms": 236.55
+  },
+  "b15": {
+   "rate_mbit_nominal": 15,
+   "goodput_mbit": 14.35,
+   "lapd1": 1.2081,
+   "pi4d1": 1.2937,
+   "gap_pct": 7.08,
+   "faster": "pi4d1",
+   "t_lap_ms": 373.02
+  },
+  "s0r": {
+   "rate_mbit_nominal": null,
+   "goodput_mbit": 938.8,
+   "lapd1": 1.3818,
+   "pi4d1": 1.2937,
+   "gap_pct": -6.38,
+   "faster": "lapd1",
+   "t_lap_ms": 37.05
+  }
+ },
+ "predicted_crossover_goodput_mbit": 29.76,
+ "hypotheses": [
+  {
+   "id": "SH-FLIP",
+   "claim": "at every setting where the re-priced lapd1 and pi4d1 predictions differ by >= 3 %, the arm predicted faster measures faster; at least two settings qualify"
+  },
+  {
+   "id": "SH-CROSS",
+   "claim": "the measured crossover goodput (linear in 1/bw between the settings bracketing the sign change of lapd1/pi4d1 - 1) within a factor 1.5 of the re-priced predicted crossover"
+  },
+  {
+   "id": "SH-ACC",
+   "claim": "every lapd1 setting's measured speedup (base pooled / lapd1) within 10 % of its re-priced prediction"
+  },
+  {
+   "id": "SH-SLOPE",
+   "claim": "the slope through the origin of lapd1's measured ms/token increase over s0 against the predicted increase, over the shaped settings, in [0.75, 1.25]"
+  }
+ ],
+ "confirmed_when": "SH-FLIP and SH-CROSS hold",
+ "notes": [
+  "the links are measured in a pre-phase with nothing loaded (measure_link.sh refuses a busy board); each setting's shaping is then reapplied for its requests (netem's rate is deterministic)",
+  "the laptop is the draft's board; the user's aunsync timer (a Google Drive sync pass every 15 min) is left as it is, and its pass times are read from the user journal afterwards and reported beside the laptop arm's settings",
+  "energy is logged at 5 Hz (the Pi 4 and Jetson outlets) and reported, not judged",
+  "the smoke (spec_shape_smoke_20261010_124238, never scored) ran the plumbing on a scratch copy of this registration first"
+ ],
+ "thresholds": {
+  "flip_min": 0.03,
+  "cross_factor": 1.5,
+  "acc_pct": 10.0,
+  "slope_band": [
+   0.75,
+   1.25
+  ]
+ },
+ "inputs_sha256": {
+  "testbed/dataset/spec_serve_predictions_20261010.json": "76631175aa7cb39b9c6711a180bfb524dfc1f82f361d9b4c1d21f0c68300f8c5",
+  "testbed/results/spec_serve_20261010_024045/run.jsonl": "d7b1fa25a9134453c93ec7fd2e2cd137b0e7ea6262061931106c10790d59c24c",
+  "../../../../../home/aun/.cache/heteroserve-models/Qwen3-0.6B-Q8_0.gguf": "9465e63a22add5354d9bb4b99e90117043c7124007664907259bd16d043bb031",
+  "testbed/scripts/register_spec_shape_20261010.py": "b706f2b8290a505b966703037055823a716496958f3e1ea950b4477c3fe70a8d",
+  "testbed/scripts/spec_shape_20261010.py": "cf93a15ffd0daa8d4381efda66f4f46294ca74ea18980981790125e664ea56e8",
+  "testbed/scripts/netshape.sh": "ce4144aa41abd8d89371145c76febdf9ef43aeb488eed9ac6cf2f43e4ef82d0f",
+  "testbed/scripts/measure_link.sh": "48e2ad0c8d2fde5c54eeafff097644168172ca193412bccfbd2bdc9e5cd85003",
+  "testbed/scripts/link_to_json.py": "1ee1c2ced73296b02604a2b9d66684d14c4686307e08b07503dfd51301a1d654",
+  "testbed/scripts/serve_pool.sh": "a501ba40f69ec6c619de4e313f80f1374a2eb65cfe1d753866b0d151fb5eb3f1",
+  "testbed/scripts/serve_defaults.sh": "4fdedec2da1479d577117606f3d810e313ef4483a71be6c9787895133a66a095"
+ }
+}

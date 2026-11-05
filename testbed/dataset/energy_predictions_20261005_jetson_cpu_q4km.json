@@ -1,0 +1,75 @@
+{
+ "registered": "2026-10-05T19:35:46+07:00",
+ "campaign": "2026-10-05: Jetson Nano energy per token, TinyLlama-1.1B cpu_q4km on its CPU (-ngl 0), prefill-only and decode-only at the wall (one of five Jetson runs registered together)",
+ "inputs_sha256": {
+  "testbed/scripts/energy_phase_run.py": "f0cc72e52bec5408205c63a4db5049f7c0c59be51ed18393a5116dfcea668734",
+  "testbed/scripts/score_energy_phase_run.py": "4bcf7540511b309e3823efcc05060774207420190f8be6c9e9f1e951ab8ddd3b",
+  "testbed/scripts/shelly_strip.py": "b7aaa7ceb2f1e94aa3f1f46100c06ca9d6c0c3fa8764a6372239747ffc0fe5a8",
+  "testbed/energy/strip.json": "04efaf39d8fc06e47c514ee164836c18996cf985f0565fd8d6d535c4b2f6686c",
+  "testbed/scripts/jetson_power_guard.sh": "6dafb56fef33f2bc0e070b2552dcb871053d3c0681358bd27436552f905d90de"
+ },
+ "model": {
+  "file_on_board": "~/models/tinyllama-1.1b-q4km.gguf",
+  "sha256": "9fecc3b3cd76bba89d504f29b616eedf7da85b96540e490ca5824d3f7d2776a0",
+  "verified": "re-hashed on the Jetson by the runner's preflight"
+ },
+ "build": "llama.cpp b23701f7 (clean tree, the Vulkan build) on the Jetson, ~/llama.cpp/build/bin/llama-bench -ngl 0",
+ "command": "python3 testbed/scripts/energy_phase_run.py --node jetson --outlet 2 --model '~/models/tinyllama-1.1b-q4km.gguf' --sha256 9fecc3b3cd76bba89d504f29b616eedf7da85b96540e490ca5824d3f7d2776a0 --pp 512:3 --tg 128:6 --cycles 3 --threads 4 --idle-before 300 --idle-after 120 --settle 30 --gap 10 --require-guard --jetson-clocks --bench-args '-ngl 0'",
+ "conditions": "MAXN on micro-USB with the power guard running (restarted 18:08 after the 18:06 power cycle; the board hung at 14:43, cause not recorded) and required by the runner; clocks LOCKED for the whole session (jetson_clocks, stored and restored), the Jetson's measurement protocol, so the idle floor is the locked one (3.11 W at the 19:33 shakedown against 2.10 W under the governors)",
+ "plan": "settle 30 s; idle 300 s; pp1, tg1, pp2, tg2, pp3, tg3 (10 s gaps); idle 120 s; the five runs back to back (vk_q4km, vk_q4_0, vk_q8_0, vk_q3km, cpu_q4km)",
+ "definitions": "as in energy_predictions_20261005b.json",
+ "predictions": {
+  "pp": {
+   "tps": [
+    8.16,
+    9.01
+   ],
+   "mean_w": [
+    5.0,
+    9.0
+   ],
+   "j_per_token_net": {
+    "trap": [
+     0.2201,
+     0.6861
+    ],
+    "counter": [
+     0.2267,
+     0.741
+    ]
+   }
+  },
+  "tg": {
+   "tps": [
+    6.08,
+    6.72
+   ],
+   "mean_w": [
+    4.5,
+    8.5
+   ],
+   "j_per_token_net": {
+    "trap": [
+     0.2173,
+     0.8428
+    ],
+    "counter": [
+     0.2238,
+     0.9102
+    ]
+   }
+  },
+  "spread_pct_max": 5.0,
+  "gap_pct": [
+   -7.0,
+   -2.0
+  ],
+  "guard": "no trip during the run"
+ },
+ "basis": {
+  "tps": "the Jetson's cpu characterisation rows (pp512 8.585 t/s from 2 row(s), tg128 6.396 from 2; clocks locked, b23701f), band +/- 5 %",
+  "mean_w": "outlet 2: 3.11 W idle with the clocks locked; +2.83 W under a 2-core busy loop (governors, 14:30); a 4-core compile drew 4.3-5.0 W DC at the module (node-jetson.md). GPU power under llama.cpp is not measured at the wall yet: wide bands, a guess",
+  "j_per_token_net": "trapezoid band = (power band - 3.11 W) / the t/s point; counter band = trapezoid x [1.03, 1.08] (outlet 2's gap at idle: -3.82 %)"
+ },
+ "scoring": "testbed/scripts/score_energy_phase_run.py (with the guard-trip check); PASS / FAIL / N/A, reported as found"
+}

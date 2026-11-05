@@ -1,0 +1,167 @@
+{
+ "registered_at": "2026-11-04T05:35:12+07:00",
+ "script": "testbed/scripts/register_sp11_20261104.py",
+ "session": "testbed/scripts/sp11_session_20261104.py",
+ "scorer": "testbed/scripts/score_sp11_20261104.py",
+ "out_prefix": "sp11",
+ "request_timeout_s": 600,
+ "what": "the MTP 1 default across 12 prompts on three pooled plans, and the texts behind a plan's acceptance",
+ "follows": {
+  "registrations": [
+   "testbed/dataset/sp10e_predictions_20261103.json",
+   "testbed/dataset/sp10c_predictions_20261103.json"
+  ],
+  "live_check": "testbed/results/mtp_default_check_20261104_031253",
+  "why": "MTP 1's registered gains rest on two prompts; sp10e's P5 acceptance moved on free text"
+ },
+ "memfile": "testbed/dataset/memory_snapshot_20261104_053305.json",
+ "order": [
+  "Q5",
+  "Q6"
+ ],
+ "configs": {
+  "Q5": {
+   "MODEL": "qwen35_9b",
+   "CTX": "4096",
+   "PLACE": "laptop:20,pi5:7,pi4:6",
+   "PLACE_HEAD": "host",
+   "specs": [
+    "none",
+    "mtp1"
+   ],
+   "nprobs": true
+  },
+  "Q6": {
+   "MODEL": "qwen35_9b",
+   "CTX": "4096",
+   "PLACE": "laptop:12,pi5:11,pi4:10",
+   "PLACE_HEAD": "host",
+   "specs": [
+    "none",
+    "mtp1"
+   ]
+  }
+ },
+ "dropped_before_registering": {
+  "config": "Q35",
+  "why": "no subset of the cluster holds Qwen3.6-35B-A3B Q6_K with the laptop's 8 GiB reserve on this snapshot (the laptop's MemAvailable 20970 MiB); sp10c's P3 placement leaves the laptop 5100 MiB short. The reserve is the owner's (the review's item 5, not approved), so the 35B case waits for a run with the memory",
+  "planner": "no host gives a feasible plan for qwen36moe_q6k on ['laptop', 'pi5', 'pi4', 'jetson']: [('laptop', 'infeasible: no subset of the cluster can hold qwen3.6-35b-a3b-q6_k: it needs 41 layers x 703')]"
+ },
+ "spec_args": {
+  "none": "",
+  "mtp1": "--spec-type draft-mtp --spec-draft-n-max 1"
+ },
+ "prompts": {
+  "free": "Explain, in plain words, why a cluster of slow boards can run a language model that none of them can hold alone, and what limits how fast it answers.",
+  "copy": "Here is a passage. The cluster has four nodes: a ThinkPad T580 laptop, a Raspberry Pi 5, a Raspberry Pi 4 and a Jetson Nano. Each node is metered at the wall by a Shelly power strip. The laptop decodes a block two to six times faster than any board, so the planner puts as many layers on it as its memory allows, and uses the boards only when the model does not fit. Repeat the passage above word for word, then summarise it in one sentence.",
+  "story": "Write a short story about a lighthouse keeper who finds a message in a bottle.",
+  "email": "Write a polite email to a landlord asking for a leaking kitchen tap to be fixed this week.",
+  "code": "Write a Python function that returns the n-th Fibonacci number by iteration, with a docstring and two example calls.",
+  "tips": "List eight practical ways to cut the electricity bill of a small home office, one line each.",
+  "hash": "Explain how a hash table handles two keys that land in the same bucket, and what that costs.",
+  "summary": "Summarise the following paragraph in two sentences. Solar panels on a school roof produced 41 megawatt-hours last year, about a third of the school's use. The rest came from the grid, mostly in the evenings and on cloudy days, when the panels produced little. The school plans to add a battery so that the midday surplus can cover the evening classes, and expects the battery to pay for itself in nine years.",
+  "thai": "Translate into Thai: The meeting has moved to Friday at ten in the morning. Please bring the printed report and your laptop.",
+  "math": "A train leaves at 08:40 and arrives at 11:15. How long is the trip in minutes? Show each step.",
+  "compare": "What are the main differences between a Raspberry Pi 5 and a Raspberry Pi 4 for running small language models?",
+  "chat": "User: I can't sleep the night before an exam. What should I do?\nAssistant:"
+ },
+ "prompt_order": [
+  "free",
+  "copy",
+  "story",
+  "email",
+  "code",
+  "tips",
+  "hash",
+  "summary",
+  "thai",
+  "math",
+  "compare",
+  "chat"
+ ],
+ "gen": 128,
+ "model": {
+  "kappa": 1.0685,
+  "rpc_draft_ms": 10.32
+ },
+ "conditions": "Zen may stay open (QUIET_ALLOW_APPS=zen, the owner, 4 Nov); aunsync.timer (a Google Drive sync, every 16 min, ~20 s) runs; the laptop's quietness is not gated during the session (speed ratios within one plan's serves, not energy)",
+ "predictions": {
+  "Q5": {
+   "decode_ms": 476.9,
+   "pass_ms": 790.1,
+   "E_breakeven": 1.6567,
+   "speedup_at_registered_E": {
+    "free": 1.05,
+    "copy": 1.161
+   },
+   "registered_E": {
+    "free": 1.74,
+    "copy": 1.924
+   },
+   "from": "testbed/dataset/sp10e_predictions_20261103.json predictions.P5"
+  },
+  "Q6": {
+   "decode_ms": 618.6,
+   "pass_ms": 930.9,
+   "E_breakeven": 1.5048,
+   "speedup_at_registered_E": {
+    "free": 1.156,
+    "copy": 1.278
+   },
+   "registered_E": {
+    "free": 1.74,
+    "copy": 1.924
+   },
+   "from": "testbed/dataset/sp10e_predictions_20261103.json predictions.P6"
+  }
+ },
+ "hypotheses": {
+  "MT-COST": {
+   "tol": 0.05,
+   "claim": "each prompt's MTP 1 speedup within 5 % of the model's at its measured E, every plan"
+  },
+  "MT-SIGN": {
+   "dead_band": 0.02,
+   "claim": "MTP 1 faster than none exactly where the measured E exceeds E*, every plan"
+  },
+  "MT-MEAN": {
+   "min": 1.0,
+   "claim": "the geometric mean of the 12 speedups at least 1.00, every plan"
+  },
+  "MT-WORST": {
+   "min": 0.9,
+   "claim": "no prompt more than 10 % slower under MTP 1, every plan"
+  },
+  "TX-TIE": {
+   "gap": 0.1,
+   "claim": "every first divergence of another 9B text from Q5's plain text is a near-tie there (Q5's plain top-two probabilities within 0.10)"
+  },
+  "TX-E": {
+   "plans": [
+    "Q5",
+    "Q6"
+   ],
+   "tol_pct": 3.0,
+   "claim": "Q5's and Q6's MTP 1 tokens per pass differ by more than 3 % only where their MTP 1 texts differ"
+  }
+ },
+ "inputs_sha256": {
+  "testbed/scripts/sp11_session_20261104.py": "1fbed24867a25d7493ce1a80fe9981d81f841d19e5d18421940d1fa925f1136a",
+  "testbed/scripts/score_sp11_20261104.py": "1d204765fdf233ad7629430bca585d501f29abcfe486137675675ebff28e5f95",
+  "testbed/scripts/register_sp11_20261104.py": "ff7bf51c7a0ce8ef1e7cb8ae6505aacb26a96fac8f493a812e70db9a130e4b8c",
+  "testbed/scripts/spec_model_20261103.py": "a3fcd3e5557768070859f5dfff61ad7f40688890a22ccd9d95f6ef471f9ae8ae",
+  "testbed/scripts/explore_spec_20261102.py": "1b5f152f122da5d4e9b92ebf94d5e4da03b0159d6ae7bb617d32187ebf220f52",
+  "testbed/scripts/serve_pool.sh": "adf5725577f1b8f88d8ccdd83cec16544f101fbd5624c535ebc54862b3da046c",
+  "testbed/scripts/serve_defaults.sh": "ecea22aa6c12650365cdf1dc261b228bba12b2434b531c81ad2635468b9bb7bf",
+  "testbed/scripts/serve_plan_20261101.py": "37252b755486a2fea16f77083f817fc54b5c6b1f478dadc2db2a0bc8cd979f92",
+  "testbed/scripts/predict_pool.py": "631cd1ae9fa083f343a0829959ab7f10daba50ede14d8f2676c610a9faf4cbc3",
+  "testbed/scripts/energy_model.py": "5642934ca5a4083708ad816878c60c39d44aea913e4a7843d006262a7c3f2a6c",
+  "testbed/dataset/model_shapes.json": "c3400b14d42e61f363f2df6e68974a12847d5cb6bd7c785f9b4ace8e3b6f5478",
+  "testbed/dataset/characterisation.csv": "183b4002fb6801f2559872cba7fbc9c7f11df9d858286dc60bf0971ddde1ad2c",
+  "ThinkPad/config/cluster.json": "1f0a3529dd384647ab71a0a08e2c142226ccf2b80aa5160ffc91e5e2e9485943",
+  "testbed/results/explspec_20261103_143210/results.json": "1457d2525ed9fae3f8c79a283b48dc21f40c301238b6e21026a899a9bdf5badf",
+  "testbed/results/explspec_20261103_133920/results.json": "6f7567d6752b48635f0a8871f96959d6d5f35a2dfc53a906c1f9e7bb49f47559",
+  "testbed/dataset/sp10e_predictions_20261103.json": "e8ce52cde88ff3c083a85e3e8cbd95fd2868f5d9fe1686c35209a004b190a1d0",
+  "testbed/dataset/memory_snapshot_20261104_053305.json": "7d832998ddf4be2b2229aacb7470fa7e14b746d89a9b6bc53b9282f289325b5e"
+ }
+}

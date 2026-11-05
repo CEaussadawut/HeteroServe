@@ -1,0 +1,19 @@
+########## 2026-10-21T20:57:17+07:00 prima.cpp four-node run partialmissing: boards ~/models/tinyllama-1.1b-q4km.prima-partial.gguf, laptop ~/models/tinyllama-1.1b-q4km.gguf, 4,10,4,4, 32 tokens
+guard started
+start   rank 3 jetson: ./llama-cli -m ~/models/tinyllama-1.1b-q4km.prima-partial.gguf -t 4 --world 4 --rank 3 --master 192.168.1.108 --next 192.168.1.108 --prefetch -lw 4,10,4,4
+start   rank 2 pi4: ./llama-cli -m ~/models/tinyllama-1.1b-q4km.prima-partial.gguf -t 4 --world 4 --rank 2 --master 192.168.1.108 --next 192.168.1.114 --prefetch -lw 4,10,4,4
+start   rank 1 pi5: ./llama-cli -m ~/models/tinyllama-1.1b-q4km.prima-partial.gguf -t 4 --world 4 --rank 1 --master 192.168.1.108 --next 192.168.1.110 --prefetch -lw 4,10,4,4
+start   rank 0 laptop: ./llama-cli -m ~/models/tinyllama-1.1b-q4km.gguf -t 4 --world 4 --rank 0 --master 192.168.1.108 --next 192.168.1.122 --prefetch -lw 4,10,4,4 -c 1024 -n 32 --temp 0 --seed 1 -p 'The capital of France is' (2026-10-21T20:57:29+07:00)
+rank 0 finished (2026-10-21T20:57:33+07:00)
+stopped rank 1 pid 119883 on pi5
+rank 0 laptop: Using window size: 4, GPU layers: 0
+rank 1 pi5: Using window size: 10, GPU layers: 0
+rank 2 pi4: Using window size: 4, GPU layers: 0
+rank 3 jetson: Using window size: 4, GPU layers: 0
+guard pid 32078 stopped
+TRIP lines: 0
+--- generated (rank 0 stdout, sha256 a64bd99e84a0d1f4):
+ The capital of France is located in the city of Paris. The city of Paris is the capital of France. The capital of France is located in the city of Paris. The capital of
+
+
+RUN DONE 2026-10-21T20:57:38+07:00

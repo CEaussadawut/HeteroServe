@@ -1,0 +1,2079 @@
+{
+ "made": "2026-11-01T06:03:10+07:00",
+ "why": "the scheduler review's item 2 (testbed/JOURNAL.md, 2026-11-01): the energy model under-predicted the four-node evaluation by a median 21.6 %, nearly all of it the laptop",
+ "model": "P_laptop = idle_w + (active_w - idle_w) x f + per_token_j / T (the host) + pool_host_w (the host of a plan with workers); outside the plan idle_w. f: the laptop's busy fraction of a token (energy_model.per_node); T: the time per token. The boards: energy_model.power_table(), as before (active x f + idle x (1 - f); outside the plan idle)",
+ "laptop": {
+  "idle_w": 20.4652,
+  "active_w": 35.7376,
+  "per_token_j": 0.2166,
+  "pool_host_w": 1.6163
+ },
+ "boards": {
+  "pi5": {
+   "idle": 3.0183277591973243,
+   "tg": 9.696049271076996,
+   "source": "testbed/dataset/energy_results_20261020_pi5fw_q4km.json",
+   "sha256": "44eed747b5cd19c0"
+  },
+  "pi4": {
+   "idle": 2.390896921017403,
+   "tg": 6.3219096642345205,
+   "source": "testbed/dataset/energy_results_20261005_pi4_q4km.json",
+   "sha256": "9c946768787cc0e7"
+  },
+  "jetson": {
+   "idle": 3.1383277591973244,
+   "tg": 11.173527822798489,
+   "source": "testbed/dataset/energy_results_20261005_jetson_vk_q4km.json",
+   "sha256": "102bfb16db360832"
+  }
+ },
+ "fit": {
+  "placements": 52,
+  "laptop_alone": 10,
+  "laptop_hosts_a_pool": 21,
+  "laptop_outside": 21,
+  "all_outlets_error": {
+   "old_model_registered": {
+    "n": 52,
+    "median_pct": -21.56,
+    "median_abs_pct": 21.56,
+    "worst_pct": -32.33,
+    "within_5pct": 2,
+    "within_10pct": 3
+   },
+   "refit_in_sample": {
+    "n": 52,
+    "median_pct": -0.09,
+    "median_abs_pct": 1.42,
+    "worst_pct": -7.99,
+    "within_5pct": 49,
+    "within_10pct": 52
+   },
+   "refit_leave_one_model_out": {
+    "n": 52,
+    "median_pct": -0.08,
+    "median_abs_pct": 1.53,
+    "worst_pct": -8.04,
+    "within_5pct": 49,
+    "within_10pct": 52
+   }
+  }
+ },
+ "points": [
+  {
+   "model": "TinyLlama 1.1B Q3_K_M",
+   "key": "tinyllama_q3km",
+   "placement": "engine",
+   "assign": [
+    [
+     "laptop",
+     22
+    ]
+   ],
+   "head_at": null,
+   "laptop_role": "host",
+   "pool": false,
+   "T_s": 0.03222477862709447,
+   "W": {
+    "pi4": 2.5686345500488117,
+    "jetson": 3.2229201168402812,
+    "pi5": 2.8860461625703064,
+    "laptop": 42.25747861789217
+   },
+   "idle_before_W": {
+    "pi4": 2.563476481005188,
+    "jetson": 3.0325794949150167,
+    "pi5": 2.9142325343748245,
+    "laptop": 20.105952186578293
+   },
+   "busy_frac": {
+    "laptop": 1.0
+   },
+   "measured_all_j": 1.6413716595443735,
+   "old_predicted_all_j": 1.3054
+  },
+  {
+   "model": "TinyLlama 1.1B Q3_K_M",
+   "key": "tinyllama_q3km",
+   "placement": "boards",
+   "assign": [
+    [
+     "pi5",
+     22
+    ]
+   ],
+   "head_at": null,
+   "laptop_role": "none",
+   "pool": false,
+   "T_s": 0.04762875707525956,
+   "W": {
+    "pi4": 2.5476789036128085,
+    "jetson": 3.1574413457529937,
+    "pi5": 10.598250801965307,
+    "laptop": 20.475293359848184
+   },
+   "idle_before_W": {
+    "pi4": 2.563476481005188,
+    "jetson": 3.0325794949150167,
+    "pi5": 2.9142325343748245,
+    "laptop": 20.105952186578293
+   },
+   "busy_frac": {
+    "pi5": 1.0
+   },
+   "measured_all_j": 1.7517220727925527,
+   "old_predicted_all_j": 1.376
+  },
+  {
+   "model": "TinyLlama 1.1B Q3_K_M",
+   "key": "tinyllama_q3km",
+   "placement": "even",
+   "assign": [
+    [
+     "laptop",
+     6
+    ],
+    [
+     "pi5",
+     6
+    ],
+    [
+     "pi4",
+     5
+    ],
+    [
+     "jetson",
+     5
+    ]
+   ],
+   "head_at": null,
+   "laptop_role": "host",
+   "pool": true,
+   "T_s": 0.09883178798775924,
+   "W": {
+    "pi4": 4.233656575152037,
+    "jetson": 5.4827987712915265,
+    "pi5": 4.052877519455034,
+    "laptop": 24.432478568829875
+   },
+   "idle_before_W": {
+    "pi4": 2.563476481005188,
+    "jetson": 3.0325794949150167,
+    "pi5": 2.9142325343748245,
+    "laptop": 20.105952186578293
+   },
+   "busy_frac": {
+    "laptop": 0.0857203194955911,
+    "pi5": 0.11942997503130474,
+    "pi4": 0.3243718330520777,
+    "jetson": 0.42317107602034904
+   },
+   "measured_all_j": 3.7755533284654414,
+   "old_predicted_all_j": 2.7598
+  },
+  {
+   "model": "TinyLlama 1.1B Q3_K_M",
+   "key": "tinyllama_q3km",
+   "placement": "default",
+   "assign": [
+    [
+     "laptop",
+     15
+    ],
+    [
+     "pi5",
+     3
+    ],
+    [
+     "pi4",
+     4
+    ]
+   ],
+   "head_at": null,
+   "laptop_role": "host",
+   "pool": true,
+   "T_s": 0.0714505349962335,
+   "W": {
+    "pi4": 5.247936818764848,
+    "jetson": 3.095114038709811,
+    "pi5": 3.9993304602935473,
+    "laptop": 29.572754184649863
+   },
+   "idle_before_W": {
+    "pi4": 2.563476481005188,
+    "jetson": 3.0325794949150167,
+    "pi5": 2.9142325343748245,
+    "laptop": 20.105952186578293
+   },
+   "busy_frac": {
+    "laptop": 0.2900567231577144,
+    "pi5": 0.08196836204653729,
+    "pi4": 0.5831411760609962
+   },
+   "measured_all_j": 2.994858856087391,
+   "old_predicted_all_j": 2.0824
+  },
+  {
+   "model": "TinyLlama 1.1B Q3_K_M",
+   "key": "tinyllama_q3km",
+   "placement": "pi4alone",
+   "assign": [
+    [
+     "pi4",
+     22
+    ]
+   ],
+   "head_at": null,
+   "laptop_role": "none",
+   "pool": false,
+   "T_s": 0.15526494415182818,
+   "W": {
+    "pi4": 6.997346709544183,
+    "jetson": 3.095581706168795,
+    "pi5": 2.9656354733288395,
+    "laptop": 20.190277075793574
+   },
+   "idle_before_W": {
+    "pi4": 2.563476481005188,
+    "jetson": 3.0325794949150167,
+    "pi5": 2.9142325343748245,
+    "laptop": 20.105952186578293
+   },
+   "busy_frac": {
+    "pi4": 1.0
+   },
+   "measured_all_j": 5.162379435518184,
+   "old_predicted_all_j": 3.9596
+  },
+  {
+   "model": "TinyLlama 1.1B Q3_K_M",
+   "key": "tinyllama_q3km",
+   "placement": "jetsonalone",
+   "assign": [
+    [
+     "jetson",
+     22
+    ]
+   ],
+   "head_at": null,
+   "laptop_role": "none",
+   "pool": false,
+   "T_s": 0.12936178897556505,
+   "W": {
+    "pi4": 2.6373222691913423,
+    "jetson": 9.402968647051855,
+    "pi5": 2.946700424502404,
+    "laptop": 20.151750792424345
+   },
+   "idle_before_W": {
+    "pi4": 2.563476481005188,
+    "jetson": 3.0325794949150167,
+    "pi5": 2.9142325343748245,
+    "laptop": 20.105952186578293
+   },
+   "busy_frac": {
+    "jetson": 1.0
+   },
+   "measured_all_j": 4.545610544697928,
+   "old_predicted_all_j": 3.8545
+  },
+  {
+   "model": "TinyLlama 1.1B Q4_0",
+   "key": "tinyllama_q4_0",
+   "placement": "engine",
+   "assign": [
+    [
+     "laptop",
+     22
+    ]
+   ],
+   "head_at": null,
+   "laptop_role": "host",
+   "pool": false,
+   "T_s": 0.03108947515487671,
+   "W": {
+    "pi4": 2.5814608018458047,
+    "jetson": 3.2223783381712177,
+    "pi5": 2.881394254306977,
+    "laptop": 42.27103788206001
+   },
+   "idle_before_W": {
+    "pi4": 2.590216814946345,
+    "jetson": 3.083121203729258,
+    "pi5": 2.9080428281102884,
+    "laptop": 20.30258946648839
+   },
+   "busy_frac": {
+    "laptop": 1.0
+   },
+   "measured_all_j": 1.5842037298322982,
+   "old_predicted_all_j": 1.2361
+  },
+  {
+   "model": "TinyLlama 1.1B Q4_0",
+   "key": "tinyllama_q4_0",
+   "placement": "boards",
+   "assign": [
+    [
+     "pi5",
+     22
+    ]
+   ],
+   "head_at": null,
+   "laptop_role": "none",
+   "pool": false,
+   "T_s": 0.05476921558380127,
+   "W": {
+    "pi4": 2.5658623647614602,
+    "jetson": 3.1661674083213343,
+    "pi5": 8.943562523195089,
+    "laptop": 20.47602252989208
+   },
+   "idle_before_W": {
+    "pi4": 2.590216814946345,
+    "jetson": 3.083121203729258,
+    "pi5": 2.9080428281102884,
+    "laptop": 20.30258946648839
+   },
+   "busy_frac": {
+    "pi5": 1.0
+   },
+   "measured_all_j": 1.9252263705332475,
+   "old_predicted_all_j": 1.5541
+  },
+  {
+   "model": "TinyLlama 1.1B Q4_0",
+   "key": "tinyllama_q4_0",
+   "placement": "even",
+   "assign": [
+    [
+     "laptop",
+     6
+    ],
+    [
+     "pi5",
+     6
+    ],
+    [
+     "pi4",
+     5
+    ],
+    [
+     "jetson",
+     5
+    ]
+   ],
+   "head_at": null,
+   "laptop_role": "host",
+   "pool": true,
+   "T_s": 0.09992987055527537,
+   "W": {
+    "pi4": 4.271168341485497,
+    "jetson": 5.177359605155346,
+    "pi5": 4.147117446295656,
+    "laptop": 24.29701388266697
+   },
+   "idle_before_W": {
+    "pi4": 2.590216814946345,
+    "jetson": 3.083121203729258,
+    "pi5": 2.9080428281102884,
+    "laptop": 20.30258946648839
+   },
+   "busy_frac": {
+    "laptop": 0.07799365120666031,
+    "pi5": 0.1331927507363856,
+    "pi4": 0.36267578135763634,
+    "jetson": 0.38058253401110625
+   },
+   "measured_all_j": 3.786608536406209,
+   "old_predicted_all_j": 2.8428
+  },
+  {
+   "model": "TinyLlama 1.1B Q4_0",
+   "key": "tinyllama_q4_0",
+   "placement": "default",
+   "assign": [
+    [
+     "laptop",
+     15
+    ],
+    [
+     "pi5",
+     3
+    ],
+    [
+     "pi4",
+     4
+    ]
+   ],
+   "head_at": null,
+   "laptop_role": "host",
+   "pool": true,
+   "T_s": 0.07520817066493787,
+   "W": {
+    "pi4": 5.176648276014659,
+    "jetson": 3.1615989935906557,
+    "pi5": 4.0370256208798985,
+    "laptop": 28.533084967270376
+   },
+   "idle_before_W": {
+    "pi4": 2.590216814946345,
+    "jetson": 3.083121203729258,
+    "pi5": 2.9080428281102884,
+    "laptop": 20.30258946648839
+   },
+   "busy_frac": {
+    "laptop": 0.2633123456407781,
+    "pi5": 0.08993371915828509,
+    "pi4": 0.6042793433641284
+   },
+   "measured_all_j": 3.0766427593884345,
+   "old_predicted_all_j": 2.1732
+  },
+  {
+   "model": "TinyLlama 1.1B Q4_0",
+   "key": "tinyllama_q4_0",
+   "placement": "pi4alone",
+   "assign": [
+    [
+     "pi4",
+     22
+    ]
+   ],
+   "head_at": null,
+   "laptop_role": "none",
+   "pool": false,
+   "T_s": 0.17816888733914024,
+   "W": {
+    "pi4": 6.494884586333954,
+    "jetson": 3.111302957528714,
+    "pi5": 2.975423948977409,
+    "laptop": 20.32611351667599
+   },
+   "idle_before_W": {
+    "pi4": 2.590216814946345,
+    "jetson": 3.083121203729258,
+    "pi5": 2.9080428281102884,
+    "laptop": 20.30258946648839
+   },
+   "busy_frac": {
+    "pi4": 1.0
+   },
+   "measured_all_j": 5.863132749807876,
+   "old_predicted_all_j": 4.5001
+  },
+  {
+   "model": "TinyLlama 1.1B Q4_0",
+   "key": "tinyllama_q4_0",
+   "placement": "jetsonalone",
+   "assign": [
+    [
+     "jetson",
+     22
+    ]
+   ],
+   "head_at": null,
+   "laptop_role": "none",
+   "pool": false,
+   "T_s": 0.124383992144936,
+   "W": {
+    "pi4": 2.6425733037829304,
+    "jetson": 8.741013195650755,
+    "pi5": 2.9292982549064503,
+    "laptop": 20.30655012652918
+   },
+   "idle_before_W": {
+    "pi4": 2.590216814946345,
+    "jetson": 3.083121203729258,
+    "pi5": 2.9080428281102884,
+    "laptop": 20.30258946648839
+   },
+   "busy_frac": {
+    "jetson": 1.0
+   },
+   "measured_all_j": 4.306103516284173,
+   "old_predicted_all_j": 3.7102
+  },
+  {
+   "model": "TinyLlama 1.1B Q4_K_M",
+   "key": "tinyllama",
+   "placement": "engine",
+   "assign": [
+    [
+     "laptop",
+     22
+    ]
+   ],
+   "head_at": null,
+   "laptop_role": "host",
+   "pool": false,
+   "T_s": 0.033218930018575565,
+   "W": {
+    "pi4": 2.576674209921667,
+    "jetson": 3.2283532325341495,
+    "pi5": 2.923577112582142,
+    "laptop": 42.09482970706323
+   },
+   "idle_before_W": {
+    "pi4": 2.58161390453991,
+    "jetson": 3.087310697015741,
+    "pi5": 2.9731585845831474,
+    "laptop": 20.83105202213674
+   },
+   "busy_frac": {
+    "laptop": 1.0
+   },
+   "measured_all_j": 1.6883001060564151,
+   "old_predicted_all_j": 1.3163
+  },
+  {
+   "model": "TinyLlama 1.1B Q4_K_M",
+   "key": "tinyllama",
+   "placement": "boards",
+   "assign": [
+    [
+     "pi5",
+     22
+    ]
+   ],
+   "head_at": null,
+   "laptop_role": "none",
+   "pool": false,
+   "T_s": 0.057112004505960566,
+   "W": {
+    "pi4": 2.5807000001812073,
+    "jetson": 3.2205760744192102,
+    "pi5": 9.388414843909894,
+    "laptop": 20.61312661070792
+   },
+   "idle_before_W": {
+    "pi4": 2.58161390453991,
+    "jetson": 3.087310697015741,
+    "pi5": 2.9731585845831474,
+    "laptop": 20.83105202213674
+   },
+   "busy_frac": {
+    "pi5": 1.0
+   },
+   "measured_all_j": 2.0447706760547955,
+   "old_predicted_all_j": 1.6989
+  },
+  {
+   "model": "TinyLlama 1.1B Q4_K_M",
+   "key": "tinyllama",
+   "placement": "even",
+   "assign": [
+    [
+     "laptop",
+     6
+    ],
+    [
+     "pi5",
+     6
+    ],
+    [
+     "pi4",
+     5
+    ],
+    [
+     "jetson",
+     5
+    ]
+   ],
+   "head_at": null,
+   "laptop_role": "host",
+   "pool": true,
+   "T_s": 0.09468648333298532,
+   "W": {
+    "pi4": 4.448611588363426,
+    "jetson": 5.229512203515176,
+    "pi5": 4.153118129742938,
+    "laptop": 25.52625872957251
+   },
+   "idle_before_W": {
+    "pi4": 2.58161390453991,
+    "jetson": 3.087310697015741,
+    "pi5": 2.9731585845831474,
+    "laptop": 20.83105202213674
+   },
+   "busy_frac": {
+    "laptop": 0.09143962938958637,
+    "pi5": 0.15427241578479725,
+    "pi4": 0.411487443966022,
+    "jetson": 0.29315770410383535
+   },
+   "measured_all_j": 3.7266233294372446,
+   "old_predicted_all_j": 2.5974
+  },
+  {
+   "model": "TinyLlama 1.1B Q4_K_M",
+   "key": "tinyllama",
+   "placement": "default",
+   "assign": [
+    [
+     "laptop",
+     15
+    ],
+    [
+     "pi5",
+     3
+    ],
+    [
+     "pi4",
+     4
+    ]
+   ],
+   "head_at": null,
+   "laptop_role": "host",
+   "pool": true,
+   "T_s": 0.07870814423812063,
+   "W": {
+    "pi4": 5.131792312578929,
+    "jetson": 3.1736967217760497,
+    "pi5": 3.981890916305714,
+    "laptop": 28.72791000493494
+   },
+   "idle_before_W": {
+    "pi4": 2.58161390453991,
+    "jetson": 3.087310697015741,
+    "pi5": 2.9731585845831474,
+    "laptop": 20.83105202213674
+   },
+   "busy_frac": {
+    "laptop": 0.270847456873492,
+    "pi5": 0.08994834535934874,
+    "pi4": 0.598434554423635
+   },
+   "measured_all_j": 3.228237357793361,
+   "old_predicted_all_j": 2.2725
+  },
+  {
+   "model": "TinyLlama 1.1B Q4_K_M",
+   "key": "tinyllama",
+   "placement": "pi4alone",
+   "assign": [
+    [
+     "pi4",
+     22
+    ]
+   ],
+   "head_at": null,
+   "laptop_role": "none",
+   "pool": false,
+   "T_s": 0.18547519520709388,
+   "W": {
+    "pi4": 6.454232569185055,
+    "jetson": 3.0597543470111757,
+    "pi5": 2.966716130258226,
+    "laptop": 20.725624668692365
+   },
+   "idle_before_W": {
+    "pi4": 2.58161390453991,
+    "jetson": 3.087310697015741,
+    "pi5": 2.9731585845831474,
+    "laptop": 20.83105202213674
+   },
+   "busy_frac": {
+    "pi4": 1.0
+   },
+   "measured_all_j": 6.158950115077589,
+   "old_predicted_all_j": 4.6528
+  },
+  {
+   "model": "TinyLlama 1.1B Q4_K_M",
+   "key": "tinyllama",
+   "placement": "jetsonalone",
+   "assign": [
+    [
+     "jetson",
+     22
+    ]
+   ],
+   "head_at": null,
+   "laptop_role": "none",
+   "pool": false,
+   "T_s": 0.0897946434271963,
+   "W": {
+    "pi4": 2.61514351444246,
+    "jetson": 10.626316353797925,
+    "pi5": 2.9453780684678135,
+    "laptop": 20.542869726136047
+   },
+   "idle_before_W": {
+    "pi4": 2.58161390453991,
+    "jetson": 3.087310697015741,
+    "pi5": 2.9731585845831474,
+    "laptop": 20.83105202213674
+   },
+   "busy_frac": {
+    "jetson": 1.0
+   },
+   "measured_all_j": 3.298131002770259,
+   "old_predicted_all_j": 2.6655
+  },
+  {
+   "model": "TinyLlama 1.1B Q6_K",
+   "key": "tinyllama_q6k",
+   "placement": "engine",
+   "assign": [
+    [
+     "laptop",
+     22
+    ]
+   ],
+   "head_at": null,
+   "laptop_role": "host",
+   "pool": false,
+   "T_s": 0.04250718631242451,
+   "W": {
+    "pi4": 2.5888924495817043,
+    "jetson": 3.1762339470578578,
+    "pi5": 2.8661249111730003,
+    "laptop": 40.78234809490249
+   },
+   "idle_before_W": {
+    "pi4": 2.521149436938637,
+    "jetson": 3.0228633004705396,
+    "pi5": 2.853613565219154,
+    "laptop": 20.033329739730366
+   },
+   "busy_frac": {
+    "laptop": 1.0
+   },
+   "measured_all_j": 2.1004330761787173,
+   "old_predicted_all_j": 1.6743
+  },
+  {
+   "model": "TinyLlama 1.1B Q6_K",
+   "key": "tinyllama_q6k",
+   "placement": "boards",
+   "assign": [
+    [
+     "pi4",
+     1
+    ],
+    [
+     "pi5",
+     21
+    ]
+   ],
+   "head_at": null,
+   "laptop_role": "none",
+   "pool": false,
+   "T_s": 0.08558534308483726,
+   "W": {
+    "pi4": 3.1117056447089944,
+    "jetson": 3.140503376438978,
+    "pi5": 9.26902120032038,
+    "laptop": 19.684093640571632
+   },
+   "idle_before_W": {
+    "pi4": 2.521149436938637,
+    "jetson": 3.0228633004705396,
+    "pi5": 2.853613565219154,
+    "laptop": 20.033329739730366
+   },
+   "busy_frac": {
+    "pi4": 0.12434950260302281,
+    "pi5": 0.8518411824189605
+   },
+   "measured_all_j": 3.0130597211455,
+   "old_predicted_all_j": 2.3154
+  },
+  {
+   "model": "TinyLlama 1.1B Q6_K",
+   "key": "tinyllama_q6k",
+   "placement": "even",
+   "assign": [
+    [
+     "laptop",
+     6
+    ],
+    [
+     "pi5",
+     6
+    ],
+    [
+     "pi4",
+     5
+    ],
+    [
+     "jetson",
+     5
+    ]
+   ],
+   "head_at": null,
+   "laptop_role": "host",
+   "pool": true,
+   "T_s": 0.11534576955594515,
+   "W": {
+    "pi4": 4.48004380965775,
+    "jetson": 5.026223803822932,
+    "pi5": 4.1500401380061005,
+    "laptop": 23.751924723243707
+   },
+   "idle_before_W": {
+    "pi4": 2.521149436938637,
+    "jetson": 3.0228633004705396,
+    "pi5": 2.853613565219154,
+    "laptop": 20.033329739730366
+   },
+   "busy_frac": {
+    "laptop": 0.09335063166053492,
+    "pi5": 0.16230978563707524,
+    "pi4": 0.44401015177943715,
+    "jetson": 0.2612098222178549
+   },
+   "measured_all_j": 4.314881362525486,
+   "old_predicted_all_j": 3.2916
+  },
+  {
+   "model": "TinyLlama 1.1B Q6_K",
+   "key": "tinyllama_q6k",
+   "placement": "default",
+   "assign": [
+    [
+     "laptop",
+     15
+    ],
+    [
+     "pi5",
+     3
+    ],
+    [
+     "pi4",
+     4
+    ]
+   ],
+   "head_at": null,
+   "laptop_role": "host",
+   "pool": true,
+   "T_s": 0.09436660377602828,
+   "W": {
+    "pi4": 5.050735534638671,
+    "jetson": 3.076433408039482,
+    "pi5": 3.999256391020626,
+    "laptop": 28.36259088307911
+   },
+   "idle_before_W": {
+    "pi4": 2.521149436938637,
+    "jetson": 3.0228633004705396,
+    "pi5": 2.853613565219154,
+    "laptop": 20.033329739730366
+   },
+   "busy_frac": {
+    "laptop": 0.2815650334218958,
+    "pi5": 0.09791205352266379,
+    "pi4": 0.587936657454184
+   },
+   "measured_all_j": 3.820810950609863,
+   "old_predicted_all_j": 2.8624
+  },
+  {
+   "model": "TinyLlama 1.1B Q6_K",
+   "key": "tinyllama_q6k",
+   "placement": "pi4alone",
+   "assign": [
+    [
+     "pi4",
+     22
+    ]
+   ],
+   "head_at": null,
+   "laptop_role": "none",
+   "pool": false,
+   "T_s": 0.2312482936758744,
+   "W": {
+    "pi4": 6.450356891133854,
+    "jetson": 3.085507771534112,
+    "pi5": 2.950514481927437,
+    "laptop": 19.99615089122206
+   },
+   "idle_before_W": {
+    "pi4": 2.521149436938637,
+    "jetson": 3.0228633004705396,
+    "pi5": 2.853613565219154,
+    "laptop": 20.033329739730366
+   },
+   "busy_frac": {
+    "pi4": 1.0
+   },
+   "measured_all_j": 7.511529645058128,
+   "old_predicted_all_j": 6.2348
+  },
+  {
+   "model": "TinyLlama 1.1B Q6_K",
+   "key": "tinyllama_q6k",
+   "placement": "jetsonalone",
+   "assign": [
+    [
+     "jetson",
+     22
+    ]
+   ],
+   "head_at": null,
+   "laptop_role": "none",
+   "pool": false,
+   "T_s": 0.10674517782110916,
+   "W": {
+    "pi4": 2.61679322033682,
+    "jetson": 10.45131903985059,
+    "pi5": 2.8479545743421912,
+    "laptop": 19.72718402561954
+   },
+   "idle_before_W": {
+    "pi4": 2.521149436938637,
+    "jetson": 3.0228633004705396,
+    "pi5": 2.853613565219154,
+    "laptop": 20.033329739730366
+   },
+   "busy_frac": {
+    "jetson": 1.0
+   },
+   "measured_all_j": 3.8047451511890222,
+   "old_predicted_all_j": 3.1845
+  },
+  {
+   "model": "TinyLlama 1.1B Q8_0",
+   "key": "tinyllama_q8_0",
+   "placement": "engine",
+   "assign": [
+    [
+     "laptop",
+     22
+    ]
+   ],
+   "head_at": null,
+   "laptop_role": "host",
+   "pool": false,
+   "T_s": 0.05249535322189331,
+   "W": {
+    "pi4": 2.593166481270721,
+    "jetson": 3.1897361844715846,
+    "pi5": 2.8850444717231665,
+    "laptop": 41.167292186030316
+   },
+   "idle_before_W": {
+    "pi4": 2.628632742678592,
+    "jetson": 3.031407958282735,
+    "pi5": 2.885549878486273,
+    "laptop": 20.51923772251395
+   },
+   "busy_frac": {
+    "laptop": 1.0
+   },
+   "measured_all_j": 2.616118491184499,
+   "old_predicted_all_j": 2.0523
+  },
+  {
+   "model": "TinyLlama 1.1B Q8_0",
+   "key": "tinyllama_q8_0",
+   "placement": "boards",
+   "assign": [
+    [
+     "pi5",
+     22
+    ]
+   ],
+   "head_at": null,
+   "laptop_role": "none",
+   "pool": false,
+   "T_s": 0.09287295893618935,
+   "W": {
+    "pi4": 2.5758336663781893,
+    "jetson": 3.1590091001043024,
+    "pi5": 8.79438959801642,
+    "laptop": 20.534808529902246
+   },
+   "idle_before_W": {
+    "pi4": 2.628632742678592,
+    "jetson": 3.031407958282735,
+    "pi5": 2.885549878486273,
+    "laptop": 20.51923772251395
+   },
+   "busy_frac": {
+    "pi5": 1.0
+   },
+   "measured_all_j": 3.256501230122583,
+   "old_predicted_all_j": 3.181
+  },
+  {
+   "model": "TinyLlama 1.1B Q8_0",
+   "key": "tinyllama_q8_0",
+   "placement": "even",
+   "assign": [
+    [
+     "laptop",
+     6
+    ],
+    [
+     "pi5",
+     6
+    ],
+    [
+     "pi4",
+     5
+    ],
+    [
+     "jetson",
+     5
+    ]
+   ],
+   "head_at": null,
+   "laptop_role": "host",
+   "pool": true,
+   "T_s": 0.15427127624812878,
+   "W": {
+    "pi4": 4.168556009546455,
+    "jetson": 5.039721261301769,
+    "pi5": 4.059726990398568,
+    "laptop": 23.929358770531366
+   },
+   "idle_before_W": {
+    "pi4": 2.628632742678592,
+    "jetson": 3.031407958282735,
+    "pi5": 2.885549878486273,
+    "laptop": 20.51923772251395
+   },
+   "busy_frac": {
+    "laptop": 0.08669713116989544,
+    "pi5": 0.17383749745010166,
+    "pi4": 0.4294455735455464,
+    "jetson": 0.2803807740296347
+   },
+   "measured_all_j": 5.7384846679773815,
+   "old_predicted_all_j": 4.3524
+  },
+  {
+   "model": "TinyLlama 1.1B Q8_0",
+   "key": "tinyllama_q8_0",
+   "placement": "default",
+   "assign": [
+    [
+     "laptop",
+     15
+    ],
+    [
+     "pi5",
+     3
+    ],
+    [
+     "pi4",
+     4
+    ]
+   ],
+   "head_at": null,
+   "laptop_role": "host",
+   "pool": true,
+   "T_s": 0.12306172358362298,
+   "W": {
+    "pi4": 4.710819527283284,
+    "jetson": 3.152002594319615,
+    "pi5": 3.91722131193996,
+    "laptop": 28.26862872152804
+   },
+   "idle_before_W": {
+    "pi4": 2.628632742678592,
+    "jetson": 3.031407958282735,
+    "pi5": 2.885549878486273,
+    "laptop": 20.51923772251395
+   },
+   "busy_frac": {
+    "laptop": 0.27247375726958917,
+    "pi5": 0.10926810482748514,
+    "pi4": 0.5925327253886512
+   },
+   "measured_all_j": 4.928458622638473,
+   "old_predicted_all_j": 3.6175
+  },
+  {
+   "model": "TinyLlama 1.1B Q8_0",
+   "key": "tinyllama_q8_0",
+   "placement": "pi4alone",
+   "assign": [
+    [
+     "pi4",
+     22
+    ]
+   ],
+   "head_at": null,
+   "laptop_role": "none",
+   "pool": false,
+   "T_s": 0.30601083491977893,
+   "W": {
+    "pi4": 5.753010063521417,
+    "jetson": 3.0892837772784723,
+    "pi5": 2.9711381678230895,
+    "laptop": 20.41077518812521
+   },
+   "idle_before_W": {
+    "pi4": 2.628632742678592,
+    "jetson": 3.031407958282735,
+    "pi5": 2.885549878486273,
+    "laptop": 20.51923772251395
+   },
+   "busy_frac": {
+    "pi4": 1.0
+   },
+   "measured_all_j": 9.860956548904863,
+   "old_predicted_all_j": 7.9592
+  },
+  {
+   "model": "TinyLlama 1.1B Q8_0",
+   "key": "tinyllama_q8_0",
+   "placement": "jetsonalone",
+   "assign": [
+    [
+     "jetson",
+     22
+    ]
+   ],
+   "head_at": null,
+   "laptop_role": "none",
+   "pool": false,
+   "T_s": 0.15070799313093486,
+   "W": {
+    "pi4": 2.6129976003813677,
+    "jetson": 9.651869846093321,
+    "pi5": 2.9383819059826637,
+    "laptop": 20.66846411488596
+   },
+   "idle_before_W": {
+    "pi4": 2.628632742678592,
+    "jetson": 3.031407958282735,
+    "pi5": 2.885549878486273,
+    "laptop": 20.51923772251395
+   },
+   "busy_frac": {
+    "jetson": 1.0
+   },
+   "measured_all_j": 5.40615394683124,
+   "old_predicted_all_j": 4.5115
+  },
+  {
+   "model": "Qwen3.5-9B Q4_K_M",
+   "key": "qwen35_9b",
+   "placement": "engine",
+   "assign": [
+    [
+     "laptop",
+     33
+    ]
+   ],
+   "head_at": null,
+   "laptop_role": "host",
+   "pool": false,
+   "T_s": 0.2746112331511482,
+   "W": {
+    "pi4": 2.5718305160688333,
+    "jetson": 3.0810297634415758,
+    "pi5": 2.848506307804672,
+    "laptop": 37.621183943617254
+   },
+   "idle_before_W": {
+    "pi4": 2.5646751181524103,
+    "jetson": 2.994336274944467,
+    "pi5": 2.8434446209433077,
+    "laptop": 20.489006189274615
+   },
+   "busy_frac": {
+    "laptop": 1.0
+   },
+   "measured_all_j": 12.665770477375476,
+   "old_predicted_all_j": 11.1277
+  },
+  {
+   "model": "Qwen3.5-9B Q4_K_M",
+   "key": "qwen35_9b",
+   "placement": "boards",
+   "assign": [
+    [
+     "pi5",
+     33
+    ]
+   ],
+   "head_at": null,
+   "laptop_role": "none",
+   "pool": false,
+   "T_s": 0.5357162604256281,
+   "W": {
+    "pi4": 2.5908067116585607,
+    "jetson": 3.065613394439891,
+    "pi5": 9.423568780988605,
+    "laptop": 20.607235058996757
+   },
+   "idle_before_W": {
+    "pi4": 2.5646751181524103,
+    "jetson": 2.994336274944467,
+    "pi5": 2.8434446209433077,
+    "laptop": 20.489006189274615
+   },
+   "busy_frac": {
+    "pi5": 1.0
+   },
+   "measured_all_j": 19.11822615736795,
+   "old_predicted_all_j": 14.3623
+  },
+  {
+   "model": "Qwen3.5-9B Q4_K_M",
+   "key": "qwen35_9b",
+   "placement": "even",
+   "assign": [
+    [
+     "laptop",
+     9
+    ],
+    [
+     "pi5",
+     8
+    ],
+    [
+     "pi4",
+     8
+    ],
+    [
+     "jetson",
+     8
+    ]
+   ],
+   "head_at": 0,
+   "laptop_role": "host",
+   "pool": true,
+   "T_s": 0.6793490228198823,
+   "W": {
+    "pi4": 4.577629094379721,
+    "jetson": 4.727041073913145,
+    "pi5": 4.587307136278934,
+    "laptop": 24.659950846260315
+   },
+   "idle_before_W": {
+    "pi4": 2.5646751181524103,
+    "jetson": 2.994336274944467,
+    "pi5": 2.8434446209433077,
+    "laptop": 20.489006189274615
+   },
+   "busy_frac": {
+    "laptop": 0.16459932030010138,
+    "pi5": 0.1449222355764266,
+    "pi4": 0.4652514619846198,
+    "jetson": 0.21945658542116175
+   },
+   "measured_all_j": 26.19021471709011,
+   "old_predicted_all_j": 19.8558
+  },
+  {
+   "model": "Qwen3.5-9B Q4_K_M",
+   "key": "qwen35_9b",
+   "placement": "default",
+   "assign": [
+    [
+     "laptop",
+     22
+    ],
+    [
+     "pi5",
+     5
+    ],
+    [
+     "pi4",
+     5
+    ],
+    [
+     "jetson",
+     1
+    ]
+   ],
+   "head_at": null,
+   "laptop_role": "host",
+   "pool": true,
+   "T_s": 0.5513473628059266,
+   "W": {
+    "pi4": 4.3301280566608025,
+    "jetson": 4.519512316351551,
+    "pi5": 4.328893652273424,
+    "laptop": 27.50436644360884
+   },
+   "idle_before_W": {
+    "pi4": 2.5646751181524103,
+    "jetson": 2.994336274944467,
+    "pi5": 2.8434446209433077,
+    "laptop": 20.489006189274615
+   },
+   "busy_frac": {
+    "laptop": 0.28274256947259835,
+    "pi5": 0.10594358216784114,
+    "pi4": 0.37734784074771466,
+    "jetson": 0.21210320197588797
+   },
+   "measured_all_j": 22.430409884821042,
+   "old_predicted_all_j": 17.5924
+  },
+  {
+   "model": "Qwen3.5-9B Q4_K_M",
+   "key": "qwen35_9b",
+   "placement": "pi4alone",
+   "assign": [
+    [
+     "pi4",
+     33
+    ]
+   ],
+   "head_at": null,
+   "laptop_role": "none",
+   "pool": false,
+   "T_s": 1.6071086947880093,
+   "W": {
+    "pi4": 6.326489970080958,
+    "jetson": 3.0698699524424162,
+    "pi5": 2.8721779955608477,
+    "laptop": 20.637323703166246
+   },
+   "idle_before_W": {
+    "pi4": 2.5646751181524103,
+    "jetson": 2.994336274944467,
+    "pi5": 2.8434446209433077,
+    "laptop": 20.489006189274615
+   },
+   "busy_frac": {
+    "pi4": 1.0
+   },
+   "measured_all_j": 52.88329632100269,
+   "old_predicted_all_j": 39.3334
+  },
+  {
+   "model": "Mistral-Nemo 12B Q4_K_M",
+   "key": "nemo12b",
+   "placement": "engine",
+   "assign": [
+    [
+     "laptop",
+     40
+    ]
+   ],
+   "head_at": null,
+   "laptop_role": "host",
+   "pool": false,
+   "T_s": 0.34996147723425003,
+   "W": {
+    "pi4": 2.554054057899933,
+    "jetson": 3.0511012572462715,
+    "pi5": 2.8530879434431524,
+    "laptop": 36.45277712361121
+   },
+   "idle_before_W": {
+    "pi4": 2.4744526062810057,
+    "jetson": 3.0692436951181814,
+    "pi5": 2.934554154862552,
+    "laptop": 20.840742344487534
+   },
+   "busy_frac": {
+    "laptop": 1.0
+   },
+   "measured_all_j": 15.717127037052423,
+   "old_predicted_all_j": 14.8123
+  },
+  {
+   "model": "Mistral-Nemo 12B Q4_K_M",
+   "key": "nemo12b",
+   "placement": "boards",
+   "assign": [
+    [
+     "pi5",
+     36
+    ],
+    [
+     "jetson",
+     4
+    ]
+   ],
+   "head_at": 0,
+   "laptop_role": "none",
+   "pool": false,
+   "T_s": 0.658755540090894,
+   "W": {
+    "pi4": 2.4998052990422863,
+    "jetson": 4.222058565508139,
+    "pi5": 8.53970616933873,
+    "laptop": 20.37072837754695
+   },
+   "idle_before_W": {
+    "pi4": 2.4744526062810057,
+    "jetson": 3.0692436951181814,
+    "pi5": 2.934554154862552,
+    "laptop": 20.840742344487534
+   },
+   "busy_frac": {
+    "pi5": 0.8551090759849971,
+    "jetson": 0.14271134574743774
+   },
+   "measured_all_j": 23.472973984705494,
+   "old_predicted_all_j": 20.2909
+  },
+  {
+   "model": "Mistral-Nemo 12B Q4_K_M",
+   "key": "nemo12b",
+   "placement": "even",
+   "assign": [
+    [
+     "laptop",
+     10
+    ],
+    [
+     "pi5",
+     10
+    ],
+    [
+     "pi4",
+     10
+    ],
+    [
+     "jetson",
+     10
+    ]
+   ],
+   "head_at": 0,
+   "laptop_role": "host",
+   "pool": true,
+   "T_s": 0.8866301423027402,
+   "W": {
+    "pi4": 4.646704693620814,
+    "jetson": 5.098253172957259,
+    "pi5": 4.636230148702546,
+    "laptop": 23.400343829674554
+   },
+   "idle_before_W": {
+    "pi4": 2.4744526062810057,
+    "jetson": 3.0692436951181814,
+    "pi5": 2.934554154862552,
+    "laptop": 20.840742344487534
+   },
+   "busy_frac": {
+    "laptop": 0.12028306547607474,
+    "pi5": 0.14856438422871762,
+    "pi4": 0.47515289573527275,
+    "jetson": 0.25174006547732686
+   },
+   "measured_all_j": 33.49824495610811,
+   "old_predicted_all_j": 27.9373
+  },
+  {
+   "model": "Mistral-Nemo 12B Q4_K_M",
+   "key": "nemo12b",
+   "placement": "default",
+   "assign": [
+    [
+     "laptop",
+     26
+    ],
+    [
+     "pi5",
+     6
+    ],
+    [
+     "pi4",
+     7
+    ],
+    [
+     "jetson",
+     1
+    ]
+   ],
+   "head_at": null,
+   "laptop_role": "host",
+   "pool": true,
+   "T_s": 0.6932460520002577,
+   "W": {
+    "pi4": 4.617554171276097,
+    "jetson": 4.133106046654949,
+    "pi5": 4.3451387231311855,
+    "laptop": 27.56484217880619
+   },
+   "idle_before_W": {
+    "pi4": 2.4744526062810057,
+    "jetson": 3.0692436951181814,
+    "pi5": 2.934554154862552,
+    "laptop": 20.840742344487534
+   },
+   "busy_frac": {
+    "laptop": 0.29321091358541146,
+    "pi5": 0.11233616678088211,
+    "pi4": 0.4449665987905312,
+    "jetson": 0.13825090739597543
+   },
+   "measured_all_j": 28.18782892814812,
+   "old_predicted_all_j": 23.355
+  },
+  {
+   "model": "Qwen3-14B Q4_K_M",
+   "key": "qwen3_14b",
+   "placement": "engine",
+   "assign": [
+    [
+     "laptop",
+     40
+    ]
+   ],
+   "head_at": null,
+   "laptop_role": "host",
+   "pool": false,
+   "T_s": 0.42148254220447845,
+   "W": {
+    "pi4": 2.550216344612082,
+    "jetson": 3.0748423544880303,
+    "pi5": 2.930028411698518,
+    "laptop": 35.350453210032896
+   },
+   "idle_before_W": {
+    "pi4": 2.5843132988670217,
+    "jetson": 2.9999901181607984,
+    "pi5": 2.962091440725611,
+    "laptop": 20.23026094258339
+   },
+   "busy_frac": {
+    "laptop": 1.0
+   },
+   "measured_all_j": 18.505418751285305,
+   "old_predicted_all_j": 17.8751
+  },
+  {
+   "model": "Qwen3-14B Q4_K_M",
+   "key": "qwen3_14b",
+   "placement": "boards",
+   "assign": [
+    [
+     "pi4",
+     1
+    ],
+    [
+     "jetson",
+     7
+    ],
+    [
+     "pi5",
+     32
+    ]
+   ],
+   "head_at": null,
+   "laptop_role": "none",
+   "pool": false,
+   "T_s": 0.830533630507333,
+   "W": {
+    "pi4": 3.1687892344864554,
+    "jetson": 4.898522553648822,
+    "pi5": 8.461138041069521,
+    "laptop": 20.002970783929054
+   },
+   "idle_before_W": {
+    "pi4": 2.5843132988670217,
+    "jetson": 2.9999901181607984,
+    "pi5": 2.962091440725611,
+    "laptop": 20.23026094258339
+   },
+   "busy_frac": {
+    "pi4": 0.06741691441435732,
+    "jetson": 0.23205004479311295,
+    "pi5": 0.6918298681020539
+   },
+   "measured_all_j": 30.340573389416477,
+   "old_predicted_all_j": 25.4601
+  },
+  {
+   "model": "Qwen3-14B Q4_K_M",
+   "key": "qwen3_14b",
+   "placement": "even",
+   "assign": [
+    [
+     "laptop",
+     10
+    ],
+    [
+     "pi5",
+     10
+    ],
+    [
+     "pi4",
+     10
+    ],
+    [
+     "jetson",
+     10
+    ]
+   ],
+   "head_at": 0,
+   "laptop_role": "host",
+   "pool": true,
+   "T_s": 1.078239369392395,
+   "W": {
+    "pi4": 4.612764117027112,
+    "jetson": 5.256881800921615,
+    "pi5": 4.658708961042156,
+    "laptop": 23.254095986495752
+   },
+   "idle_before_W": {
+    "pi4": 2.5843132988670217,
+    "jetson": 2.9999901181607984,
+    "pi5": 2.962091440725611,
+    "laptop": 20.23026094258339
+   },
+   "busy_frac": {
+    "laptop": 0.11922773940973738,
+    "pi5": 0.1488728796949394,
+    "pi4": 0.47619410385120653,
+    "jetson": 0.25218030159480753
+   },
+   "measured_all_j": 40.73852599530146,
+   "old_predicted_all_j": 33.7488
+  },
+  {
+   "model": "Qwen3-14B Q4_K_M",
+   "key": "qwen3_14b",
+   "placement": "default",
+   "assign": [
+    [
+     "laptop",
+     26
+    ],
+    [
+     "pi5",
+     6
+    ],
+    [
+     "pi4",
+     7
+    ],
+    [
+     "jetson",
+     1
+    ]
+   ],
+   "head_at": null,
+   "laptop_role": "host",
+   "pool": true,
+   "T_s": 0.827418569534544,
+   "W": {
+    "pi4": 4.619100132140201,
+    "jetson": 4.189477402879506,
+    "pi5": 4.426901235061845,
+    "laptop": 27.138896181752536
+   },
+   "idle_before_W": {
+    "pi4": 2.5843132988670217,
+    "jetson": 2.9999901181607984,
+    "pi5": 2.962091440725611,
+    "laptop": 20.23026094258339
+   },
+   "busy_frac": {
+    "laptop": 0.2949116875779014,
+    "pi5": 0.11300417393602576,
+    "pi4": 0.44742546284979434,
+    "jetson": 0.13452462345837682
+   },
+   "measured_all_j": 33.40650756849788,
+   "old_predicted_all_j": 28.1291
+  },
+  {
+   "model": "Qwen3.8-27B Q3_K_M",
+   "key": "qwen38_27b",
+   "placement": "engine",
+   "assign": [
+    [
+     "laptop",
+     65
+    ]
+   ],
+   "head_at": null,
+   "laptop_role": "host",
+   "pool": false,
+   "T_s": 0.8013764812832787,
+   "W": {
+    "pi4": 2.609571982638226,
+    "jetson": 3.2513437987918348,
+    "pi5": 3.0093374294615503,
+    "laptop": 35.234058191127815
+   },
+   "idle_before_W": {
+    "pi4": 2.609936670079127,
+    "jetson": 3.076933548293814,
+    "pi5": 2.993545950800459,
+    "laptop": 21.635945552616484
+   },
+   "busy_frac": {
+    "laptop": 1.0
+   },
+   "measured_all_j": 35.344157880772315,
+   "old_predicted_all_j": 31.1695
+  },
+  {
+   "model": "Qwen3.8-27B Q3_K_M",
+   "key": "qwen38_27b",
+   "placement": "boards",
+   "assign": [
+    [
+     "pi5",
+     28
+    ],
+    [
+     "jetson",
+     15
+    ],
+    [
+     "pi4",
+     22
+    ]
+   ],
+   "head_at": 0,
+   "laptop_role": "none",
+   "pool": false,
+   "T_s": 2.6332618573355298,
+   "W": {
+    "pi4": 4.9473226583300045,
+    "jetson": 5.207276778683324,
+    "pi5": 5.412836871525006,
+    "laptop": 20.49005652365641
+   },
+   "idle_before_W": {
+    "pi4": 2.609936670079127,
+    "jetson": 3.076933548293814,
+    "pi5": 2.993545950800459,
+    "laptop": 21.635945552616484
+   },
+   "busy_frac": {
+    "pi5": 0.24328218303800253,
+    "jetson": 0.2800486619054408,
+    "pi4": 0.47552060657976936
+   },
+   "measured_all_j": 94.94882054616768,
+   "old_predicted_all_j": 64.2473
+  },
+  {
+   "model": "Qwen3.8-27B Q3_K_M",
+   "key": "qwen38_27b",
+   "placement": "default",
+   "assign": [
+    [
+     "laptop",
+     41
+    ],
+    [
+     "pi5",
+     11
+    ],
+    [
+     "pi4",
+     10
+    ],
+    [
+     "jetson",
+     3
+    ]
+   ],
+   "head_at": null,
+   "laptop_role": "host",
+   "pool": true,
+   "T_s": 1.4566892237890334,
+   "W": {
+    "pi4": 4.590502319715796,
+    "jetson": 4.566064333930361,
+    "pi5": 4.793221234630637,
+    "laptop": 28.916170022215585
+   },
+   "idle_before_W": {
+    "pi4": 2.609936670079127,
+    "jetson": 3.076933548293814,
+    "pi5": 2.993545950800459,
+    "laptop": 21.635945552616484
+   },
+   "busy_frac": {
+    "laptop": 0.3129851384805679,
+    "pi5": 0.11408668696986664,
+    "pi4": 0.34490999660904464,
+    "jetson": 0.21961340320079398
+   },
+   "measured_all_j": 62.44237895560852,
+   "old_predicted_all_j": 47.2052
+  },
+  {
+   "model": "Qwen3-30B-A3B Q3_K_M (MoE)",
+   "key": "qwen3moe",
+   "placement": "engine",
+   "assign": [
+    [
+     "laptop",
+     48
+    ]
+   ],
+   "head_at": null,
+   "laptop_role": "host",
+   "pool": false,
+   "T_s": 0.10776197077736022,
+   "W": {
+    "pi4": 2.5173308024659766,
+    "jetson": 3.093091243549202,
+    "pi5": 2.949198202225373,
+    "laptop": 37.77409933741738
+   },
+   "idle_before_W": {
+    "pi4": 2.610776928390643,
+    "jetson": 3.031794829532019,
+    "pi5": 2.8688893985195683,
+    "laptop": 20.14305159689359
+   },
+   "busy_frac": {
+    "laptop": 1.0
+   },
+   "measured_all_j": 4.993012935996073,
+   "old_predicted_all_j": 4.0585
+  },
+  {
+   "model": "Qwen3-30B-A3B Q3_K_M (MoE)",
+   "key": "qwen3moe",
+   "placement": "boards",
+   "assign": [
+    [
+     "pi4",
+     16
+    ],
+    [
+     "jetson",
+     9
+    ],
+    [
+     "pi5",
+     23
+    ]
+   ],
+   "head_at": null,
+   "laptop_role": "none",
+   "pool": false,
+   "T_s": 0.30638791795760867,
+   "W": {
+    "pi4": 4.746757965865714,
+    "jetson": 4.429702999951391,
+    "pi5": 5.659120602722405,
+    "laptop": 20.205495540911116
+   },
+   "idle_before_W": {
+    "pi4": 2.610776928390643,
+    "jetson": 3.031794829532019,
+    "pi5": 2.8688893985195683,
+    "laptop": 20.14305159689359
+   },
+   "busy_frac": {
+    "pi4": 0.46660228689915717,
+    "jetson": 0.22434043569795956,
+    "pi5": 0.28333306735401437
+   },
+   "measured_all_j": 10.736162658556598,
+   "old_predicted_all_j": 7.9118
+  },
+  {
+   "model": "Qwen3-30B-A3B Q3_K_M (MoE)",
+   "key": "qwen3moe",
+   "placement": "default",
+   "assign": [
+    [
+     "laptop",
+     31
+    ],
+    [
+     "pi5",
+     8
+    ],
+    [
+     "pi4",
+     7
+    ],
+    [
+     "jetson",
+     2
+    ]
+   ],
+   "head_at": null,
+   "laptop_role": "host",
+   "pool": true,
+   "T_s": 0.20946464727795314,
+   "W": {
+    "pi4": 4.133385752757945,
+    "jetson": 4.816449907001979,
+    "pi5": 3.7429158233258817,
+    "laptop": 27.716186657677735
+   },
+   "idle_before_W": {
+    "pi4": 2.610776928390643,
+    "jetson": 3.031794829532019,
+    "pi5": 2.8688893985195683,
+    "laptop": 20.14305159689359
+   },
+   "busy_frac": {
+    "laptop": 0.2509013160724732,
+    "pi5": 0.09183855657935167,
+    "pi4": 0.2619052125015302,
+    "jetson": 0.35607814909027286
+   },
+   "measured_all_j": 8.464243974531662,
+   "old_predicted_all_j": 6.8603
+  },
+  {
+   "model": "Qwen3-30B-A3B Q6_K (MoE)",
+   "key": "qwen3moe_q6k",
+   "placement": "engine",
+   "assign": [
+    [
+     "laptop",
+     34
+    ],
+    [
+     "pi5",
+     14
+    ]
+   ],
+   "head_at": 0,
+   "laptop_role": "host",
+   "pool": true,
+   "T_s": 0.15840561768365286,
+   "W": {
+    "pi4": 2.5501247099351936,
+    "jetson": 3.0966548819334636,
+    "pi5": 6.425641599202765,
+    "laptop": 33.695749259257184
+   },
+   "idle_before_W": {
+    "pi4": 2.5547761407382468,
+    "jetson": 3.0167341647003494,
+    "pi5": 2.85008175822082,
+    "laptop": 20.457675144502165
+   },
+   "busy_frac": {
+    "laptop": 0.613457802079047,
+    "pi5": 0.37927121677571257
+   },
+   "measured_all_j": 7.249935310435011,
+   "old_predicted_all_j": 5.3562
+  },
+  {
+   "model": "Qwen3-30B-A3B Q6_K (MoE)",
+   "key": "qwen3moe_q6k",
+   "placement": "default",
+   "assign": [
+    [
+     "laptop",
+     31
+    ],
+    [
+     "pi5",
+     8
+    ],
+    [
+     "pi4",
+     7
+    ],
+    [
+     "jetson",
+     2
+    ]
+   ],
+   "head_at": null,
+   "laptop_role": "host",
+   "pool": true,
+   "T_s": 0.269316700148204,
+   "W": {
+    "pi4": 4.167469651194376,
+    "jetson": 4.452037668608989,
+    "pi5": 3.8431901368193606,
+    "laptop": 28.45889901606847
+   },
+   "idle_before_W": {
+    "pi4": 2.5547761407382468,
+    "jetson": 3.0167341647003494,
+    "pi5": 2.85008175822082,
+    "laptop": 20.457675144502165
+   },
+   "busy_frac": {
+    "laptop": 0.2880043688763502,
+    "pi5": 0.1292274611795316,
+    "pi4": 0.3711866148337335,
+    "jetson": 0.1772449968633427
+   },
+   "measured_all_j": 11.020869326821579,
+   "old_predicted_all_j": 7.8256
+  },
+  {
+   "model": "Qwen3-30B-A3B Q6_K (MoE)",
+   "key": "qwen3moe_q6k",
+   "placement": "lap_pi4",
+   "assign": [
+    [
+     "laptop",
+     34
+    ],
+    [
+     "pi4",
+     14
+    ]
+   ],
+   "head_at": 0,
+   "laptop_role": "host",
+   "pool": true,
+   "T_s": 0.28665805203574046,
+   "W": {
+    "pi4": 5.241593914567395,
+    "jetson": 3.0760924841325594,
+    "pi5": 2.9419436060564883,
+    "laptop": 29.057016091838367
+   },
+   "idle_before_W": {
+    "pi4": 2.5547761407382468,
+    "jetson": 3.0167341647003494,
+    "pi5": 2.85008175822082,
+    "laptop": 20.457675144502165
+   },
+   "busy_frac": {
+    "laptop": 0.3289579900046195,
+    "pi4": 0.6676288136826052
+   },
+   "measured_all_j": 11.557091234664208,
+   "old_predicted_all_j": 8.5964
+  }
+ ],
+ "inputs_sha256": {
+  "testbed/dataset/full_eval_tinyq3_fe4_20261020.json": "b7df376f91a088ca5a8f4a0f59a1fe66983e82bfa8bde4cae2a922dec9d97177",
+  "testbed/results/full_eval_tinyq3_fe4_20261020_20261021_111154/run.jsonl": "2f66e5d855d727f53c32c369328e6ce04fc42fc62c31ecf585c4f64cb06ece0a",
+  "testbed/results/full_eval_tinyq3_fe4_20261020_20261021_111154/strip.csv": "a4202e567ef4586d250f8c6b3b8c7cce5f24edf00b3f0a9978039f4a30533277",
+  "testbed/dataset/full_eval_tinyq40_fe4_20261020.json": "5bdd4662ae8c3023e5eb4bfa3e875487509b94a773d82e3af6298fe3805048ad",
+  "testbed/results/full_eval_tinyq40_fe4_20261020_20261021_101903/run.jsonl": "7f90e5a23140d2e7ad16507580f50f6ed4dd0d1ab19e06bdc075206c020a61df",
+  "testbed/results/full_eval_tinyq40_fe4_20261020_20261021_101903/strip.csv": "300415be55ae345da6064c48e72bee3a6bd71ba6489fd491d19d3c943c1e33ef",
+  "testbed/dataset/full_eval_tinyq4km_fe4_20261020.json": "cb6ab162dd648ed71a4d740d5f746fe8ebc6962bfd0c5ee2cf08b8f929459a25",
+  "testbed/results/full_eval_tinyq4km_fe4_20261020_20261021_082119/run.jsonl": "1648e99ecf927a982d2d5f3e20932d540c4e525642369e613fb79cb0f948b5fc",
+  "testbed/results/full_eval_tinyq4km_fe4_20261020_20261021_082119/strip.csv": "346041dbf9763084a7be548529fdee1ead56fa3ddea8fe351cfb13c1d645dad2",
+  "testbed/dataset/full_eval_tinyq6_fe4_20261020.json": "5848bb0497fb62c3a8cf3572b158514b72b4ce7b4df880f51d4502651a51364b",
+  "testbed/results/full_eval_tinyq6_fe4_20261020_20261021_120814/run.jsonl": "81160f303bbc79e7c18c44b33367564c5bd3f0fac2b259704b1944f90773b2f0",
+  "testbed/results/full_eval_tinyq6_fe4_20261020_20261021_120814/strip.csv": "ff3af5134aac28b5760fb537857804361a677b20994a12958ac910ed1f8e78bd",
+  "testbed/dataset/full_eval_tinyq8_fe4_20261020.json": "a7751e70c766df84c394d1184f2f9be6d5fb64c844391867f1e1f85fe5f7028b",
+  "testbed/results/full_eval_tinyq8_fe4_20261020_20261021_091335/run.jsonl": "9d805b6d1b11e7595e4a08a32907f9ad3f4ed1ee300679b75edcb7e2d475a5a0",
+  "testbed/results/full_eval_tinyq8_fe4_20261020_20261021_091335/strip.csv": "5a3c0aa928c100a6f1df2c0b907ffdb1eac212366664711b1d16dd81cce09f0c",
+  "testbed/dataset/full_eval_q9b_fe4_20261020.json": "d6272fe96806ef6b879e43af893dc4d39cdae2118ff800226fb2d80b21b1be40",
+  "testbed/results/full_eval_q9b_fe4_20261020_20261021_062243/run.jsonl": "d9ecb3beb2b91bfa54c16fec4e4c359ec058ed242772eb435330d523890786dd",
+  "testbed/results/full_eval_q9b_fe4_20261020_20261021_062243/strip.csv": "3c74a7f69158a0e2c17c95060849c4b171fad1c392332a7fae2b1b35f7378bf0",
+  "testbed/dataset/full_eval_nemo_fe4_20261020.json": "c634d10034d56445dde02e4ad62f490910d63569087eb9bc19e4614a13382bf4",
+  "testbed/results/full_eval_nemo_fe4_20261020_20261021_045420/run.jsonl": "f3c3ca76e56f188963690e64cd664d779079a7b0b156ed5fcec81bf81cf1371a",
+  "testbed/results/full_eval_nemo_fe4_20261020_20261021_045420/strip.csv": "9b44ad1f118e8efbbc9b007faf7702b154de3af2af134717300cc5036c645a09",
+  "testbed/dataset/full_eval_q14b_fe4_20261020.json": "fa494bb3c91dc461ed56b92b2811ebef94cb248d6a2bc42801efc7f7f3f6ba61",
+  "testbed/results/full_eval_q14b_fe4_20261020_20261020_222013/run.jsonl": "bd1526bab70af58a4a29d7d3e4fbe84bfd4a1395dd74d20c8d6ca73e8273e70b",
+  "testbed/results/full_eval_q14b_fe4_20261020_20261020_222013/strip.csv": "0afa7dc5d376bb7352ce2df8279999c22de29f6955956e951797a6fc66b00c3e",
+  "testbed/dataset/full_eval_q27bnc_fe4_20261021.json": "c8136306ab47b0c7bb5122770bffcfb750e08c32b116a042bb9cfa3fd89b4e16",
+  "testbed/results/full_eval_q27bnc_fe4_20261021_20261021_170855/run.jsonl": "ea7b77b7d89e43631d995eb48c752367e5bf4c52c3381551ad22d2c31df13d6f",
+  "testbed/results/full_eval_q27bnc_fe4_20261021_20261021_170855/strip.csv": "cdcbbe3a9bdfc37852b210dad7eee9ba2191acd857d5be84eab4934a667055b0",
+  "testbed/dataset/full_eval_moeq3_fe4_20261020.json": "c6b754d80b3268bc18681918294991ef8b09a930f7ed0d5a3d58f715fa739fe0",
+  "testbed/results/full_eval_moeq3_fe4_20261020_20261021_022834/run.jsonl": "32b7ee614fa763267139a6d86ed9914a6975f690766f88ef1c7b7020fc6cf8a6",
+  "testbed/results/full_eval_moeq3_fe4_20261020_20261021_022834/strip.csv": "a60d187d0a3860c6e4ca44b2e025df5c517c03c182b31f42f1bbdc1ba8306ada",
+  "testbed/dataset/full_eval_moeq6b_fe4_20261021.json": "76f4adc60861383e4be3b75728164f6e155efd381c02181936fe4f0a8f8de347",
+  "testbed/results/full_eval_moeq6b_fe4_20261021_20261021_131716/run.jsonl": "7c42a5934eef6f7df5521db1d14b77a86e2b5144f3e67662b8e675c224f0ec6f",
+  "testbed/results/full_eval_moeq6b_fe4_20261021_20261021_131716/strip.csv": "9d3fb0f726f03ebe7ae2c0eae5c82643022b99ade8a1e5683fa786c8fa2e758d",
+  "testbed/scripts/energy_refit_20261101.py": "d0963c3e31e3e0488fb6945a7e2101a506918d89623bc3ef36d44a3b6501eaa6",
+  "testbed/scripts/fe4_tables_20261023.py": "feead8e2e33eaa3bd5b2eb8f4d3a3004de8ee62bef2f84bfd5f2455cee9d3ffa",
+  "testbed/scripts/energy_model.py": "10bf9f5771f693845872a45c12b154395005af8064fccdcffcac5d4563223d63",
+  "testbed/scripts/predict_pool.py": "df322f7bef8f059e9498d4f14a62bd1f413fde33371e73d01b140223f1252e61",
+  "testbed/scripts/shelly_strip.py": "b7aaa7ceb2f1e94aa3f1f46100c06ca9d6c0c3fa8764a6372239747ffc0fe5a8"
+ }
+}

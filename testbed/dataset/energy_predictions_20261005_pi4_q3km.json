@@ -1,0 +1,79 @@
+{
+ "registered": "2026-10-05T17:52:51+07:00",
+ "campaign": "2026-10-05: Pi 4 energy per token, TinyLlama-1.1B q3km, prefill-only and decode-only at the wall (one of four Pi 4 runs registered together, after the Pi 5 was returned)",
+ "inputs_sha256": {
+  "testbed/scripts/energy_phase_run.py": "a8a0c1394e60d380ddebfe25d34583e8e75b286a22cd2c0660151fa4b115a054",
+  "testbed/scripts/score_energy_phase_run.py": "d31b0f562de0d6476366cbb4d4a21ee805ecf8a2422490a14ec3ff64c895d19e",
+  "testbed/scripts/shelly_strip.py": "b7aaa7ceb2f1e94aa3f1f46100c06ca9d6c0c3fa8764a6372239747ffc0fe5a8",
+  "testbed/energy/strip.json": "04efaf39d8fc06e47c514ee164836c18996cf985f0565fd8d6d535c4b2f6686c"
+ },
+ "model": {
+  "file_on_board": "~/models/tinyllama-1.1b-q3km.gguf",
+  "sha256": "ec461c4d2b60896152bca3978aa49cd70edad7298715e4222e12af1eefea2125",
+  "pin": "testbed/models.md (TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF @ 52e7645b)",
+  "verified": "re-hashed on the Pi 4 by the runner's preflight; it refuses on a mismatch"
+ },
+ "build": "llama.cpp b23701f7 (clean tree) on the Pi 4, ~/llama.cpp/build/bin/llama-bench",
+ "command": "python3 testbed/scripts/energy_phase_run.py --node pi4 --outlet 0 --model '~/models/tinyllama-1.1b-q3km.gguf' --sha256 ec461c4d2b60896152bca3978aa49cd70edad7298715e4222e12af1eefea2125 --pp 512:3 --tg 128:7 --cycles 3 --threads 4 --idle-before 300 --idle-after 120 --settle 30 --gap 10",
+ "plan": {
+  "order": "settle 30 s; idle 300 s; pp1, tg1, pp2, tg2, pp3, tg3 (10 s gaps); idle 120 s; the four runs back to back (q4km, q4_0, q8_0, q3km)",
+  "sizing": "about 2 min of timed repetitions per invocation at the characterisation's t/s; pp512's warm-up is a full prompt run at this pin"
+ },
+ "definitions": "as in energy_predictions_20261005b.json (window from the stamped progress lines; net = gross - idle-before mean x window; J/token = net / (N x r); both methods reported, which to quote not decided; spread across the three invocations)",
+ "predictions": {
+  "pp": {
+   "tps": [
+    9.67,
+    10.69
+   ],
+   "mean_w": [
+    6.5,
+    9.0
+   ],
+   "j_per_token_net": {
+    "trap": [
+     0.3998,
+     0.6454
+    ],
+    "counter": [
+     0.4118,
+     0.697
+    ]
+   }
+  },
+  "tg": {
+   "tps": [
+    6.37,
+    7.04
+   ],
+   "mean_w": [
+    5.8,
+    8.0
+   ],
+   "j_per_token_net": {
+    "trap": [
+     0.5029,
+     0.8312
+    ],
+    "counter": [
+     0.518,
+     0.8977
+    ]
+   }
+  },
+  "spread_pct_max": 5.0,
+  "gap_pct": [
+   -7.0,
+   -2.0
+  ],
+  "throttled": "0x0 throughout"
+ },
+ "basis": {
+  "tps": "the Pi 4's characterisation rows (pp512 10.1803, tg128 6.7011 t/s, 4 threads, b23701f), band +/- 5 %",
+  "mean_w": "outlet 0 read 2.43 W idle and 6.22 W under a 4-core busy loop (2026-10-05). On the Pi 5 the same day, prefill drew 1.28x and decode 1.12x its busy-loop power; applied to the Pi 4 that gives ~7.96 W and ~6.97 W, banded. The same bands for every quant (a guess: quant effects on power are not known yet)",
+  "j_per_token_net": "trapezoid band = (power band - 2.43 W) / the t/s point; counter band = trapezoid x [1.03, 1.08], the gap seen on every outlet so far",
+  "gap": "outlet 0 at idle 2026-10-05: -4.56 %"
+ },
+ "scoring": "testbed/scripts/score_energy_phase_run.py; PASS / FAIL / N/A, reported as found",
+ "conditions": "Pi 5 returned (outlet 1 now the laptop); the Jetson's SSH resets connections (17:35, cause unknown, ~5 W); the laptop is the control node and runs the strip logger"
+}

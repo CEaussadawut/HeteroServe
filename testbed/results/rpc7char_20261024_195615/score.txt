@@ -1,0 +1,12 @@
+rpc7char: the RPC message term on Qwen3 architectures: bytes per decoded token per worker for Qwen3-32B Q6_K (dense) and Qwen3.6-35B-A3B Q6_K (hybrid MoE), the head on the host, unshaped, against predict_pool.rpc_bytes(); code changed since registration: none
+
+R7-DENSE   HOLDS       {'workers': {'pi5': {'measured': 43710.0, 'predicted': 43710, 'err_pct': 0.0}, 'jetson': {'measured': 23234.0, 'predicted': 23234, 'err_pct': 0.0}}}
+R7-HYBRID  FAILS       {'workers': {'jetson': {'measured': 28288.0, 'predicted': 19134, 'err_pct': 47.84}, 'pi5': {'measured': 10958.0, 'predicted': 10628, 'err_pct': 3.11}, 'pi4': {'measured': 11276.0, 'predicted': 10946, 'err_pct': 3.01}}}
+R7-BACK    HOLDS       {'workers': {'D32/pi5': {'measured': 20488.0, 'predicted': 20488}, 'D32/jetson': {'measured': 20488.0, 'predicted': 20488}, 'M35/jetson': {'measured': 8200.0, 'predicted': 8200}, 'M35/pi5': {'measured': 8200.0, 'predicted': 8200}, 'M35/pi4': {'measured': 8200.0, 'predicted': 8200}}}
+R7-REPEAT  HOLDS       {'max_spread_pct': 0.0}
+
+arm D32 worker pi5: {'bytes_acked': 43710.0, 'bytes_received': 20488.0, 'data_segs_out': 35.95, 'data_segs_in': 16.02} (predicted {'to': 43710, 'back': 20488, 'place': 1, 'of': 2})
+arm D32 worker jetson: {'bytes_acked': 23234.0, 'bytes_received': 20488.0, 'data_segs_out': 20.52, 'data_segs_in': 16.0} (predicted {'to': 23234, 'back': 20488, 'place': 2, 'of': 2})
+arm M35 worker jetson: {'bytes_acked': 28288.0, 'bytes_received': 8200.0, 'data_segs_out': 31.16, 'data_segs_in': 7.0} (predicted {'to': 19134, 'back': 8200, 'place': 1, 'of': 3})
+arm M35 worker pi5: {'bytes_acked': 10958.0, 'bytes_received': 8200.0, 'data_segs_out': 20.58, 'data_segs_in': 6.94} (predicted {'to': 10628, 'back': 8200, 'place': 2, 'of': 3})
+arm M35 worker pi4: {'bytes_acked': 11276.0, 'bytes_received': 8200.0, 'data_segs_out': 19.59, 'data_segs_in': 7.0} (predicted {'to': 10946, 'back': 8200, 'place': 3, 'of': 3})

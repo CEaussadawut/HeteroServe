@@ -1,0 +1,303 @@
+{
+ "registered_at": "2026-10-24T10:48:38+07:00",
+ "script": "testbed/scripts/register_bs4_20261024.py",
+ "session": "testbed/scripts/ab_session_20261024.sh",
+ "scorer": "testbed/scripts/ab_score_20261024.py",
+ "scorer_extra": "testbed/scripts/bs4_extra_20261024.py",
+ "tag_prefix": "bs4",
+ "out_prefix": "bs4",
+ "check": "NETSHAPE_PEER=192.168.10.5 NETSHAPE_PORT=50052 bash testbed/scripts/netshape.sh check",
+ "what": "sampling on the head's board on four nodes: TinyLlama Q4_0, laptop 11 + Pi 4 11 with the head on the Pi 4, with and without --backend-sampling, the Pi 4's RPC link unshaped and at 5 Mbit/s",
+ "model": "tinyllama_q4_0",
+ "model_file": "~/models/tinyllama-1.1b-q4_0.gguf",
+ "model_sha256": "da3087fb14aede55fde6eb81a0e55e886810e43509ec82ecdc7aa5d62a03b556",
+ "ctx": 2048,
+ "nodes": [
+  "laptop",
+  "pi4"
+ ],
+ "outlets": {
+  "pi4": 0,
+  "jetson": 1,
+  "pi5": 2,
+  "laptop": 3
+ },
+ "memfile": "testbed/dataset/memory_snapshot_20261024_104755.json",
+ "base_link": {
+  "mbps": 934.0,
+  "rtt_ms": 0.801,
+  "pair": "pi4-laptop"
+ },
+ "n_vocab": 32000.0,
+ "reqs": 6,
+ "n": 128,
+ "gen": 64,
+ "warm": [
+  512,
+  32
+ ],
+ "order": [
+  "LU",
+  "LBU",
+  "L5",
+  "LB5",
+  "LB5",
+  "L5",
+  "LBU",
+  "LU"
+ ],
+ "conditions": "2026-10-24, after ns4c: the laptop on its charger, battery full, Wi-Fi off, no working apps; one Claude desktop app open (this session's); Claude works on the laptop during the session (text files, light load, no LibreOffice renders), the laptop's load logged; aunsync.timer every 16 min (~20 s).",
+ "cold_c": {
+  "pi5": 50,
+  "pi4": 55
+ },
+ "arms": {
+  "LU": {
+   "what": "head last on the Pi 4, its link unshaped",
+   "assign": [
+    [
+     "laptop",
+     11
+    ],
+    [
+     "pi4",
+     11
+    ]
+   ],
+   "head": "last",
+   "setting": {
+    "rate_mbit": 0,
+    "delay_ms": 0
+   },
+   "link_priced": {
+    "mbps": 934.0,
+    "rtt_ms": 0.801
+   },
+   "place_env": {
+    "PLACE": "laptop:11,pi4:11",
+    "PLACE_HEAD": "last"
+   },
+   "serve_env": {
+    "SERVE_DRAFT": "none"
+   },
+   "nodes": [
+    "laptop",
+    "pi4"
+   ],
+   "predicted": {
+    "mean_ms_per_token": 108.21,
+    "server_mean_ms": 108.21,
+    "j_per_token_all": 3.059,
+    "logits_saving_ms": 0.0,
+    "prefill_ms": 48.2
+   }
+  },
+  "LBU": {
+   "what": "head last on the Pi 4, backend sampling, its link unshaped",
+   "assign": [
+    [
+     "laptop",
+     11
+    ],
+    [
+     "pi4",
+     11
+    ]
+   ],
+   "head": "last",
+   "setting": {
+    "rate_mbit": 0,
+    "delay_ms": 0
+   },
+   "link_priced": {
+    "mbps": 934.0,
+    "rtt_ms": 0.801
+   },
+   "place_env": {
+    "PLACE": "laptop:11,pi4:11",
+    "PLACE_HEAD": "last"
+   },
+   "serve_env": {
+    "SERVE_DRAFT": "none",
+    "SERVE_EXTRA": "--backend-sampling"
+   },
+   "nodes": [
+    "laptop",
+    "pi4"
+   ],
+   "predicted": {
+    "mean_ms_per_token": 107.12,
+    "server_mean_ms": 107.12,
+    "j_per_token_all": 3.028,
+    "logits_saving_ms": 1.096,
+    "prefill_ms": 48.2
+   }
+  },
+  "L5": {
+   "what": "head last on the Pi 4, its link 5 Mbit/s",
+   "assign": [
+    [
+     "laptop",
+     11
+    ],
+    [
+     "pi4",
+     11
+    ]
+   ],
+   "head": "last",
+   "setting": {
+    "rate_mbit": 5,
+    "delay_ms": 0
+   },
+   "link_priced": {
+    "mbps": 5.0,
+    "rtt_ms": 0.801
+   },
+   "place_env": {
+    "PLACE": "laptop:11,pi4:11",
+    "PLACE_HEAD": "last"
+   },
+   "serve_env": {
+    "SERVE_DRAFT": "none"
+   },
+   "nodes": [
+    "laptop",
+    "pi4"
+   ],
+   "predicted": {
+    "mean_ms_per_token": 324.95,
+    "server_mean_ms": 324.95,
+    "j_per_token_all": 7.9579,
+    "logits_saving_ms": 0.0,
+    "prefill_ms": 64.42
+   },
+   "pre": "nohup bash testbed/scripts/ns4c_shape_20261024.sh when-served 5 0 \"$OUT/ns4_shape.log\" >> \"$OUT/ns4_shape.out\" 2>&1 &",
+   "post": "[ -f \"$OUT/ns4_shape.log.pid\" ] && kill $(cat \"$OUT/ns4_shape.log.pid\") 2>/dev/null; bash testbed/scripts/ns4c_shape_20261024.sh counters \"$OUT/ns4c_counters.log\"; bash testbed/scripts/ns4c_shape_20261024.sh clear"
+  },
+  "LB5": {
+   "what": "head last on the Pi 4, backend sampling, its link 5 Mbit/s",
+   "assign": [
+    [
+     "laptop",
+     11
+    ],
+    [
+     "pi4",
+     11
+    ]
+   ],
+   "head": "last",
+   "setting": {
+    "rate_mbit": 5,
+    "delay_ms": 0
+   },
+   "link_priced": {
+    "mbps": 5.0,
+    "rtt_ms": 0.801
+   },
+   "place_env": {
+    "PLACE": "laptop:11,pi4:11",
+    "PLACE_HEAD": "last"
+   },
+   "serve_env": {
+    "SERVE_DRAFT": "none",
+    "SERVE_EXTRA": "--backend-sampling"
+   },
+   "nodes": [
+    "laptop",
+    "pi4"
+   ],
+   "predicted": {
+    "mean_ms_per_token": 120.16,
+    "server_mean_ms": 120.16,
+    "j_per_token_all": 2.9426,
+    "logits_saving_ms": 204.794,
+    "prefill_ms": 64.42
+   },
+   "pre": "nohup bash testbed/scripts/ns4c_shape_20261024.sh when-served 5 0 \"$OUT/ns4_shape.log\" >> \"$OUT/ns4_shape.out\" 2>&1 &",
+   "post": "[ -f \"$OUT/ns4_shape.log.pid\" ] && kill $(cat \"$OUT/ns4_shape.log.pid\") 2>/dev/null; bash testbed/scripts/ns4c_shape_20261024.sh counters \"$OUT/ns4c_counters.log\"; bash testbed/scripts/ns4c_shape_20261024.sh clear"
+  }
+ },
+ "hypotheses": {
+  "BS4-FASTER-5": {
+   "type": "lower",
+   "metric": "mean_ms_per_token",
+   "a": "LB5",
+   "b": "L5",
+   "claim": "at 5 Mbit/s backend sampling is faster (predicted 120.2 against 324.9 ms)"
+  },
+  "BS4-SAVE-5": {
+   "type": "diff",
+   "metric": "mean_ms_per_token",
+   "a": "L5",
+   "b": "LB5",
+   "lo": 163.8,
+   "hi": 245.7,
+   "claim": "at 5 Mbit/s the saving is the logits' transfer within 20 % (predicted 204.8 ms)"
+  },
+  "BS4-SAVE-U": {
+   "type": "diff",
+   "metric": "mean_ms_per_token",
+   "a": "LU",
+   "b": "LBU",
+   "lo": -1.0,
+   "hi": 3.0,
+   "claim": "unshaped the saving is small: LU - LBU within -1 to +3 ms (predicted 1.09)"
+  },
+  "BS4-ENERGY-5": {
+   "type": "lower",
+   "metric": "j_per_token_all",
+   "a": "LB5",
+   "b": "L5",
+   "claim": "at 5 Mbit/s backend sampling uses less energy per decoded token"
+  },
+  "BS4-TEXT": {
+   "type": "text_across",
+   "arms": [
+    "LU",
+    "LBU",
+    "L5",
+    "LB5"
+   ],
+   "claim": "request 0's first 16 tokens (greedy) are the same in every arm-run, with and without"
+  },
+  "BS4-ACC": {
+   "type": "acc",
+   "metric": "mean_ms_per_token",
+   "tol": 0.15,
+   "claim": "each arm within 15 % of its prediction"
+  },
+  "BS4-DRIFT": {
+   "type": "spread",
+   "metric": "mean_ms_per_token",
+   "arm": "LU",
+   "tol": 0.03,
+   "claim": "LU's first and last arm-runs within 3 %"
+  }
+ },
+ "hypotheses_extra": {
+  "BS4-SHAPED": {
+   "claim": "in every shaped arm-run the shaping was in place before its first scored request, and at least 1,000 packets went through netem in each direction"
+  }
+ },
+ "inputs_sha256": {
+  "testbed/scripts/qr3_tpot.py": "2b44f219faa6c767e64f78d54cb7608add38cbfeb26db145335a355f490b25af",
+  "testbed/scripts/serve_pool.sh": "9f315d70ab3404e9d73b9901508b7f53e96da590fc2527f5d62061ecae37a07f",
+  "testbed/scripts/serve_defaults.sh": "4fdedec2da1479d577117606f3d810e313ef4483a71be6c9787895133a66a095",
+  "testbed/scripts/predict_pool.py": "1e932a5012ed8d2d902e4d4a87d7d54f8e27f83169a9331c881b6bbec2f51821",
+  "testbed/scripts/energy_model.py": "10bf9f5771f693845872a45c12b154395005af8064fccdcffcac5d4563223d63",
+  "testbed/scripts/shelly_strip.py": "b7aaa7ceb2f1e94aa3f1f46100c06ca9d6c0c3fa8764a6372239747ffc0fe5a8",
+  "testbed/scripts/full_eval.py": "cfb89e752890a8d1223b4efc2b3caa6568bb74fc86bf5e830e47e59469484e4e",
+  "testbed/scripts/ab_session_20261024.sh": "92b7d9fc118d3c5ec21237e8355c96c3cde74fe31e60049fbbbebf21e4b021e2",
+  "testbed/scripts/ab_score_20261024.py": "775905ce9d250c15833d0264d90d68c26e7a9d5dfad8e2ac56f814a0d1703cae",
+  "testbed/scripts/bs4_extra_20261024.py": "9f1f1872c948b81f10b2e62e3752c1b92605f18565153c5c6f3da1173b3e1ff1",
+  "testbed/scripts/ns4c_shape_20261024.sh": "c46e158389f2837c3d8ea44d7d00b5766e771035576c9064c8e551265b392f43",
+  "testbed/scripts/netshape.sh": "1b7ac69b554c6aa25cf03e8c9c09f8f9abe247326a1e95f1c4fae4839ab48332",
+  "testbed/scripts/register_bs4_20261024.py": "cf4f65c7a1037f69ad0e022c392f48f5a729b895306d81b8cfb1fb59875b974e",
+  "testbed/scripts/score_prima4_20261021.py": "136121efb41ebc88455c8eb0ecf8bcf6904799937fe03cfdfb938a1988284f6b",
+  "testbed/dataset/link.json": "61915f41652f22063ac9a43d43a511a1c797ae28dd158cbb185df04a4d4c8a0e",
+  "ThinkPad/config/cluster.json": "1f0a3529dd384647ab71a0a08e2c142226ccf2b80aa5160ffc91e5e2e9485943",
+  "testbed/dataset/memory_snapshot_20261024_104755.json": "b652a024df999fd342eeff98abd9175152903c12e7ac0cb30875fa01b31de7ae"
+ }
+}

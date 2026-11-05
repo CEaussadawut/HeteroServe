@@ -1,0 +1,14 @@
+########## 2026-10-21T07:37:07+07:00 serve qwen35_9b, ctx 4096, clocks locked, boards pi5 pi4 jetson laptop, planned against testbed/dataset/memory_at_rest.json: pi4 33, head on pi4; predicted decode 1482.4 ms/token (0.67 tok/s)
+hosts   pi4: fixed: pi4 33, head last
+llama-server -m ~/models/qwen3.5-9b-q4_k_m.gguf -ngl 0  -c 4096 -np 1 -t 4 -lv 4 -lm none --host 192.168.1.110 --port 8080   pin b23701f77d47dad9de834d59ebfcbe25c9e8b46f
+gate    pi4: MemAvailable 7375 MiB, the plan needs 6538 MiB with its reserve (margin at rest 875 MiB)
+server  starting on pi4 (pid 66264); loading streams the model from the SD card to the workers
+READY   2026-10-21T07:39:25+07:00: http://192.168.1.110:8080/ (web chat) -- health {"status":"ok"}
+0.03.561.108 I load_tensors:          CPU model buffer size =  5626.50 MiB
+2.12.717.632 I llama_context: n_ctx                 = 4096
+2.12.717.637 I llama_context: flash_attn            = auto
+2.12.718.462 I llama_kv_cache:        CPU KV buffer size =   128.00 MiB
+2.12.875.280 I llama_kv_cache: size =  128.00 MiB (  4096 cells,   8 layers,  1/1 seqs), K (f16):   64.00 MiB, V (f16):   64.00 MiB
+2.12.960.795 I sched_reserve:        CPU compute buffer size =   100.02 MiB
+2.16.629.208 I slot   load_model: id  0 | task -1 | new slot, n_ctx = 4096
+mem     pi4: MemAvailable 1438 MiB at READY, 7375 at the gate: the serve holds 5937 MiB, charged 6538 MiB

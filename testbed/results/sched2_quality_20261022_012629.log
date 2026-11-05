@@ -1,0 +1,143 @@
+########## 2026-10-22T01:26:29+07:00 Qwen3-32B quality: Q6_K and Q4_K_M against Q8_0 on /usr/share/common-licenses/GPL-3 (3972dc9744f6499f), -f /usr/share/common-licenses/GPL-3 -c 512 --chunks 8 -t 4
+llama-perplexity fabf82c7cca90f7b, llama.cpp b23701f77
+model   q8_0: /home/aun/.cache/heteroserve-models/Qwen3-32B-Q8_0.gguf sha256 2c50eb8aad05047d
+model   q6_k: /mnt/data/heteroserve-models/Qwen3-32B-Q6_K.gguf sha256 c4c7c3cb6da260df
+model   q4_k_m: /mnt/data/heteroserve-models/Qwen3-32B-Q4_K_M.gguf sha256 efd971561896866f
+pgrep: pattern that searches for process name longer than 15 characters will result in zero matches
+Try `pgrep -f' option to match against the complete command line.
+===== 2026-10-22T01:35:24+07:00 base: Q8_0 (saving logits to /mnt/data/heteroserve-models/kld/qwen3-32b-q8_0_gpl3_c512x8_20261022_012629.kld)
+0.00.374.320 W common_fit_params: failed to fit params to free device memory: was unable to fit model into system memory by reducing context, abort
+0.00.599.988 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden
+0.35.684.154 I cmn          init: llama threadpool init, n_threads = 4
+0.59.866.599 I 
+0.59.880.657 I system_info: n_threads = 4 (n_threads_batch = 4) / 8 | CPU : SSE3 = 1 | SSSE3 = 1 | AVX = 1 | AVX2 = 1 | F16C = 1 | FMA = 1 | BMI2 = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 | 
+0.59.881.793 I perplexity: saving all logits to /mnt/data/heteroserve-models/kld/qwen3-32b-q8_0_gpl3_c512x8_20261022_012629.kld
+0.59.882.986 I perplexity: tokenizing the input ..
+1.00.292.909 I perplexity: tokenization took 409.917 ms
+1.00.294.103 I perplexity: calculating perplexity over 8 chunks, n_ctx=512, batch_size=2048, n_seq=4
+19.11.817.813 I perplexity: 1091.41 seconds per pass - ETA 36.37 minutes
+[1]1.0063,[2]1.0652,[3]1.0525,[4]1.0898,[5]1.0818,[6]1.0848,[7]1.0941,[8]1.0948,
+37.26.256.565 I Final estimate: PPL = 1.0948 +/- 0.01852
+
+base exit 0 in 2247 s
+-rw-rw-r--+ 1 aun aun 619931604 Oct 22 02:12 /mnt/data/heteroserve-models/kld/qwen3-32b-q8_0_gpl3_c512x8_20261022_012629.kld
+58038d7c5b2dfe76f361c9a1b885da0c4612ac223b673b1f42ca05df4a5a26ca  /mnt/data/heteroserve-models/kld/qwen3-32b-q8_0_gpl3_c512x8_20261022_012629.kld
+===== 2026-10-22T02:12:55+07:00 q6_k against the Q8_0 logits
+0.00.658.206 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden
+0.30.709.256 I cmn          init: llama threadpool init, n_threads = 4
+0.39.957.310 I 
+0.39.960.445 I system_info: n_threads = 4 (n_threads_batch = 4) / 8 | CPU : SSE3 = 1 | SSSE3 = 1 | AVX = 1 | AVX2 = 1 | F16C = 1 | FMA = 1 | BMI2 = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 | 
+0.40.007.774 I kl_divergence: computing over 8 chunks, n_ctx=512, batch_size=2048, n_seq=4
+21.09.978.612 I kl_divergence: 1229.97 seconds per pass - ETA 40.98 minutes
+
+chunk             PPL               ln(PPL(Q)/PPL(base))          KL Divergence              Δp RMS            Same top p
+   1       1.0262 ±    0.0180       0.01961 ±    0.01355       0.01297 ±    0.00848     5.639 ±  2.506 %    99.608 ±  0.392 %
+   2       1.0699 ±    0.0278       0.00438 ±    0.00820       0.00875 ±    0.00436     4.414 ±  1.615 %    99.804 ±  0.196 %
+   3       1.0620 ±    0.0201       0.00897 ±    0.00712       0.01013 ±    0.00331     4.714 ±  1.168 %    99.608 ±  0.226 %
+   4       1.0976 ±    0.0221       0.00709 ±    0.01003       0.01433 ±    0.00467     5.523 ±  1.021 %    99.510 ±  0.219 %
+   5       1.0899 ±    0.0185       0.00748 ±    0.00834       0.01368 ±    0.00389     5.594 ±  0.888 %    99.451 ±  0.207 %
+   6       1.0894 ±    0.0197       0.00618 ±    0.00706       0.01188 ±    0.00325     5.184 ±  0.800 %    99.542 ±  0.173 %
+   7       1.0984 ±    0.0200       0.00553 ±    0.00627       0.01125 ±    0.00283     4.967 ±  0.721 %    99.608 ±  0.148 %
+   8       1.1001 ±    0.0182       0.00621 ±    0.00583       0.01183 ±    0.00262     5.268 ±  0.650 %    99.412 ±  0.169 %
+
+====== Perplexity statistics ======
+Mean PPL(Q)                   :   1.100070 ±   0.018162
+Mean PPL(base)                :   1.093258 ±   0.017691
+Cor(ln(PPL(Q)), ln(PPL(base))):  93.65%
+Mean ln(PPL(Q)/PPL(base))     :   0.006212 ±   0.005835
+Mean PPL(Q)/PPL(base)         :   1.006231 ±   0.005871
+Mean PPL(Q)-PPL(base)         :   0.006812 ±   0.006406
+
+====== KL divergence statistics ======
+Mean    KLD:   0.011832 ±   0.002617
+Maximum KLD:   3.849245
+99.9%   KLD:   1.502386
+99.0%   KLD:   0.258268
+95.0%   KLD:   0.013128
+90.0%   KLD:   0.001683
+Median  KLD:   0.000005
+10.0%   KLD:  -0.000000
+ 5.0%   KLD:  -0.000000
+ 1.0%   KLD:  -0.000002
+ 0.1%   KLD:  -0.000007
+Minimum KLD:  -0.000011
+
+====== Token probability statistics ======
+Mean    Δp: -0.267 ± 0.117 %
+Maximum Δp: 70.430%
+99.9%   Δp: 30.093%
+99.0%   Δp: 10.833%
+95.0%   Δp:  0.243%
+90.0%   Δp:  0.009%
+75.0%   Δp:  0.000%
+Median  Δp: -0.000%
+25.0%   Δp: -0.004%
+10.0%   Δp: -0.067%
+ 5.0%   Δp: -0.530%
+ 1.0%   Δp: -16.498%
+ 0.1%   Δp: -69.947%
+Minimum Δp: -84.661%
+RMS Δp    :  5.268 ± 0.650 %
+Same top p: 99.412 ± 0.169 %
+
+q6_k exit 0 in 2498 s
+===== 2026-10-22T02:54:33+07:00 q4_k_m against the Q8_0 logits
+0.00.647.023 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden
+0.49.869.070 I cmn          init: llama threadpool init, n_threads = 4
+0.53.834.554 I 
+0.53.837.814 I system_info: n_threads = 4 (n_threads_batch = 4) / 8 | CPU : SSE3 = 1 | SSSE3 = 1 | AVX = 1 | AVX2 = 1 | F16C = 1 | FMA = 1 | BMI2 = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 | 
+0.53.889.794 I kl_divergence: computing over 8 chunks, n_ctx=512, batch_size=2048, n_seq=4
+14.29.740.295 I kl_divergence: 815.85 seconds per pass - ETA 27.18 minutes
+
+chunk             PPL               ln(PPL(Q)/PPL(base))          KL Divergence              Δp RMS            Same top p
+   1       1.1026 ±    0.0537       0.09145 ±    0.04740       0.08613 ±    0.04603    12.010 ±  2.828 %    98.431 ±  0.780 %
+   2       1.1607 ±    0.0503       0.08591 ±    0.03738       0.09563 ±    0.03000    12.375 ±  1.826 %    97.451 ±  0.699 %
+   3       1.1784 ±    0.0421       0.11294 ±    0.03219       0.12054 ±    0.02587    14.313 ±  1.440 %    96.471 ±  0.668 %
+   4       1.1994 ±    0.0384       0.09585 ±    0.02679       0.12299 ±    0.02228    14.370 ±  1.212 %    96.373 ±  0.586 %
+   5       1.1928 ±    0.0334       0.09775 ±    0.02353       0.11510 ±    0.01958    13.836 ±  1.084 %    96.706 ±  0.500 %
+   6       1.1800 ±    0.0302       0.08602 ±    0.01980       0.10053 ±    0.01643    13.048 ±  0.985 %    97.124 ±  0.427 %
+   7       1.1789 ±    0.0273       0.07625 ±    0.01778       0.09627 ±    0.01467    12.904 ±  0.919 %    97.143 ±  0.394 %
+   8       1.1794 ±    0.0253       0.07583 ±    0.01669       0.09496 ±    0.01353    12.700 ±  0.852 %    97.157 ±  0.368 %
+
+====== Perplexity statistics ======
+Mean PPL(Q)                   :   1.179384 ±   0.025339
+Mean PPL(base)                :   1.093258 ±   0.017691
+Cor(ln(PPL(Q)), ln(PPL(base))):  63.97%
+Mean ln(PPL(Q)/PPL(base))     :   0.075830 ±   0.016692
+Mean PPL(Q)/PPL(base)         :   1.078779 ±   0.018007
+Mean PPL(Q)-PPL(base)         :   0.086126 ±   0.019532
+
+====== KL divergence statistics ======
+Mean    KLD:   0.094961 ±   0.013527
+Maximum KLD:  10.120863
+99.9%   KLD:   7.684036
+99.0%   KLD:   3.221228
+95.0%   KLD:   0.197506
+90.0%   KLD:   0.020882
+Median  KLD:   0.000063
+10.0%   KLD:   0.000000
+ 5.0%   KLD:   0.000000
+ 1.0%   KLD:  -0.000002
+ 0.1%   KLD:  -0.000020
+Minimum KLD:  -0.000080
+
+====== Token probability statistics ======
+Mean    Δp: -1.917 ± 0.278 %
+Maximum Δp: 92.279%
+99.9%   Δp: 64.307%
+99.0%   Δp: 13.759%
+95.0%   Δp:  0.267%
+90.0%   Δp:  0.006%
+75.0%   Δp:  0.000%
+Median  Δp: -0.003%
+25.0%   Δp: -0.048%
+10.0%   Δp: -0.984%
+ 5.0%   Δp: -6.736%
+ 1.0%   Δp: -77.799%
+ 0.1%   Δp: -99.097%
+Minimum Δp: -99.669%
+RMS Δp    : 12.700 ± 0.852 %
+Same top p: 97.157 ± 0.368 %
+
+q4_k_m exit 0 in 1686 s
+QUALITY DONE 2026-10-22T03:22:39+07:00

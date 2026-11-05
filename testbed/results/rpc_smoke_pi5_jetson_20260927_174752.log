@@ -1,0 +1,253 @@
+########## 2026-09-27T17:47:52+07:00  RPC smoke: Pi 5 (main, CPU) + Jetson (RPC worker, Vulkan GPU), with a matched local baseline on the Jetson, clocks locked
+pin (cluster.json): b23701f77d47dad9de834d59ebfcbe25c9e8b46f
+tree HEAD (pi5)   : b23701f77d47dad9de834d59ebfcbe25c9e8b46f
+tree HEAD (jetson): b23701f77d47dad9de834d59ebfcbe25c9e8b46f
+tree   (pi5)      : clean
+tree   (jetson)   : clean
+bench  (pi5)      : ~/llama.cpp/build/bin/llama-bench --version: version: 0.4.1-dev (build 200, commit b23701f) built with GNU 14.2.0 for Linux aarch64 
+binaries (jetson) : ~/llama.cpp/build/bin/{ggml-rpc-server,llama-bench}; ~/heteroserve/build_info.json: built_at_utc=20260925T045603Z llama_cpp_commit=b23701f77d47dad9de834d59ebfcbe25c9e8b46f backend=vulkan ggml_rpc_server_newer_than_build_info=no llama_bench_newer_than_build_info=no 
+
+--- are both boards free? ---
+chain.status: 12:10:16 DONE: benchmark exit 0, results in /home/jetson/heteroserve/results/jetson_tinyllama_vulkan_20260925_115834
+bench.done  : 0
+pi5: no llama.cpp run, RPC worker or build running
+model  (pi5)      : 9fecc3b3cd76bba89d504f29b616eedf7da85b96540e490ca5824d3f7d2776a0
+model  (jetson)   : 9fecc3b3cd76bba89d504f29b616eedf7da85b96540e490ca5824d3f7d2776a0
+model  (models.md): 9fecc3b3cd76bba89d504f29b616eedf7da85b96540e490ca5824d3f7d2776a0  (full SHA-256 compared)
+
+--- power guard ---
+jetson: guard_procs=2 pmode=pmode:0000 cpu_mC=27000 gpu_mC=28000 gpu_clk=nvhost_podgov 76800000 921600000 76800000 cpu0_clk=schedutil 102000 1479000 825600 clocks=gpu nvhost_podgov 76800000 921600000 cpu0 schedutil 102000 1479000 railgate 1 fanctl 1 fan_pwm=0 fan_ctl=1 eth0_link=1000 full eth0_rx=10971655 eth0_tx=30261427 wlan0_rx=0 wlan0_tx=0 load=0.43 0.21 0.13 last=17:48:11 V=5136 I=568 P=2958 alarms=0 minV=5096 maxP=3866 pmode:0000 prev=17:48:10 trips=0 trips_since_start=0 log_age=0 now=17:48:12 jstate=ok 
+guard live (last sample 1 s old); trips=0; pmode:0000
+jetson clocks: GPU DVFS nvhost_podgov 76800000-921600000 Hz, now 76800000; CPU0 DVFS schedutil 102000-1479000 kHz, now 825600
+
+--- wired path ---
+jetson ARP sysctls before: all.arp_ignore=0 all.arp_announce=0 eth0.arp_ignore=0 eth0.arp_announce=0 wlan0.arp_ignore=0 wlan0.arp_announce=0 
+net.ipv4.conf.all.arp_ignore = 1
+net.ipv4.conf.all.arp_announce = 2
+net.ipv4.conf.eth0.arp_ignore = 1
+net.ipv4.conf.eth0.arp_announce = 2
+net.ipv4.conf.wlan0.arp_ignore = 1
+net.ipv4.conf.wlan0.arp_announce = 2
+jetson ARP sysctls now   : all.arp_ignore=1 all.arp_announce=2 eth0.arp_ignore=1 eth0.arp_announce=2 wlan0.arp_ignore=1 wlan0.arp_announce=2 
+eth0             UP             192.168.100.111/24 192.168.10.13/24 
+route pi5 -> jetson   : 192.168.10.13 dev eth0 src 192.168.10.11 uid 1000 
+ping  pi5 -> jetson   : 5 packets transmitted, 5 received, 0% packet loss, time 4038ms rtt min/avg/max/mdev = 0.535/1.202/2.633/0.736 ms 
+neigh pi5 -> jetson   : 192.168.10.13 dev eth0 lladdr 00:04:4b:ec:52:f2 REACHABLE 
+neigh jetson -> pi5   : 192.168.10.11 dev eth0 lladdr 88:a2:9e:f0:e7:8a DELAY
+
+--- jetson clocks: locked for the whole run ---
+jetson: guard_procs=2 pmode=pmode:0000 cpu_mC=27000 gpu_mC=27500 gpu_clk=nvhost_podgov 76800000 921600000 76800000 cpu0_clk=schedutil 102000 1479000 614400 clocks=gpu nvhost_podgov 76800000 921600000 cpu0 schedutil 102000 1479000 railgate 1 fanctl 1 fan_pwm=0 fan_ctl=1 eth0_link=1000 full eth0_rx=11020732 eth0_tx=30310620 wlan0_rx=0 wlan0_tx=0 load=0.52 0.24 0.14 last=17:48:19 V=5216 I=224 P=1249 alarms=0 minV=5096 maxP=3866 pmode:0000 prev=17:48:18 trips=0 trips_since_start=0 log_age=1 now=17:48:20 jstate=ok 
+GATE ok: pmode:0000, guard live (last sample 1 s old), nothing busy
+clocks stored: /sys/devices/system/cpu/cpu0/online:1
+clocks stored: /sys/devices/system/cpu/cpu1/online:1
+clocks stored: /sys/devices/system/cpu/cpu2/online:1
+clocks stored: /sys/devices/system/cpu/cpu3/online:1
+clocks stored: /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq:102000
+clocks stored: /sys/devices/system/cpu/cpu1/cpufreq/scaling_min_freq:102000
+clocks stored: /sys/devices/system/cpu/cpu2/cpufreq/scaling_min_freq:102000
+clocks stored: /sys/devices/system/cpu/cpu3/cpufreq/scaling_min_freq:102000
+clocks stored: /sys/devices/system/cpu/cpu0/cpuidle/state0/disable:0
+clocks stored: /sys/devices/system/cpu/cpu0/cpuidle/state1/disable:0
+clocks stored: /sys/devices/system/cpu/cpu1/cpuidle/state0/disable:0
+clocks stored: /sys/devices/system/cpu/cpu1/cpuidle/state1/disable:0
+clocks stored: /sys/devices/system/cpu/cpu2/cpuidle/state0/disable:0
+clocks stored: /sys/devices/system/cpu/cpu2/cpuidle/state1/disable:0
+clocks stored: /sys/devices/system/cpu/cpu3/cpuidle/state0/disable:0
+clocks stored: /sys/devices/system/cpu/cpu3/cpuidle/state1/disable:0
+clocks stored: /sys/class/devfreq/57000000.gpu/min_freq:76800000
+clocks stored: /sys/class/devfreq/57000000.gpu/device/railgate_enable:1
+clocks stored: /sys/kernel/debug/clk/override.emc/clk_state:0
+clocks stored: /sys/devices/pwm-fan/target_pwm:0
+clocks stored: /sys/devices/pwm-fan/temp_control:1
+clocks locked, policy stored in ~/heteroserve/run/jetson_clocks_20260927_174752.stored
+jetson: guard_procs=2 pmode=pmode:0000 cpu_mC=27500 gpu_mC=27500 gpu_clk=nvhost_podgov 921600000 921600000 921600000 cpu0_clk=schedutil 1479000 1479000 1479000 clocks=gpu nvhost_podgov 921600000 921600000 cpu0 schedutil 1479000 1479000 railgate 0 fanctl 1 fan_pwm=0 fan_ctl=1 eth0_link=1000 full eth0_rx=11035590 eth0_tx=30323062 wlan0_rx=0 wlan0_tx=0 load=0.52 0.24 0.14 last=17:48:20 V=5152 I=472 P=2431 alarms=0 minV=5096 maxP=3866 pmode:0000 prev=17:48:19 trips=0 trips_since_start=0 log_age=0 now=17:48:21 jstate=ok 
+jetson clocks: GPU DVFS nvhost_podgov 76800000-921600000 Hz, now 76800000 -> LOCKED nvhost_podgov 921600000-921600000 Hz; CPU0 DVFS schedutil 102000-1479000 kHz, now 614400 -> LOCKED schedutil 1479000-1479000 kHz
+
+--- starting ggml-rpc-server on the Jetson, Vulkan0 only ---
+GATE ok: pmode:0000, guard live (last sample 1 s old), nothing busy
+worker-pid=5105 log=/home/jetson/heteroserve/logs/rpc-server_20260927_174752.log
+worker listening on 192.168.10.13:50052 after 2s
+--- worker log, startup: bytes 0..487 of ~/heteroserve/logs/rpc-server_20260927_174752.log on the Jetson ---
+ggml_vulkan: Found 1 Vulkan devices:
+ggml_vulkan: 0 = NVIDIA Tegra X1 (nvgpu) (NVIDIA) | uma: 1 | fp16: 1 | bf16: 0 | fp4: 0 | warp size: 32 | shared memory: 49152 | int dot: 0 | matrix cores: none
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+WARNING: Host ('192.168.10.13') is != '127.0.0.1'
+         Never expose the RPC server to an open network!
+         This is an experimental feature and is not secure!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+--- end of worker log at byte 487 ---
+
+--- devices as the Pi 5 sees them ---
+jetson before: guard_procs=2 pmode=pmode:0000 cpu_mC=27500 gpu_mC=27000 gpu_clk=nvhost_podgov 921600000 921600000 921600000 cpu0_clk=schedutil 1479000 1479000 1479000 clocks=gpu nvhost_podgov 921600000 921600000 cpu0 schedutil 1479000 1479000 railgate 0 fanctl 1 fan_pwm=0 fan_ctl=1 eth0_link=1000 full eth0_rx=11065621 eth0_tx=30350527 wlan0_rx=0 wlan0_tx=0 load=0.52 0.24 0.14 last=17:48:23 V=5144 I=512 P=2633 alarms=0 minV=5096 maxP=3866 pmode:0000 prev=17:48:22 trips=0 trips_since_start=0 log_age=1 now=17:48:24 jstate=ok 
+pi5    before: temp=35.1'C throttled=0x0 192.168.10.13 dev eth0 lladdr 00:04:4b:ec:52:f2 REACHABLE  eth0_link=1000 full load=0.22 0.06 0.02 p5state=ok 
+Available devices:
+  RPC0: 192.168.10.13:50052 (4363 MiB, 2629 MiB free)
+
+##### local1
+jetson before: guard_procs=2 pmode=pmode:0000 cpu_mC=27500 gpu_mC=27000 gpu_clk=nvhost_podgov 921600000 921600000 921600000 cpu0_clk=schedutil 1479000 1479000 1479000 clocks=gpu nvhost_podgov 921600000 921600000 cpu0 schedutil 1479000 1479000 railgate 0 fanctl 1 fan_pwm=0 fan_ctl=1 eth0_link=1000 full eth0_rx=11074394 eth0_tx=30358720 wlan0_rx=0 wlan0_tx=0 load=0.48 0.24 0.14 last=17:48:24 V=5176 I=392 P=2070 alarms=0 minV=5096 maxP=3866 pmode:0000 prev=17:48:23 trips=0 trips_since_start=0 log_age=1 now=17:48:25 jstate=ok 
+ggml_vulkan: Found 1 Vulkan devices:
+ggml_vulkan: 0 = NVIDIA Tegra X1 (nvgpu) (NVIDIA) | uma: 1 | fp16: 1 | bf16: 0 | fp4: 0 | warp size: 32 | shared memory: 49152 | int dot: 0 | matrix cores: none
+| model                          |       size |     params | backend    | ngl | dev          |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | ------------ | --------------: | -------------------: |
+| llama 1B Q4_K - Medium         | 636.18 MiB |     1.10 B | Vulkan     |  99 | Vulkan0      |            pp64 |         63.35 ± 0.03 |
+{"build_commit": "b23701f", "build_number": 200, "cpu_info": "ARMv8 Processor rev 1 (v8l)", "gpu_info": "NVIDIA Tegra X1 (nvgpu)", "backends": "Vulkan", "model_filename": "/home/jetson/models/tinyllama-1.1b-q4km.gguf", "model_type": "llama 1B Q4_K - Medium", "model_size": 667078656, "model_n_params": 1100048384, "n_batch": 2048, "n_ubatch": 512, "n_threads": 4, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "f16", "type_v": "f16", "n_gpu_layers": 99, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": -1, "devices": "Vulkan0", "tensor_split": "0.00", "tensor_buft_overrides": "none", "load_mode": "auto", "lazy_mode": "auto", "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "n_prompt": 64, "n_gen": 0, "n_depth": 0, "test_time": "2026-09-27T10:48:27Z", "avg_ns": 1010279100, "stddev_ns": 476064, "avg_ts": 63.348840, "stddev_ts": 0.029726, "samples_ns": [ 1009733117, 1010519800, 1010584385 ],"samples_ts": [ 63.3831, 63.3337, 63.3297 ]}
+| llama 1B Q4_K - Medium         | 636.18 MiB |     1.10 B | Vulkan     |  99 | Vulkan0      |            tg16 |         11.53 ± 0.01 |
+{"build_commit": "b23701f", "build_number": 200, "cpu_info": "ARMv8 Processor rev 1 (v8l)", "gpu_info": "NVIDIA Tegra X1 (nvgpu)", "backends": "Vulkan", "model_filename": "/home/jetson/models/tinyllama-1.1b-q4km.gguf", "model_type": "llama 1B Q4_K - Medium", "model_size": 667078656, "model_n_params": 1100048384, "n_batch": 2048, "n_ubatch": 512, "n_threads": 4, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "f16", "type_v": "f16", "n_gpu_layers": 99, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": -1, "devices": "Vulkan0", "tensor_split": "0.00", "tensor_buft_overrides": "none", "load_mode": "auto", "lazy_mode": "auto", "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "n_prompt": 0, "n_gen": 16, "n_depth": 0, "test_time": "2026-09-27T10:48:33Z", "avg_ns": 1387741058, "stddev_ns": 604788, "avg_ts": 11.529530, "stddev_ts": 0.005014, "samples_ns": [ 1388438054, 1387397926, 1387387195 ],"samples_ts": [ 11.5237, 11.5324, 11.5325 ]}
+
+build: b23701f (200)
+EXIT_local1=0
+jetson after : guard_procs=2 pmode=pmode:0000 cpu_mC=28500 gpu_mC=29000 gpu_clk=nvhost_podgov 921600000 921600000 921600000 cpu0_clk=schedutil 1479000 1479000 1479000 clocks=gpu nvhost_podgov 921600000 921600000 cpu0 schedutil 1479000 1479000 railgate 0 fanctl 1 fan_pwm=0 fan_ctl=1 eth0_link=1000 full eth0_rx=11112052 eth0_tx=30399446 wlan0_rx=0 wlan0_tx=0 load=0.40 0.23 0.14 last=17:48:39 V=5176 I=392 P=2070 alarms=0 minV=4888 maxP=8055 pmode:0000 prev=17:48:38 trips=0 trips_since_start=0 log_age=0 now=17:48:39 jstate=ok 
+jetson guard : trips 0 -> 0, pmode:0000 -> pmode:0000; after: live (last sample 0 s old)
+jetson temp  : CPU 27.5 C -> 28.5 C, GPU 27.0 C -> 29.0 C
+jetson clocks: GPU LOCKED nvhost_podgov 921600000-921600000 Hz -> LOCKED nvhost_podgov 921600000-921600000 Hz; CPU0 LOCKED schedutil 1479000-1479000 kHz -> LOCKED schedutil 1479000-1479000 kHz
+jetson fan   : target_pwm 0 -> 0, temp_control 1 -> 1
+jetson NICs  : eth0 rx +37658 B, tx +40726 B | wlan0 rx +0 B, tx +0 B
+--- worker log, local1: bytes 487..773 of ~/heteroserve/logs/rpc-server_20260927_174752.log on the Jetson ---
+Starting RPC server v7.0.0
+  endpoint       : 192.168.10.13:50052
+  local cache    : n/a
+Devices:
+  Vulkan0: NVIDIA Tegra X1 (nvgpu) (4363 MiB, 2657 MiB free)
+  transport      : TCP
+Accepted client connection
+Client connection closed
+Accepted client connection
+Client connection closed
+--- end of worker log at byte 773 ---
+records      : 2 jsonl rows; build_commit b23701f b23701f; n_gpu_layers 99 99; n_prompt/n_gen 64/0 0/16; samples_ts 3 3; devices Vulkan0 Vulkan0; gpu_info [NVIDIA Tegra X1 (nvgpu)] [NVIDIA Tegra X1 (nvgpu)]; backends Vulkan Vulkan: ok
+CELL local1: ok
+
+##### ngl=99
+jetson before: guard_procs=2 pmode=pmode:0000 cpu_mC=28500 gpu_mC=28500 gpu_clk=nvhost_podgov 921600000 921600000 921600000 cpu0_clk=schedutil 1479000 1479000 1479000 clocks=gpu nvhost_podgov 921600000 921600000 cpu0 schedutil 1479000 1479000 railgate 0 fanctl 1 fan_pwm=0 fan_ctl=1 eth0_link=1000 full eth0_rx=11123700 eth0_tx=30410668 wlan0_rx=0 wlan0_tx=0 load=0.37 0.22 0.13 last=17:48:40 V=5144 I=528 P=2752 alarms=0 minV=4888 maxP=8055 pmode:0000 prev=17:48:39 trips=0 trips_since_start=0 log_age=0 now=17:48:40 jstate=ok 
+pi5    before: temp=35.1'C throttled=0x0 192.168.10.13 dev eth0 lladdr 00:04:4b:ec:52:f2 REACHABLE  eth0_link=1000 full load=0.17 0.06 0.02 p5state=ok 
+| model                          |       size |     params | backend    | ngl |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | --------------: | -------------------: |
+| llama 1B Q4_K - Medium         | 636.18 MiB |     1.10 B | RPC        |  99 |            pp64 |         62.55 ± 0.02 |
+{"build_commit": "b23701f", "build_number": 200, "cpu_info": "CPU", "gpu_info": "192.168.10.13:50052", "backends": "RPC", "model_filename": "/home/pi5/models/tinyllama-1.1b-q4km.gguf", "model_type": "llama 1B Q4_K - Medium", "model_size": 667078656, "model_n_params": 1100048384, "n_batch": 2048, "n_ubatch": 512, "n_threads": 4, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "f16", "type_v": "f16", "n_gpu_layers": 99, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": -1, "devices": "auto", "tensor_split": "0.00", "tensor_buft_overrides": "none", "load_mode": "auto", "lazy_mode": "auto", "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "n_prompt": 64, "n_gen": 0, "n_depth": 0, "test_time": "2026-09-27T10:48:48Z", "avg_ns": 1023195438, "stddev_ns": 327084, "avg_ts": 62.549149, "stddev_ts": 0.019999, "samples_ns": [ 1023383530, 1022817754, 1023385030 ],"samples_ts": [ 62.5376, 62.5722, 62.5376 ]}
+| llama 1B Q4_K - Medium         | 636.18 MiB |     1.10 B | RPC        |  99 |            tg16 |         11.24 ± 0.00 |
+{"build_commit": "b23701f", "build_number": 200, "cpu_info": "CPU", "gpu_info": "192.168.10.13:50052", "backends": "RPC", "model_filename": "/home/pi5/models/tinyllama-1.1b-q4km.gguf", "model_type": "llama 1B Q4_K - Medium", "model_size": 667078656, "model_n_params": 1100048384, "n_batch": 2048, "n_ubatch": 512, "n_threads": 4, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "f16", "type_v": "f16", "n_gpu_layers": 99, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": -1, "devices": "auto", "tensor_split": "0.00", "tensor_buft_overrides": "none", "load_mode": "auto", "lazy_mode": "auto", "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "n_prompt": 0, "n_gen": 16, "n_depth": 0, "test_time": "2026-09-27T10:48:56Z", "avg_ns": 1423396039, "stddev_ns": 256443, "avg_ts": 11.240723, "stddev_ts": 0.002003, "samples_ns": [ 1423545724, 1423539224, 1423103170 ],"samples_ts": [ 11.2395, 11.2396, 11.243 ]}
+
+build: b23701f (200)
+EXIT_ngl99=0
+jetson after : guard_procs=2 pmode=pmode:0000 cpu_mC=30000 gpu_mC=29500 gpu_clk=nvhost_podgov 921600000 921600000 921600000 cpu0_clk=schedutil 1479000 1479000 1479000 clocks=gpu nvhost_podgov 921600000 921600000 cpu0 schedutil 1479000 1479000 railgate 0 fanctl 1 fan_pwm=0 fan_ctl=1 eth0_link=1000 full eth0_rx=676652132 eth0_tx=41058303 wlan0_rx=0 wlan0_tx=0 load=0.68 0.31 0.16 last=17:49:03 V=5136 I=568 P=2953 alarms=0 minV=4888 maxP=8055 pmode:0000 prev=17:49:02 trips=0 trips_since_start=0 log_age=1 now=17:49:04 jstate=ok 
+pi5    after : temp=35.1'C throttled=0x0 192.168.10.13 dev eth0 lladdr 00:04:4b:ec:52:f2 REACHABLE  eth0_link=1000 full load=0.11 0.05 0.02 p5state=ok 
+jetson guard : trips 0 -> 0, pmode:0000 -> pmode:0000; after: live (last sample 1 s old)
+jetson temp  : CPU 28.5 C -> 30.0 C, GPU 28.5 C -> 29.5 C
+jetson clocks: GPU LOCKED nvhost_podgov 921600000-921600000 Hz -> LOCKED nvhost_podgov 921600000-921600000 Hz; CPU0 LOCKED schedutil 1479000-1479000 kHz -> LOCKED schedutil 1479000-1479000 kHz
+jetson fan   : target_pwm 0 -> 0, temp_control 1 -> 1
+jetson NICs  : eth0 rx +665528432 B, tx +10647635 B | wlan0 rx +0 B, tx +0 B
+eth0 link    : jetson 1000 full -> 1000 full | pi5 1000 full -> 1000 full: 1000 Mb/s full duplex at both ends, before and after
+pi5 throttle : 0x0 -> 0x0: ok -- bits 0-3 clear before and after, no sticky bit 16-19
+--- worker log, ngl=99: bytes 773..1189 of ~/heteroserve/logs/rpc-server_20260927_174752.log on the Jetson ---
+Accepted client connection
+Client connection closed
+Accepted client connection
+Client connection closed
+Accepted client connection
+Client connection closed
+Accepted client connection
+Client connection closed
+Accepted client connection
+Client connection closed
+Accepted client connection
+Client connection closed
+Accepted client connection
+Client connection closed
+Accepted client connection
+Client connection closed
+--- end of worker log at byte 1189 ---
+records      : 2 jsonl rows; build_commit b23701f b23701f; n_gpu_layers 99 99; n_prompt/n_gen 64/0 0/16; samples_ts 3 3: ok
+CELL ngl=99: ok
+
+##### ngl=11
+jetson before: guard_procs=2 pmode=pmode:0000 cpu_mC=30000 gpu_mC=29500 gpu_clk=nvhost_podgov 921600000 921600000 921600000 cpu0_clk=schedutil 1479000 1479000 1479000 clocks=gpu nvhost_podgov 921600000 921600000 cpu0 schedutil 1479000 1479000 railgate 0 fanctl 1 fan_pwm=0 fan_ctl=1 eth0_link=1000 full eth0_rx=676663516 eth0_tx=41069653 wlan0_rx=0 wlan0_tx=0 load=0.70 0.32 0.17 last=17:49:04 V=5152 I=488 P=2514 alarms=0 minV=4888 maxP=8055 pmode:0000 prev=17:49:03 trips=0 trips_since_start=0 log_age=0 now=17:49:05 jstate=ok 
+pi5    before: temp=35.1'C throttled=0x0 192.168.10.13 dev eth0 lladdr 00:04:4b:ec:52:f2 REACHABLE  eth0_link=1000 full load=0.11 0.05 0.02 p5state=ok 
+| model                          |       size |     params | backend    | ngl |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | --------------: | -------------------: |
+| llama 1B Q4_K - Medium         | 636.18 MiB |     1.10 B | RPC        |  11 |            pp64 |         71.61 ± 1.71 |
+{"build_commit": "b23701f", "build_number": 200, "cpu_info": "CPU", "gpu_info": "192.168.10.13:50052", "backends": "RPC", "model_filename": "/home/pi5/models/tinyllama-1.1b-q4km.gguf", "model_type": "llama 1B Q4_K - Medium", "model_size": 667078656, "model_n_params": 1100048384, "n_batch": 2048, "n_ubatch": 512, "n_threads": 4, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "f16", "type_v": "f16", "n_gpu_layers": 11, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": -1, "devices": "auto", "tensor_split": "0.00", "tensor_buft_overrides": "none", "load_mode": "auto", "lazy_mode": "auto", "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "n_prompt": 64, "n_gen": 0, "n_depth": 0, "test_time": "2026-09-27T10:49:10Z", "avg_ns": 894075407, "stddev_ns": 21699295, "avg_ts": 71.610062, "stddev_ts": 1.714002, "samples_ns": [ 919127627, 881163141, 881935453 ],"samples_ts": [ 69.6312, 72.6313, 72.5677 ]}
+| llama 1B Q4_K - Medium         | 636.18 MiB |     1.10 B | RPC        |  11 |            tg16 |         13.64 ± 0.05 |
+{"build_commit": "b23701f", "build_number": 200, "cpu_info": "CPU", "gpu_info": "192.168.10.13:50052", "backends": "RPC", "model_filename": "/home/pi5/models/tinyllama-1.1b-q4km.gguf", "model_type": "llama 1B Q4_K - Medium", "model_size": 667078656, "model_n_params": 1100048384, "n_batch": 2048, "n_ubatch": 512, "n_threads": 4, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "f16", "type_v": "f16", "n_gpu_layers": 11, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": -1, "devices": "auto", "tensor_split": "0.00", "tensor_buft_overrides": "none", "load_mode": "auto", "lazy_mode": "auto", "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "n_prompt": 0, "n_gen": 16, "n_depth": 0, "test_time": "2026-09-27T10:49:14Z", "avg_ns": 1173142638, "stddev_ns": 4613106, "avg_ts": 13.638721, "stddev_ts": 0.053566, "samples_ns": [ 1172189043, 1169081111, 1178157762 ],"samples_ts": [ 13.6497, 13.686, 13.5805 ]}
+
+build: b23701f (200)
+EXIT_ngl11=0
+jetson after : guard_procs=2 pmode=pmode:0000 cpu_mC=30500 gpu_mC=30000 gpu_clk=nvhost_podgov 921600000 921600000 921600000 cpu0_clk=schedutil 1479000 1479000 1479000 clocks=gpu nvhost_podgov 921600000 921600000 cpu0 schedutil 1479000 1479000 railgate 0 fanctl 1 fan_pwm=0 fan_ctl=1 eth0_link=1000 full eth0_rx=1012861842 eth0_tx=49867485 wlan0_rx=0 wlan0_tx=0 load=0.67 0.32 0.17 last=17:49:20 V=5144 I=520 P=2716 alarms=0 minV=4888 maxP=8055 pmode:0000 prev=17:49:19 trips=0 trips_since_start=0 log_age=0 now=17:49:20 jstate=ok 
+pi5    after : temp=37.3'C throttled=0x0 192.168.10.13 dev eth0 lladdr 00:04:4b:ec:52:f2 REACHABLE  eth0_link=1000 full load=0.70 0.18 0.06 p5state=ok 
+jetson guard : trips 0 -> 0, pmode:0000 -> pmode:0000; after: live (last sample 0 s old)
+jetson temp  : CPU 30.0 C -> 30.5 C, GPU 29.5 C -> 30.0 C
+jetson clocks: GPU LOCKED nvhost_podgov 921600000-921600000 Hz -> LOCKED nvhost_podgov 921600000-921600000 Hz; CPU0 LOCKED schedutil 1479000-1479000 kHz -> LOCKED schedutil 1479000-1479000 kHz
+jetson fan   : target_pwm 0 -> 0, temp_control 1 -> 1
+jetson NICs  : eth0 rx +336198326 B, tx +8797832 B | wlan0 rx +0 B, tx +0 B
+eth0 link    : jetson 1000 full -> 1000 full | pi5 1000 full -> 1000 full: 1000 Mb/s full duplex at both ends, before and after
+pi5 throttle : 0x0 -> 0x0: ok -- bits 0-3 clear before and after, no sticky bit 16-19
+--- worker log, ngl=11: bytes 1189..1605 of ~/heteroserve/logs/rpc-server_20260927_174752.log on the Jetson ---
+Accepted client connection
+Client connection closed
+Accepted client connection
+Client connection closed
+Accepted client connection
+Client connection closed
+Accepted client connection
+Client connection closed
+Accepted client connection
+Client connection closed
+Accepted client connection
+Client connection closed
+Accepted client connection
+Client connection closed
+Accepted client connection
+Client connection closed
+--- end of worker log at byte 1605 ---
+records      : 2 jsonl rows; build_commit b23701f b23701f; n_gpu_layers 11 11; n_prompt/n_gen 64/0 0/16; samples_ts 3 3: ok
+CELL ngl=11: ok
+
+##### local2
+jetson before: guard_procs=2 pmode=pmode:0000 cpu_mC=30500 gpu_mC=30000 gpu_clk=nvhost_podgov 921600000 921600000 921600000 cpu0_clk=schedutil 1479000 1479000 1479000 clocks=gpu nvhost_podgov 921600000 921600000 cpu0 schedutil 1479000 1479000 railgate 0 fanctl 1 fan_pwm=0 fan_ctl=1 eth0_link=1000 full eth0_rx=1012873490 eth0_tx=49878843 wlan0_rx=0 wlan0_tx=0 load=0.70 0.34 0.18 last=17:49:21 V=5144 I=536 P=2793 alarms=0 minV=4888 maxP=8055 pmode:0000 prev=17:49:20 trips=0 trips_since_start=0 log_age=0 now=17:49:21 jstate=ok 
+ggml_vulkan: Found 1 Vulkan devices:
+ggml_vulkan: 0 = NVIDIA Tegra X1 (nvgpu) (NVIDIA) | uma: 1 | fp16: 1 | bf16: 0 | fp4: 0 | warp size: 32 | shared memory: 49152 | int dot: 0 | matrix cores: none
+| model                          |       size |     params | backend    | ngl | dev          |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | ------------ | --------------: | -------------------: |
+| llama 1B Q4_K - Medium         | 636.18 MiB |     1.10 B | Vulkan     |  99 | Vulkan0      |            pp64 |         63.31 ± 0.01 |
+{"build_commit": "b23701f", "build_number": 200, "cpu_info": "ARMv8 Processor rev 1 (v8l)", "gpu_info": "NVIDIA Tegra X1 (nvgpu)", "backends": "Vulkan", "model_filename": "/home/jetson/models/tinyllama-1.1b-q4km.gguf", "model_type": "llama 1B Q4_K - Medium", "model_size": 667078656, "model_n_params": 1100048384, "n_batch": 2048, "n_ubatch": 512, "n_threads": 4, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "f16", "type_v": "f16", "n_gpu_layers": 99, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": -1, "devices": "Vulkan0", "tensor_split": "0.00", "tensor_buft_overrides": "none", "load_mode": "auto", "lazy_mode": "auto", "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "n_prompt": 64, "n_gen": 0, "n_depth": 0, "test_time": "2026-09-27T10:49:23Z", "avg_ns": 1010959267, "stddev_ns": 196046, "avg_ts": 63.306212, "stddev_ts": 0.012115, "samples_ns": [ 1010748273, 1011128282, 1011001247 ],"samples_ts": [ 63.3194, 63.2956, 63.3036 ]}
+| llama 1B Q4_K - Medium         | 636.18 MiB |     1.10 B | Vulkan     |  99 | Vulkan0      |            tg16 |         11.52 ± 0.00 |
+{"build_commit": "b23701f", "build_number": 200, "cpu_info": "ARMv8 Processor rev 1 (v8l)", "gpu_info": "NVIDIA Tegra X1 (nvgpu)", "backends": "Vulkan", "model_filename": "/home/jetson/models/tinyllama-1.1b-q4km.gguf", "model_type": "llama 1B Q4_K - Medium", "model_size": 667078656, "model_n_params": 1100048384, "n_batch": 2048, "n_ubatch": 512, "n_threads": 4, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "f16", "type_v": "f16", "n_gpu_layers": 99, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": -1, "devices": "Vulkan0", "tensor_split": "0.00", "tensor_buft_overrides": "none", "load_mode": "auto", "lazy_mode": "auto", "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "n_prompt": 0, "n_gen": 16, "n_depth": 0, "test_time": "2026-09-27T10:49:27Z", "avg_ns": 1388288695, "stddev_ns": 249248, "avg_ts": 11.524981, "stddev_ts": 0.002022, "samples_ns": [ 1388131557, 1388165204, 1388569326 ],"samples_ts": [ 11.5263, 11.526, 11.5227 ]}
+
+build: b23701f (200)
+EXIT_local2=0
+jetson after : guard_procs=2 pmode=pmode:0000 cpu_mC=31500 gpu_mC=31000 gpu_clk=nvhost_podgov 921600000 921600000 921600000 cpu0_clk=schedutil 1479000 1479000 1479000 clocks=gpu nvhost_podgov 921600000 921600000 cpu0 schedutil 1479000 1479000 railgate 0 fanctl 1 fan_pwm=0 fan_ctl=1 eth0_link=1000 full eth0_rx=1012907421 eth0_tx=49913712 wlan0_rx=0 wlan0_tx=0 load=0.66 0.34 0.18 last=17:49:34 V=5176 I=392 P=2067 alarms=0 minV=4888 maxP=8055 pmode:0000 prev=17:49:33 trips=0 trips_since_start=0 log_age=1 now=17:49:35 jstate=ok 
+jetson guard : trips 0 -> 0, pmode:0000 -> pmode:0000; after: live (last sample 1 s old)
+jetson temp  : CPU 30.5 C -> 31.5 C, GPU 30.0 C -> 31.0 C
+jetson clocks: GPU LOCKED nvhost_podgov 921600000-921600000 Hz -> LOCKED nvhost_podgov 921600000-921600000 Hz; CPU0 LOCKED schedutil 1479000-1479000 kHz -> LOCKED schedutil 1479000-1479000 kHz
+jetson fan   : target_pwm 0 -> 0, temp_control 1 -> 1
+jetson NICs  : eth0 rx +33931 B, tx +34869 B | wlan0 rx +0 B, tx +0 B
+--- worker log, local2: bytes 1605..1605 of ~/heteroserve/logs/rpc-server_20260927_174752.log on the Jetson ---
+--- end of worker log at byte 1605 ---
+records      : 2 jsonl rows; build_commit b23701f b23701f; n_gpu_layers 99 99; n_prompt/n_gen 64/0 0/16; samples_ts 3 3; devices Vulkan0 Vulkan0; gpu_info [NVIDIA Tegra X1 (nvgpu)] [NVIDIA Tegra X1 (nvgpu)]; backends Vulkan Vulkan: ok
+CELL local2: ok
+
+--- guard after the last cell ---
+jetson final : guard_procs=2 pmode=pmode:0000 cpu_mC=31500 gpu_mC=31000 gpu_clk=nvhost_podgov 921600000 921600000 921600000 cpu0_clk=schedutil 1479000 1479000 1479000 clocks=gpu nvhost_podgov 921600000 921600000 cpu0 schedutil 1479000 1479000 railgate 0 fanctl 1 fan_pwm=0 fan_ctl=1 eth0_link=1000 full eth0_rx=1012918739 eth0_tx=49924552 wlan0_rx=0 wlan0_tx=0 load=0.69 0.35 0.19 last=17:49:35 V=5160 I=472 P=2514 alarms=0 minV=4888 maxP=8055 pmode:0000 prev=17:49:34 trips=0 trips_since_start=0 log_age=1 now=17:49:36 jstate=ok 
+jetson guard : trips 0 -> 0, pmode:0000 -> pmode:0000; live (last sample 1 s old)
+
+########## done 2026-09-27T17:49:36+07:00
+cells: local1:ok ngl=99:ok ngl=11:ok local2:ok
+OUTFILE=testbed/results/rpc_smoke_pi5_jetson_20260927_174752.log
+
+--- cleanup (script exit 0) ---
+jetson: --- worker log from byte 1605 of ~/heteroserve/logs/rpc-server_20260927_174752.log ---
+jetson: --- end of worker log ---
+jetson: worker stopped
+jetson: clocks restored, as before the run: gpu nvhost_podgov 76800000 921600000 cpu0 schedutil 102000 1479000 railgate 1 fanctl 1
+jetson: net.ipv4.conf.all.arp_ignore = 0
+jetson: net.ipv4.conf.all.arp_announce = 0
+jetson: net.ipv4.conf.eth0.arp_ignore = 0
+jetson: net.ipv4.conf.eth0.arp_announce = 0
+jetson: net.ipv4.conf.wlan0.arp_ignore = 0
+jetson: net.ipv4.conf.wlan0.arp_announce = 0
+jetson: ARP sysctls restored
+jetson: address 192.168.10.13 removed
+jetson: run record removed
+jetson: undo exit status: 0
+cleanup ssh (ssh jetson) exit=0

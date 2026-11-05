@@ -1,0 +1,251 @@
+{
+  "_comment": [
+    "HeteroServe single-node characterisation sweep for the Jetson Nano.",
+    "Each case becomes one llama-bench invocation, wrapped in its own power",
+    "window, so every throughput number has joules attached to it.",
+    "",
+    "ONE WINDOW = ONE PHASE = ONE BENCH ROW. A case may set n_prompt (prefill)",
+    "or n_gen (decode), never both -- expand() refuses a case with both, by",
+    "name, at --dry-run time. That is audit finding #3: a -p 512 -n 128",
+    "invocation is TWO llama-bench tests sharing ONE power window, so its row",
+    "paired decode throughput with prefill+decode energy.",
+    "",
+    "For a deliberately fused request use 'pg': [n_prompt, n_gen], which emits",
+    "-pg and builds a SINGLE test instance -- one row, phase 'combined'. It",
+    "reports joules_per_request, never joules_per_token.",
+    "",
+    "'group' pairs the two halves of a split case. Runs inside a group are",
+    "INTERLEAVED (prefill, decode, prefill, decode ...) so the two phases of one",
+    "configuration are measured at nearly the same board temperature -- on a",
+    "fanless Nano, case order is confounded with thermal drift.",
+    "  Interleaving protects a PAIR; it does not stop the board ratcheting upward",
+    "  across the whole sweep. cooldown_target_c (how many degrees above the idle",
+    "  baseline a case must cool back to, with cooldown_s as the floor and",
+    "  max_cooldown_s as the cap) and the drift-control repeat of case 1 as the",
+    "  final run are what address that.",
+    "",
+    "Why these axes:",
+    "  n_prompt sweeps prefill (compute-bound) at several context depths;",
+    "  n_gen sweeps decode (memory-bandwidth-bound). Separating them is the",
+    "  whole point of the study -- a single combined number hides the fact",
+    "  that the two phases want different hardware.",
+    "  n_gpu_layers 0 vs 99 gives the same-device CPU-vs-GPU comparison, which",
+    "  is what actually tells you whether the Maxwell GPU is worth its watts.",
+    "  Repetitions are 3 by default; raise for the numbers that go in a table.",
+    "",
+    "Edit freely. 'enabled': false skips a case without deleting it."
+  ],
+  "defaults": {
+    "repetitions": 3,
+    "threads": 4,
+    "flash_attn": 0,
+    "cooldown_s": 20,
+    "cooldown_target_c": 3,
+    "max_cooldown_s": 300
+  },
+  "cases": [
+    {
+      "id": "cpu_prefill_sweep",
+      "enabled": true,
+      "note": "Prefill on 4x Cortex-A57 only. The Nano's CPU baseline.",
+      "model": "qwen2.5-0.5b-instruct-q4_k_m",
+      "n_gpu_layers": 0,
+      "n_prompt": [
+        128,
+        256,
+        512,
+        1024
+      ],
+      "n_gen": [
+        0
+      ]
+    },
+    {
+      "id": "cpu_decode_sweep",
+      "enabled": true,
+      "note": "Decode on CPU only.",
+      "model": "qwen2.5-0.5b-instruct-q4_k_m",
+      "n_gpu_layers": 0,
+      "n_prompt": [
+        0
+      ],
+      "n_gen": [
+        32,
+        128
+      ]
+    },
+    {
+      "id": "gpu_prefill_sweep",
+      "enabled": true,
+      "note": "Prefill fully offloaded to the 128-core Maxwell GPU (sm_53, FP16).",
+      "model": "qwen2.5-0.5b-instruct-q4_k_m",
+      "n_gpu_layers": 99,
+      "n_prompt": [
+        128,
+        256,
+        512,
+        1024
+      ],
+      "n_gen": [
+        0
+      ]
+    },
+    {
+      "id": "gpu_decode_sweep",
+      "enabled": true,
+      "note": "Decode on GPU. Expect a much smaller win than prefill shows -- decode is bandwidth-bound and the GPU shares the same LPDDR4.",
+      "model": "qwen2.5-0.5b-instruct-q4_k_m",
+      "n_gpu_layers": 99,
+      "n_prompt": [
+        0
+      ],
+      "n_gen": [
+        32,
+        128
+      ]
+    },
+    {
+      "id": "partial_offload_prefill",
+      "enabled": true,
+      "note": "The placement question in miniature: how many layers should live on the GPU when RAM is shared with the CPU? Prefill half of the split pair.",
+      "model": "qwen2.5-1.5b-instruct-q4_k_m",
+      "n_gpu_layers": [
+        0,
+        8,
+        16,
+        24,
+        99
+      ],
+      "n_prompt": [
+        512
+      ],
+      "n_gen": [
+        0
+      ],
+      "group": "partial_offload"
+    },
+    {
+      "id": "partial_offload_decode",
+      "enabled": true,
+      "note": "The placement question in miniature: how many layers should live on the GPU when RAM is shared with the CPU? Decode half of the split pair.",
+      "model": "qwen2.5-1.5b-instruct-q4_k_m",
+      "n_gpu_layers": [
+        0,
+        8,
+        16,
+        24,
+        99
+      ],
+      "n_prompt": [
+        0
+      ],
+      "n_gen": [
+        128
+      ],
+      "group": "partial_offload"
+    },
+    {
+      "id": "quantisation_prefill",
+      "enabled": true,
+      "note": "Q4_K_M vs Q8_0 on the same weights. Maxwell has no useful INT8 path, so K-quant dequantisation cost is a real term here. Prefill half of the split pair.",
+      "model": [
+        "qwen2.5-0.5b-instruct-q4_k_m",
+        "qwen2.5-0.5b-instruct-q8_0"
+      ],
+      "n_gpu_layers": 99,
+      "n_prompt": [
+        512
+      ],
+      "n_gen": [
+        0
+      ],
+      "group": "quantisation"
+    },
+    {
+      "id": "quantisation_decode",
+      "enabled": true,
+      "note": "Q4_K_M vs Q8_0 on the same weights. Maxwell has no useful INT8 path, so K-quant dequantisation cost is a real term here. Decode half of the split pair.",
+      "model": [
+        "qwen2.5-0.5b-instruct-q4_k_m",
+        "qwen2.5-0.5b-instruct-q8_0"
+      ],
+      "n_gpu_layers": 99,
+      "n_prompt": [
+        0
+      ],
+      "n_gen": [
+        128
+      ],
+      "group": "quantisation"
+    },
+    {
+      "id": "thread_sweep",
+      "enabled": true,
+      "note": "Does the 4th core help or just add heat? Relevant because the RPC server competes with it.",
+      "model": "qwen2.5-0.5b-instruct-q4_k_m",
+      "n_gpu_layers": 0,
+      "threads": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "n_prompt": [
+        512
+      ],
+      "n_gen": [
+        0
+      ]
+    },
+    {
+      "id": "end_to_end_request",
+      "enabled": true,
+      "note": "One realistic single-turn request, prefill and decode fused, as llama-bench -pg builds it. Reported as joules_per_request and latency -- deliberately NOT per token, because a fused window cannot attribute tokens to a phase. The per-phase cases above are where energy per token comes from.",
+      "model": "qwen2.5-0.5b-instruct-q4_k_m",
+      "n_gpu_layers": [
+        0,
+        99
+      ],
+      "pg": [
+        512,
+        128
+      ]
+    },
+    {
+      "id": "largest_local_model_prefill",
+      "enabled": false,
+      "note": "Enable once you have confirmed it fits. On 4 GB shared this is where the Nano starts swapping -- which is itself a finding worth recording, with swap_peak_mb from the power CSV as evidence. Prefill half of the split pair.",
+      "model": "qwen2.5-3b-instruct-q4_k_m",
+      "n_gpu_layers": [
+        0,
+        99
+      ],
+      "n_prompt": [
+        512
+      ],
+      "n_gen": [
+        0
+      ],
+      "repetitions": 2,
+      "group": "largest_local"
+    },
+    {
+      "id": "largest_local_model_decode",
+      "enabled": false,
+      "note": "Enable once you have confirmed it fits. On 4 GB shared this is where the Nano starts swapping -- which is itself a finding worth recording, with swap_peak_mb from the power CSV as evidence. Decode half of the split pair.",
+      "model": "qwen2.5-3b-instruct-q4_k_m",
+      "n_gpu_layers": [
+        0,
+        99
+      ],
+      "n_prompt": [
+        0
+      ],
+      "n_gen": [
+        128
+      ],
+      "repetitions": 2,
+      "group": "largest_local"
+    }
+  ]
+}

@@ -1,0 +1,134 @@
+===== 19:00:02 prechecks: the testbed LAN, the strip, no serve state
+strip OK at 192.168.1.111
+clock offset pi4: +0.136 s (ssh round trip 0.265 s)
+clock offset jetson: +0.204 s (ssh round trip 0.484 s)
+===== 19:00:03 the Jetson's guard, by its NOTE's procedure
+started
+guard procs: 2
+===== 19:00:08 smoke: one round, one request, two placements
+19:00:08 start {"registration": "testbed/dataset/full_eval_tiny_smoke_20261008.json", "registration_sha256": "64f05df86244faef98cc6de3ffd9a611b9409973bb25baf0e37c428cdb06910e", "outlets": {"pi4": 0, "jetson": 2}, "a
+19:00:15 model_sha256 {"host": "jetson", "sha256": "9fecc3b3cd76bba89d504f29b616eedf7da85b96540e490ca5824d3f7d2776a0", "ok": true}
+19:00:19 model_sha256 {"host": "pi4", "sha256": "9fecc3b3cd76bba89d504f29b616eedf7da85b96540e490ca5824d3f7d2776a0", "ok": true}
+19:00:20 jetson clocks "LOCKED"
+19:00:40 throttle poll start {"node": "pi4", "pid": "10628"}
+19:00:40 idle-before start {}
+19:01:10 idle-before end {}
+19:01:10 serve start {"round": 1, "placement": "engine"}
+19:01:19 served {"round": 1, "placement": "engine", "host": "jetson", "workers": "", "args": "-m ~/models/tinyllama-1.1b-q4km.gguf -ngl 99"}
+19:01:32 warm {"round": 1, "placement": "engine", "done_s": 13.155876}
+19:01:35 req {"prompt_n": 128, "n_predict": 16, "sent_wall": 1791460892.3065042, "events": [[1.799078, [13], 1, 0.001, 1759.067], [1.895575, [13], 2, 96.682, 1759.067], [1.985181, [29896], 3, 186.308, 1759.067], [
+19:01:37 serve stop {"round": 1, "placement": "engine", "out": "stop    llama-server on jetson stopped"}
+19:01:47 serve start {"round": 1, "placement": "pooled"}
+19:02:02 served {"round": 1, "placement": "pooled", "host": "pi4", "workers": "jetson", "args": "-m ~/models/tinyllama-1.1b-q4km.gguf --rpc 192.168.1.109:50052 -ngl 22"}
+19:02:14 warm {"round": 1, "placement": "pooled", "done_s": 12.268958}
+19:02:18 req {"prompt_n": 128, "n_predict": 16, "sent_wall": 1791460934.9102843, "events": [[2.406846, [13], 1, 0.001, 2238.579], [2.509951, [13], 2, 103.041, 2238.579], [2.605751, [29896], 3, 198.838, 2238.579], 
+19:02:21 serve stop {"round": 1, "placement": "pooled", "out": "stop    llama-server on pi4 stopped\nstop    worker on jetson stopped"}
+19:02:31 idle-after start {}
+19:02:41 idle-after end {}
+19:02:41 throttle poll stop {"node": "pi4", "alive": "1", "copied": true, "session": {"poll": "v2", "samples": 122, "span_s": 121, "max_gap_s": 1, "na_s": 0, "bad_lines": 0, "max_temp_c": "59.4", "active_s": 0, "now_bits": "0x0"
+19:02:42 jetson clocks restore "restored"
+19:02:42 done {"out": "testbed/results/full_eval_tiny_smoke_20261008_20261008_190008"}
+smoke run exit 0
+place    plan                     head      P50      P95      P99           P50 CI95           P95 CI95    err% J/tok all J/tok own  thermal
+engine   jetson 22                last     89.6     91.8     95.7     [89.58, 89.58]     [91.81, 91.81]   -3.4%    1.0822    0.8721  n/a 
+pooled   pi4 1 + jetson 21        last     96.6     99.7    102.4     [96.61, 96.61]     [99.74, 99.74]   -0.9%    1.2513    1.2513  clean {'clean': 1}
+wrote testbed/results/full_eval_tiny_smoke_20261008_20261008_190008/summary.json
+smoke summary exit 0, requests 2, the pooled request's Pi 4 thermal verdict clean
+===== 19:02:43 the pilot: four placements, five rounds
+engine   jetson 22                    head last host jetson decode   87.0 ms  prefill  13.7 ms  J/token 0.972 (all boards 1.180)
+pooled   pi4 1 + jetson 21            head last host pi4    decode   96.3 ms  prefill  17.0 ms  J/token 1.248 (all boards 1.248)
+halda    pi4 1 + jetson 21            head host host pi4    decode  102.6 ms  prefill  17.1 ms  J/token 1.280 (all boards 1.280)
+even     pi4 11 + jetson 11           head last host pi4    decode  132.3 ms  prefill  46.9 ms  J/token 1.436 (all boards 1.436)
+order: [['engine', 'pooled', 'halda', 'even'], ['pooled', 'halda', 'even', 'engine'], ['halda', 'even', 'engine', 'pooled'], ['even', 'engine', 'pooled', 'halda'], ['engine', 'pooled', 'halda', 'even']]
+registered testbed/dataset/full_eval_tiny_pilot_20261008.json at 2026-10-08T19:02:43+07:00, sha256 b92373cf26d4226c (read-only)
+19:02:43 start {"registration": "testbed/dataset/full_eval_tiny_pilot_20261008.json", "registration_sha256": "b92373cf26d4226cb135097d5f66e431ad695fabff34d6f2b7b4ea267cd2495f", "outlets": {"pi4": 0, "jetson": 2}, "a
+19:02:49 model_sha256 {"host": "jetson", "sha256": "9fecc3b3cd76bba89d504f29b616eedf7da85b96540e490ca5824d3f7d2776a0", "ok": true}
+19:02:54 model_sha256 {"host": "pi4", "sha256": "9fecc3b3cd76bba89d504f29b616eedf7da85b96540e490ca5824d3f7d2776a0", "ok": true}
+19:02:54 jetson clocks "LOCKED"
+19:03:15 throttle poll start {"node": "pi4", "pid": "11038"}
+19:03:15 idle-before start {}
+19:06:15 idle-before end {}
+19:06:15 serve start {"round": 1, "placement": "engine"}
+19:06:23 served {"round": 1, "placement": "engine", "host": "jetson", "workers": "", "args": "-m ~/models/tinyllama-1.1b-q4km.gguf -ngl 99"}
+19:06:33 warm {"round": 1, "placement": "engine", "done_s": 9.979138}
+19:06:44 req {"prompt_n": 128, "n_predict": 96, "sent_wall": 1791461193.6982286, "events": [[1.80063, [13], 1, 0.001, 1757.668], [1.897035, [13], 2, 96.44, 1757.668], [1.98669, [29896], 3, 186.172, 1757.668], [2.0
+19:06:54 req {"prompt_n": 128, "n_predict": 96, "sent_wall": 1791461204.0431848, "events": [[1.774345, [13], 1, 0.001, 1754.473], [1.870629, [13], 2, 96.365, 1754.473], [1.960471, [29896], 3, 186.052, 1754.473], [
+19:07:04 req {"prompt_n": 128, "n_predict": 96, "sent_wall": 1791461214.3622005, "events": [[1.77927, [13], 1, 0.001, 1757.035], [1.875664, [13], 2, 96.45, 1757.035], [1.965162, [29896], 3, 186.134, 1757.035], [2.
+19:07:15 req {"prompt_n": 128, "n_predict": 96, "sent_wall": 1791461224.6889017, "events": [[1.782129, [673], 1, 0.001, 1759.93], [1.878695, [5034], 2, 96.61, 1759.93], [1.968374, [304], 3, 186.272, 1759.93], [2.0
+19:07:16 serve stop {"round": 1, "placement": "engine", "out": "stop    llama-server on jetson stopped"}
+19:07:26 serve start {"round": 1, "placement": "pooled"}
+19:07:42 served {"round": 1, "placement": "pooled", "host": "pi4", "workers": "jetson", "args": "-m ~/models/tinyllama-1.1b-q4km.gguf --rpc 192.168.1.109:50052 -ngl 22"}
+19:07:54 warm {"round": 1, "placement": "pooled", "done_s": 12.292047}
+19:08:06 req {"prompt_n": 128, "n_predict": 96, "sent_wall": 1791461274.4378092, "events": [[2.408475, [13], 1, 0.001, 2237.996], [2.511479, [13], 2, 102.877, 2237.996], [2.609811, [29896], 3, 201.133, 2237.996], 
+19:08:18 req {"prompt_n": 128, "n_predict": 96, "sent_wall": 1791461286.3661687, "events": [[2.335677, [13], 1, 0.001, 2245.423], [2.4385, [13], 2, 102.845, 2245.423], [2.535504, [29896], 3, 199.891, 2245.423], [2
+19:08:30 req {"prompt_n": 128, "n_predict": 96, "sent_wall": 1791461298.2131448, "events": [[2.335826, [13], 1, 0.001, 2241.722], [2.439178, [13], 2, 103.316, 2241.722], [2.53623, [29896], 3, 200.396, 2241.722], [
+19:08:41 req {"prompt_n": 128, "n_predict": 96, "sent_wall": 1791461310.0290756, "events": [[2.339269, [673], 1, 0.001, 2242.71], [2.442968, [5034], 2, 103.551, 2242.71], [2.539475, [304], 3, 200.216, 2242.71], [2
+19:08:44 serve stop {"round": 1, "placement": "pooled", "out": "stop    llama-server on pi4 stopped\nstop    worker on jetson stopped"}
+19:08:54 serve start {"round": 1, "placement": "halda"}
+19:09:09 served {"round": 1, "placement": "halda", "host": "pi4", "workers": "jetson", "args": "-m ~/models/tinyllama-1.1b-q4km.gguf --rpc 192.168.1.109:50052 -ngl 22 -ot \"^output\\.weight=CPU\""}
+19:09:22 warm {"round": 1, "placement": "halda", "done_s": 12.44093}
+19:09:34 req {"prompt_n": 128, "n_predict": 96, "sent_wall": 1791461362.2809567, "events": [[2.415095, [13], 1, 0.001, 2247.218], [2.524958, [13], 2, 109.843, 2247.218], [2.627126, [29896], 3, 211.985, 2247.218], 
+19:09:47 req {"prompt_n": 128, "n_predict": 96, "sent_wall": 1791461374.8777947, "events": [[2.322607, [13], 1, 0.001, 2229.678], [2.432217, [13], 2, 109.551, 2229.678], [2.534264, [29896], 3, 211.704, 2229.678], 
+19:09:59 req {"prompt_n": 128, "n_predict": 96, "sent_wall": 1791461387.3533854, "events": [[2.322901, [13], 1, 0.001, 2228.106], [2.432765, [13], 2, 109.963, 2228.106], [2.535784, [29896], 3, 212.967, 2228.106], 
+19:10:12 req {"prompt_n": 128, "n_predict": 96, "sent_wall": 1791461399.813999, "events": [[2.324577, [673], 1, 0.001, 2231.364], [2.434321, [5034], 2, 109.676, 2231.364], [2.537101, [304], 3, 212.541, 2231.364], 
+19:10:14 serve stop {"round": 1, "placement": "halda", "out": "stop    llama-server on pi4 stopped\nstop    worker on jetson stopped"}
+19:10:24 serve start {"round": 1, "placement": "even"}
+19:10:34 served {"round": 1, "placement": "even", "host": "pi4", "workers": "jetson", "args": "-m ~/models/tinyllama-1.1b-q4km.gguf --rpc 192.168.1.109:50052 -ngl 12"}
+19:11:04 warm {"round": 1, "placement": "even", "done_s": 29.575472}
+19:11:23 req {"prompt_n": 128, "n_predict": 96, "sent_wall": 1791461464.3776574, "events": [[6.143862, [13], 1, 0.001, 6051.704], [6.283841, [13], 2, 139.91, 6051.704], [6.419591, [29896], 3, 275.713, 6051.704], [
+19:11:42 req {"prompt_n": 128, "n_predict": 96, "sent_wall": 1791461483.5102174, "events": [[6.105824, [13], 1, 0.001, 6056.037], [6.246792, [13], 2, 140.946, 6056.037], [6.381174, [29896], 3, 275.449, 6056.037], 
+19:12:01 req {"prompt_n": 128, "n_predict": 96, "sent_wall": 1791461502.595833, "events": [[6.097941, [13], 1, 0.001, 6049.663], [6.237312, [13], 2, 139.387, 6049.663], [6.372345, [29896], 3, 274.392, 6049.663], [
+19:12:20 req {"prompt_n": 128, "n_predict": 96, "sent_wall": 1791461521.654755, "events": [[6.097097, [673], 1, 0.001, 6049.298], [6.236554, [5034], 2, 139.385, 6049.298], [6.37045, [304], 3, 273.245, 6049.298], [
+19:12:23 serve stop {"round": 1, "placement": "even", "out": "stop    llama-server on pi4 stopped\nstop    worker on jetson stopped"}
+19:12:33 serve start {"round": 2, "placement": "pooled"}
+19:12:48 served {"round": 2, "placement": "pooled", "host": "pi4", "workers": "jetson", "args": "-m ~/models/tinyllama-1.1b-q4km.gguf --rpc 192.168.1.109:50052 -ngl 22"}
+19:13:00 warm {"round": 2, "placement": "pooled", "done_s": 12.282843}
+19:13:12 req {"prompt_n": 128, "n_predict": 96, "sent_wall": 1791461580.8235908, "events": [[2.373278, [13], 1, 0.001, 2202.395], [2.476318, [13], 2, 102.967, 2202.395], [2.574027, [29896], 3, 200.693, 2202.395], 
+19:13:24 req {"prompt_n": 128, "n_predict": 96, "sent_wall": 1791461592.6490915, "events": [[2.325098, [13], 1, 0.001, 2234.875], [2.428131, [13], 2, 103.081, 2234.875], [2.524723, [29896], 3, 199.656, 2234.875], 
+19:13:36 req {"prompt_n": 128, "n_predict": 96, "sent_wall": 1791461604.5094411, "events": [[2.316578, [13], 1, 0.001, 2225.102], [2.419982, [13], 2, 103.276, 2225.102], [2.518182, [29896], 3, 201.421, 2225.102], 
+19:13:48 req {"prompt_n": 128, "n_predict": 96, "sent_wall": 1791461616.287978, "events": [[2.324731, [673], 1, 0.001, 2234.496], [2.427925, [5034], 2, 103.164, 2234.496], [2.525823, [304], 3, 200.908, 2234.496], 
+19:13:50 serve stop {"round": 2, "placement": "pooled", "out": "stop    llama-server on pi4 stopped\nstop    worker on jetson stopped"}
+19:14:00 serve start {"round": 2, "placement": "halda"}
+19:14:16 served {"round": 2, "placement": "halda", "host": "pi4", "workers": "jetson", "args": "-m ~/models/tinyllama-1.1b-q4km.gguf --rpc 192.168.1.109:50052 -ngl 22 -ot \"^output\\.weight=CPU\""}
+19:14:28 warm {"round": 2, "placement": "halda", "done_s": 12.421251}
+19:14:41 req {"prompt_n": 128, "n_predict": 96, "sent_wall": 1791461668.5631602, "events": [[2.4061, [13], 1, 0.001, 2236.656], [2.515623, [13], 2, 109.479, 2236.656], [2.618909, [29896], 3, 212.794, 2236.656], [2
+19:14:53 req {"prompt_n": 128, "n_predict": 96, "sent_wall": 1791461681.0588374, "events": [[2.325745, [13], 1, 0.001, 2232.531], [2.434872, [13], 2, 109.088, 2232.531], [2.537091, [29896], 3, 211.225, 2232.531], 
+19:15:05 req {"prompt_n": 128, "n_predict": 96, "sent_wall": 1791461693.529211, "events": [[2.323875, [13], 1, 0.001, 2229.925], [2.433149, [13], 2, 109.233, 2229.925], [2.535318, [29896], 3, 211.496, 2229.925], [
+19:15:18 req {"prompt_n": 128, "n_predict": 96, "sent_wall": 1791461705.9659371, "events": [[2.313539, [673], 1, 0.001, 2219.986], [2.422767, [5034], 2, 109.287, 2219.986], [2.525021, [304], 3, 211.55, 2219.986], 
+19:15:20 serve stop {"round": 2, "placement": "halda", "out": "stop    llama-server on pi4 stopped\nstop    worker on jetson stopped"}
+19:15:30 serve start {"round": 2, "placement": "even"}
+19:15:40 served {"round": 2, "placement": "even", "host": "pi4", "workers": "jetson", "args": "-m ~/models/tinyllama-1.1b-q4km.gguf --rpc 192.168.1.109:50052 -ngl 12"}
+19:16:10 warm {"round": 2, "placement": "even", "done_s": 29.46227}
+19:16:29 req {"prompt_n": 128, "n_predict": 96, "sent_wall": 1791461770.4357455, "events": [[6.13061, [13], 1, 0.001, 6038.435], [6.270957, [13], 2, 140.397, 6038.435], [6.405389, [29896], 3, 274.821, 6038.435], [
+19:16:48 req {"prompt_n": 128, "n_predict": 96, "sent_wall": 1791461789.5101373, "events": [[6.080301, [13], 1, 0.001, 6032.715], [6.220626, [13], 2, 140.299, 6032.715], [6.35663, [29896], 3, 276.209, 6032.715], [
+19:17:07 req {"prompt_n": 128, "n_predict": 96, "sent_wall": 1791461808.537106, "events": [[6.085, [13], 1, 0.001, 6036.777], [6.224651, [13], 2, 139.581, 6036.777], [6.358951, [29896], 3, 273.91, 6036.777], [6.49
+19:17:26 req {"prompt_n": 128, "n_predict": 96, "sent_wall": 1791461827.5760975, "events": [[6.081725, [673], 1, 0.001, 6032.562], [6.220926, [5034], 2, 139.218, 6032.562], [6.354342, [304], 3, 272.478, 6032.562],
+19:17:29 serve stop {"round": 2, "placement": "even", "out": "stop    llama-server on pi4 stopped\nstop    worker on jetson stopped"}
+19:17:39 serve start {"round": 2, "placement": "engine"}
+19:17:47 served {"round": 2, "placement": "engine", "host": "jetson", "workers": "", "args": "-m ~/models/tinyllama-1.1b-q4km.gguf -ngl 99"}
+19:17:57 warm {"round": 2, "placement": "engine", "done_s": 9.922004}
+19:18:07 req {"prompt_n": 128, "n_predict": 96, "sent_wall": 1791461877.5119615, "events": [[1.789191, [13], 1, 0.001, 1745.211], [1.88519, [13], 2, 96.05, 1745.211], [1.974214, [29896], 3, 185.053, 1745.211], [2.
+19:18:18 req {"prompt_n": 128, "n_predict": 96, "sent_wall": 1791461887.7866292, "events": [[1.78004, [13], 1, 0.001, 1758.999], [1.876181, [13], 2, 96.196, 1758.999], [1.965684, [29896], 3, 185.722, 1758.999], [2
+19:18:28 req {"prompt_n": 128, "n_predict": 96, "sent_wall": 1791461898.1020072, "events": [[1.777573, [13], 1, 0.001, 1757.876], [1.873853, [13], 2, 96.234, 1757.876], [1.963363, [29896], 3, 185.815, 1757.876], [
+19:18:38 req {"prompt_n": 128, "n_predict": 96, "sent_wall": 1791461908.4153523, "events": [[1.77594, [673], 1, 0.001, 1754.912], [1.87212, [5034], 2, 96.304, 1754.912], [1.96167, [304], 3, 185.857, 1754.912], [2.
+19:18:40 serve stop {"round": 2, "placement": "engine", "out": "stop    llama-server on jetson stopped"}
+19:18:50 serve start {"round": 3, "placement": "halda"}
+19:19:06 served {"round": 3, "placement": "halda", "host": "pi4", "workers": "jetson", "args": "-m ~/models/tinyllama-1.1b-q4km.gguf --rpc 192.168.1.109:50052 -ngl 22 -ot \"^output\\.weight=CPU\""}
+19:19:18 warm {"round": 3, "placement": "halda", "done_s": 12.399431}
+19:19:31 req {"prompt_n": 128, "n_predict": 96, "sent_wall": 1791461958.4654863, "events": [[2.422217, [13], 1, 0.001, 2250.477], [2.533371, [13], 2, 111.107, 2250.477], [2.637463, [29896], 3, 215.426, 2250.477], 
+19:19:43 req {"prompt_n": 128, "n_predict": 96, "sent_wall": 1791461971.0304608, "events": [[2.317596, [13], 1, 0.001, 2227.804], [2.42734, [13], 2, 109.768, 2227.804], [2.530065, [29896], 3, 212.394, 2227.804], [
+19:19:55 req {"prompt_n": 128, "n_predict": 96, "sent_wall": 1791461983.4933975, "events": [[2.318823, [13], 1, 0.001, 2222.986], [2.428252, [13], 2, 109.352, 2222.986], [2.530519, [29896], 3, 211.539, 2222.986], 
+19:20:08 req {"prompt_n": 128, "n_predict": 96, "sent_wall": 1791461995.9705029, "events": [[2.328156, [673], 1, 0.001, 2234.924], [2.437764, [5034], 2, 109.682, 2234.924], [2.541077, [304], 3, 213.067, 2234.924],
+19:20:10 serve stop {"round": 3, "placement": "halda", "out": "stop    llama-server on pi4 stopped\nstop    worker on jetson stopped"}
+19:20:20 serve start {"round": 3, "placement": "even"}
+19:20:30 served {"round": 3, "placement": "even", "host": "pi4", "workers": "jetson", "args": "-m ~/models/tinyllama-1.1b-q4km.gguf --rpc 192.168.1.109:50052 -ngl 12"}
+19:21:00 warm {"round": 3, "placement": "even", "done_s": 29.416794}
+19:21:19 req {"prompt_n": 128, "n_predict": 96, "sent_wall": 1791462060.219595, "events": [[6.156335, [13], 1, 0.001, 6064.932], [6.29456, [13], 2, 138.289, 6064.932], [6.428142, [29896], 3, 271.704, 6064.932], [6
+19:21:38 req {"prompt_n": 128, "n_predict": 96, "sent_wall": 1791462079.248089, "events": [[6.101312, [13], 1, 0.001, 6053.518], [6.239282, [13], 2, 137.763, 6053.518], [6.373205, [29896], 3, 271.779, 6053.518], [
+19:21:57 req {"prompt_n": 128, "n_predict": 96, "sent_wall": 1791462098.2060008, "events": [[6.103199, [13], 1, 0.001, 6052.462], [6.240876, [13], 2, 137.849, 6052.462], [6.373783, [29896], 3, 270.586, 6052.462], 
+19:22:16 req {"prompt_n": 128, "n_predict": 96, "sent_wall": 1791462117.1744397, "events": [[6.107606, [673], 1, 0.001, 6057.538], [6.245297, [5034], 2, 137.491, 6057.538], [6.378406, [304], 3, 270.799, 6057.538],
+19:22:18 serve stop {"round": 3, "placement": "even", "out": "stop    llama-server on pi4 stopped\nstop    worker on jetson stopped"}
+19:22:28 serve start {"round": 3, "placement": "engine"}
+19:22:36 served {"round": 3, "placement": "engine", "host": "jetson", "workers": "", "args": "-m ~/models/tinyllama-1.1b-q4km.gguf -ngl 99"}
+19:22:46 warm {"round": 3, "placement": "engine", "done_s": 9.931681}
+19:22:57 req {"prompt_n": 128, "n_predict": 96, "sent_wall": 1791462166.9282596, "events": [[1.786185, [13], 1, 0.001, 1743.398], [1.882089, [13], 2, 95.972, 1743.398], [1.971069, [29896], 3, 184.989, 1743.398], [

@@ -1,0 +1,54 @@
+########## 2026-09-20T16:29:12+07:00  TEST B: 14B Q4_K_M pooled over wired RPC
+pi5 avail MiB : 7572
+pi4 avail MiB : 7418
+commit (pi5)  : b23701f77d47dad9de834d59ebfcbe25c9e8b46f
+commit (pi4)  : b23701f77d47dad9de834d59ebfcbe25c9e8b46f
+
+--- starting RPC worker on the Pi 4, bound to the wired interface ---
+worker-pid=4419
+--- waiting for the worker to listen (checked via ss, no client connect) ---
+worker listening on 192.168.10.12:50052 after 1s
+WARNING: Host ('192.168.10.12') is != '127.0.0.1'
+         Never expose the RPC server to an open network!
+         This is an experimental feature and is not secure!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+--- devices as the main node sees them ---
+Available devices:
+  RPC0: 192.168.10.12:50052 (7819 MiB, 7819 MiB free)
+
+##### ngl=8 of 48 layers on the remote worker, remainder on the Pi 5 CPU
+| model                          |       size |     params | backend    | ngl |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | --------------: | -------------------: |
+| qwen2 14B Q4_K - Medium        |   8.37 GiB |    14.77 B | RPC        |   8 |            pp64 |          3.24 ± 0.00 |
+| qwen2 14B Q4_K - Medium        |   8.37 GiB |    14.77 B | RPC        |   8 |            tg16 |          0.90 ± 0.00 |
+
+build: b23701f (200)
+EXIT_ngl8=0
+pi5 mem: Mem:            8062         537        6653          33        1042        7525
+pi4 mem: Mem:            7819         418        6235          29        1282        7401
+pi4 temp: temp=62.8'C throttled=0x80000
+
+##### ngl=6 of 48 layers on the remote worker, remainder on the Pi 5 CPU
+| model                          |       size |     params | backend    | ngl |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | --------------: | -------------------: |
+| qwen2 14B Q4_K - Medium        |   8.37 GiB |    14.77 B | RPC        |   6 |            pp64 |          3.73 ± 0.00 |
+| qwen2 14B Q4_K - Medium        |   8.37 GiB |    14.77 B | RPC        |   6 |            tg16 |          0.97 ± 0.00 |
+
+build: b23701f (200)
+EXIT_ngl6=0
+pi5 mem: Mem:            8062         535        6989          33         707        7526
+pi4 mem: Mem:            7819         426        6226          29        1283        7393
+pi4 temp: temp=62.3'C throttled=0x80000
+
+##### ngl=4 of 48 layers on the remote worker, remainder on the Pi 5 CPU
+bash: line 1:  3159 Killed                  /usr/bin/timeout 2400 ~/llama.cpp/build/bin/llama-bench -m ~/models/qwen2.5-14b-instruct-q4_k_m-00001-of-00003.gguf -rpc 192.168.10.12:50052 -ngl 4 -t 4 -p 64 -n 16 -r 1
+EXIT_ngl4=137
+pi5 mem: Mem:            8062         543        7522          33          90        7518
+pi4 mem: Mem:            7819         428        6225          29        1283        7391
+pi4 temp: temp=55.5'C throttled=0x80000
+
+########## done 2026-09-20T16:43:28+07:00
+OUTFILE=testbed/results/pool14b_20260920_162912.log
+--- stopping worker ---

@@ -1,0 +1,185 @@
+{
+ "registered": "2026-09-30T01:31:06+07:00",
+ "campaign": "2026-09-30: QR3, TPOT at the 95th percentile for one user, on the engine's serving plan (ctx 4096)",
+ "requirement": "HeteroServe_Proposal_EN.docx: 'TPOT P95 <= 500 ms (MVP) / <= 250 ms (Stretch)'; TPOT measured as decode streams tokens back to the client",
+ "inputs_sha256": {
+  "characterisation.csv": "ef94c22318ccb0ce9ab913a08174d110095d9d4e0cad65aeeb052304dbc13d6a",
+  "model_shapes.json": "c92bbc0278b030d5218d7740b3fac99f146b5bdeffe684404d94a012f7232c38",
+  "link.json": "e5084df7d3e62a47c7f93339ef4412c8e5f31db2d500ad5f189aafde95548ac5",
+  "memory_at_rest.json": "1ec5a19725d7c565b9b97449beb0130b179da895e2e93fdb5e36e9ea4f141589",
+  "cluster.json": "8824a3b4ea31dd5ac4e5e561584f837e1f469e52c06fcf95ed89c40d59125df5",
+  "predict_pool.py": "38f18893b923ec4a3edac856830750ffba19980b0db183c4d4d838fc18141a83",
+  "serve_pool.sh": "9c7b550414556791ec5fc9711cc53efed5d80f6ae3756cd234e59b251fe93895",
+  "qr3_tpot.py": "0284dbc54a52cc209f81a44a347c09023896e5bf034c820835e6165fdf6c37c0",
+  "placement.py": "23faab12f34288bdf5efd9cddba480cc1f628647da11302a417470f86208d8fb"
+ },
+ "instrument": "testbed/scripts/qr3_tpot.py run --model <key> --ctx 4096 --reqs 10 --n 128 --gen 128 (tag 'scored'): serve_pool.sh starts the plan; the model's sha256 is checked on its host first; one unscored warm-up (512-token prompt, 32 tokens), then 10 requests one after another, each its own 128-token prompt (GPL-3 from token 500 x i, then a question), 128 tokens each, greedy, ignore_eos, cache_prompt false, streamed with timings_per_token; get_throttled / temperature / MemAvailable on every board between requests; no memory probe during scored requests. The configs run in the order listed.",
+ "definitions": {
+  "tpot_sample": "the gap between two consecutive tokens of one request (the first token is TTFT's): 127 samples a request, 1,270 a config. An SSE event carrying more than one token gives no sample for the gap it merges; merged events are counted and reported.",
+  "client": "the laptop's time.perf_counter() at each SSE event's arrival: what a user on the router LAN sees. PRIMARY.",
+  "server": "llama-server's timings.predicted_ms per token (stamped after sampling, us resolution); a sample only where predicted_n rises by exactly 1. Reported beside the primary, to separate the cluster from the delivery path.",
+  "p95": "the 95th percentile of a config's pooled samples, by linear interpolation between order statistics (numpy's default, Hyndman-Fan type 7)",
+  "ci": "95 % CI of the pooled P95 by bootstrap over whole requests (10,000 resamples, seed 20260930), because tokens of one request are not independent",
+  "mean_tpot": "the mean of the pooled samples"
+ },
+ "rules": [
+  "QR3-MVP: a config meets the MVP if its pooled client P95 is <= 500 ms. It is reported as 'met' when the whole CI is <= 500, 'met on the point estimate' when only the P95 is, and 'not met' otherwise.",
+  "QR3-STRETCH: the same at 250 ms.",
+  "PRIMARY: the verdicts are taken on the client samples. If the server samples would give a different verdict, both are reported.",
+  "TAIL: QR3 is decided by the mean decode speed, not by jitter: every config's pooled client P95 is within 10 % above its mean TPOT (P95 / mean <= 1.10).",
+  "DELIVERY: the pooled client and server P95 of every config differ by less than 2 %.",
+  "ACCURACY: every config's server mean TPOT is within +-10 % of the predictor's decode figure for its plan (as the engine and serve_pool.sh use it, with no recurrent term). Expected to hold for the dense models; the 9B hybrid and the MoE carry the known biases in their notes, and are scored against the rule as written.",
+  "PLAN: the plan serve_pool.sh serves must be the registered one (its server args); a config served on another plan is reported and not scored.",
+  "COMPLETE: every scored request must return exactly 128 tokens; a config with a short request is reported, its full requests still scored."
+ ],
+ "predicted_verdicts": {
+  "QR3-MVP": "met only by qwen3moe (predicted mean 273.7 ms); the dense models and the 9B are predicted not to meet it (their predicted means already exceed 500 ms, except the 9B's plain 466.3, which its known bias puts above)",
+  "QR3-STRETCH": "met by none"
+ },
+ "configs": {
+  "qwen35_9b": {
+   "model": "qwen3.5-9b-q4_k_m",
+   "quant": "Q4_K_M",
+   "host": "pi5",
+   "plan": [
+    {
+     "node": "pi5",
+     "blocks": 33
+    }
+   ],
+   "head_on": "pi5",
+   "server_args": "-m ~/models/qwen3.5-9b-q4_k_m.gguf -ngl 0 -c 4096 -np 1 -t 4",
+   "memory": {
+    "pi5": {
+     "need_mib": 6075,
+     "reserve_mib": 0,
+     "available_mib": 7619,
+     "margin_mib": 1544
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 466.3,
+    "prefill_ms_per_token": 88.4,
+    "decode_ms_per_token_with_recur_term": 539.7,
+    "recur_term_note": "information only: RECUR's host term, fitted on the Pi 5's own tg16 row of this model, so for this one-board plan it restates that row; ACCURACY uses the plain figure"
+   },
+   "note": "a qwen35 hybrid: the registered rule TRANSFER (2026-09-28) found the predictor 5-14 % optimistic in decode for it, and RECUR2's decode term was not adopted, so the plain figure is expected to be low"
+  },
+  "nemo12b": {
+   "model": "mistral-nemo-12b-q4_k_m",
+   "quant": "Q4_K_M",
+   "host": "pi5",
+   "plan": [
+    {
+     "node": "pi5",
+     "blocks": 39
+    },
+    {
+     "node": "jetson",
+     "blocks": 1
+    }
+   ],
+   "head_on": "jetson",
+   "server_args": "-m ~/models/mistral-nemo-12b-q4_k_m.gguf --rpc 192.168.100.111:50052 -ngl 2 -c 4096 -np 1 -t 4",
+   "memory": {
+    "pi5": {
+     "need_mib": 7442,
+     "reserve_mib": 0,
+     "available_mib": 7619,
+     "margin_mib": 177
+    },
+    "jetson": {
+     "need_mib": 1276,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 1819
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 665.9,
+    "prefill_ms_per_token": 139.4
+   }
+  },
+  "qwen3_14b": {
+   "model": "qwen3-14b-q4_k_m",
+   "quant": "Q4_K_M",
+   "host": "pi5",
+   "plan": [
+    {
+     "node": "pi5",
+     "blocks": 33
+    },
+    {
+     "node": "jetson",
+     "blocks": 7
+    }
+   ],
+   "head_on": "jetson",
+   "server_args": "-m ~/models/qwen3-14b-q4_k_m.gguf --rpc 192.168.100.111:50052 -ngl 8 -c 4096 -np 1 -t 4",
+   "memory": {
+    "pi5": {
+     "need_mib": 7530,
+     "reserve_mib": 0,
+     "available_mib": 7619,
+     "margin_mib": 89
+    },
+    "jetson": {
+     "need_mib": 2753,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 342
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 868.4,
+    "prefill_ms_per_token": 171.9
+   }
+  },
+  "qwen3moe": {
+   "model": "qwen3-30b-a3b-q3_k_m",
+   "quant": "Q3_K_M",
+   "host": "pi4",
+   "plan": [
+    {
+     "node": "pi4",
+     "blocks": 15
+    },
+    {
+     "node": "jetson",
+     "blocks": 9
+    },
+    {
+     "node": "pi5",
+     "blocks": 24
+    }
+   ],
+   "head_on": "pi5",
+   "server_args": "-m ~/models/qwen3-30b-a3b-q3_k_m.gguf --rpc 192.168.100.111:50052,192.168.10.11:50052 -ngl 34 -ts 8.5,25.5 -c 4096 -np 1 -t 4",
+   "memory": {
+    "pi4": {
+     "need_mib": 4573,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 2840
+    },
+    "jetson": {
+     "need_mib": 2795,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 300
+    },
+    "pi5": {
+     "need_mib": 7417,
+     "reserve_mib": 0,
+     "available_mib": 7619,
+     "margin_mib": 202
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 273.7,
+    "prefill_ms_per_token": 133.7
+   },
+   "note": "the MoE: its warm llama-bench decode on the ctx-80 plan (13/10/25) ran 290.0 ms against 263.3 predicted (-9.2 %)"
+  }
+ }
+}

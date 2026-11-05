@@ -1,0 +1,73 @@
+{
+ "registered": "2026-10-20T01:49:25+07:00",
+ "campaign": "2026-10-20: the replacement Pi 5's q4km energy per token after its bootloader update (registered with pi5b_fw_predictions_20261020.json); the bands are the first registration's (testbed/dataset/energy_predictions_20261019_pi5b_q4km.json)",
+ "model": {
+  "file_on_board": "~/models/tinyllama-1.1b-q4km.gguf",
+  "sha256": "9fecc3b3cd76bba89d504f29b616eedf7da85b96540e490ca5824d3f7d2776a0",
+  "pin": "testbed/models.md (TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF @ 52e7645b)",
+  "verified": "re-hashed on the Pi 5 by the runner's preflight; it refuses on a mismatch"
+ },
+ "build": "llama.cpp b23701f7 (clean tree, checked by run_quant_campaign.sh earlier in the session), ~/llama.cpp/build/bin/llama-bench on the Pi 5",
+ "command": "python3 testbed/scripts/energy_phase_run.py --node pi5 --outlet 2 --outlet-name pi5 --model '~/models/tinyllama-1.1b-q4km.gguf' --sha256 9fecc3b3cd76bba89d504f29b616eedf7da85b96540e490ca5824d3f7d2776a0 --pp 512:20 --tg 128:17 --cycles 3 --threads 4 --idle-before 300 --idle-after 300 --settle 30 --gap 10",
+ "plan": {
+  "order": "settle 30 s; idle 300 s; pp1, tg1, pp2, tg2, pp3, tg3 (10 s gaps); idle 300 s",
+  "strip": "outlet 2 = pi5 (load-tested and renamed 2026-10-19)"
+ },
+ "definitions": "as in energy_predictions_20261005b.json",
+ "predictions": {
+  "pp": {
+   "tps": [
+    76.9838,
+    85.0873
+   ],
+   "mean_w": [
+    8.5184,
+    10.4114
+   ],
+   "j_per_token_net": {
+    "trap": [
+     0.0795,
+     0.0971
+    ],
+    "counter": [
+     0.0838,
+     0.1024
+    ]
+   }
+  },
+  "tg": {
+   "tps": [
+    16.7029,
+    18.4611
+   ],
+   "mean_w": [
+    7.4358,
+    9.0883
+   ],
+   "j_per_token_net": {
+    "trap": [
+     0.3047,
+     0.3724
+    ],
+    "counter": [
+     0.3214,
+     0.3928
+    ]
+   }
+  },
+  "spread_pct_max": 5.0,
+  "gap_pct": [
+   -7.0,
+   -2.0
+  ],
+  "throttled": "0x0 throughout"
+ },
+ "basis": "the old board's run testbed/results/energy_phase_pi5_20261005_145817, same protocol: tokens/s +/- 5 %, mean power and net J/token +/- 10 % (RB-E in pi5b_predictions_20261019.json is the comparison itself)",
+ "scoring": "testbed/scripts/score_energy_phase_run.py; PASS / FAIL / N/A, reported as found",
+ "inputs_sha256": {
+  "testbed/scripts/energy_phase_run.py": "f0cc72e52bec5408205c63a4db5049f7c0c59be51ed18393a5116dfcea668734",
+  "testbed/scripts/score_energy_phase_run.py": "5172f01ec55c6387c59297dd447e453e47a9a40dff87eb23bf52d64f146285fd",
+  "testbed/scripts/shelly_strip.py": "b7aaa7ceb2f1e94aa3f1f46100c06ca9d6c0c3fa8764a6372239747ffc0fe5a8",
+  "testbed/energy/strip.json": "5fd4deb6a49db3954735d59aea99d10b09d38d0de969d61f198688607d196c3f"
+ }
+}

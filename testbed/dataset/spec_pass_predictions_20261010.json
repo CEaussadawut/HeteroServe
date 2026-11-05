@@ -1,0 +1,188 @@
+{
+ "registered": "2026-10-10T01:12:29+07:00",
+ "name": "spec_pass_20261010",
+ "campaign": "scheduler upgrade 1, step 1: the pooled Qwen3-14B's pass time when checking k = 1..5 tokens",
+ "survey": "Documents/HeteroServe_Scheduler_Research.html, upgrade 1 (2026-10-10)",
+ "model": "qwen3_14b",
+ "nodes": [
+  "pi4",
+  "jetson"
+ ],
+ "rtt_trips": 1,
+ "load_mode": "none",
+ "alpha": 0.7,
+ "ks": [
+  1,
+  2,
+  3,
+  4,
+  5
+ ],
+ "rounds": 3,
+ "inputs_sha256": {
+  "characterisation.csv": "ef94c22318ccb0ce9ab913a08174d110095d9d4e0cad65aeeb052304dbc13d6a",
+  "model_shapes.json": "c92bbc0278b030d5218d7740b3fac99f146b5bdeffe684404d94a012f7232c38",
+  "link.json": "f961e94b8781e34081e0f11b3fb6339a150ae229fe43eb4566ca44094384568c",
+  "memory_at_rest.json": "1ec5a19725d7c565b9b97449beb0130b179da895e2e93fdb5e36e9ea4f141589",
+  "predict_pool.py": "b36fde31eb760256164bed95fa199f31bd90a191dfce24ded7210dec36d779ea",
+  "run_pool.sh": "266f71cac6606630900e61509270805e33e28b3a86b44b07ade4f2dee7d1fbbf",
+  "register_spec_pass_20261010.py": "4c8a06b3390d5b0d6a806a66d4ccba3127aec00b7d0914a67b97ce5f9b35dd58",
+  "placement.py": "c6aaec6d5cb62c979ec8aca7d4d36841cbeb9b456082edf4ae1c7a2cbb8f2051"
+ },
+ "run_order": [
+  "sp.q3_14b.pass"
+ ],
+ "configs": {
+  "sp.q3_14b.pass": {
+   "model": "qwen3-14b-q4_k_m",
+   "quant": "Q4_K_M",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 27
+    },
+    {
+     "node": "jetson",
+     "blocks": 13
+    }
+   ],
+   "head_on": "pi4",
+   "head_at": 0,
+   "bench": {
+    "host": "pi4",
+    "tool": "llama-batched-bench",
+    "args": "-m ~/models/qwen3-14b-q4_k_m.gguf --rpc 192.168.1.114:50052 -ngl 14 -ot \"^output\\.weight=CPU\" -lm none",
+    "protocol": "-t 4 -c 512 -npp 8 -ntg 8 -npl 1,2,3,4,5,1,2,3,4,5,1,2,3,4,5 -pps --output-format jsonl"
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 27,
+     "need_mib": 6658,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 755
+    },
+    "jetson": {
+     "blocks": 13,
+     "need_mib": 2811,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 284,
+     "weights_mib": 2489.6,
+     "weights_cap_mib": 2845,
+     "weights_margin_mib": 355
+    }
+   },
+   "predicted": {
+    "decode_ms": 2025.7,
+    "pre_sum_ms_per_token": 858.6,
+    "stages": [
+     {
+      "node": "pi4",
+      "blocks": 27,
+      "head": true,
+      "dec_ms": 1654.9,
+      "pre_ms_per_token": 797.3
+     },
+     {
+      "node": "jetson",
+      "blocks": 13,
+      "head": false,
+      "dec_ms": 369.4,
+      "pre_ms_per_token": 61.3
+     }
+    ],
+    "link_ms": {
+     "1": 1.43,
+     "2": 1.779,
+     "3": 2.128,
+     "4": 2.477,
+     "5": 2.826
+    },
+    "per_k": {
+     "1": {
+      "add_ms": 2025.7,
+      "roof_ms": 2025.7,
+      "add_ratio": 1.0,
+      "roof_ratio": 1.0,
+      "band_ms": [
+       1924.4,
+       2127.0
+      ],
+      "tokens_per_check_at_alpha": 1.0,
+      "ceiling_speedup_add": 1.0,
+      "ceiling_speedup_roof": 1.0
+     },
+     "2": {
+      "add_ms": 2884.3,
+      "roof_ms": 2026.1,
+      "add_ratio": 1.424,
+      "roof_ratio": 1.0,
+      "band_ms": [
+       1924.8,
+       3028.5
+      ],
+      "tokens_per_check_at_alpha": 1.7,
+      "ceiling_speedup_add": 1.194,
+      "ceiling_speedup_roof": 1.7
+     },
+     "3": {
+      "add_ms": 3742.8,
+      "roof_ms": 2763.4,
+      "add_ratio": 1.848,
+      "roof_ratio": 1.364,
+      "band_ms": [
+       2625.2,
+       3930.0
+      ],
+      "tokens_per_check_at_alpha": 2.19,
+      "ceiling_speedup_add": 1.185,
+      "ceiling_speedup_roof": 1.605
+     },
+     "4": {
+      "add_ms": 4601.4,
+      "roof_ms": 3561.0,
+      "add_ratio": 2.271,
+      "roof_ratio": 1.758,
+      "band_ms": [
+       3383.0,
+       4831.5
+      ],
+      "tokens_per_check_at_alpha": 2.533,
+      "ceiling_speedup_add": 1.115,
+      "ceiling_speedup_roof": 1.441
+     },
+     "5": {
+      "add_ms": 5460.0,
+      "roof_ms": 4358.7,
+      "add_ratio": 2.695,
+      "roof_ratio": 2.152,
+      "band_ms": [
+       4140.7,
+       5733.0
+      ],
+      "tokens_per_check_at_alpha": 2.773,
+      "ceiling_speedup_add": 1.029,
+      "ceiling_speedup_roof": 1.289
+     }
+    }
+   },
+   "why": "T(k) decides speculative decoding's gain on these boards; the predictor has no batch-1..5 point"
+  }
+ },
+ "hypotheses": [
+  {
+   "id": "SP-K1",
+   "claim": "T(1) within 5 % of the predicted decode step, 2025.7 ms"
+  },
+  {
+   "id": "SP-BAND",
+   "claim": "every T(k), k = 2..5, within [0.95 x ROOF(k), 1.05 x ADD(k)] (per_k band_ms)"
+  },
+  {
+   "id": "SP-PAYS",
+   "claim": "for some k in 2..5, T(k) / T(1) < E(k - 1; 0.7) = (1 - 0.7^k) / 0.3"
+  }
+ ],
+ "scoring": "T(k) = t_tg / 8 of each llama-batched-bench JSONL line with pl = k; per k the mean of the 3 lines, its spread (max - min) / mean reported; a hypothesis lacking a k is INCOMPLETE. The cell's THROTTLE verdict and the Jetson's RPC model buffer (13 blocks, within 0.5 MiB) are reported beside the verdicts."
+}

@@ -1,0 +1,148 @@
+{
+ "registered": "2026-09-29T21:57:03+07:00",
+ "campaign": "2026-09-29 evening: two users at once on Qwen3.5-9B (TWOUSER) -- does the hand-off earn its place?",
+ "test": "python3 testbed/scripts/pd_twouser.py run --reps 3 --n 128 --gen 32 --arms shared,handoff,static,shared_nr --stagger 0",
+ "inputs_sha256": {
+  "testbed/results/pd_sweep_20260929_010837.log": "43dbfc2faff749d3dc6ccaecc63825b039cf1de9dd4471cf992ba210f1942082",
+  "testbed/results/batched_decode_20260929_202511/pi5.log": "a52e4e3c67999c90cbf4e67c8ee183642c444e34fe68a43983b0da5c8341c4f1",
+  "testbed/results/batched_decode_20260929_211529/pi5.log": "d2043a1b98112e00450d329e019439a4bbcb2eaac414446e9d97002f4f1b61b8",
+  "testbed/scripts/pd_twouser.py": "58f809e77128f552772668c933e25a96bd8682d626158aa814b4c12ec7f79466"
+ },
+ "rows": {
+  "pi5_alone": {
+   "prefill_s": 13.71,
+   "decode_s_per_token": 0.5583
+  },
+  "pi4_alone": {
+   "prefill_s": 80.01,
+   "decode_s_per_token": 1.5156
+  },
+  "handoff": {
+   "save_s": 0.0321,
+   "transfer_wall_s_with_ssh": 1.704,
+   "restore_s": 0.0691,
+   "pi4_first_step_s": 1.601,
+   "pi4_decode_s_per_token": 1.5156
+  },
+  "pi5_second_sequence": {
+   "prefill_ratio": 0.9924,
+   "decode_step_ratio": 1.8996,
+   "rounds": [
+    3,
+    3
+   ],
+   "source": "llama-batched-bench -npp 128 -ntg 32 -npl 1,2 (B=2 / B=1)"
+  },
+  "pi5_no_repack_llama_server_terms": {
+   "prefill_1_s": 21.35,
+   "prefill_2_s": 42.76,
+   "decode_1_s_per_token": 0.4882,
+   "decode_step_2_s": 0.6266,
+   "server_over_bench": {
+    "prefill": 0.9495,
+    "decode": 0.9763
+   },
+   "source": "llama-batched-bench --no-repack, batched_decode_20260929_211529"
+  }
+ },
+ "predicted": {
+  "shared": {
+   "order_A_one_batch": {
+    "user1": {
+     "ttft_s": 27.21,
+     "done_s": 60.09,
+     "tpot_ms": 1060.66
+    },
+    "user2": {
+     "ttft_s": 27.21,
+     "done_s": 60.09,
+     "tpot_ms": 1060.66
+    }
+   },
+   "order_B_user1_first": {
+    "user1": {
+     "ttft_s": 13.71,
+     "done_s": 59.34
+    },
+    "user2": {
+     "ttft_s": 27.52,
+     "done_s": 59.9
+    }
+   },
+   "mean_done_s": 59.85,
+   "mean_done_range_s": [
+    59.62,
+    60.09
+   ],
+   "makespan_s": 60.09
+  },
+  "handoff": {
+   "user1": {
+    "ttft_s": 27.45,
+    "done_s": 44.76,
+    "tpot_ms": 558.35
+   },
+   "user2": {
+    "ttft_s": 13.71,
+    "done_s": 62.58,
+    "tpot_ms": 1576.6
+   },
+   "mean_done_s": 53.67,
+   "makespan_s": 62.58,
+   "mean_ttft_s": 20.58
+  },
+  "shared_nr": {
+   "order_A_one_batch": {
+    "user1": {
+     "ttft_s": 42.76,
+     "done_s": 62.19,
+     "tpot_ms": 626.62
+    },
+    "user2": {
+     "ttft_s": 42.76,
+     "done_s": 62.19,
+     "tpot_ms": 626.62
+    }
+   },
+   "order_B_user1_first": {
+    "user1": {
+     "ttft_s": 21.35,
+     "done_s": 61.66
+    },
+    "user2": {
+     "ttft_s": 42.86,
+     "done_s": 62.15
+    }
+   },
+   "mean_done_s": 62.05,
+   "mean_done_range_s": [
+    61.91,
+    62.19
+   ],
+   "makespan_s": 62.19
+  },
+  "static": {
+   "user1": {
+    "ttft_s": 13.71,
+    "done_s": 31.02,
+    "tpot_ms": 558.35
+   },
+   "user2": {
+    "ttft_s": 80.01,
+    "done_s": 127.0,
+    "tpot_ms": 1515.58
+   },
+   "mean_done_s": 79.01,
+   "makespan_s": 127.0,
+   "mean_ttft_s": 46.86
+  }
+ },
+ "rules": [
+  "HANDOFF: the hand-off earns its place for two users arriving together if its mean completion time (the mean of the two users' done, averaged over the repetitions) is lower than BOTH shared arms' -- the Pi 5 alone as the sweep ran it (repacked) and at its best two-user configuration (--no-repack). Predicted 53.7 s against 59.9 and 62.0 s.",
+  "NOREPACK: the Pi 5's two-user decode step is cheaper without repacking, in llama-server as in llama-batched-bench, if shared_nr's measured mean TPOT is below shared's. Predicted 627 against 1061 ms.",
+  "ACCURACY: an arm's prediction holds if its measured mean completion time is within +-10 %% of the predicted one (the shared arm: of the nearer end of its range). Each user's TTFT, done and TPOT are reported against theirs either way.",
+  "STATIC-CHECK: both boards run 2-slot servers (a 1-slot server refuses a 2-slot server's saved state: 'n_stream mismatch', the smoke run of 21:47), so the static arm's two users should match the sweep's 1-slot pi5-alone and pi4-alone within 5 %% in both prefill and decode (the servers' own timings). A miss is reported and the other arms still scored.",
+  "STEADY: an arm is steady if its repetitions' mean completion times agree within 5 %; one that is not is reported as found and still scored."
+ ],
+ "not_measured": "energy: the rig does not exist yet; the laptop is only the orchestrator here (it timestamps every token)."
+}

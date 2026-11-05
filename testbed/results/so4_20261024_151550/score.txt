@@ -1,0 +1,16 @@
+so4: the switch-off test on four nodes: scheduler v2's Qwen3-32B Q6_K plan, which leaves the Pi 4 out, with the Pi 4 on and idle (A) or powered off at its outlet (B); energy at all four outlets; code changed since registration: none
+
+SO-SAVE      HOLDS      {'type': 'diff', 'metric': 'j_per_token_all', 'diff': 3.409, 'lo': 2.621, 'hi': 4.868}
+SO-TIME      HOLDS      {'type': 'ratio', 'metric': 'mean_ms_per_token', 'ratio': 1.0037, 'lo': 0.98, 'hi': 1.02}
+SO-ACC       HOLDS      {'type': 'acc', 'metric': 'mean_ms_per_token', 'err_pct': {'A': -7.57, 'B': -7.22}, 'tol': 0.15}
+SO-DRIFT     HOLDS      {'type': 'spread', 'metric': 'mean_ms_per_token', 'runs': [1444.24, 1451.29], 'spread': 0.0049, 'tol': 0.03}
+SO-TEXT      HOLDS      {'type': 'text_across', 'metric': 'mean_ms_per_token', 'distinct_texts': 1}
+
+arm A: {'runs': [1, 4], 'requests': 6, 'complete': True, 'mean_ms_per_token': 1447.77, 'client_p50_ms': 1451.24, 'client_p95_ms': 1475.24, 'server_mean_ms': 1447.74, 'ttft_ms_p50': 96102.1, 'j_per_token_all': 59.9926, 'j_per_token_by_outlet': {'pi4': 3.5153, 'jetson': 4.8576, 'pi5': 9.6517, 'laptop': 41.968}, 'draft_acceptance_rate': None, 'predicted': {'mean_ms_per_token': 1566.3, 'j_per_token_all': 56.1886}}
+arm B: {'runs': [2, 3], 'requests': 6, 'complete': True, 'mean_ms_per_token': 1453.14, 'client_p50_ms': 1455.66, 'client_p95_ms': 1480.49, 'server_mean_ms': 1453.14, 'ttft_ms_p50': 96019.5, 'j_per_token_all': 56.5841, 'j_per_token_by_outlet': {'pi4': 0.0, 'jetson': 4.8449, 'pi5': 9.6151, 'laptop': 42.124}, 'draft_acceptance_rate': None, 'predicted': {'mean_ms_per_token': 1566.3, 'j_per_token_all': 52.4438}}
+run 1 A rc 0: 3 requests, mean 1444.24 ms/token, client P50 1448.93, server mean 1444.2, TTFT P50 95683.9 ms, J/token all 59.8216
+run 2 B rc 0: 3 requests, mean 1442.1 ms/token, client P50 1447.39, server mean 1442.1, TTFT P50 95846.6 ms, J/token all 55.6415
+run 3 B rc 0: 3 requests, mean 1464.17 ms/token, client P50 1463.74, server mean 1464.17, TTFT P50 97646.2 ms, J/token all 57.5266
+run 4 A rc 0: 3 requests, mean 1451.29 ms/token, client P50 1455.34, server mean 1451.29, TTFT P50 96666.1 ms, J/token all 60.1636
+
+extra: {"hypotheses": {"SO-ZERO": {"verdict": "HOLDS", "b_arm_runs": [2, 3], "samples_in_windows": 5615, "samples_not_off": 0}, "SO-BACK": {"verdict": "HOLDS", "cycles": [{"off_at": "2026-10-24T15:46:49+0700", "boot_id_before": "09122ab1-a44e-452b-adff-d4199d9935cc", "down_after_s": 32.3, "apower_before_switch_w": 1.9, "on": {"at": "2026-10-24T16:09:33+0700", "boot_id": "013618b3-fda6-46cd-8c4c-3a9da1dd659d", "ssh_after_s": 60.8, "synced_after_s": 61.7, "overlay_up": true, "ntp_synchronized": true, "result": "back"}, "back": true}, {"off_at": "2026-10-24T16:12:48+0700", "boot_id_before": "013618b3-fda6-46cd-8c4c-3a9da1dd659d", "down_after_s": 32.3, "apower_before_switch_w": 1.7, "on": {"at": "2026-10-24T16:35:38+0700", "boot_id": "d19635df-3787-4262-a20c-7b043dbbecc5", "ssh_after_s": 53.1, "synced_after_s": 59.2, "overlay_up": true, "ntp_synchronized": true, "result": "back"}, "back": true}], "b_arm_runs_scheduled": 2}}}

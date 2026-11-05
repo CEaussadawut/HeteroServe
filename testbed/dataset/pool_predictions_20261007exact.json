@@ -1,0 +1,199 @@
+{
+ "registered": "2026-10-07T17:42:55+07:00",
+ "campaign": "the default exact plan (exact fill + 256 MiB headroom) measured, A-B-A against the plan it replaces; Qwen3-14B on Pi 4 host + Jetson (Vulkan)",
+ "default_headroom_mib": 256.0,
+ "inputs_sha256": {
+  "characterisation.csv": "ef94c22318ccb0ce9ab913a08174d110095d9d4e0cad65aeeb052304dbc13d6a",
+  "model_shapes.json": "c92bbc0278b030d5218d7740b3fac99f146b5bdeffe684404d94a012f7232c38",
+  "link.json": "e5084df7d3e62a47c7f93339ef4412c8e5f31db2d500ad5f189aafde95548ac5",
+  "memory_at_rest.json": "1ec5a19725d7c565b9b97449beb0130b179da895e2e93fdb5e36e9ea4f141589"
+ },
+ "engine_sha256": {
+  "placement.py": "3fe598876a1618aa24d4e16ea8481b2ac5ae2f1ec83170229801010c7eb158f1",
+  "gguf.py": "805ddefc0c9ef1fb1c010f052da0546d23a35d73343738c08345a339f7486330"
+ },
+ "predictor_sha256": {
+  "predict_pool.py": "728a2eca3729a001a4777e0095b32a9773e4aa5c925d5795ab07c30d513b4867",
+  "register_exact_20261007.py": "ea73f618a9bbf7f094663fbde6443a9340228986046340e4662a828fdbbe20f1"
+ },
+ "n_ctx_planned": 4096,
+ "protocol": "-t 4 -p 64 -n 16 -r 3 -oe jsonl -v",
+ "run_order": [
+  "x.q3_14b.default",
+  "x.q3_14b.ref_average",
+  "x.q3_14b.default_rep"
+ ],
+ "configs": {
+  "x.q3_14b.default": {
+   "model": "qwen3-14b-q4_k_m",
+   "quant": "Q4_K_M",
+   "scheduler": "the engine's default: exact fill + 256 MiB headroom, head where cheaper",
+   "why": "the first measured run of the default exact plan, 2026-10-07",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 27
+    },
+    {
+     "node": "jetson",
+     "blocks": 13
+    }
+   ],
+   "head_on": "pi4",
+   "head_at": 0,
+   "bench": {
+    "host": "pi4",
+    "args": "-m ~/models/qwen3-14b-q4_k_m.gguf -rpc 192.168.100.111:50052 -ngl 14 -ot \"^output\\.weight=CPU\""
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 27,
+     "need_mib": 6241,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 1172
+    },
+    "jetson": {
+     "blocks": 13,
+     "need_mib": 2811,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 284,
+     "weights_mib": 2489.6,
+     "weights_cap_mib": 2845,
+     "weights_margin_mib": 355
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 2025.9,
+    "decode_tok_s": 0.494,
+    "prefill_ms_per_token": 796.0,
+    "prefill_tok_s": 1.26
+   },
+   "cost_sources": {
+    "pi4": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "jetson": {
+     "host": "vulkan row",
+     "worker": "vulkan row + smoke-test RPC cost"
+    }
+   }
+  },
+  "x.q3_14b.ref_average": {
+   "model": "qwen3-14b-q4_k_m",
+   "quant": "Q4_K_M",
+   "scheduler": "the plan it replaces: average fill, no headroom, head where cheaper",
+   "why": "the first measured run of the default exact plan, 2026-10-07",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 26
+    },
+    {
+     "node": "jetson",
+     "blocks": 14
+    }
+   ],
+   "head_on": "pi4",
+   "head_at": 0,
+   "bench": {
+    "host": "pi4",
+    "args": "-m ~/models/qwen3-14b-q4_k_m.gguf -rpc 192.168.100.111:50052 -ngl 15 -ot \"^output\\.weight=CPU\""
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 26,
+     "need_mib": 6048,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 1365
+    },
+    "jetson": {
+     "blocks": 14,
+     "need_mib": 3005,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 90,
+     "weights_mib": 2666.8,
+     "weights_cap_mib": 2845,
+     "weights_margin_mib": 178
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 2000.5,
+    "decode_tok_s": 0.5,
+    "prefill_ms_per_token": 773.5,
+    "prefill_tok_s": 1.29
+   },
+   "cost_sources": {
+    "pi4": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "jetson": {
+     "host": "vulkan row",
+     "worker": "vulkan row + smoke-test RPC cost"
+    }
+   }
+  },
+  "x.q3_14b.default_rep": {
+   "model": "qwen3-14b-q4_k_m",
+   "quant": "Q4_K_M",
+   "scheduler": "the engine's default: exact fill + 256 MiB headroom, head where cheaper",
+   "why": "the A-B-A repeat of x.q3_14b.default, run last: drift, not a new plan",
+   "pipeline": [
+    {
+     "node": "pi4",
+     "blocks": 27
+    },
+    {
+     "node": "jetson",
+     "blocks": 13
+    }
+   ],
+   "head_on": "pi4",
+   "head_at": 0,
+   "bench": {
+    "host": "pi4",
+    "args": "-m ~/models/qwen3-14b-q4_k_m.gguf -rpc 192.168.100.111:50052 -ngl 14 -ot \"^output\\.weight=CPU\""
+   },
+   "memory": {
+    "pi4": {
+     "blocks": 27,
+     "need_mib": 6241,
+     "reserve_mib": 0,
+     "available_mib": 7413,
+     "margin_mib": 1172
+    },
+    "jetson": {
+     "blocks": 13,
+     "need_mib": 2811,
+     "reserve_mib": 450,
+     "available_mib": 3545,
+     "margin_mib": 284,
+     "weights_mib": 2489.6,
+     "weights_cap_mib": 2845,
+     "weights_margin_mib": 355
+    }
+   },
+   "predicted": {
+    "decode_ms_per_token": 2025.9,
+    "decode_tok_s": 0.494,
+    "prefill_ms_per_token": 796.0,
+    "prefill_tok_s": 1.26
+   },
+   "cost_sources": {
+    "pi4": {
+     "host": "cpu row",
+     "worker": "cpu-rpc-worker row"
+    },
+    "jetson": {
+     "host": "vulkan row",
+     "worker": "vulkan row + smoke-test RPC cost"
+    }
+   }
+  }
+ }
+}

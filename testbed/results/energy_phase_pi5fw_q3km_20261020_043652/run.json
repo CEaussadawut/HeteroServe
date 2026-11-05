@@ -1,0 +1,106 @@
+{
+ "started": "2026-10-20T04:36:52+07:00",
+ "args": {
+  "node": "pi5",
+  "outlet": 2,
+  "outlet_name": "pi5",
+  "model": "~/models/tinyllama-1.1b-q3km.gguf",
+  "sha256": "ec461c4d2b60896152bca3978aa49cd70edad7298715e4222e12af1eefea2125",
+  "llama_dir": "~/llama.cpp",
+  "bench": "./build/bin/llama-bench",
+  "threads": 4,
+  "pp": "512:10",
+  "tg": "128:21",
+  "cycles": 3,
+  "idle_before": 300.0,
+  "idle_after": 120.0,
+  "settle": 30.0,
+  "gap": 10.0,
+  "tail": 5.0,
+  "hz": 5.0,
+  "local": false,
+  "bench_args": "",
+  "require_guard": false,
+  "jetson_clocks": false,
+  "out": "testbed/results/energy_phase_pi5fw_q3km_20261020_043652"
+ },
+ "out": "testbed/results/energy_phase_pi5fw_q3km_20261020_043652",
+ "invocations": [
+  {
+   "label": "pp1",
+   "phase": "pp",
+   "n": 512,
+   "reps": 10,
+   "cmd": "cd ~/llama.cpp && exec stdbuf -oL -eL ./build/bin/llama-bench -m ~/models/tinyllama-1.1b-q3km.gguf -t 4 -p 512 -n 0 -r 10 --progress -oe jsonl 2>&1",
+   "exit": 0
+  },
+  {
+   "label": "tg1",
+   "phase": "tg",
+   "n": 128,
+   "reps": 21,
+   "cmd": "cd ~/llama.cpp && exec stdbuf -oL -eL ./build/bin/llama-bench -m ~/models/tinyllama-1.1b-q3km.gguf -t 4 -p 0 -n 128 -r 21 --progress -oe jsonl 2>&1",
+   "exit": 0
+  },
+  {
+   "label": "pp2",
+   "phase": "pp",
+   "n": 512,
+   "reps": 10,
+   "cmd": "cd ~/llama.cpp && exec stdbuf -oL -eL ./build/bin/llama-bench -m ~/models/tinyllama-1.1b-q3km.gguf -t 4 -p 512 -n 0 -r 10 --progress -oe jsonl 2>&1",
+   "exit": 0
+  },
+  {
+   "label": "tg2",
+   "phase": "tg",
+   "n": 128,
+   "reps": 21,
+   "cmd": "cd ~/llama.cpp && exec stdbuf -oL -eL ./build/bin/llama-bench -m ~/models/tinyllama-1.1b-q3km.gguf -t 4 -p 0 -n 128 -r 21 --progress -oe jsonl 2>&1",
+   "exit": 0
+  },
+  {
+   "label": "pp3",
+   "phase": "pp",
+   "n": 512,
+   "reps": 10,
+   "cmd": "cd ~/llama.cpp && exec stdbuf -oL -eL ./build/bin/llama-bench -m ~/models/tinyllama-1.1b-q3km.gguf -t 4 -p 512 -n 0 -r 10 --progress -oe jsonl 2>&1",
+   "exit": 0
+  },
+  {
+   "label": "tg3",
+   "phase": "tg",
+   "n": 128,
+   "reps": 21,
+   "cmd": "cd ~/llama.cpp && exec stdbuf -oL -eL ./build/bin/llama-bench -m ~/models/tinyllama-1.1b-q3km.gguf -t 4 -p 0 -n 128 -r 21 --progress -oe jsonl 2>&1",
+   "exit": 0
+  }
+ ],
+ "preflight": {
+  "at": "2026-10-20T04:36:52+07:00",
+  "strip_outlet_name": "pi5",
+  "strip_json_map": "pi5",
+  "node_state": [
+   "hs-pi5",
+   "0.38 2.22 2.46 1/293 15282",
+   "Mem:            8062         556        2626          33        5120        7506",
+   "throttled=0x0",
+   "temp=53.8'C",
+   "no llama process"
+  ],
+  "llama_cpp": [
+   "b23701f77d47dad9de834d59ebfcbe25c9e8b46f",
+   "0",
+   "version: 0.4.1-dev (build 200, commit b23701f)",
+   "built with GNU 14.2.0 for Linux aarch64"
+  ],
+  "model_sha256": "ec461c4d2b60896152bca3978aa49cd70edad7298715e4222e12af1eefea2125",
+  "model_sha256_ok": true
+ },
+ "postflight_node_state": [
+  "hs-pi5",
+  "0.42 2.31 2.58 1/296 17567",
+  "throttled=0x0",
+  "temp=53.2'C"
+ ],
+ "finished": "2026-10-20T04:59:02+07:00"
+}

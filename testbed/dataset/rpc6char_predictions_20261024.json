@@ -1,0 +1,52 @@
+{
+ "registered_at": "2026-10-24T17:14:08+07:00",
+ "script": "testbed/scripts/rpc6_char_20261024.py",
+ "out_prefix": "rpc6char",
+ "what": "the first RPC worker's bytes per decoded token against the context size and the cache's depth (TinyLlama Q4_0, laptop 11 + Pi 4 11, the head on the host, unshaped)",
+ "model": "tinyllama_q4_0",
+ "place": "laptop:11,pi4:11",
+ "arms": {
+  "C2": {
+   "ctx": 2048,
+   "prompt": "The quick brown fox jumps over the lazy dog. Summarise this sentence in five words."
+  },
+  "C4": {
+   "ctx": 4096,
+   "prompt": "The quick brown fox jumps over the lazy dog. Summarise this sentence in five words."
+  },
+  "D2": {
+   "ctx": 2048,
+   "prompt": "The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog. Summarise this text in five words."
+  }
+ },
+ "short": 16,
+ "long": 144,
+ "reps": 3,
+ "reference": {
+  "to": 19452,
+  "back": 8200
+ },
+ "memfile": "testbed/dataset/memory_snapshot_20261024_171326.json",
+ "conditions": "2026-10-24 evening, after so4: the laptop on its charger, battery full, Wi-Fi off; one Claude desktop app open (this session's); the links unshaped; bytes are counted, so the laptop's load does not enter a reported figure.",
+ "hypotheses": {
+  "R6-REPEAT": {
+   "tol": 0.005,
+   "claim": "C2 reproduces 19,452 B to the Pi 4 and 8,200 B back, within 0.5 %"
+  },
+  "R6-CTX": {
+   "tol": 0.005,
+   "claim": "the bytes to the Pi 4 do not depend on the context size: C4 within 0.5 % of C2"
+  },
+  "R6-DEPTH": {
+   "tol": 0.005,
+   "claim": "nor on the cache's depth: D2 within 0.5 % of C2"
+  }
+ },
+ "inputs_sha256": {
+  "testbed/scripts/rpc6_char_20261024.py": "deba52c4d3e4cbcbe53112b2761c1d514913185ae8b343ba286489cd1b4b5908",
+  "testbed/scripts/serve_pool.sh": "9f315d70ab3404e9d73b9901508b7f53e96da590fc2527f5d62061ecae37a07f",
+  "testbed/scripts/serve_defaults.sh": "4fdedec2da1479d577117606f3d810e313ef4483a71be6c9787895133a66a095",
+  "ThinkPad/config/cluster.json": "1f0a3529dd384647ab71a0a08e2c142226ccf2b80aa5160ffc91e5e2e9485943",
+  "testbed/dataset/memory_snapshot_20261024_171326.json": "723468bc6582258767dc0200f7ea44e599bafad7c34c92caff57af59f4a35c05"
+ }
+}

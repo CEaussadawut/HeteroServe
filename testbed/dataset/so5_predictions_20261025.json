@@ -1,0 +1,94 @@
+{
+ "registered_at": "2026-10-25T01:02:05+07:00",
+ "script": "testbed/scripts/so5_trial_20261025.py",
+ "out_prefix": "so5",
+ "what": "the switch-off automation (serve_switch_20261024.py) run live for the first time: a plan without the Pi 4 (switched off after serving), then a plan that needs it (powered up before serving)",
+ "memfile": "testbed/dataset/memory_snapshot_20261025_010122.json",
+ "arms": {
+  "A": {
+   "MODEL": "qwen3moe_q6k",
+   "CTX": "4096",
+   "NODES": "laptop pi5 pi4",
+   "SERVE_DRAFT": "none"
+  },
+  "B": {
+   "MODEL": "tinyllama_q4_0",
+   "CTX": "2048",
+   "PLACE": "laptop:11,pi4:11",
+   "PLACE_HEAD": "host",
+   "SERVE_DRAFT": "none"
+  }
+ },
+ "plans": {
+  "A": {
+   "members": [
+    "laptop",
+    "pi5"
+   ],
+   "assign": [
+    [
+     "laptop",
+     37
+    ],
+    [
+     "pi5",
+     11
+    ]
+   ],
+   "head_at": 0,
+   "decode_ms": 143.72
+  },
+  "B": {
+   "members": [
+    "laptop",
+    "pi4"
+   ],
+   "assign": [
+    [
+     "laptop",
+     11
+    ],
+    [
+     "pi4",
+     11
+    ]
+   ],
+   "head_at": 0,
+   "decode_ms": 95.49
+  }
+ },
+ "prompt": "The quick brown fox jumps over the lazy dog. Summarise this sentence in five words.",
+ "n_tokens": 32,
+ "a_requests": 3,
+ "conditions": "2026-10-25 just after midnight, the user's go-ahead ('Do the switch-off automation'); the laptop on its charger; a functional trial, no energy or timing figure is registered; only the Pi 4's outlet may be switched (strip.json do_not_switch_off: the laptop's).",
+ "hypotheses": {
+  "SO5-PLAN": {
+   "claim": "A's served plan is the registered one and leaves the Pi 4 out; B's served plan holds the Pi 4"
+  },
+  "SO5-OFF": {
+   "max_w": 0.1,
+   "claim": "after A's start the switch log reads 'outlet off', and every strip sample of outlet 0 during A's completions reads off at <= 0.1 W"
+  },
+  "SO5-SERVE": {
+   "claim": "all three of A's completions return 32 tokens with the Pi 4 off, and B's one"
+  },
+  "SO5-UP": {
+   "claim": "B's start powers the Pi 4 up before serving: the switch log reads 'back'"
+  },
+  "SO5-ONLY": {
+   "claim": "outlets 1-3 read on in every strip sample of the trial"
+  }
+ },
+ "inputs_sha256": {
+  "testbed/scripts/so5_trial_20261025.py": "257cf7011865c3700aa3933af1db2adbfbbc2b22327c4e075415b310ae1c75ac",
+  "testbed/scripts/serve_switch_20261024.py": "4fcf11e13fd6f09ed4dab7966a5e22e49e749c858a7c633f274d699b8789adfb",
+  "testbed/scripts/strip_switch_20261024.py": "d1aa838e403e499731bad7c3095b352af76ecd3595e3122029cdab639abd93e8",
+  "testbed/scripts/serve_pool.sh": "9f315d70ab3404e9d73b9901508b7f53e96da590fc2527f5d62061ecae37a07f",
+  "testbed/scripts/serve_defaults.sh": "4fdedec2da1479d577117606f3d810e313ef4483a71be6c9787895133a66a095",
+  "testbed/scripts/predict_pool.py": "312c598526fd711b702612a8424640284ff75706bc362cec20ec59f762065918",
+  "testbed/scripts/shelly_strip.py": "b7aaa7ceb2f1e94aa3f1f46100c06ca9d6c0c3fa8764a6372239747ffc0fe5a8",
+  "testbed/energy/strip.json": "5fd4deb6a49db3954735d59aea99d10b09d38d0de969d61f198688607d196c3f",
+  "ThinkPad/config/cluster.json": "1f0a3529dd384647ab71a0a08e2c142226ccf2b80aa5160ffc91e5e2e9485943",
+  "testbed/dataset/memory_snapshot_20261025_010122.json": "3b638cc9f37a5c3c245e02597e75bb15e83afd6e5ae115ef748b02eef9126c49"
+ }
+}
