@@ -188,7 +188,8 @@ def collect(run_dirs):
             p = os.path.join(d, node + ".log")
             if os.path.exists(p):
                 rows += parse_pi_log(p, node)
-        for root, _, files in os.walk(d):
+        for root, dirs, files in os.walk(d):
+            dirs.sort(key=lambda s: (s.upper(), s))   # NTFS's order, which the published files were built in, on any disk
             if "run.log" in files and "jetson" in root:
                 rows += parse_jetson_run(os.path.join(root, "run.log"))
     return rows
