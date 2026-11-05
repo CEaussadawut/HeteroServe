@@ -124,8 +124,8 @@ def compare(published, derived, tmp):
             only_pub.append(k)
             continue
         w = b[k]
-        if isinstance(w, str) and tmp and tmp in w:
-            continue
+        if isinstance(w, str) and tmp and (tmp in w or tmp in os.path.normpath(os.path.join(ROOT, w))):
+            continue   # a scratch path, also when written relative to a ROOT under the scratch's own parent (a clone in /tmp)
         if home_relative(v) is not None and home_relative(v) == home_relative(w):
             continue
         if isinstance(v, (int, float)) and isinstance(w, (int, float)) and not isinstance(v, bool):

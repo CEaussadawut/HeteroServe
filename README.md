@@ -82,7 +82,9 @@ Tested with Python 3.14.4 and numpy 2.3.5. Some node scripts also use `lxml`, `m
 
 It re-runs every scorer on scratch copies of the raw data and compares each published value. On the project laptop, run
 from this release with all five model files, it gave **328 checks, 0 failing**, with the record untouched (6 November
-2026, 02:47–03:49). That equals the project folder's own count on 5 November.
+2026, 02:47–03:49). That equals the project folder's own count on 5 November. A fresh clone of this repository, on another
+filesystem and with step 1 done, matched on all 328 as well (6 November 2026). That was after two fixes the clone turned
+up, both in this release: a rebuilt CSV's row order, and scratch paths when the clone sits in `/tmp`.
 
 Without the three hybrid models, the check of `testbed/dataset/hybrid_shapes_20261101.json` is skipped. Without the two
 other files, two checks report an error. Every other check stands.

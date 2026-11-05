@@ -23,6 +23,10 @@ class TestReproduce(unittest.TestCase):
         self.assertEqual(po, ["/cells/b/x"])
         scratch = {"cells": {"a": {"decode": {"ms": 95.6}, "split": [1, 2]}, "b": {"x": "/tmp/scratch-1/out.json"}}}
         self.assertEqual(R.compare(pub, scratch, "/tmp/scratch-1")[0], [])        # a scratch path is not a difference
+        tmp = os.path.join(os.path.dirname(R.ROOT), "scratch-2")                  # a clone beside its scratch (/tmp):
+        rel = {"cells": {"a": {"decode": {"ms": 95.6}, "split": [1, 2]}, "b": {"x": "../scratch-2/out.json"}}}
+        self.assertEqual(R.compare(pub, rel, tmp)[0], [])                         # the relative form is scratch too
+        self.assertEqual(len(R.compare(pub, rel, "/tmp/scratch-3")[0]), 1)        # another folder's path still differs
 
     def test_state_temps(self):
         with tempfile.NamedTemporaryFile("w", suffix=".log", delete=False) as f:
